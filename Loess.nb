@@ -1,0 +1,338 @@
+(* Content-type: application/vnd.wolfram.mathematica *)
+
+(*** Wolfram Notebook File ***)
+(* http://www.wolfram.com/nb *)
+
+(* CreatedBy='Mathematica 11.3' *)
+
+(*CacheID: 234*)
+(* Internal cache information:
+NotebookFileLineBreakTest
+NotebookFileLineBreakTest
+NotebookDataPosition[       158,          7]
+NotebookDataLength[     12827,        330]
+NotebookOptionsPosition[     10646,        290]
+NotebookOutlinePosition[     11063,        306]
+CellTagsIndexPosition[     11020,        303]
+WindowFrame->Normal*)
+
+(* Beginning of Notebook Content *)
+Notebook[{
+
+Cell[CellGroupData[{
+Cell["Loess Regression Infrastructure", "Section",
+ CellChangeTimes->{{3.740243446145467*^9, 3.7402434478784475`*^9}, {
+  3.7402459170249767`*^9, 3.740245918262979*^9}, {3.7402607040938234`*^9, 
+  3.7402607069282446`*^9}},ExpressionUUID->"83d686f0-c501-4f0a-8e19-\
+69393d64b92e"],
+
+Cell["\<\
+The Loess algorithm is an algorithm for fitting a smooth curve to a (noisy) \
+data set without having to a priori choose the form of the smoothing \
+functions (e.g. polynomial, exponential, etc.) used to fit the data. Briefly, \
+the algorithm functions as follows:\
+\>", "Text",
+ CellChangeTimes->{{3.5510998825500126`*^9, 3.5510998914576283`*^9}, {
+   3.5510999225172825`*^9, 3.55110013729846*^9}, {3.551100278541108*^9, 
+   3.5511003017539487`*^9}, {3.551103864122946*^9, 3.55110386654095*^9}, 
+   3.560011281859059*^9},ExpressionUUID->"3211cc94-c8c1-4156-8e49-\
+5721185e1460"],
+
+Cell[CellGroupData[{
+
+Cell[TextData[{
+ "We will visit the data at a number of ",
+ StyleBox["fit points. ",
+  FontSlant->"Italic"],
+ "Classically, the fit points have simply been the x values of the data set; \
+however, good results seem to be also achieved with using somewhat fewer \
+equally spaced points across the domain."
+}], "Item",
+ CellChangeTimes->{
+  3.5511002808967123`*^9, {3.5511004124829435`*^9, 3.551100436428985*^9}, {
+   3.55110051889073*^9, 3.551100550153185*^9}, {3.5511007259810934`*^9, 
+   3.5511007259966936`*^9}, {3.55180380592997*^9, 3.5518038062107697`*^9}, {
+   3.551805205689228*^9, 
+   3.5518052058920283`*^9}},ExpressionUUID->"fb134f64-0b6e-4ba4-a746-\
+dfce57d368e3"],
+
+Cell[TextData[{
+ "At each of the fit points, we determine a neighborhood of the data. The \
+neighborhood of a fit point ",
+ StyleBox["xCenter",
+  FontSlant->"Italic"],
+ " is the set of size ",
+ StyleBox["k ",
+  FontSlant->"Italic"],
+ "of the x values from the data which are the ",
+ StyleBox["closest ",
+  FontSlant->"Italic"],
+ "to ",
+ StyleBox["xCenter. ",
+  FontSlant->"Italic"],
+ "The value ",
+ StyleBox["k ",
+  FontSlant->"Italic"],
+ "is usually expressed as a particular fraction \[Alpha] of the overall data. "
+}], "Item",
+ CellChangeTimes->{{3.551100731269503*^9, 3.551100862091333*^9}, {
+  3.5511016365606623`*^9, 3.5511017254028177`*^9}, {3.5518038112651787`*^9, 
+  3.551803811514779*^9}, {3.551805213458042*^9, 
+  3.551805213816842*^9}},ExpressionUUID->"5574434a-bf4e-4da9-81a0-\
+a027b519bfed"],
+
+Cell["\<\
+There is no hard and fast rule, but values for \[Alpha] around 0.5 often \
+produce good results. If too small a value is used, the Loess smoothed fit \
+will follow the data too closely; if too large a value is used, intermediate \
+variations in the data might be missed.\
+\>", "Subitem",
+ CellChangeTimes->{{3.551101732812831*^9, 
+  3.5511017614856815`*^9}},ExpressionUUID->"79c5399d-cb37-47d8-bd83-\
+36928a96b540"],
+
+Cell["\<\
+We perform a weighted least squares regression of each fit neighborhood. \
+\>", "Item",
+ CellChangeTimes->{{3.5511010145883617`*^9, 3.5511010808104777`*^9}, {
+  3.551101160603826*^9, 3.5511011788870583`*^9}, {3.5518038202039948`*^9, 
+  3.551803820453595*^9}},ExpressionUUID->"cc7f5309-ba16-4418-a523-\
+6adbd5fb61a3"],
+
+Cell[CellGroupData[{
+
+Cell["\<\
+The regression is not necessarily a linear one; rather, we fit a polynomial \
+(of a fixed maximal degree) to the fit neighborhood. Typical values used for \
+the maximal degree are 1 and 2.\
+\>", "Subitem",
+ CellChangeTimes->{{3.5511010145883617`*^9, 3.5511010808104777`*^9}, {
+  3.551101160603826*^9, 3.5511011788870583`*^9}, {3.551101234033155*^9, 
+  3.5511012997092705`*^9}, {3.5511017682872934`*^9, 3.5511017909385333`*^9}, {
+  3.551805221928857*^9, 
+  3.5518052223656573`*^9}},ExpressionUUID->"5364f944-f2c7-41c8-a72a-\
+85ee50e1a47d"],
+
+Cell["\<\
+The weighting function used assigns greater importance to the center of the \
+the neighborhood than its edges.\
+\>", "Subitem",
+ CellChangeTimes->{{3.551101307119283*^9, 
+  3.5511013604713774`*^9}},ExpressionUUID->"371b3972-3736-423b-a69e-\
+4ebe72f1deaa"]
+}, Open  ]],
+
+Cell[TextData[{
+ "With regressed polynomial in hand for the neighborhood of a particular fit \
+point ",
+ Cell[BoxData[
+  FormBox[
+   SubscriptBox["x", "i"], TraditionalForm]],ExpressionUUID->
+  "49f5b6bc-b2e9-4e72-a652-97089c770e93"],
+ " we evaluate the polynomial at ",
+ Cell[BoxData[
+  FormBox[
+   SubscriptBox["x", 
+    RowBox[{"i", " "}]], TraditionalForm]],ExpressionUUID->
+  "92bc52cf-bb0b-4bc2-ad4d-adb8691011cd"],
+ "to yield ",
+ Cell[BoxData[
+  FormBox[
+   SubscriptBox["y", "i"], TraditionalForm]],ExpressionUUID->
+  "e4e2ce25-7fdb-4a38-9db5-65462f0d6ec5"],
+ ", which becomes the value of the Loess smoothed fit at ",
+ Cell[BoxData[
+  FormBox[
+   SubscriptBox["x", "i"], TraditionalForm]],ExpressionUUID->
+  "b53c7d21-3188-42c1-a4d1-ca88ce08d5bd"],
+ "."
+}], "Item",
+ CellChangeTimes->{{3.551101372015397*^9, 3.551101522337261*^9}, {
+  3.551805226031664*^9, 
+  3.5518052262812643`*^9}},ExpressionUUID->"323f3559-0ee1-4bc6-b928-\
+4a614e43328c"],
+
+Cell[TextData[{
+ "The value the Loess smoothed fit at a location which falls between fit \
+points is determined by interpolating between the ",
+ Cell[BoxData[
+  FormBox[
+   RowBox[{"(", 
+    RowBox[{
+     SubscriptBox["x", "i"], ",", 
+     SubscriptBox["y", "i"]}], ")"}], TraditionalForm]],ExpressionUUID->
+  "cdacbced-5c71-4a50-b493-5905122762f3"],
+ " points, typically using either cubic splines or straight lines for the \
+interpolation."
+}], "Item",
+ CellChangeTimes->{{3.5511015253324666`*^9, 3.551101631490653*^9}, {
+  3.551805230805272*^9, 
+  3.5518052524893103`*^9}},ExpressionUUID->"d78437d0-aa12-41e4-a340-\
+66c16aa243c7"]
+}, Open  ]],
+
+Cell["\<\
+References: 
+\tCleveland, W. S. Robust Locally Weighted Regression and Smoothing \
+Scatterplots. Journal of the American Statistical Association 74, 829, \
+doi:10.2307/2286407 (1979).
+\thttp://en.wikipedia.org/wiki/Local_regression\
+\>", "Text",
+ CellChangeTimes->{
+  3.551100146018875*^9},ExpressionUUID->"9aaa539d-deaa-4e46-b5f3-\
+afbfff27f488"],
+
+Cell[BoxData[
+ RowBox[{"Get", "[", 
+  RowBox[{
+   RowBox[{"NotebookDirectory", "[", "]"}], " ", "<>", " ", 
+   "\"\<Loess.m\>\""}], "]"}]], "Input",
+ CellChangeTimes->{{3.7408413502338476`*^9, 3.740841355134742*^9}, {
+  3.7408414028526416`*^9, 3.7408414172626143`*^9}},
+ CellLabel->"In[7]:=",ExpressionUUID->"37cc69a0-f537-4187-ade5-ae8303de0128"],
+
+Cell[CellGroupData[{
+
+Cell["Example", "Subsection",
+ CellChangeTimes->{{3.7402458528428335`*^9, 
+  3.7402458539308543`*^9}},ExpressionUUID->"e8d124fe-602e-4276-8ed8-\
+bbb7bfc801ca"],
+
+Cell["\<\
+As a test example of algorithm, we generate some noisy data from the Sin[] \
+function.\
+\>", "Text",
+ CellChangeTimes->{{3.551026319539585*^9, 3.551026358414853*^9}, {
+   3.551099651973607*^9, 3.5510996715516415`*^9}, {3.551101812700571*^9, 
+   3.551101818332181*^9}, 
+   3.5613893497067676`*^9},ExpressionUUID->"10e3ae08-4a87-4b55-a8e7-\
+3a5fbe5524e5"],
+
+Cell[BoxData[{
+ RowBox[{
+  RowBox[{"data", " ", "=", " ", 
+   RowBox[{"sampleWithNoise", "[", 
+    RowBox[{"Sin", ",", " ", 
+     RowBox[{"{", 
+      RowBox[{
+       RowBox[{"-", "Pi"}], ",", " ", "Pi"}], "}"}], ",", " ", "500", ",", 
+     " ", "0.4"}], "]"}]}], ";"}], "\[IndentingNewLine]", 
+ RowBox[{"ListPlot", "[", "data", "]"}]}], "Input",
+ CellChangeTimes->{{3.7404419920933104`*^9, 3.740442267693303*^9}},
+ CellLabel->"In[8]:=",ExpressionUUID->"67fd6957-acbc-47ff-bcad-eb7da6deb372"],
+
+Cell["\<\
+Run a regression on our sample test data. We use half the data for each \
+neighborhood, degree two polynomials for each regression, and 1/3 the number \
+of data samples as equally spaced fit points.\
+\>", "Text",
+ CellChangeTimes->{{3.5510340253626757`*^9, 3.5510340515395217`*^9}, {
+  3.5511029002284527`*^9, 3.551102918106084*^9}, {3.5511030259334736`*^9, 
+  3.5511030293810797`*^9}, {3.5511030835911746`*^9, 3.551103114479229*^9}, {
+  3.5518053289138446`*^9, 
+  3.5518053291478453`*^9}},ExpressionUUID->"c8dca29d-baf9-401c-86cf-\
+07e44e2688bf"],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"regression", "  ", "=", " ", 
+   RowBox[{"regress", "[", 
+    RowBox[{"data", ",", " ", "0.5", ",", " ", "2", ",", " ", "0"}], "]"}]}], 
+  ";"}]], "Input",
+ CellChangeTimes->{{3.551139223920594*^9, 3.5511392241545944`*^9}, 
+   3.551139262639862*^9, 3.551209559222687*^9, {3.561389964209821*^9, 
+   3.5613899968606787`*^9}},
+ CellLabel->"In[10]:=",ExpressionUUID->"e8ca4cd7-e7ba-40b5-811a-cdb65e7f6250"],
+
+Cell[TextData[{
+ "To construct a cubic spline fit from the fit points, we use ",
+ StyleBox["Mathematica",
+  FontSlant->"Italic"],
+ "\[CloseCurlyQuote]s built-in Interpolation function. We then plot the data \
+and our fitting thereto."
+}], "Text",
+ CellChangeTimes->{{3.551102840667548*^9, 3.551102892537639*^9}, {
+  3.5518053363550577`*^9, 
+  3.551805336589058*^9}},ExpressionUUID->"bc0c0785-9515-465e-a3f2-\
+316bfd81213c"],
+
+Cell[BoxData[{
+ RowBox[{
+  RowBox[{"loessInterp", " ", "=", " ", 
+   RowBox[{"Interpolation", "[", 
+    RowBox[{"regression", ",", " ", 
+     RowBox[{"InterpolationOrder", "\[Rule]", " ", "3"}]}], "]"}]}], 
+  ";"}], "\[IndentingNewLine]", 
+ RowBox[{"ListPlot", "[", 
+  RowBox[{"{", 
+   RowBox[{"data", ",", " ", "regression"}], "}"}], 
+  "]"}], "\[IndentingNewLine]", 
+ RowBox[{"Plot", "[", 
+  RowBox[{
+   RowBox[{"{", 
+    RowBox[{
+     RowBox[{"Sin", "[", "x", "]"}], ",", 
+     RowBox[{"loessInterp", "[", "x", "]"}]}], "}"}], ",", " ", 
+   RowBox[{"{", 
+    RowBox[{"x", ",", " ", 
+     RowBox[{"-", "Pi"}], ",", " ", "Pi"}], "}"}]}], "]"}]}], "Input",
+ CellChangeTimes->{{3.551033260532132*^9, 3.5510332647753396`*^9}, {
+   3.55103348142852*^9, 3.5510335273698015`*^9}, {3.551033611431549*^9, 
+   3.5510336206667647`*^9}, {3.5510553121909285`*^9, 
+   3.5510553171049376`*^9}, {3.5510568559765406`*^9, 
+   3.5510568814169855`*^9}, {3.5510569270626655`*^9, 
+   3.5510569330218763`*^9}, {3.5511025091481943`*^9, 3.551102517369409*^9}, 
+   3.5511028358159394`*^9, 3.55110287578321*^9, {3.5613902079914494`*^9, 
+   3.5613902122658567`*^9}, {3.740270223299287*^9, 3.740270228526313*^9}},
+ CellLabel->"In[11]:=",ExpressionUUID->"570df680-bf72-4327-a91b-ec7c737e1415"]
+}, Open  ]]
+}, Open  ]]
+},
+WindowSize->{1064, 1106},
+WindowMargins->{{Automatic, 1040}, {Automatic, 96}},
+FrontEndVersion->"11.3 for Microsoft Windows (64-bit) (March 6, 2018)",
+StyleDefinitions->FrontEnd`FileName[{"Report"}, "StandardReport.nb", 
+  CharacterEncoding -> "UTF-8"]
+]
+(* End of Notebook Content *)
+
+(* Internal cache information *)
+(*CellTagsOutline
+CellTagsIndex->{}
+*)
+(*CellTagsIndex
+CellTagsIndex->{}
+*)
+(*NotebookFileOutline
+Notebook[{
+Cell[CellGroupData[{
+Cell[580, 22, 279, 4, 69, "Section",ExpressionUUID->"83d686f0-c501-4f0a-8e19-69393d64b92e"],
+Cell[862, 28, 589, 10, 55, "Text",ExpressionUUID->"3211cc94-c8c1-4156-8e49-5721185e1460"],
+Cell[CellGroupData[{
+Cell[1476, 42, 674, 14, 47, "Item",ExpressionUUID->"fb134f64-0b6e-4ba4-a746-dfce57d368e3"],
+Cell[2153, 58, 805, 23, 47, "Item",ExpressionUUID->"5574434a-bf4e-4da9-81a0-a027b519bfed"],
+Cell[2961, 83, 425, 8, 45, "Subitem",ExpressionUUID->"79c5399d-cb37-47d8-bd83-36928a96b540"],
+Cell[3389, 93, 326, 6, 27, "Item",ExpressionUUID->"cc7f5309-ba16-4418-a523-6adbd5fb61a3"],
+Cell[CellGroupData[{
+Cell[3740, 103, 548, 10, 45, "Subitem",ExpressionUUID->"5364f944-f2c7-41c8-a72a-85ee50e1a47d"],
+Cell[4291, 115, 265, 6, 26, "Subitem",ExpressionUUID->"371b3972-3736-423b-a69e-4ebe72f1deaa"]
+}, Open  ]],
+Cell[4571, 124, 951, 28, 47, "Item",ExpressionUUID->"323f3559-0ee1-4bc6-b928-4a614e43328c"],
+Cell[5525, 154, 633, 16, 47, "Item",ExpressionUUID->"d78437d0-aa12-41e4-a340-66c16aa243c7"]
+}, Open  ]],
+Cell[6173, 173, 357, 9, 99, "Text",ExpressionUUID->"9aaa539d-deaa-4e46-b5f3-afbfff27f488"],
+Cell[6533, 184, 347, 7, 39, "Input",ExpressionUUID->"37cc69a0-f537-4187-ade5-ae8303de0128"],
+Cell[CellGroupData[{
+Cell[6905, 195, 159, 3, 33, "Subsection",ExpressionUUID->"e8d124fe-602e-4276-8ed8-bbb7bfc801ca"],
+Cell[7067, 200, 363, 8, 33, "Text",ExpressionUUID->"10e3ae08-4a87-4b55-a8e7-3a5fbe5524e5"],
+Cell[7433, 210, 491, 11, 59, "Input",ExpressionUUID->"67fd6957-acbc-47ff-bcad-eb7da6deb372"],
+Cell[7927, 223, 557, 10, 55, "Text",ExpressionUUID->"c8dca29d-baf9-401c-86cf-07e44e2688bf"],
+Cell[8487, 235, 437, 9, 39, "Input",ExpressionUUID->"e8ca4cd7-e7ba-40b5-811a-cdb65e7f6250"],
+Cell[8927, 246, 423, 10, 33, "Text",ExpressionUUID->"bc0c0785-9515-465e-a3f2-316bfd81213c"],
+Cell[9353, 258, 1265, 28, 78, "Input",ExpressionUUID->"570df680-bf72-4327-a91b-ec7c737e1415"]
+}, Open  ]]
+}, Open  ]]
+}
+]
+*)
+
