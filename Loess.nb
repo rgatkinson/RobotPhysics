@@ -164,13 +164,14 @@ doi:10.2307/2286407 (1979).
 afbfff27f488"],
 
 Cell[BoxData[
- RowBox[{
-  RowBox[{"<<", " ", "NotebookDirectory[]"}], " ", "<>", " ", 
-  "\"\<Loess.m\>\""}]], "Input",
+ RowBox[{"Get", "[", 
+  RowBox[{
+   RowBox[{"NotebookDirectory", "[", "]"}], " ", "<>", " ", 
+   "\"\<Loess.m\>\""}], "]"}]], "Input",
  CellChangeTimes->{{3.7408413502338476`*^9, 3.740841355134742*^9}, {
   3.7408414028526416`*^9, 3.7408414172626143`*^9}, {3.7408416929360266`*^9, 
-  3.7408416942435284`*^9}},ExpressionUUID->"37cc69a0-f537-4187-ade5-\
-ae8303de0128"],
+  3.7408416942435284`*^9}, {3.7408429441583424`*^9, 3.740842946277678*^9}},
+ CellLabel->"In[2]:=",ExpressionUUID->"37cc69a0-f537-4187-ade5-ae8303de0128"],
 
 Cell[CellGroupData[{
 
@@ -270,9 +271,11 @@ Cell[BoxData[{
 }, Open  ]]
 },
 WindowSize->{1064, 1106},
-WindowMargins->{{Automatic, 1036}, {Automatic, 77}},
+WindowMargins->{{333, Automatic}, {Automatic, 213}},
 PrivateNotebookOptions->{"FileOutlineCache"->False},
+CellContext->Notebook,
 FrontEndVersion->"11.3 for Microsoft Windows (64-bit) (March 6, 2018)",
 StyleDefinitions->FrontEnd`FileName[{"Report"}, "StandardReport.nb", 
   CharacterEncoding -> "UTF-8"]
 ]
+
