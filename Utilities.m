@@ -52,11 +52,18 @@ variables[expr_, except_] :=
  Complement[
   Reap[Scan[(If[unboundQ[#], Sow[#]]) &, expr, Infinity]][[2, 1]] // 
    Union, except]
-variables[a Exp[b (x + I y)]]
 
 (*-----------------------------------------------------------------------------------------------*)
 
 Options[uniqueSolve] = Options[Solve]
 uniqueSolve[expr_, vars_, opts: OptionsPattern[]] := Solve[expr, vars, opts][[1]]
 uniqueSolve[expr_, vars_, dom_, opts: OptionsPattern[]] := Solve[expr, vars, dom, opts][[1]]
+
+(*-----------------------------------------------------------------------------------------------*)
+
+toRational[double_Real] := toRational[double, 0]
+toRational[double_Real, n_] := 
+ If[Floor[double * 10^n] / 10^n == double,  
+  Floor[double * 10^n] / 10^n, toRational[double, n + 1]];
+  
 
