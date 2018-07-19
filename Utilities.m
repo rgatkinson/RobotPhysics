@@ -16,6 +16,10 @@ siUnits[expr_] := mapQuantities[expr, UnitConvert]
 (* clearUnits[] replaces all Quantities with their (existing) magnitudes*)
 clearUnits[expr_] := mapQuantities[expr, QuantityMagnitude]
 
+(* parseUnit[] canonicalizes unit strings into the internal strings that Mathematica perfers. 
+ * It also does a sanity check that the unit is actually one that is known. *)
+parseUnit[unit_String] := Quantity[1, unit] // QuantityUnit
+
 (*-----------------------------------------------------------------------------------------------*) 
 
 Options[plotLaplaceTransform] = Options[Plot];
