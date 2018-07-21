@@ -60,8 +60,14 @@ variables[expr_, except_] :=
 (*-----------------------------------------------------------------------------------------------*)
 
 Options[uniqueSolve] = Options[Solve]
-uniqueSolve[expr_, vars_, opts: OptionsPattern[]] := Solve[expr, vars, opts][[1]]
-uniqueSolve[expr_, vars_, dom_, opts: OptionsPattern[]] := Solve[expr, vars, dom, opts][[1]]
+uniqueSolve[expr_, vars_, opts: OptionsPattern[]] := Module[{result},
+    result = Solve[expr, vars, opts];
+	If[Length[result] > 0, result[[1]], {}]    
+]
+uniqueSolve[expr_, vars_, dom_, opts: OptionsPattern[]] := Module[{result},
+    result = Solve[expr, vars, dom, opts];
+	If[Length[result] > 0, result[[1]], {}]    
+] 
 
 (*-----------------------------------------------------------------------------------------------*)
 
