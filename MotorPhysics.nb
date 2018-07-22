@@ -1,26 +1,8 @@
-(* Content-type: application/vnd.wolfram.mathematica *)
-
-(*** Wolfram Notebook File ***)
-(* http://www.wolfram.com/nb *)
-
-(* CreatedBy='Mathematica 11.3' *)
-
-(*CacheID: 234*)
-(* Internal cache information:
-NotebookFileLineBreakTest
-NotebookFileLineBreakTest
-NotebookDataPosition[       158,          7]
-NotebookDataLength[    175493,       3786]
-NotebookOptionsPosition[    157469,       3525]
-NotebookOutlinePosition[    158431,       3556]
-CellTagsIndexPosition[    158388,       3553]
-WindowFrame->Normal*)
-
-(* Beginning of Notebook Content *)
 Notebook[{
 
 Cell[CellGroupData[{
-Cell["Motor Physics", "Title",ExpressionUUID->"39796d72-87ca-4320-97ff-a98d4bd016ce"],
+Cell["Motor Physics", \
+"Title",ExpressionUUID->"39796d72-87ca-4320-97ff-a98d4bd016ce"],
 
 Cell["\<\
 Robert Atkinson, Maddy Nguyen, Samantha Hordyk, Cole Welch, and John Fraser
@@ -45,21 +27,24 @@ explored.\
 
 Cell[CellGroupData[{
 
-Cell["Administrivia", "Section",ExpressionUUID->"16299bc2-b6fe-451f-a825-e22a0f149c0f"],
+Cell["Administrivia", \
+"Section",ExpressionUUID->"16299bc2-b6fe-451f-a825-e22a0f149c0f"],
 
-Cell["We begin by loading some handy utilities.", "Text",ExpressionUUID->"7ad28d45-c772-4943-a312-e5b632c383c6"],
+Cell["We begin by loading some handy utilities.", \
+"Text",ExpressionUUID->"7ad28d45-c772-4943-a312-e5b632c383c6"],
 
 Cell[BoxData[
  RowBox[{"Get", "[", 
   RowBox[{
    RowBox[{"NotebookDirectory", "[", "]"}], " ", "<>", " ", 
-   "\"\<Utilities.m\>\""}], "]"}]], "Input",
- CellLabel->"In[1]:=",ExpressionUUID->"00da5f52-c4e4-4d20-9d91-5577a43f3731"]
+   "\"\<Utilities.m\>\""}], 
+  "]"}]], "Input",ExpressionUUID->"00da5f52-c4e4-4d20-9d91-5577a43f3731"]
 }, Closed]],
 
 Cell[CellGroupData[{
 
-Cell["Motor Model", "Section",ExpressionUUID->"90c0a6a0-9617-429d-8b1e-915f382134f2"],
+Cell["Motor Model", \
+"Section",ExpressionUUID->"90c0a6a0-9617-429d-8b1e-915f382134f2"],
 
 Cell[TextData[{
  "The following gives a ",
@@ -1134,11 +1119,14 @@ Cell[TextData[{
  "the back EMF "
 }], "Item",ExpressionUUID->"88cf0f1a-32b1-4df8-9b14-c90017a50f3f"],
 
-Cell["\[Theta], the angular position", "Item",ExpressionUUID->"38b2a308-670b-4e98-963c-77a294f17db4"],
+Cell["\[Theta], the angular position", \
+"Item",ExpressionUUID->"38b2a308-670b-4e98-963c-77a294f17db4"],
 
-Cell["\[Tau], the torque driven by the armature current", "Item",ExpressionUUID->"fb8c4c1a-0ead-4b9c-972f-b1488066f60b"],
+Cell["\[Tau], the torque driven by the armature current", \
+"Item",ExpressionUUID->"fb8c4c1a-0ead-4b9c-972f-b1488066f60b"],
 
-Cell["\[Tau]a, the externally applied torque, if any", "Item",ExpressionUUID->"953ae3fd-09ab-474c-bb99-443d0ddb5619"]
+Cell["\[Tau]a, the externally applied torque, if any", \
+"Item",ExpressionUUID->"953ae3fd-09ab-474c-bb99-443d0ddb5619"]
 }, Open  ]],
 
 Cell["\<\
@@ -1147,17 +1135,23 @@ The parameter constants that characterize the motor are the following\
 
 Cell[CellGroupData[{
 
-Cell["J, Moment of inertia ", "Item",ExpressionUUID->"91d49fa6-b0c4-4196-90fa-ec5d25332c72"],
+Cell["J, Moment of inertia ", \
+"Item",ExpressionUUID->"91d49fa6-b0c4-4196-90fa-ec5d25332c72"],
 
-Cell["b, Motor viscous drag constant ", "Item",ExpressionUUID->"4384aae8-0600-4454-9c35-53b8477f6597"],
+Cell["b, Motor viscous drag constant ", \
+"Item",ExpressionUUID->"4384aae8-0600-4454-9c35-53b8477f6597"],
 
-Cell["Ke, Electromotive force constant ", "Item",ExpressionUUID->"992d2f87-f7da-4ce4-ad34-171c74343333"],
+Cell["Ke, Electromotive force constant ", \
+"Item",ExpressionUUID->"992d2f87-f7da-4ce4-ad34-171c74343333"],
 
-Cell["Kt, Motor torque constant ", "Item",ExpressionUUID->"8fa7c37a-0108-4049-a006-d4b00319de90"],
+Cell["Kt, Motor torque constant ", \
+"Item",ExpressionUUID->"8fa7c37a-0108-4049-a006-d4b00319de90"],
 
-Cell["R, Electric resistance ", "Item",ExpressionUUID->"7f42c5d8-a245-4353-bd13-6069205022ac"],
+Cell["R, Electric resistance ", \
+"Item",ExpressionUUID->"7f42c5d8-a245-4353-bd13-6069205022ac"],
 
-Cell["L Electric inductance ", "Item",ExpressionUUID->"44eec874-8acc-48b7-8f59-0ac6dc689574"]
+Cell["L Electric inductance ", \
+"Item",ExpressionUUID->"44eec874-8acc-48b7-8f59-0ac6dc689574"]
 }, Open  ]],
 
 Cell["\<\
@@ -1171,17 +1165,19 @@ Cell[BoxData[
   RowBox[{"{", 
    RowBox[{
    "J", ",", " ", "b", ",", " ", "Ke", ",", " ", "Kt", ",", " ", "R", ",", 
-    " ", "L"}], "}"}]}]], "Input",ExpressionUUID->"e040b396-c8fb-46d1-84d2-\
-b04509a22dd7"]
+    " ", "L"}], 
+   "}"}]}]], "Input",ExpressionUUID->"e040b396-c8fb-46d1-84d2-b04509a22dd7"]
 }, Closed]],
 
 Cell[CellGroupData[{
 
-Cell["Differential Equations", "Section",ExpressionUUID->"1a554150-f891-49e0-b217-91e08c954a90"],
+Cell["Differential Equations", \
+"Section",ExpressionUUID->"1a554150-f891-49e0-b217-91e08c954a90"],
 
 Cell[CellGroupData[{
 
-Cell["Differential Equation Development", "Subsubsection",ExpressionUUID->"53e5b2d3-df4b-4750-961d-abcbb0321454"],
+Cell["Differential Equation Development", \
+"Subsubsection",ExpressionUUID->"53e5b2d3-df4b-4750-961d-abcbb0321454"],
 
 Cell["\<\
 The system can be modelled as a set of differential equations\
@@ -1189,11 +1185,12 @@ The system can be modelled as a set of differential equations\
 
 Cell[BoxData[
  RowBox[{"diffEqns", " ", "=", " ", 
-  RowBox[{"{", "}"}]}]], "Input",
- CellLabel->
-  "In[362]:=",ExpressionUUID->"01878dc0-fb64-42ed-a19d-253ca7d4944e"],
+  RowBox[{
+  "{", "}"}]}]], \
+"Input",ExpressionUUID->"01878dc0-fb64-42ed-a19d-253ca7d4944e"],
 
-Cell["Drive torque is proportional to current.", "Text",ExpressionUUID->"5e5ddd7e-42a0-4096-b0f5-979e4869a40e"],
+Cell["Drive torque is proportional to current.", \
+"Text",ExpressionUUID->"5e5ddd7e-42a0-4096-b0f5-979e4869a40e"],
 
 Cell[BoxData[
  RowBox[{"diffEqns", " ", "=", " ", 
@@ -1203,11 +1200,11 @@ Cell[BoxData[
      RowBox[{
       RowBox[{"\[Tau]", "[", "t", "]"}], " ", "\[Equal]", " ", 
       RowBox[{"Kt", " ", 
-       RowBox[{"i", "[", "t", "]"}]}]}], "}"}]}], "]"}]}]], "Input",
- CellLabel->
-  "In[363]:=",ExpressionUUID->"96364580-987b-488d-9c78-e1d661a57f47"],
+       RowBox[{"i", "[", "t", "]"}]}]}], "}"}]}], 
+   "]"}]}]], "Input",ExpressionUUID->"96364580-987b-488d-9c78-e1d661a57f47"],
 
-Cell["The back EMF is proportional to velocity.", "Text",ExpressionUUID->"131d42de-8a76-45a8-8dc9-fb34a8ba1ffc"],
+Cell["The back EMF is proportional to velocity.", \
+"Text",ExpressionUUID->"131d42de-8a76-45a8-8dc9-fb34a8ba1ffc"],
 
 Cell[BoxData[
  RowBox[{"diffEqns", " ", "=", " ", 
@@ -1219,9 +1216,7 @@ Cell[BoxData[
       RowBox[{"Ke", " ", 
        RowBox[{
         RowBox[{"\[Theta]", "'"}], "[", "t", "]"}]}]}], "}"}]}], 
-   "]"}]}]], "Input",
- CellLabel->
-  "In[364]:=",ExpressionUUID->"fa0980bf-045f-4e85-bdf9-6a435d52b716"],
+   "]"}]}]], "Input",ExpressionUUID->"fa0980bf-045f-4e85-bdf9-6a435d52b716"],
 
 Cell["\<\
 Viscous drag reduces the torque, and what\[CloseCurlyQuote]s left accelerates \
@@ -1256,9 +1251,7 @@ Cell[BoxData[{
       RowBox[{"J", " ", 
        RowBox[{
         RowBox[{"\[Theta]", "''"}], "[", "t", "]"}]}]}], "}"}]}], 
-   "]"}]}]}], "Input",
- CellLabel->
-  "In[365]:=",ExpressionUUID->"aff7dd89-3c71-4eaf-90e7-da8727aec88f"],
+   "]"}]}]}], "Input",ExpressionUUID->"aff7dd89-3c71-4eaf-90e7-da8727aec88f"],
 
 Cell["\<\
 The voltage drop across the resistive, inductive, and back EMF must equal the \
@@ -1278,21 +1271,22 @@ Cell[BoxData[
        RowBox[{"L", " ", 
         RowBox[{
          RowBox[{"i", "'"}], "[", "t", "]"}]}], " ", "+", " ", 
-       RowBox[{"e", "[", "t", "]"}]}]}], "}"}]}], "]"}]}]], "Input",
- CellLabel->
-  "In[368]:=",ExpressionUUID->"a3dd3008-4e0c-4b93-bacf-b41f06764855"],
+       RowBox[{"e", "[", "t", "]"}]}]}], "}"}]}], 
+   "]"}]}]], "Input",ExpressionUUID->"a3dd3008-4e0c-4b93-bacf-b41f06764855"],
 
 Cell[BoxData[
- RowBox[{"diffEqns", " ", "//", " ", "prettyPrint"}]], "Input",
- CellLabel->
-  "In[369]:=",ExpressionUUID->"a6035ae8-1286-41cd-8182-fd83560bf599"]
+ RowBox[{"diffEqns", " ", "//", " ", 
+  "prettyPrint"}]], \
+"Input",ExpressionUUID->"a6035ae8-1286-41cd-8182-fd83560bf599"]
 }, Closed]],
 
 Cell[CellGroupData[{
 
-Cell["Initial Conditions", "Subsubsection",ExpressionUUID->"c6e71fee-f805-4855-bf73-77e856e2d111"],
+Cell["Initial Conditions", \
+"Subsubsection",ExpressionUUID->"c6e71fee-f805-4855-bf73-77e856e2d111"],
 
-Cell["Some of the initial conditions we can intuit intellectually:", "Text",ExpressionUUID->"5b3695bc-8604-4e75-a20b-44686fe7ade7"],
+Cell["Some of the initial conditions we can intuit intellectually:", \
+"Text",ExpressionUUID->"5b3695bc-8604-4e75-a20b-44686fe7ade7"],
 
 Cell[BoxData[
  RowBox[{
@@ -1313,11 +1307,11 @@ Cell[BoxData[
      "\[IndentingNewLine]", 
      RowBox[{
       RowBox[{"\[Tau]a", "[", "0", "]"}], " ", "\[Equal]", " ", 
-      "\[CapitalTau]"}]}], "\[IndentingNewLine]", "}"}]}], ";"}]], "Input",
- CellLabel->
-  "In[370]:=",ExpressionUUID->"2ac838a0-51ff-45a5-9a9b-9ffcb46f6b87"],
+      "\[CapitalTau]"}]}], "\[IndentingNewLine]", "}"}]}], 
+  ";"}]], "Input",ExpressionUUID->"2ac838a0-51ff-45a5-9a9b-9ffcb46f6b87"],
 
-Cell["Others we can solve for:", "Text",ExpressionUUID->"233512fc-bc6f-4acc-8926-3b47a273d6ad"],
+Cell["Others we can solve for:", \
+"Text",ExpressionUUID->"233512fc-bc6f-4acc-8926-3b47a273d6ad"],
 
 Cell[BoxData[{
  RowBox[{
@@ -1358,15 +1352,15 @@ Cell[BoxData[{
     RowBox[{
     "solvedInitialConditions", " ", "~", "Join", "~", " ", 
      "initialConditions"}]}], ")"}], " ", "//", " ", 
-  "prettyPrint"}]}], "Input",
- CellLabel->
-  "In[371]:=",ExpressionUUID->"f7cc3dd9-953c-4fa9-a8b5-abdb91830726"]
+  "prettyPrint"}]}], \
+"Input",ExpressionUUID->"f7cc3dd9-953c-4fa9-a8b5-abdb91830726"]
 }, Closed]]
 }, Closed]],
 
 Cell[CellGroupData[{
 
-Cell["Motor Parameters", "Section",ExpressionUUID->"83ded34e-b899-4fea-a3fe-0d1a354f74e4"],
+Cell["Motor Parameters", \
+"Section",ExpressionUUID->"83ded34e-b899-4fea-a3fe-0d1a354f74e4"],
 
 Cell["\<\
 We now take a moment to carefully work out the units of each parameter and \
@@ -1487,9 +1481,9 @@ Cell[BoxData[{
         " ", "rules"}], ")"}], " ", "//", " ", "Association"}]}]}], 
    "\[IndentingNewLine]", "]"}]}], "\[IndentingNewLine]", 
  RowBox[{"parameterQuantities", " ", "=", " ", 
-  RowBox[{"unitsToQuantities", "[", "parameterUnits", "]"}]}]}], "Input",
- CellLabel->
-  "In[399]:=",ExpressionUUID->"7e5d010c-ead5-4622-a414-9a1ac8beba8b"],
+  RowBox[{
+  "unitsToQuantities", "[", "parameterUnits", 
+   "]"}]}]}], "Input",ExpressionUUID->"7e5d010c-ead5-4622-a414-9a1ac8beba8b"],
 
 Cell["\<\
 A note on units. The Bureau International des Poids et Mesures, the \
@@ -1535,9 +1529,8 @@ takes us:\
 Cell[BoxData[
  RowBox[{
   RowBox[{"diffEqns", " ", "/.", " ", "parameterQuantities"}], " ", "//", " ",
-   "ColumnForm"}]], "Input",
- CellLabel->
-  "In[403]:=",ExpressionUUID->"bd477aa7-e6c3-4ff3-af7a-88821be91010"],
+   "ColumnForm"}]], \
+"Input",ExpressionUUID->"bd477aa7-e6c3-4ff3-af7a-88821be91010"],
 
 Cell["\<\
 We can see that if we write down the units for either b or J, the remaining \
@@ -1572,16 +1565,15 @@ Cell[BoxData[{
        RowBox[{"1", ",", "3", ",", "4"}], "}"}], "]"}], "]"}], ",", " ", 
     RowBox[{"{", 
      RowBox[{"Ke", ",", " ", "Kt", ",", " ", "b"}], "}"}]}], 
-   "]"}]}]}], "Input",
- CellLabel->
-  "In[404]:=",ExpressionUUID->"ffe9c238-1615-4203-8bbd-814555438669"],
+   "]"}]}]}], "Input",ExpressionUUID->"ffe9c238-1615-4203-8bbd-814555438669"],
 
-Cell["Let\[CloseCurlyQuote]s check how those work.", "Text",ExpressionUUID->"408f696d-6414-4c84-ae72-b28636983438"],
+Cell["Let\[CloseCurlyQuote]s check how those work.", \
+"Text",ExpressionUUID->"408f696d-6414-4c84-ae72-b28636983438"],
 
 Cell[BoxData[
- RowBox[{"remainingUnits", " ", "/.", " ", "parameterQuantities"}]], "Input",
- CellLabel->
-  "In[409]:=",ExpressionUUID->"f9f69377-76e6-4dc1-a8b7-0d71d65bc724"],
+ RowBox[{"remainingUnits", " ", "/.", " ", 
+  "parameterQuantities"}]], \
+"Input",ExpressionUUID->"f9f69377-76e6-4dc1-a8b7-0d71d65bc724"],
 
 Cell["\<\
 Huzzah! They check out (if the units were incompatible, Mathematica would\
@@ -1611,9 +1603,8 @@ Cell[BoxData[{
   RowBox[{"siAngularViscousDragUnits", " ", "=", " ", 
    RowBox[{
     RowBox[{"parseUnit", "[", "\"\<N m s\>\"", "]"}], " ", "/", " ", 
-    RowBox[{"parseUnit", "[", "\"\<Radians^2\>\"", "]"}]}]}], ";"}]}], "Input",
- CellLabel->
-  "In[410]:=",ExpressionUUID->"81a7fa61-e053-47d5-8b63-93b959eaf86d"]
+    RowBox[{"parseUnit", "[", "\"\<Radians^2\>\"", "]"}]}]}], 
+  ";"}]}], "Input",ExpressionUUID->"81a7fa61-e053-47d5-8b63-93b959eaf86d"]
 }, Closed]],
 
 Cell[CellGroupData[{
@@ -1645,9 +1636,9 @@ hold. Recall our differential equations:\
 
 Cell[BoxData[
  RowBox[{"diffEqns", " ", "//", " ", "ColumnForm"}]], "Input",
- CellChangeTimes->{{3.7409428734190645`*^9, 3.740942880369478*^9}},
- CellLabel->
-  "In[236]:=",ExpressionUUID->"0aaf1028-3d6c-478b-90e2-e053fa453486"],
+ CellChangeTimes->{{3.7409428734190645`*^9, 
+  3.740942880369478*^9}},ExpressionUUID->"0aaf1028-3d6c-478b-90e2-\
+e053fa453486"],
 
 Cell["In steady state, the current and speed are constant.", "Text",
  CellChangeTimes->{{3.7409429609868917`*^9, 3.7409430022799826`*^9}, {
@@ -1683,9 +1674,8 @@ Cell[BoxData[{
  CellChangeTimes->{{3.740942971081895*^9, 3.7409430413091297`*^9}, {
    3.740943211755327*^9, 3.7409432178081384`*^9}, {3.7409432765899467`*^9, 
    3.740943313595539*^9}, {3.7410888362775493`*^9, 3.7410888480560493`*^9}, 
-   3.741088916100602*^9},
- CellLabel->
-  "In[237]:=",ExpressionUUID->"e1a40f32-ac8d-4099-93e4-d3771373f760"],
+   3.741088916100602*^9},ExpressionUUID->"e1a40f32-ac8d-4099-93e4-\
+d3771373f760"],
 
 Cell[TextData[{
  "From a power point of view (ref: ",
@@ -1743,9 +1733,9 @@ Cell[BoxData[{
    3.7409446510168486`*^9, 3.740944654454653*^9}, 3.740944844475528*^9, {
    3.7409449866480308`*^9, 3.7409449874947643`*^9}, {3.741005530864521*^9, 
    3.74100555913351*^9}, {3.741046338093869*^9, 3.741046338626446*^9}, {
-   3.7410887725174074`*^9, 3.7410887728859367`*^9}},
- CellLabel->
-  "In[239]:=",ExpressionUUID->"6d7509fc-10d3-4b8b-991a-475da98e8902"],
+   3.7410887725174074`*^9, 
+   3.7410887728859367`*^9}},ExpressionUUID->"6d7509fc-10d3-4b8b-991a-\
+475da98e8902"],
 
 Cell["\<\
 Let\[CloseCurlyQuote]s eliminate a few of the variables that we\
@@ -1784,9 +1774,9 @@ Cell[BoxData[{
    3.7409446625759373`*^9, {3.7409447394483647`*^9, 3.7409447461255293`*^9}, {
    3.7409449110165825`*^9, 3.74094496010102*^9}, 3.7409449932713194`*^9, {
    3.74100556431568*^9, 3.741005564972924*^9}, 3.7410463470199995`*^9, {
-   3.7410888976838517`*^9, 3.7410888977028008`*^9}},
- CellLabel->
-  "In[241]:=",ExpressionUUID->"26cefe99-e7b4-4185-8540-639030348efe"],
+   3.7410888976838517`*^9, 
+   3.7410888977028008`*^9}},ExpressionUUID->"26cefe99-e7b4-4185-8540-\
+639030348efe"],
 
 Cell["\<\
 We can conclude that if other power losses are zero, then Ke must equal Kt.\
@@ -1830,9 +1820,8 @@ Cell[BoxData[
   "//", " ", "TableForm"}]], "Input",
  CellChangeTimes->{{3.740855354230864*^9, 3.740855400315624*^9}, {
   3.7408554744862785`*^9, 3.74085550194485*^9}, {3.740855557590046*^9, 
-  3.7408555904551563`*^9}},
- CellLabel->
-  "In[244]:=",ExpressionUUID->"28b01b58-d16a-4fba-85ca-5e4ef3ce7df7"],
+  3.7408555904551563`*^9}},ExpressionUUID->"28b01b58-d16a-4fba-85ca-\
+5e4ef3ce7df7"],
 
 Cell["\<\
 We build a function to retrieve data from the table. We convert from floating \
@@ -1964,18 +1953,18 @@ Cell[BoxData[{
    RowBox[{"JLoad", " ", "\[Rule]", " ", 
     RowBox[{"Quantity", "[", 
      RowBox[{"1", ",", " ", "siAngularInertialUnits"}], "]"}]}]}], 
-  "]"}]}], "Input",
- CellLabel->
-  "In[328]:=",ExpressionUUID->"c045c038-2447-4cd5-9514-e523fcb88088"]
+  "]"}]}], "Input",ExpressionUUID->"c045c038-2447-4cd5-9514-e523fcb88088"]
 }, Open  ]],
 
 Cell[CellGroupData[{
 
-Cell["Working Examples", "Subsection",ExpressionUUID->"a213b300-2f42-42f5-aa79-12f3a082bf95"],
+Cell["Working Examples", \
+"Subsection",ExpressionUUID->"a213b300-2f42-42f5-aa79-12f3a082bf95"],
 
 Cell[CellGroupData[{
 
-Cell["Example motors", "Subsubsection",ExpressionUUID->"60cffd46-6e1f-4f21-b92a-910287e9cd48"],
+Cell["Example motors", \
+"Subsubsection",ExpressionUUID->"60cffd46-6e1f-4f21-b92a-910287e9cd48"],
 
 Cell["\<\
 We define a motor with a load that we\[CloseCurlyQuote]ll use to illustrate \
@@ -1990,9 +1979,7 @@ Cell[BoxData[{"siAngularInertialUnits", "\[IndentingNewLine]",
     RowBox[{"JLoad", " ", "\[Rule]", " ", 
      RowBox[{"Quantity", "[", 
       RowBox[{"1", ",", " ", "siAngularInertialUnits"}], "]"}]}]}], 
-   "]"}]}]}], "Input",
- CellLabel->
-  "In[255]:=",ExpressionUUID->"048fbe0f-ef04-48f1-a0b6-d274888f6c2b"],
+   "]"}]}]}], "Input",ExpressionUUID->"048fbe0f-ef04-48f1-a0b6-d274888f6c2b"],
 
 Cell[BoxData[
  RowBox[{"genericMotor", " ", "=", " ", 
@@ -2001,20 +1988,22 @@ Cell[BoxData[
     RowBox[{"#", " ", "\[Rule]", " ", 
      RowBox[{"(", 
       RowBox[{"#", " ", "/.", " ", "parameterQuantities"}], ")"}]}], "&"}], 
-   " ", "/@", " ", "motorParameterNames"}]}]], "Input",
- CellLabel->
-  "In[257]:=",ExpressionUUID->"4fd5c58e-a4d2-45d0-bd28-8f0bc5271d17"]
+   " ", "/@", " ", 
+   "motorParameterNames"}]}]], \
+"Input",ExpressionUUID->"4fd5c58e-a4d2-45d0-bd28-8f0bc5271d17"]
 }, Open  ]]
 }, Open  ]]
 }, Closed]],
 
 Cell[CellGroupData[{
 
-Cell["Laplace Transforms and Transfer Function Models", "Section",ExpressionUUID->"a2873c61-b3a9-489c-98fd-08ae9788c004"],
+Cell["Laplace Transforms and Transfer Function Models", \
+"Section",ExpressionUUID->"a2873c61-b3a9-489c-98fd-08ae9788c004"],
 
 Cell[CellGroupData[{
 
-Cell["Laplace Transforms", "Subsection",ExpressionUUID->"073220d3-4653-40ac-8f57-370e53740b2f"],
+Cell["Laplace Transforms", \
+"Subsection",ExpressionUUID->"073220d3-4653-40ac-8f57-370e53740b2f"],
 
 Cell[TextData[{
  "Returning to the differential equations, we form the Laplace Transform of \
@@ -2035,8 +2024,9 @@ Cell[BoxData[{
     RowBox[{"LaplaceTransform", "[", 
      RowBox[{"#", ",", " ", "t", ",", " ", "s"}], "]"}], " ", "&"}], "/@", 
    " ", "diffEqns"}]}], "\[IndentingNewLine]", 
- RowBox[{"leqns", " ", "//", " ", "prettyPrint"}]}], "Input",
- CellLabel->"In[30]:=",ExpressionUUID->"a9a20bb6-32af-4293-8a1c-3bf2886ef783"],
+ RowBox[{"leqns", " ", "//", " ", 
+  "prettyPrint"}]}], \
+"Input",ExpressionUUID->"a9a20bb6-32af-4293-8a1c-3bf2886ef783"],
 
 Cell["\<\
 Next, we walk those equations, picking up those insinuations and sowing them \
@@ -2060,8 +2050,8 @@ Cell[BoxData[
        "leqns", ",", "Infinity"}], "]"}], "]"}], "[", 
     RowBox[{"[", 
      RowBox[{"2", ",", "1"}], "]"}], "]"}], " ", "//", " ", 
-   "Union"}]}]], "Input",
- CellLabel->"In[32]:=",ExpressionUUID->"4762b475-ab80-408f-b286-addb06147c6a"],
+   "Union"}]}]], \
+"Input",ExpressionUUID->"4762b475-ab80-408f-b286-addb06147c6a"],
 
 Cell["\<\
 The voltage transform is input; all the others are outputs. Solve for the \
@@ -2099,8 +2089,8 @@ Cell[BoxData[{
     RowBox[{"(", 
      RowBox[{"allInitialConditions", " ", "/.", " ", 
       RowBox[{"Equal", "\[Rule]", " ", "Rule"}]}], ")"}]}], " ", "//", " ", 
-   "FullSimplify"}]}]}], "Input",
- CellLabel->"In[33]:=",ExpressionUUID->"fdd43856-c06d-404b-a623-ab6193fb5a15"],
+   "FullSimplify"}]}]}], \
+"Input",ExpressionUUID->"fdd43856-c06d-404b-a623-ab6193fb5a15"],
 
 Cell["\<\
 We separate the transforms into applied-voltage- and applied-torque-dependent \
@@ -2169,13 +2159,15 @@ Cell[BoxData[{
        RowBox[{"#", "[", 
         RowBox[{"[", "2", "]"}], "]"}], "]"}]}], " ", "&"}], " ", "/@", " ", 
     "rawSolvedXforms"}]}], ";"}], "\[IndentingNewLine]", 
- RowBox[{"%", " ", "//", " ", "ColumnForm"}]}], "Input",
- CellLabel->"In[39]:=",ExpressionUUID->"793cb62c-f831-44a0-84c6-f201fff3c88a"]
+ RowBox[{"%", " ", "//", " ", 
+  "ColumnForm"}]}], \
+"Input",ExpressionUUID->"793cb62c-f831-44a0-84c6-f201fff3c88a"]
 }, Closed]],
 
 Cell[CellGroupData[{
 
-Cell["Transfer Function Models", "Subsection",ExpressionUUID->"75d1cd0e-edaa-4098-98a3-93baa23a7db5"],
+Cell["Transfer Function Models", \
+"Subsection",ExpressionUUID->"75d1cd0e-edaa-4098-98a3-93baa23a7db5"],
 
 Cell["\<\
 We use the solved transforms to create TransferFunctionModel[]s for every \
@@ -2212,8 +2204,7 @@ Cell[BoxData[{
     RowBox[{"SystemsModelLabels", "\[Rule]", 
      RowBox[{"{", 
       RowBox[{"inputLabels", ",", " ", "outputLabel"}], "}"}]}]}], 
-   "]"}]}]}], "Input",
- CellLabel->"In[45]:=",ExpressionUUID->"f8137d57-4145-4de0-93fb-05f467e72c0a"],
+   "]"}]}]}], "Input",ExpressionUUID->"f8137d57-4145-4de0-93fb-05f467e72c0a"],
 
 Cell[BoxData[{
  RowBox[{"motorPositionModel", " ", "=", " ", 
@@ -2231,14 +2222,16 @@ Cell[BoxData[{
  RowBox[{"motorEMFModel", " ", "=", " ", 
   RowBox[{"makeModel", "[", "e", "]"}]}], "\[IndentingNewLine]", 
  RowBox[{"motorTorqueModel", " ", "=", " ", 
-  RowBox[{"makeModel", "[", "\[Tau]", "]"}]}]}], "Input",
- CellLabel->"In[48]:=",ExpressionUUID->"9523c233-8594-44c4-9af3-c19b86f37845"]
+  RowBox[{
+  "makeModel", "[", "\[Tau]", 
+   "]"}]}]}], "Input",ExpressionUUID->"9523c233-8594-44c4-9af3-c19b86f37845"]
 }, Open  ]]
 }, Closed]],
 
 Cell[CellGroupData[{
 
-Cell["Time Domain Functions", "Section",ExpressionUUID->"29ffe310-31d6-4b61-a8b7-c098b1593dfe"],
+Cell["Time Domain Functions", \
+"Section",ExpressionUUID->"29ffe310-31d6-4b61-a8b7-c098b1593dfe"],
 
 Cell["\<\
 The time domain functions we seek model various states of the motor as a \
@@ -2253,11 +2246,13 @@ convolution theorem.\
 
 Cell[CellGroupData[{
 
-Cell["Time Domain Output Functions", "Subsection",ExpressionUUID->"7f8583f3-a89a-49d2-8062-59e497c608c2"],
+Cell["Time Domain Output Functions", \
+"Subsection",ExpressionUUID->"7f8583f3-a89a-49d2-8062-59e497c608c2"],
 
 Cell[CellGroupData[{
 
-Cell["makeTimeDomainFunctionLaplace[]", "Subsubsection",ExpressionUUID->"cb2c62c0-11f6-42ef-88aa-238256d7b9a5"],
+Cell["makeTimeDomainFunctionLaplace[]", \
+"Subsubsection",ExpressionUUID->"cb2c62c0-11f6-42ef-88aa-238256d7b9a5"],
 
 Cell["\<\
 makeTimeDomainFunctionLaplace[] computes the time domain function using the \
@@ -2305,7 +2300,8 @@ Cell[BoxData[{
 
 Cell[CellGroupData[{
 
-Cell["makeTimeDomainFunctionConvolve[]", "Subsubsection",ExpressionUUID->"15191bd9-3d4d-4444-ae73-6619326d22c6"],
+Cell["makeTimeDomainFunctionConvolve[]", \
+"Subsubsection",ExpressionUUID->"15191bd9-3d4d-4444-ae73-6619326d22c6"],
 
 Cell["\<\
 makeTimeDomainFunctionConvolve[] uses  convolution and the theorem that the \
@@ -2406,16 +2402,16 @@ Cell[BoxData[{
           RowBox[{"InverseLaplaceTransform", "[", "]"}], " ", "output", " ", 
           "structure"}], " ", "*)"}], "\[IndentingNewLine]", "]"}]}], 
       "\[IndentingNewLine]", "]"}]}]}], "\[IndentingNewLine]", 
-   "]"}]}]}], "Input",
- CellLabel->
-  "In[211]:=",ExpressionUUID->"05912473-8033-42df-934b-87130f855530"]
+   "]"}]}]}], "Input",ExpressionUUID->"05912473-8033-42df-934b-87130f855530"]
 }, Open  ]],
 
 Cell[CellGroupData[{
 
-Cell["Small Tests", "Subsubsection",ExpressionUUID->"36dbd464-3e69-4f8e-8c67-d907009a6558"],
+Cell["Small Tests", \
+"Subsubsection",ExpressionUUID->"36dbd464-3e69-4f8e-8c67-d907009a6558"],
 
-Cell["A few tests comparing both approaches.", "Text",ExpressionUUID->"61f65358-5a60-49d7-9f7e-a9bb97e41e17"],
+Cell["A few tests comparing both approaches.", \
+"Text",ExpressionUUID->"61f65358-5a60-49d7-9f7e-a9bb97e41e17"],
 
 Cell[BoxData[{
  RowBox[{
@@ -2476,14 +2472,15 @@ Cell[BoxData[{
         RowBox[{
          RowBox[{"\[Nu]", "&"}], ",", " ", 
          RowBox[{"\[CapitalTau]", "&"}]}], "}"}]}], "}"}]}], 
-    "\[IndentingNewLine]", "}"}]}], " ", "//", " ", "ColumnForm"}]}], "Input",
- CellLabel->
-  "In[214]:=",ExpressionUUID->"dcf6ccb3-5874-41cb-8a08-809ea53e0503"]
+    "\[IndentingNewLine]", "}"}]}], " ", "//", " ", 
+  "ColumnForm"}]}], \
+"Input",ExpressionUUID->"dcf6ccb3-5874-41cb-8a08-809ea53e0503"]
 }, Closed]],
 
 Cell[CellGroupData[{
 
-Cell["makeMotorTimeDomainFunction[]", "Subsubsection",ExpressionUUID->"844c34d8-94ca-4cf1-87a6-720df21c94ea"],
+Cell["makeMotorTimeDomainFunction[]", \
+"Subsubsection",ExpressionUUID->"844c34d8-94ca-4cf1-87a6-720df21c94ea"],
 
 Cell["\<\
 makeMotorTimeDomainFunction[] takes a transfer function model and returns a \
@@ -2548,14 +2545,14 @@ Cell[BoxData[{
             RowBox[{"{", "tActual", "}"}], ",", " ", 
             RowBox[{"exprT", " ", "/.", " ", 
              RowBox[{"t", " ", "\[Rule]", " ", "tActual"}]}]}], "]"}]}]}], 
-        "]"}]}], "\[IndentingNewLine]", "]"}]}]}], "]"}]}]}], "Input",
- CellLabel->
-  "In[216]:=",ExpressionUUID->"9f2df7a2-e59b-4441-96bd-3f3a470153e8"]
+        "]"}]}], "\[IndentingNewLine]", "]"}]}]}], 
+   "]"}]}]}], "Input",ExpressionUUID->"9f2df7a2-e59b-4441-96bd-3f3a470153e8"]
 }, Open  ]],
 
 Cell[CellGroupData[{
 
-Cell["Larger Tests", "Subsubsection",ExpressionUUID->"0d1dd2b1-b724-4eb3-afca-647c276f1092"],
+Cell["Larger Tests", \
+"Subsubsection",ExpressionUUID->"0d1dd2b1-b724-4eb3-afca-647c276f1092"],
 
 Cell["\<\
 We compare makeTimeDomainFunctionLaplace[] and \
@@ -2593,9 +2590,8 @@ Cell[BoxData[{
      RowBox[{
       RowBox[{"0", " ", "&"}], ",", " ", 
       RowBox[{"1", " ", "&"}]}], "]"}], "[", "t", "]"}], "//", " ", 
-   "Timing"}]}]}], "Input",
- CellLabel->
-  "In[219]:=",ExpressionUUID->"b15ad312-934c-4d7b-85bc-0ca34df4bf81"],
+   "Timing"}]}]}], \
+"Input",ExpressionUUID->"b15ad312-934c-4d7b-85bc-0ca34df4bf81"],
 
 Cell[BoxData[{
  RowBox[{"exampleLaplaceE", " ", "=", " ", 
@@ -2621,8 +2617,8 @@ Cell[BoxData[{
      RowBox[{
       RowBox[{"0", " ", "&"}], ",", " ", 
       RowBox[{"1", " ", "&"}]}], "]"}], "[", "t", "]"}], "//", " ", 
-   "Timing"}]}]}], "Input",
- CellLabel->"In[68]:=",ExpressionUUID->"e513facb-cbc8-4e00-87d0-e1a70d5d6b70"],
+   "Timing"}]}]}], \
+"Input",ExpressionUUID->"e513facb-cbc8-4e00-87d0-e1a70d5d6b70"],
 
 Cell["\<\
 At first glance, the two approaches look like they might be producing quite \
@@ -2643,8 +2639,8 @@ Cell[BoxData[{
     RowBox[{"[", 
      RowBox[{"2", ",", "1"}], "]"}], "]"}], " ", "//", " ", "Factor"}], " ", "//",
    " ", "Simplify"}], "\[IndentingNewLine]", 
- RowBox[{"%%", " ", "/", " ", "%"}]}], "Input",
- CellLabel->"In[76]:=",ExpressionUUID->"f40d3e9c-e483-40c9-bb69-f84c36a52098"],
+ RowBox[{"%%", " ", "/", " ", 
+  "%"}]}], "Input",ExpressionUUID->"f40d3e9c-e483-40c9-bb69-f84c36a52098"],
 
 Cell["\<\
 That the applied-torque functions are equivalent is a little harder to \
@@ -2673,16 +2669,18 @@ Cell[BoxData[{
         RowBox[{"2", ",", "1"}], "]"}], "]"}], " ", "//", " ", "Expand"}], 
      " ", "//", " ", "FullSimplify"}], "//", " ", "Expand"}], " ", "//", " ", 
    "FullSimplify"}]}], "\[IndentingNewLine]", 
- RowBox[{"convolvedFull", " ", "/", " ", "laplaceFull"}]}], "Input",
- CellLabel->
-  "In[315]:=",ExpressionUUID->"9ea29673-5f8a-4a7a-9aa4-c798f783d2cb"],
+ RowBox[{"convolvedFull", " ", "/", " ", 
+  "laplaceFull"}]}], \
+"Input",ExpressionUUID->"9ea29673-5f8a-4a7a-9aa4-c798f783d2cb"],
 
-Cell["Huzzah. Going forward, we will use the convolution approach.", "Text",ExpressionUUID->"b39dd1b4-bae4-4e80-bd62-c686c568a47e"]
+Cell["Huzzah. Going forward, we will use the convolution approach.", \
+"Text",ExpressionUUID->"b39dd1b4-bae4-4e80-bd62-c686c568a47e"]
 }, Closed]],
 
 Cell[CellGroupData[{
 
-Cell["Time Domain Output Functions for Motor State", "Subsubsection",ExpressionUUID->"d7e8c142-0eba-4444-b33c-55b5cc58b74a"],
+Cell["Time Domain Output Functions for Motor State", \
+"Subsubsection",ExpressionUUID->"d7e8c142-0eba-4444-b33c-55b5cc58b74a"],
 
 Cell["\<\
 We define time domain functions for all the motor state of interest.\
@@ -2718,28 +2716,27 @@ Cell[BoxData[{
  RowBox[{
   RowBox[{"motorTorque", " ", "=", " ", 
    RowBox[{"makeMotorTimeDomainFunction", "[", "motorTorqueModel", "]"}]}], 
-  ";"}]}], "Input",
- CellLabel->
-  "In[346]:=",ExpressionUUID->"985ea76b-d5ae-4847-8d9e-dcbc969e0e63"]
+  ";"}]}], "Input",ExpressionUUID->"985ea76b-d5ae-4847-8d9e-dcbc969e0e63"]
 }, Open  ]]
 }, Closed]],
 
 Cell[CellGroupData[{
 
-Cell["Time Domain Input Functions", "Subsection",ExpressionUUID->"98bfabee-2222-47a8-8113-aa439d2d77da"],
+Cell["Time Domain Input Functions", \
+"Subsection",ExpressionUUID->"98bfabee-2222-47a8-8113-aa439d2d77da"],
 
 Cell[CellGroupData[{
 
-Cell["Keeping track of units", "Subsubsection",ExpressionUUID->"4b56c8c6-8400-43d1-a12b-602903b06b3c"],
+Cell["Keeping track of units", \
+"Subsubsection",ExpressionUUID->"4b56c8c6-8400-43d1-a12b-602903b06b3c"],
 
 Cell["\<\
 In analogy to parameterQuantities above, we define inputQuantities,  which \
 adds units to our input parameters.\
 \>", "Text",ExpressionUUID->"ee919686-9297-47df-ad78-f0099c752dfc"],
 
-Cell[BoxData["parameterQuantities"], "Input",
- CellLabel->
-  "In[393]:=",ExpressionUUID->"81a8f5ca-bbdf-4926-b993-d4d200a6d744"],
+Cell[BoxData["parameterQuantities"], \
+"Input",ExpressionUUID->"81a8f5ca-bbdf-4926-b993-d4d200a6d744"],
 
 Cell[BoxData[
  RowBox[{"inputQuantities", " ", "=", " ", 
@@ -2760,14 +2757,14 @@ Cell[BoxData[
     RowBox[{"t", " ", "\[Rule]", " ", 
      RowBox[{"Quantity", "[", 
       RowBox[{"t", ",", " ", "\"\<Seconds\>\""}], "]"}]}]}], 
-   "\[IndentingNewLine]", "}"}]}]], "Input",
- CellLabel->
-  "In[394]:=",ExpressionUUID->"32a28296-3f0c-4580-91a5-98f91d7a4beb"]
+   "\[IndentingNewLine]", 
+   "}"}]}]], "Input",ExpressionUUID->"32a28296-3f0c-4580-91a5-98f91d7a4beb"]
 }, Closed]],
 
 Cell[CellGroupData[{
 
-Cell["Mass on pulley", "Subsubsection",ExpressionUUID->"d9ab2832-77b4-4f81-9ab3-b8591744c52f"],
+Cell["Mass on pulley", \
+"Subsubsection",ExpressionUUID->"d9ab2832-77b4-4f81-9ab3-b8591744c52f"],
 
 Cell["\<\
 Here, we model a mass suspended on a massless \[OpenCurlyDoubleQuote]rigid \
@@ -2891,14 +2888,14 @@ Cell[BoxData[{
  RowBox[{
   RowBox[{
    RowBox[{"%", " ", "//", " ", "siUnits"}], " ", "//", " ", "clearUnits"}], 
-  " ", "//", " ", "N"}]}], "Input",
- CellLabel->
-  "In[430]:=",ExpressionUUID->"c611b885-1c4e-47ce-9850-9d32c796521a"]
+  " ", "//", " ", 
+  "N"}]}], "Input",ExpressionUUID->"c611b885-1c4e-47ce-9850-9d32c796521a"]
 }, Closed]],
 
 Cell[CellGroupData[{
 
-Cell["Typical Input Examples", "Subsubsection",ExpressionUUID->"e977faae-01f5-4236-b800-01b71da0ac2e"],
+Cell["Typical Input Examples", \
+"Subsubsection",ExpressionUUID->"e977faae-01f5-4236-b800-01b71da0ac2e"],
 
 Cell["\<\
 In analogy to aMotor above, we now define  some typical inputs. The first has \
@@ -2929,11 +2926,11 @@ Cell[BoxData[
         RowBox[{"0", ",", " ", 
          RowBox[{"(", 
           RowBox[{"\[Alpha]\[Tau]", "/.", "parameterUnits"}], ")"}]}], 
-        "]"}]}]}], "\[IndentingNewLine]", "}"}]}], "]"}]}]], "Input",
- CellLabel->
-  "In[555]:=",ExpressionUUID->"05bfb66e-ec46-4118-8bc0-ae21e3b5a217"],
+        "]"}]}]}], "\[IndentingNewLine]", "}"}]}], 
+   "]"}]}]], "Input",ExpressionUUID->"05bfb66e-ec46-4118-8bc0-ae21e3b5a217"],
 
-Cell["A second has external torque from a mass on a pulley.", "Text",ExpressionUUID->"9014c4fa-d02d-4506-83ea-a0b7c4412624"],
+Cell["A second has external torque from a mass on a pulley.", \
+"Text",ExpressionUUID->"9014c4fa-d02d-4506-83ea-a0b7c4412624"],
 
 Cell[BoxData[{
  RowBox[{
@@ -2993,11 +2990,12 @@ Cell[BoxData[{
         RowBox[{"\[Alpha]\[Tau]", " ", "\[Rule]", " ", 
          RowBox[{"(", 
           RowBox[{"\[Alpha]\[Tau]", " ", "/.", " ", "pulley"}], ")"}]}]}], 
-       "}"}]}]}], "]"}]}]}]}], "Input",
- CellLabel->
-  "In[556]:=",ExpressionUUID->"ee819cb0-68f2-454a-a0f4-684cac9e626f"],
+       "}"}]}]}], 
+    "]"}]}]}]}], \
+"Input",ExpressionUUID->"ee819cb0-68f2-454a-a0f4-684cac9e626f"],
 
-Cell["A third leaves quantities with symbolic parameters", "Text",ExpressionUUID->"6afed1ed-4275-4932-a961-e5e7c1f23c30"],
+Cell["A third leaves quantities with symbolic parameters", \
+"Text",ExpressionUUID->"6afed1ed-4275-4932-a961-e5e7c1f23c30"],
 
 Cell[BoxData[
  RowBox[{"aGenericInput\[Tau]", " ", "=", " ", 
@@ -3023,15 +3021,15 @@ Cell[BoxData[
         RowBox[{"\[Alpha]\[Tau]", ",", " ", 
          RowBox[{"(", 
           RowBox[{"\[Alpha]\[Tau]", "/.", "parameterUnits"}], ")"}]}], 
-        "]"}]}]}], "\[IndentingNewLine]", "}"}]}], "]"}]}]], "Input",
- CellLabel->
-  "In[559]:=",ExpressionUUID->"b296d0ea-d103-4068-8496-57429efd2956"]
+        "]"}]}]}], "\[IndentingNewLine]", "}"}]}], 
+   "]"}]}]], "Input",ExpressionUUID->"b296d0ea-d103-4068-8496-57429efd2956"]
 }, Closed]]
 }, Open  ]],
 
 Cell[CellGroupData[{
 
-Cell["Examples", "Subsection",ExpressionUUID->"24b06bbb-98d3-4d0c-a718-7295f84a58d4"],
+Cell["Examples", \
+"Subsection",ExpressionUUID->"24b06bbb-98d3-4d0c-a718-7295f84a58d4"],
 
 Cell["\<\
 We try out our time-domain functions on our example data. Notice how the \
@@ -3045,14 +3043,13 @@ Cell[BoxData[
     RowBox[{"motorVelocity", "[", 
      RowBox[{
       RowBox[{"ea", " ", "&"}], ",", " ", 
-      RowBox[{"\[Tau]a", "&"}]}], "]"}], "[", "t", "]"}]}], ";"}]], "Input",
- CellLabel->
-  "In[561]:=",ExpressionUUID->"1867ac5c-695d-42a4-bde7-885cb8daee01"],
+      RowBox[{"\[Tau]a", "&"}]}], "]"}], "[", "t", "]"}]}], 
+  ";"}]], "Input",ExpressionUUID->"1867ac5c-695d-42a4-bde7-885cb8daee01"],
 
 Cell[BoxData[
- RowBox[{"velExpr", " ", "//", " ", "variables"}]], "Input",
- CellLabel->
-  "In[562]:=",ExpressionUUID->"62509384-eba8-40a8-890e-0b26f46f43bd"],
+ RowBox[{"velExpr", " ", "//", " ", 
+  "variables"}]], \
+"Input",ExpressionUUID->"62509384-eba8-40a8-890e-0b26f46f43bd"],
 
 Cell[BoxData[
  RowBox[{
@@ -3065,9 +3062,8 @@ Cell[BoxData[
     "meter second newtons per radian squared",FractionBox[
      RowBox[{"\"Meters\"", " ", "\"Newtons\"", " ", "\"Seconds\""}], 
      SuperscriptBox["\"Radians\"", "2"]]},
-   "Quantity"]}]], "Input",
- CellLabel->
-  "In[566]:=",ExpressionUUID->"fb91e2ee-93d3-41a3-ae78-c313e2b4a798"],
+   "Quantity"]}]], \
+"Input",ExpressionUUID->"fb91e2ee-93d3-41a3-ae78-c313e2b4a798"],
 
 Cell[BoxData[{
  RowBox[{
@@ -3100,19 +3096,16 @@ Cell[BoxData[{
     RowBox[{"Ke", " ", "Kt"}], "+", 
     RowBox[{"b", " ", "R"}]}]], " "}], "\[IndentingNewLine]", 
  RowBox[{"%", " ", "/.", " ", "aMotor"}], "\[IndentingNewLine]", 
- RowBox[{"%", " ", "//", " ", "siUnits", " "}]}], "Input",
- CellLabel->
-  "In[589]:=",ExpressionUUID->"6012ecc5-3227-462f-a49c-e6c8019f823f"],
+ RowBox[{"%", " ", "//", " ", "siUnits", 
+  " "}]}], "Input",ExpressionUUID->"6012ecc5-3227-462f-a49c-e6c8019f823f"],
 
 Cell[BoxData[
- RowBox[{"velExpr", " "}]], "Input",
- CellLabel->
-  "In[567]:=",ExpressionUUID->"0d30eee5-b9b0-46f6-a15b-06ad44158c2b"],
+ RowBox[{"velExpr", 
+  " "}]], "Input",ExpressionUUID->"0d30eee5-b9b0-46f6-a15b-06ad44158c2b"],
 
 Cell[BoxData[
- RowBox[{"velExpr", " ", "/.", " ", "aMotor"}]], "Input",
- CellLabel->
-  "In[568]:=",ExpressionUUID->"2432e384-cc2e-488b-ac90-ee1b846b6d04"],
+ RowBox[{"velExpr", " ", "/.", " ", 
+  "aMotor"}]], "Input",ExpressionUUID->"2432e384-cc2e-488b-ac90-ee1b846b6d04"],
 
 Cell[BoxData[
  RowBox[{"velUnits", " ", "=", " ", 
@@ -3127,9 +3120,9 @@ Cell[BoxData[
           RowBox[{"ea", " ", "&"}], ",", " ", 
           RowBox[{"\[Tau]a", "&"}]}], "]"}], "[", "t", "]"}], "  ", "/.", " ",
         "aMotor"}], " ", "/.", " ", "anInput"}], "//", " ", "N"}], "//", " ", 
-    "siUnits"}], " ", "//", " ", "FullSimplify"}]}]], "Input",
- CellLabel->
-  "In[535]:=",ExpressionUUID->"c2ce0f44-2933-4579-9948-bd1deb547d91"],
+    "siUnits"}], " ", "//", " ", 
+   "FullSimplify"}]}]], \
+"Input",ExpressionUUID->"c2ce0f44-2933-4579-9948-bd1deb547d91"],
 
 Cell[BoxData[{
  RowBox[{"vel", " ", "=", " ", 
@@ -3154,8 +3147,8 @@ Cell[BoxData[{
    RowBox[{"{", 
     RowBox[{"vel", ",", " ", "vel\[Tau]"}], "}"}], ",", " ", 
    RowBox[{"{", 
-    RowBox[{"t", ",", " ", "0", ",", " ", "10"}], "}"}]}], "]"}]}], "Input",
- CellLabel->"In[81]:=",ExpressionUUID->"3fde6f5b-1629-4bbf-9656-f0843509606b"],
+    RowBox[{"t", ",", " ", "0", ",", " ", "10"}], "}"}]}], 
+  "]"}]}], "Input",ExpressionUUID->"3fde6f5b-1629-4bbf-9656-f0843509606b"],
 
 Cell["\<\
 Good: the model with the (positive) external torque achieves greater \
@@ -3198,8 +3191,8 @@ Cell[BoxData[{
    RowBox[{"{", 
     RowBox[{"tor", ",", " ", "tor\[Tau]"}], "}"}], ",", " ", 
    RowBox[{"{", 
-    RowBox[{"t", ",", " ", "0", ",", " ", "10"}], "}"}]}], "]"}]}], "Input",
- CellLabel->"In[84]:=",ExpressionUUID->"248a4e42-9143-4212-a7fa-75de1b7faf40"],
+    RowBox[{"t", ",", " ", "0", ",", " ", "10"}], "}"}]}], 
+  "]"}]}], "Input",ExpressionUUID->"248a4e42-9143-4212-a7fa-75de1b7faf40"],
 
 Cell[BoxData[{
  RowBox[{"posUnits", " ", "=", " ", 
@@ -3221,8 +3214,8 @@ Cell[BoxData[{
   RowBox[{
    RowBox[{"{", "pos", "}"}], ",", " ", 
    RowBox[{"{", 
-    RowBox[{"t", ",", " ", "0", ",", " ", "10"}], "}"}]}], "]"}]}], "Input",
- CellLabel->"In[88]:=",ExpressionUUID->"82a3648e-bd4f-493b-bfb0-5578ca7ecf7a"],
+    RowBox[{"t", ",", " ", "0", ",", " ", "10"}], "}"}]}], 
+  "]"}]}], "Input",ExpressionUUID->"82a3648e-bd4f-493b-bfb0-5578ca7ecf7a"],
 
 Cell[BoxData[{
  RowBox[{"curUnits", " ", "=", " ", 
@@ -3244,8 +3237,8 @@ Cell[BoxData[{
   RowBox[{
    RowBox[{"{", "cur", "}"}], ",", " ", 
    RowBox[{"{", 
-    RowBox[{"t", ",", " ", "0", ",", " ", "10"}], "}"}]}], "]"}]}], "Input",
- CellLabel->"In[91]:=",ExpressionUUID->"d45ad4a4-321d-49cd-bf6e-62c7ca68797b"],
+    RowBox[{"t", ",", " ", "0", ",", " ", "10"}], "}"}]}], 
+  "]"}]}], "Input",ExpressionUUID->"d45ad4a4-321d-49cd-bf6e-62c7ca68797b"],
 
 Cell[BoxData[{
  RowBox[{"emfUnits", " ", "=", " ", 
@@ -3267,18 +3260,20 @@ Cell[BoxData[{
   RowBox[{
    RowBox[{"{", "emf", "}"}], ",", " ", 
    RowBox[{"{", 
-    RowBox[{"t", ",", " ", "0", ",", " ", "10"}], "}"}]}], "]"}]}], "Input",
- CellLabel->"In[94]:=",ExpressionUUID->"67ca826d-3c61-44b8-9e55-1a1a12b7134b"]
+    RowBox[{"t", ",", " ", "0", ",", " ", "10"}], "}"}]}], 
+  "]"}]}], "Input",ExpressionUUID->"67ca826d-3c61-44b8-9e55-1a1a12b7134b"]
 }, Open  ]]
 }, Open  ]],
 
 Cell[CellGroupData[{
 
-Cell["Steady State", "Section",ExpressionUUID->"d2c23604-a292-44ee-87ff-043de8af44e6"],
+Cell["Steady State", \
+"Section",ExpressionUUID->"d2c23604-a292-44ee-87ff-043de8af44e6"],
 
 Cell[CellGroupData[{
 
-Cell["Calculating values", "Subsection",ExpressionUUID->"caf76008-1094-4dab-89d2-46ed4cc1fba0"],
+Cell["Calculating values", \
+"Subsection",ExpressionUUID->"caf76008-1094-4dab-89d2-46ed4cc1fba0"],
 
 Cell["\<\
 We explore the steady state behavior. We can compute same either using the \
@@ -3318,8 +3313,7 @@ Cell[BoxData[{
         RowBox[{"s", " ", "expr"}], ",", " ", 
         RowBox[{"s", " ", "\[Rule]", " ", "0"}]}], "]"}], "[", 
       RowBox[{"[", "1", "]"}], "]"}]}]}], "\[IndentingNewLine]", 
-   "]"}]}]}], "Input",
- CellLabel->"In[97]:=",ExpressionUUID->"6390bb3f-b7c5-41b8-8c19-384e6427f962"],
+   "]"}]}]}], "Input",ExpressionUUID->"6390bb3f-b7c5-41b8-8c19-384e6427f962"],
 
 Cell[BoxData[
  RowBox[{
@@ -3375,13 +3369,14 @@ Cell[BoxData[
            RowBox[{"ea", "&"}], ",", " ", 
            RowBox[{"\[Tau]a", "&"}]}], "}"}]}], "]"}]}]}], 
      "\[IndentingNewLine]", "}"}]}], ")"}], " ", "//", " ", 
-  "prettyPrint"}]], "Input",
- CellLabel->"In[99]:=",ExpressionUUID->"a25c713e-9ba3-4635-b13e-e69c6cdae2ad"]
+  "prettyPrint"}]], \
+"Input",ExpressionUUID->"a25c713e-9ba3-4635-b13e-e69c6cdae2ad"]
 }, Open  ]],
 
 Cell[CellGroupData[{
 
-Cell["Back EMF vs Applied Voltage", "Subsection",ExpressionUUID->"c37a253b-504f-4c0e-a54a-a3f483e112b3"],
+Cell["Back EMF vs Applied Voltage", \
+"Subsection",ExpressionUUID->"c37a253b-504f-4c0e-a54a-a3f483e112b3"],
 
 Cell[TextData[{
  "We want to know the steady-state velocity",
@@ -3420,9 +3415,7 @@ Cell[BoxData[{
       RowBox[{"velSym", " ", "\[Rule]", " ", "velocity"}]}]}]}], " ", 
    "\[IndentingNewLine]", "]"}]}], "\[IndentingNewLine]", 
  RowBox[{"ssAppliedVoltageFromVelocity", "[", "\[CapitalOmega]", 
-  "]"}]}], "Input",
- CellLabel->
-  "In[100]:=",ExpressionUUID->"894db10f-0d70-4c25-857e-67b7ef9e6eef"],
+  "]"}]}], "Input",ExpressionUUID->"894db10f-0d70-4c25-857e-67b7ef9e6eef"],
 
 Cell[BoxData[{
  RowBox[{"Clear", "[", 
@@ -3443,9 +3436,9 @@ Cell[BoxData[{
  RowBox[{
   RowBox[{"ssEmfFromVelocity", "[", "\[CapitalOmega]", "]"}], 
   " "}], "\[IndentingNewLine]", 
- RowBox[{"%", "//", " ", "FullSimplify"}]}], "Input",
- CellLabel->
-  "In[114]:=",ExpressionUUID->"a62e61dc-6ffe-4b22-9bfc-d7a523b7fbbf"],
+ RowBox[{"%", "//", " ", 
+  "FullSimplify"}]}], \
+"Input",ExpressionUUID->"a62e61dc-6ffe-4b22-9bfc-d7a523b7fbbf"],
 
 Cell["\<\
 Well, that\[CloseCurlyQuote]s a result now, isn\[CloseCurlyQuote]t it? So, at \
@@ -3463,9 +3456,8 @@ Cell[BoxData[{
   RowBox[{"%", ",", " ", "\[CapitalOmega]"}], "]"}], "\[IndentingNewLine]", 
  RowBox[{"emfThresholdVelocity", " ", "=", " ", 
   RowBox[{"%", "[", 
-   RowBox[{"[", "1", "]"}], "]"}]}]}], "Input",
- CellLabel->
-  "In[107]:=",ExpressionUUID->"d6f81e9c-0c49-406a-97e7-dc5900d0e9bf"],
+   RowBox[{"[", "1", "]"}], 
+   "]"}]}]}], "Input",ExpressionUUID->"d6f81e9c-0c49-406a-97e7-dc5900d0e9bf"],
 
 Cell[TextData[{
  "That\[CloseCurlyQuote]s interesting: the equalizing velocity is dependent \
@@ -3479,7 +3471,8 @@ situation the back EMF can never match the externally applied voltage due to \
 losses."
 }], "Text",ExpressionUUID->"8e252db5-4198-4597-a1ab-ecb857025865"],
 
-Cell["A quick check that the units are correct:", "Text",ExpressionUUID->"e4edc6bf-77e3-4be4-babe-48bd1ae41726"],
+Cell["A quick check that the units are correct:", \
+"Text",ExpressionUUID->"e4edc6bf-77e3-4be4-babe-48bd1ae41726"],
 
 Cell[BoxData[
  RowBox[{
@@ -3490,9 +3483,8 @@ Cell[BoxData[
       RowBox[{"\[CapitalOmega]", "[", "t", "]"}]}], ",", " ", 
      RowBox[{"\[Tau]a", " ", "\[Rule]", " ", 
       RowBox[{"\[Tau]a", "[", "t", "]"}]}]}], "}"}]}], " ", "/.", " ", 
-  "parameterQuantities"}]], "Input",
- CellLabel->
-  "In[110]:=",ExpressionUUID->"98ecc5a6-5d46-4feb-9d9b-e0ebf3d9167a"],
+  "parameterQuantities"}]], \
+"Input",ExpressionUUID->"98ecc5a6-5d46-4feb-9d9b-e0ebf3d9167a"],
 
 Cell["\<\
 What does this look like for an actual motor with our example weight attached?\
@@ -3516,9 +3508,8 @@ Cell[BoxData[{
    RowBox[{"1120", ",", " ", 
     RowBox[{
      RowBox[{"IndependentUnit", "[", "\"\<Ticks\>\"", "]"}], " ", "/", " ", 
-     "\"\<Revolutions\>\""}]}], "]"}]}]}], "Input",
- CellLabel->
-  "In[111]:=",ExpressionUUID->"52cc7ae3-a547-434e-892f-a1f8b53a67b4"]
+     "\"\<Revolutions\>\""}]}], 
+   "]"}]}]}], "Input",ExpressionUUID->"52cc7ae3-a547-434e-892f-a1f8b53a67b4"]
 }, Open  ]]
 }, Open  ]]
 }, Open  ]]
@@ -3530,7 +3521,9 @@ PrintingPageRange->{32000, 32000},
 PrintingOptions->{"Magnification"->1.,
 "PaperOrientation"->"Portrait",
 "PaperSize"->{612, 792}},
+PrivateNotebookOptions->{"FileOutlineCache"->False},
 CellContext->Notebook,
+CellLabelAutoDelete->True,
 TrackCellChangeTimes->False,
 Magnification:>0.9 Inherited,
 FrontEndVersion->"11.3 for Microsoft Windows (64-bit) (March 6, 2018)",
@@ -3539,256 +3532,7 @@ StyleDefinitions->Notebook[{
     StyleData[
     StyleDefinitions -> 
      FrontEnd`FileName[{"Report"}, "StandardReport.nb", CharacterEncoding -> 
-       "UTF-8"]]]}, WindowSize -> {775, 872}, 
-  WindowMargins -> {{1405, Automatic}, {Automatic, 109}}, Visible -> False, 
-  FrontEndVersion -> "11.3 for Microsoft Windows (64-bit) (March 6, 2018)", 
-  StyleDefinitions -> "PrivateStylesheetFormatting.nb"]
+       "UTF-8"]]]}, Visible -> False, FrontEndVersion -> 
+  "11.3 for Microsoft Windows (64-bit) (March 6, 2018)", StyleDefinitions -> 
+  "PrivateStylesheetFormatting.nb"]
 ]
-(* End of Notebook Content *)
-
-(* Internal cache information *)
-(*CellTagsOutline
-CellTagsIndex->{}
-*)
-(*CellTagsIndex
-CellTagsIndex->{}
-*)
-(*NotebookFileOutline
-Notebook[{
-Cell[CellGroupData[{
-Cell[580, 22, 85, 0, 86, "Title",ExpressionUUID->"39796d72-87ca-4320-97ff-a98d4bd016ce"],
-Cell[668, 24, 169, 3, 56, "Author",ExpressionUUID->"05aea015-05f3-4e99-899d-20a8cd5792a1"],
-Cell[840, 29, 1017, 14, 113, "Text",ExpressionUUID->"56cc4ba9-b77c-4512-b3b4-73f00a3c0eee"],
-Cell[CellGroupData[{
-Cell[1882, 47, 87, 0, 62, "Section",ExpressionUUID->"16299bc2-b6fe-451f-a825-e22a0f149c0f"],
-Cell[1972, 49, 112, 0, 30, "Text",ExpressionUUID->"7ad28d45-c772-4943-a312-e5b632c383c6"],
-Cell[2087, 51, 230, 5, 35, "Input",ExpressionUUID->"00da5f52-c4e4-4d20-9d91-5577a43f3731"]
-}, Closed]],
-Cell[CellGroupData[{
-Cell[2354, 61, 85, 0, 50, "Section",ExpressionUUID->"90c0a6a0-9617-429d-8b1e-915f382134f2"],
-Cell[2442, 63, 592, 14, 30, "Text",ExpressionUUID->"069bbd6b-5932-4515-9ebe-d04ddcc6facb"],
-Cell[3037, 79, 62311, 1026, 270, "Text",ExpressionUUID->"b6384dc4-a9b0-4fe6-a82f-38e912f3c2c8"],
-Cell[65351, 1107, 156, 2, 30, "Text",ExpressionUUID->"e710392c-a198-4e50-b222-3432fe3f5e70"],
-Cell[65510, 1111, 171, 3, 30, "Text",ExpressionUUID->"0a22c47e-9b00-4bf1-9254-73e4cf6c4850"],
-Cell[CellGroupData[{
-Cell[65706, 1118, 148, 4, 26, "Item",ExpressionUUID->"968adc87-2720-4902-b2fb-ec1e2b6d96ea"],
-Cell[65857, 1124, 147, 4, 26, "Item",ExpressionUUID->"82f86dfb-bb1b-46f6-a183-c2a21d1e3bac"],
-Cell[66007, 1130, 140, 4, 26, "Item",ExpressionUUID->"88cf0f1a-32b1-4df8-9b14-c90017a50f3f"],
-Cell[66150, 1136, 101, 0, 26, "Item",ExpressionUUID->"38b2a308-670b-4e98-963c-77a294f17db4"],
-Cell[66254, 1138, 120, 0, 26, "Item",ExpressionUUID->"fb8c4c1a-0ead-4b9c-972f-b1488066f60b"],
-Cell[66377, 1140, 117, 0, 26, "Item",ExpressionUUID->"953ae3fd-09ab-474c-bb99-443d0ddb5619"]
-}, Open  ]],
-Cell[66509, 1143, 148, 2, 30, "Text",ExpressionUUID->"b6f9cea5-8660-408a-b039-e11ace454546"],
-Cell[CellGroupData[{
-Cell[66682, 1149, 92, 0, 26, "Item",ExpressionUUID->"91d49fa6-b0c4-4196-90fa-ec5d25332c72"],
-Cell[66777, 1151, 102, 0, 26, "Item",ExpressionUUID->"4384aae8-0600-4454-9c35-53b8477f6597"],
-Cell[66882, 1153, 104, 0, 26, "Item",ExpressionUUID->"992d2f87-f7da-4ce4-ad34-171c74343333"],
-Cell[66989, 1155, 97, 0, 26, "Item",ExpressionUUID->"8fa7c37a-0108-4049-a006-d4b00319de90"],
-Cell[67089, 1157, 94, 0, 26, "Item",ExpressionUUID->"7f42c5d8-a245-4353-bd13-6069205022ac"],
-Cell[67186, 1159, 93, 0, 26, "Item",ExpressionUUID->"44eec874-8acc-48b7-8f59-0ac6dc689574"]
-}, Open  ]],
-Cell[67294, 1162, 268, 4, 30, "Text",ExpressionUUID->"37037e49-176e-43e9-9eb8-b7acf8420e89"],
-Cell[67565, 1168, 257, 6, 35, "Input",ExpressionUUID->"e040b396-c8fb-46d1-84d2-b04509a22dd7"]
-}, Closed]],
-Cell[CellGroupData[{
-Cell[67859, 1179, 96, 0, 50, "Section",ExpressionUUID->"1a554150-f891-49e0-b217-91e08c954a90"],
-Cell[CellGroupData[{
-Cell[67980, 1183, 113, 0, 30, "Subsubsection",ExpressionUUID->"53e5b2d3-df4b-4750-961d-abcbb0321454"],
-Cell[68096, 1185, 140, 2, 30, "Text",ExpressionUUID->"80cda92d-dcb0-4796-8119-03250e858251"],
-Cell[68239, 1189, 167, 4, 35, "Input",ExpressionUUID->"01878dc0-fb64-42ed-a19d-253ca7d4944e"],
-Cell[68409, 1195, 111, 0, 30, "Text",ExpressionUUID->"5e5ddd7e-42a0-4096-b0f5-979e4869a40e"],
-Cell[68523, 1197, 383, 10, 35, "Input",ExpressionUUID->"96364580-987b-488d-9c78-e1d661a57f47"],
-Cell[68909, 1209, 112, 0, 30, "Text",ExpressionUUID->"131d42de-8a76-45a8-8dc9-fb34a8ba1ffc"],
-Cell[69024, 1211, 413, 12, 35, "Input",ExpressionUUID->"fa0980bf-045f-4e85-bdf9-6a435d52b716"],
-Cell[69440, 1225, 390, 5, 51, "Text",ExpressionUUID->"a1bd4c06-792a-42a9-9433-f66837a16822"],
-Cell[69833, 1232, 1070, 28, 72, "Input",ExpressionUUID->"aff7dd89-3c71-4eaf-90e7-da8727aec88f"],
-Cell[70906, 1262, 225, 3, 30, "Text",ExpressionUUID->"3d7ae612-deb4-424e-98e8-f8997da3f234"],
-Cell[71134, 1267, 557, 15, 35, "Input",ExpressionUUID->"a3dd3008-4e0c-4b93-bacf-b41f06764855"],
-Cell[71694, 1284, 160, 3, 35, "Input",ExpressionUUID->"a6035ae8-1286-41cd-8182-fd83560bf599"]
-}, Closed]],
-Cell[CellGroupData[{
-Cell[71891, 1292, 98, 0, 30, "Subsubsection",ExpressionUUID->"c6e71fee-f805-4855-bf73-77e856e2d111"],
-Cell[71992, 1294, 131, 0, 30, "Text",ExpressionUUID->"5b3695bc-8604-4e75-a20b-44686fe7ade7"],
-Cell[72126, 1296, 804, 21, 144, "Input",ExpressionUUID->"2ac838a0-51ff-45a5-9a9b-9ffcb46f6b87"],
-Cell[72933, 1319, 95, 0, 30, "Text",ExpressionUUID->"233512fc-bc6f-4acc-8926-3b47a273d6ad"],
-Cell[73031, 1321, 1429, 41, 90, "Input",ExpressionUUID->"f7cc3dd9-953c-4fa9-a8b5-abdb91830726"]
-}, Closed]]
-}, Closed]],
-Cell[CellGroupData[{
-Cell[74509, 1368, 90, 0, 50, "Section",ExpressionUUID->"83ded34e-b899-4fea-a3fe-0d1a354f74e4"],
-Cell[74602, 1370, 242, 4, 30, "Text",ExpressionUUID->"51d84933-6794-4203-8b5a-e59fecb1d772"],
-Cell[74847, 1376, 4695, 115, 468, "Input",ExpressionUUID->"7e5d010c-ead5-4622-a414-9a1ac8beba8b"],
-Cell[79545, 1493, 977, 14, 113, "Text",ExpressionUUID->"c7295aa6-c0b2-47b6-9c76-b29a31c74b71"],
-Cell[80525, 1509, 1060, 18, 113, "Text",ExpressionUUID->"44491675-64bd-46d1-9c19-e8c15c9e364e"],
-Cell[81588, 1529, 163, 3, 30, "Text",ExpressionUUID->"7480c0f7-09c8-4c49-aa24-492b926b6a19"],
-Cell[81754, 1534, 214, 5, 35, "Input",ExpressionUUID->"bd477aa7-e6c3-4ff3-af7a-88821be91010"],
-Cell[81971, 1541, 212, 3, 30, "Text",ExpressionUUID->"be830fe3-4aec-43f8-907d-9dacfd70f70d"],
-Cell[82186, 1546, 1144, 30, 126, "Input",ExpressionUUID->"ffe9c238-1615-4203-8bbd-814555438669"],
-Cell[83333, 1578, 115, 0, 30, "Text",ExpressionUUID->"408f696d-6414-4c84-ae72-b28636983438"],
-Cell[83451, 1580, 174, 3, 35, "Input",ExpressionUUID->"f9f69377-76e6-4dc1-a8b7-0d71d65bc724"],
-Cell[83628, 1585, 241, 4, 30, "Text",ExpressionUUID->"3b2cf630-a7b3-47c5-8fad-87f0338aec98"],
-Cell[83872, 1591, 938, 24, 72, "Input",ExpressionUUID->"81a7fa61-e053-47d5-8b63-93b959eaf86d"]
-}, Closed]],
-Cell[CellGroupData[{
-Cell[84847, 1620, 272, 4, 50, "Section",ExpressionUUID->"35437d1a-fb19-4f67-9843-dfb07bb4bcc2"],
-Cell[CellGroupData[{
-Cell[85144, 1628, 215, 4, 31, "Subsection",ExpressionUUID->"e6057ccb-102b-4850-b367-213a7608e29a"],
-Cell[85362, 1634, 515, 9, 51, "Text",ExpressionUUID->"07838fbb-cab7-4ec9-8954-1cc073c97a49"],
-Cell[85880, 1645, 227, 4, 35, "Input",ExpressionUUID->"0aaf1028-3d6c-478b-90e2-e053fa453486"],
-Cell[86110, 1651, 273, 4, 30, "Text",ExpressionUUID->"ca8b1857-040a-4217-8eb9-48edb7bcb30f"],
-Cell[86386, 1657, 1108, 30, 54, "Input",ExpressionUUID->"e1a40f32-ac8d-4099-93e4-d3771373f760"],
-Cell[87497, 1689, 665, 15, 30, "Text",ExpressionUUID->"f9537848-f44c-4a5c-ba77-2e152a934589"],
-Cell[88165, 1706, 1929, 41, 144, "Input",ExpressionUUID->"6d7509fc-10d3-4b8b-991a-475da98e8902"],
-Cell[90097, 1749, 359, 7, 30, "Text",ExpressionUUID->"73a478b7-c1a3-46c6-9721-f024004f74aa"],
-Cell[90459, 1758, 1354, 30, 72, "Input",ExpressionUUID->"26cefe99-e7b4-4185-8540-639030348efe"],
-Cell[91816, 1790, 323, 6, 30, "Text",ExpressionUUID->"49066f9c-e89d-4bd8-a3c7-e80d679efe16"]
-}, Open  ]],
-Cell[CellGroupData[{
-Cell[92176, 1801, 226, 4, 31, "Subsection",ExpressionUUID->"9e6870c9-aee7-4738-96e2-774bd074b689"],
-Cell[92405, 1807, 475, 9, 30, "Text",ExpressionUUID->"e50ff016-8b75-4ff3-b244-4be20694b4c8"],
-Cell[92883, 1818, 640, 16, 35, "Input",ExpressionUUID->"28b01b58-d16a-4fba-85ca-5e4ef3ce7df7"],
-Cell[93526, 1836, 302, 4, 51, "Text",ExpressionUUID->"c242acf1-e800-4574-97a2-8e05a57da19f"],
-Cell[93831, 1842, 5003, 126, 414, "Input",ExpressionUUID->"c045c038-2447-4cd5-9514-e523fcb88088"]
-}, Open  ]],
-Cell[CellGroupData[{
-Cell[98871, 1973, 93, 0, 31, "Subsection",ExpressionUUID->"a213b300-2f42-42f5-aa79-12f3a082bf95"],
-Cell[CellGroupData[{
-Cell[98989, 1977, 94, 0, 30, "Subsubsection",ExpressionUUID->"60cffd46-6e1f-4f21-b92a-910287e9cd48"],
-Cell[99086, 1979, 252, 4, 30, "Text",ExpressionUUID->"225713a5-64c4-4a91-8104-5b171bbb248d"],
-Cell[99341, 1985, 423, 9, 54, "Input",ExpressionUUID->"048fbe0f-ef04-48f1-a0b6-d274888f6c2b"],
-Cell[99767, 1996, 351, 9, 35, "Input",ExpressionUUID->"4fd5c58e-a4d2-45d0-bd28-8f0bc5271d17"]
-}, Open  ]]
-}, Open  ]]
-}, Closed]],
-Cell[CellGroupData[{
-Cell[100179, 2012, 121, 0, 50, "Section",ExpressionUUID->"a2873c61-b3a9-489c-98fd-08ae9788c004"],
-Cell[CellGroupData[{
-Cell[100325, 2016, 95, 0, 31, "Subsection",ExpressionUUID->"073220d3-4653-40ac-8f57-370e53740b2f"],
-Cell[100423, 2018, 523, 10, 72, "Text",ExpressionUUID->"2e60eed2-901f-4e9f-b737-d3c91e621c19"],
-Cell[100949, 2030, 374, 8, 54, "Input",ExpressionUUID->"a9a20bb6-32af-4293-8a1c-3bf2886ef783"],
-Cell[101326, 2040, 231, 3, 30, "Text",ExpressionUUID->"f9384391-fa35-4f73-82fb-a9b4688a8eb3"],
-Cell[101560, 2045, 645, 18, 35, "Input",ExpressionUUID->"4762b475-ab80-408f-b286-addb06147c6a"],
-Cell[102208, 2065, 255, 4, 30, "Text",ExpressionUUID->"df283c47-463b-43d5-b486-44aafbc0bb9b"],
-Cell[102466, 2071, 1251, 31, 126, "Input",ExpressionUUID->"fdd43856-c06d-404b-a623-ab6193fb5a15"],
-Cell[103720, 2104, 166, 3, 30, "Text",ExpressionUUID->"8c578d09-f613-435a-b6a5-12e9adf5bc1b"],
-Cell[103889, 2109, 2435, 63, 252, "Input",ExpressionUUID->"793cb62c-f831-44a0-84c6-f201fff3c88a"]
-}, Closed]],
-Cell[CellGroupData[{
-Cell[106361, 2177, 101, 0, 31, "Subsection",ExpressionUUID->"75d1cd0e-edaa-4098-98a3-93baa23a7db5"],
-Cell[106465, 2179, 176, 3, 30, "Text",ExpressionUUID->"d4db16d4-bb95-42ef-8c8a-0ea39d90b16a"],
-Cell[106644, 2184, 1246, 31, 144, "Input",ExpressionUUID->"f8137d57-4145-4de0-93fb-05f467e72c0a"],
-Cell[107893, 2217, 944, 17, 126, "Input",ExpressionUUID->"9523c233-8594-44c4-9af3-c19b86f37845"]
-}, Open  ]]
-}, Closed]],
-Cell[CellGroupData[{
-Cell[108886, 2240, 95, 0, 50, "Section",ExpressionUUID->"29ffe310-31d6-4b61-a8b7-c098b1593dfe"],
-Cell[108984, 2242, 640, 9, 93, "Text",ExpressionUUID->"e6f2d9ff-0869-47f2-990a-3026a4b5cb97"],
-Cell[CellGroupData[{
-Cell[109649, 2255, 105, 0, 31, "Subsection",ExpressionUUID->"7f8583f3-a89a-49d2-8062-59e497c608c2"],
-Cell[CellGroupData[{
-Cell[109779, 2259, 111, 0, 30, "Subsubsection",ExpressionUUID->"cb2c62c0-11f6-42ef-88aa-238256d7b9a5"],
-Cell[109893, 2261, 259, 4, 51, "Text",ExpressionUUID->"3e31534f-549d-4cab-9836-5f566653e497"],
-Cell[110155, 2267, 1487, 35, 162, "Input",ExpressionUUID->"5fbb5bdb-2317-47c0-a641-5f816779bb8a"]
-}, Open  ]],
-Cell[CellGroupData[{
-Cell[111679, 2307, 112, 0, 30, "Subsubsection",ExpressionUUID->"15191bd9-3d4d-4444-ae73-6619326d22c6"],
-Cell[111794, 2309, 332, 5, 51, "Text",ExpressionUUID->"d3236b59-f9a7-474c-b139-fc7bc3ebb719"],
-Cell[112129, 2316, 428, 6, 72, "Text",ExpressionUUID->"268b691b-fb93-401c-8977-e6a9bc2848de"],
-Cell[112560, 2324, 3508, 86, 270, "Input",ExpressionUUID->"05912473-8033-42df-934b-87130f855530"]
-}, Open  ]],
-Cell[CellGroupData[{
-Cell[116105, 2415, 91, 0, 30, "Subsubsection",ExpressionUUID->"36dbd464-3e69-4f8e-8c67-d907009a6558"],
-Cell[116199, 2417, 109, 0, 30, "Text",ExpressionUUID->"61f65358-5a60-49d7-9f7e-a9bb97e41e17"],
-Cell[116311, 2419, 2165, 61, 144, "Input",ExpressionUUID->"dcf6ccb3-5874-41cb-8a08-809ea53e0503"]
-}, Closed]],
-Cell[CellGroupData[{
-Cell[118513, 2485, 109, 0, 30, "Subsubsection",ExpressionUUID->"844c34d8-94ca-4cf1-87a6-720df21c94ea"],
-Cell[118625, 2487, 265, 4, 51, "Text",ExpressionUUID->"7acb3dca-08da-4795-b067-5dab190d891b"],
-Cell[118893, 2493, 2373, 59, 162, "Input",ExpressionUUID->"9f2df7a2-e59b-4441-96bd-3f3a470153e8"]
-}, Open  ]],
-Cell[CellGroupData[{
-Cell[121303, 2557, 92, 0, 30, "Subsubsection",ExpressionUUID->"0d1dd2b1-b724-4eb3-afca-647c276f1092"],
-Cell[121398, 2559, 676, 10, 93, "Text",ExpressionUUID->"4dd1a616-076c-4760-812b-4e1a8288e7f0"],
-Cell[122077, 2571, 905, 26, 54, "Input",ExpressionUUID->"b15ad312-934c-4d7b-85bc-0ca34df4bf81"],
-Cell[122985, 2599, 897, 25, 54, "Input",ExpressionUUID->"e513facb-cbc8-4e00-87d0-e1a70d5d6b70"],
-Cell[123885, 2626, 265, 4, 51, "Text",ExpressionUUID->"f082f78a-9d38-4075-9e36-00fd55e8771b"],
-Cell[124153, 2632, 550, 14, 72, "Input",ExpressionUUID->"f40d3e9c-e483-40c9-bb69-f84c36a52098"],
-Cell[124706, 2648, 262, 4, 51, "Text",ExpressionUUID->"a8fb986f-3439-4bee-918b-5b0816a04810"],
-Cell[124971, 2654, 889, 23, 72, "Input",ExpressionUUID->"9ea29673-5f8a-4a7a-9aa4-c798f783d2cb"],
-Cell[125863, 2679, 131, 0, 30, "Text",ExpressionUUID->"b39dd1b4-bae4-4e80-bd62-c686c568a47e"]
-}, Closed]],
-Cell[CellGroupData[{
-Cell[126031, 2684, 124, 0, 30, "Subsubsection",ExpressionUUID->"d7e8c142-0eba-4444-b33c-55b5cc58b74a"],
-Cell[126158, 2686, 147, 2, 30, "Text",ExpressionUUID->"3b85f158-80d8-4ce8-bba8-1a51e4747b04"],
-Cell[126308, 2690, 1290, 32, 144, "Input",ExpressionUUID->"985ea76b-d5ae-4847-8d9e-dcbc969e0e63"]
-}, Open  ]]
-}, Closed]],
-Cell[CellGroupData[{
-Cell[127647, 2728, 104, 0, 31, "Subsection",ExpressionUUID->"98bfabee-2222-47a8-8113-aa439d2d77da"],
-Cell[CellGroupData[{
-Cell[127776, 2732, 102, 0, 30, "Subsubsection",ExpressionUUID->"4b56c8c6-8400-43d1-a12b-602903b06b3c"],
-Cell[127881, 2734, 191, 3, 30, "Text",ExpressionUUID->"ee919686-9297-47df-ad78-f0099c752dfc"],
-Cell[128075, 2739, 128, 2, 35, "Input",ExpressionUUID->"81a8f5ca-bbdf-4926-b993-d4d200a6d744"],
-Cell[128206, 2743, 877, 21, 126, "Input",ExpressionUUID->"32a28296-3f0c-4580-91a5-98f91d7a4beb"]
-}, Closed]],
-Cell[CellGroupData[{
-Cell[129120, 2769, 94, 0, 30, "Subsubsection",ExpressionUUID->"d9ab2832-77b4-4f81-9ab3-b8591744c52f"],
-Cell[129217, 2771, 390, 5, 51, "Text",ExpressionUUID->"f0237f3e-3017-4e65-b4a1-291d613af758"],
-Cell[129610, 2778, 772, 13, 93, "Text",ExpressionUUID->"1bd94ea3-df03-4d83-974f-db3537ba5e5c"],
-Cell[130385, 2793, 4304, 102, 450, "Input",ExpressionUUID->"c611b885-1c4e-47ce-9850-9d32c796521a"]
-}, Closed]],
-Cell[CellGroupData[{
-Cell[134726, 2900, 102, 0, 30, "Subsubsection",ExpressionUUID->"e977faae-01f5-4236-b800-01b71da0ac2e"],
-Cell[134831, 2902, 188, 3, 30, "Text",ExpressionUUID->"315771bb-a9ef-4d30-98d6-098728ae805b"],
-Cell[135022, 2907, 1064, 26, 144, "Input",ExpressionUUID->"05bfb66e-ec46-4118-8bc0-ae21e3b5a217"],
-Cell[136089, 2935, 124, 0, 30, "Text",ExpressionUUID->"9014c4fa-d02d-4506-83ea-a0b7c4412624"],
-Cell[136216, 2937, 2296, 60, 144, "Input",ExpressionUUID->"ee819cb0-68f2-454a-a0f4-684cac9e626f"],
-Cell[138515, 2999, 121, 0, 30, "Text",ExpressionUUID->"6afed1ed-4275-4932-a961-e5e7c1f23c30"],
-Cell[138639, 3001, 1090, 26, 144, "Input",ExpressionUUID->"b296d0ea-d103-4068-8496-57429efd2956"]
-}, Closed]]
-}, Open  ]],
-Cell[CellGroupData[{
-Cell[139778, 3033, 85, 0, 31, "Subsection",ExpressionUUID->"24b06bbb-98d3-4d0c-a718-7295f84a58d4"],
-Cell[139866, 3035, 225, 3, 30, "Text",ExpressionUUID->"8c01c9d8-c2c9-409f-9add-feb45182bcf5"],
-Cell[140094, 3040, 325, 9, 35, "Input",ExpressionUUID->"1867ac5c-695d-42a4-bde7-885cb8daee01"],
-Cell[140422, 3051, 157, 3, 35, "Input",ExpressionUUID->"62509384-eba8-40a8-890e-0b26f46f43bd"],
-Cell[140582, 3056, 536, 13, 58, "Input",ExpressionUUID->"fb91e2ee-93d3-41a3-ae78-c313e2b4a798"],
-Cell[141121, 3071, 1192, 33, 114, "Input",ExpressionUUID->"6012ecc5-3227-462f-a49c-e6c8019f823f"],
-Cell[142316, 3106, 133, 3, 35, "Input",ExpressionUUID->"0d30eee5-b9b0-46f6-a15b-06ad44158c2b"],
-Cell[142452, 3111, 154, 3, 35, "Input",ExpressionUUID->"2432e384-cc2e-488b-ac90-ee1b846b6d04"],
-Cell[142609, 3116, 539, 15, 35, "Input",ExpressionUUID->"c2ce0f44-2933-4579-9948-bd1deb547d91"],
-Cell[143151, 3133, 935, 24, 72, "Input",ExpressionUUID->"3fde6f5b-1629-4bbf-9656-f0843509606b"],
-Cell[144089, 3159, 173, 3, 30, "Text",ExpressionUUID->"d3e1a406-42ce-440a-a83a-ba92b7c2d67c"],
-Cell[144265, 3164, 1388, 37, 90, "Input",ExpressionUUID->"248a4e42-9143-4212-a7fa-75de1b7faf40"],
-Cell[145656, 3203, 831, 21, 72, "Input",ExpressionUUID->"82a3648e-bd4f-493b-bfb0-5578ca7ecf7a"],
-Cell[146490, 3226, 830, 21, 72, "Input",ExpressionUUID->"d45ad4a4-321d-49cd-bf6e-62c7ca68797b"],
-Cell[147323, 3249, 826, 21, 72, "Input",ExpressionUUID->"67ca826d-3c61-44b8-9e55-1a1a12b7134b"]
-}, Open  ]]
-}, Open  ]],
-Cell[CellGroupData[{
-Cell[148198, 3276, 86, 0, 62, "Section",ExpressionUUID->"d2c23604-a292-44ee-87ff-043de8af44e6"],
-Cell[CellGroupData[{
-Cell[148309, 3280, 95, 0, 31, "Subsection",ExpressionUUID->"caf76008-1094-4dab-89d2-46ed4cc1fba0"],
-Cell[148407, 3282, 290, 4, 51, "Text",ExpressionUUID->"c8309336-5c77-441b-a04c-dede3d3eca2f"],
-Cell[148700, 3288, 1218, 33, 108, "Input",ExpressionUUID->"6390bb3f-b7c5-41b8-8c19-384e6427f962"],
-Cell[149921, 3323, 2083, 55, 162, "Input",ExpressionUUID->"a25c713e-9ba3-4635-b13e-e69c6cdae2ad"]
-}, Open  ]],
-Cell[CellGroupData[{
-Cell[152041, 3383, 104, 0, 31, "Subsection",ExpressionUUID->"c37a253b-504f-4c0e-a54a-a3f483e112b3"],
-Cell[152148, 3385, 358, 7, 51, "Text",ExpressionUUID->"a19a5c8b-94b6-4833-85b3-9a3459728609"],
-Cell[152509, 3394, 1138, 30, 126, "Input",ExpressionUUID->"894db10f-0d70-4c25-857e-67b7ef9e6eef"],
-Cell[153650, 3426, 899, 21, 108, "Input",ExpressionUUID->"a62e61dc-6ffe-4b22-9bfc-d7a523b7fbbf"],
-Cell[154552, 3449, 201, 3, 30, "Text",ExpressionUUID->"9776aa99-8c44-4af1-b2b7-cb1030165ea4"],
-Cell[154756, 3454, 570, 13, 72, "Input",ExpressionUUID->"d6f81e9c-0c49-406a-97e7-dc5900d0e9bf"],
-Cell[155329, 3469, 563, 10, 72, "Text",ExpressionUUID->"8e252db5-4198-4597-a1ab-ecb857025865"],
-Cell[155895, 3481, 112, 0, 30, "Text",ExpressionUUID->"e4edc6bf-77e3-4be4-babe-48bd1ae41726"],
-Cell[156010, 3483, 459, 11, 35, "Input",ExpressionUUID->"98ecc5a6-5d46-4feb-9d9b-e0ebf3d9167a"],
-Cell[156472, 3496, 157, 2, 30, "Text",ExpressionUUID->"4c774d77-3b73-430d-9ac3-b822f74ae385"],
-Cell[156632, 3500, 797, 20, 72, "Input",ExpressionUUID->"52cc7ae3-a547-434e-892f-a1f8b53a67b4"]
-}, Open  ]]
-}, Open  ]]
-}, Open  ]]
-}
-]
-*)
-
