@@ -6,7 +6,7 @@ Cell["Motor Physics", \
 
 Cell["\<\
 Robert Atkinson, Maddy Nguyen, Samantha Hordyk, Cole Welch, and John Fraser
-22 July 2018\
+23 July 2018\
 \>", "Author",ExpressionUUID->"05aea015-05f3-4e99-899d-20a8cd5792a1"],
 
 Cell["\<\
@@ -2261,8 +2261,20 @@ domain as a final step.\
 \>", "Text",ExpressionUUID->"3e31534f-549d-4cab-9836-5f566653e497"],
 
 Cell[BoxData[{
- RowBox[{"Clear", "[", "makeTimeDomainFunctionLaplace", 
+ RowBox[{"Clear", "[", 
+  RowBox[{
+  "transformInputFunctions", ",", " ", "makeTimeDomainFunctionLaplace"}], 
   "]"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"transformInputFunctions", "[", 
+   RowBox[{"tInputFunctions_List", ",", " ", "t_", ",", " ", "s_"}], "]"}], 
+  " ", ":=", " ", 
+  RowBox[{
+   RowBox[{
+    RowBox[{"LaplaceTransform", "[", 
+     RowBox[{
+      RowBox[{"#", "[", "t", "]"}], ",", "t", ",", "s"}], "]"}], "&"}], " ", "/@",
+    " ", "tInputFunctions"}]}], "\[IndentingNewLine]", 
  RowBox[{
   RowBox[{"makeTimeDomainFunctionLaplace", "[", 
    RowBox[{"model_", ",", " ", "tInputFunctions_"}], "]"}], " ", ":=", 
@@ -2278,12 +2290,9 @@ Cell[BoxData[{
     "\[IndentingNewLine]", 
     RowBox[{
      RowBox[{"sInputs", " ", "=", " ", 
-      RowBox[{
-       RowBox[{
-        RowBox[{"LaplaceTransform", "[", 
-         RowBox[{
-          RowBox[{"#", "[", "t", "]"}], ",", "t", ",", "s"}], "]"}], "&"}], 
-       " ", "/@", " ", "tInputFunctions"}]}], ";", "\[IndentingNewLine]", 
+      RowBox[{"transformInputFunctions", "[", 
+       RowBox[{"tInputFunctions", ",", " ", "t", ",", " ", "s"}], "]"}]}], 
+     ";", "\[IndentingNewLine]", 
      RowBox[{"sOutput", " ", "=", " ", 
       RowBox[{
        RowBox[{"model", "[", "s", "]"}], " ", ".", "  ", "sInputs"}]}], ";", 
@@ -3222,7 +3231,7 @@ Cell["Steady State", \
 
 Cell[CellGroupData[{
 
-Cell["Calculating values", \
+Cell["Calculating Steady State Values", \
 "Subsection",ExpressionUUID->"caf76008-1094-4dab-89d2-46ed4cc1fba0"],
 
 Cell["\<\
@@ -3388,31 +3397,217 @@ Cell[BoxData[
 Cell["\<\
 We observe that, for velocity, at least, the Final Value Theorem approach \
 gives the same value as does the brute force approach. Huzzah! Moreover, \
-computing the Final Value Theorem values is much more efficient. Can we \
-always use the theorem?\
+computing the Final Value Theorem values is much more efficient.\
 \>", "Text",ExpressionUUID->"be65bbb2-39ae-4481-b1a9-b9f0deb32949"],
+
+Cell[CellGroupData[{
+
+Cell["On the Applicability of the Final Value Theorem", \
+"Subsubsection",ExpressionUUID->"d1efa101-9a15-4674-9b80-e5a33d2ba1c5"],
+
+Cell["Can we always use the Final Value Theorem?", \
+"Text",ExpressionUUID->"f6d2334d-71ac-4b05-9e07-2f3b04e5fbfc"],
 
 Cell["\<\
 No, the Final Value Theorem only applies under certain conditions. \
-Specifically: all non-zero poles of the transfer function must have negative \
-real parts, and the transfer function must have at most one pole at the \
-origin (Ref: \
-http://www-personal.umich.edu/~dsbaero/others/39-FVTrevisited.pdf): if poles \
-fall on the imaginary axis, the time domain function is periodic, and thus \
-has no limit; if poles fall in the right hand complex plane, or there are \
-multiple poles at the origin, the function is unbounded, and has no limit. \
-The conditions exhibited in the brute-force approach capture exactly these \
-conditions. When using the Final Value Theorem, we will need to test the \
-conditions in any particular application. In particular, if \[Alpha]\[Tau] is \
-sufficiently large, the time domain function is periodic, and thus the Final \
-Value Theorem does not apply\
-\>", "Text",ExpressionUUID->"e117fff3-adcb-4da9-97dd-48b3e9dd049e"]
+Specifically: that all non-zero poles of the transfer function must have \
+negative real parts, and the transfer function must have at most one pole at \
+the origin (Ref: \
+http://www-personal.umich.edu/~dsbaero/others/39-FVTrevisited.pdf). The \
+predicate exhibited in the ConditionalExpression of brute-force result \
+capture exactly these conditions. When using the Final Value Theorem on any \
+concrete system, we will need to test the conditions in any particular \
+application. Lets illustrate by looking at the velocity model. \
+\>", "Text",ExpressionUUID->"e117fff3-adcb-4da9-97dd-48b3e9dd049e"],
+
+Cell[BoxData[{"motorVelocityModel", "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"(", 
+   RowBox[{"velPoles", " ", "=", " ", 
+    RowBox[{"TransferFunctionPoles", "[", "motorVelocityModel", "]"}]}], 
+   ")"}], " ", "//", " ", 
+  "MatrixForm"}]}], \
+"Input",ExpressionUUID->"4a183f0d-32b6-4e83-ae1d-7b01c6e23a7b"],
+
+Cell["\<\
+The poles are the same for both applied-voltage and applied-torque input \
+since the transfer function denominator is the same for both inputs, in both \
+cases being the zeros of:\
+\>", "Text",ExpressionUUID->"6ef5c0ac-f395-49d8-9909-84aa256ced05"],
+
+Cell[BoxData[
+ RowBox[{"den", " ", "=", " ", 
+  RowBox[{
+   RowBox[{
+    RowBox[{"motorVelocityModel", "[", "s", "]"}], "[", 
+    RowBox[{"[", 
+     RowBox[{"1", ",", "2"}], "]"}], "]"}], " ", "//", " ", 
+   "Denominator"}]}]], \
+"Input",ExpressionUUID->"b5705f2f-d4ed-4fd0-bab6-fd7f0ccaad8f"],
+
+Cell["\<\
+In order to get a feel for where these zeros are in practice, let\
+\[CloseCurlyQuote]s look at that denominator for an actual example motor. We \
+compute where the poles occur as a function of \[Alpha]\[Tau].\
+\>", "Text",ExpressionUUID->"911b3bfa-1443-4d09-af5b-287a3c5f5bd0"],
+
+Cell[BoxData[{
+ RowBox[{
+  RowBox[{"poles\[Alpha]\[Tau]", " ", "=", " ", 
+   RowBox[{
+    RowBox[{
+     RowBox[{
+      RowBox[{"den", " ", "/.", " ", "aMotor"}], " ", "/.", " ", 
+      "parameterQuantities"}], " ", "//", " ", "siUnits"}], " ", "//", " ", 
+    "clearUnits"}]}], " "}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"Solve", "[", 
+   RowBox[{
+    RowBox[{"poles\[Alpha]\[Tau]", "\[Equal]", "0"}], ",", " ", "s"}], "]"}], 
+  " ", "//", " ", 
+  "N"}]}], "Input",ExpressionUUID->"94879f96-17a4-4d59-8eda-306290907e12"],
+
+Cell["\<\
+By exploring the system a bit, we can see that for certain values of \[Alpha]\
+\[Tau] (specifically any \[Alpha]\[Tau] (slightly?) bigger than one), poles \
+exist in the right hand plane, and thus the Final Value Theorem does not \
+apply:\
+\>", "Text",ExpressionUUID->"551ea5cc-8ccf-4586-ab6a-aef2d1b6ffc3"],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"(*", 
+   RowBox[{
+    RowBox[{"poles\[Alpha]\[Tau]", "=", 
+     RowBox[{"N", "[", "poles\[Alpha]\[Tau]", "]"}]}], ";"}], "*)"}], 
+  "\[IndentingNewLine]", 
+  RowBox[{"Manipulate", "[", "\[IndentingNewLine]", 
+   RowBox[{
+    RowBox[{"Column", "[", 
+     RowBox[{"{", 
+      RowBox[{
+       RowBox[{"poles\[Alpha]\[Tau]", " ", "/.", " ", 
+        RowBox[{"{", 
+         RowBox[{"\[Alpha]\[Tau]", " ", "\[Rule]", " ", "var"}], "}"}]}], ",",
+        " ", "\[IndentingNewLine]", 
+       RowBox[{"poles", " ", "\[Rule]", " ", 
+        RowBox[{"(", 
+         RowBox[{
+          RowBox[{"s", " ", "/.", " ", 
+           RowBox[{"Solve", "[", 
+            RowBox[{
+             RowBox[{
+              RowBox[{"Evaluate", "[", 
+               RowBox[{"poles\[Alpha]\[Tau]", " ", "/.", " ", 
+                RowBox[{"{", 
+                 RowBox[{"\[Alpha]\[Tau]", " ", "\[Rule]", " ", "var"}], 
+                 "}"}]}], "]"}], "\[Equal]", "0"}], ",", " ", "s"}], "]"}]}], 
+          " ", "//", " ", "ReIm"}], ")"}]}], ",", "\[IndentingNewLine]", 
+       RowBox[{"Row", "[", "\[IndentingNewLine]", 
+        RowBox[{"{", 
+         RowBox[{
+          RowBox[{"Plot3D", "[", 
+           RowBox[{
+            RowBox[{
+             RowBox[{"poles\[Alpha]\[Tau]", " ", "/.", " ", 
+              RowBox[{"{", 
+               RowBox[{
+                RowBox[{"s", " ", "\[Rule]", " ", 
+                 RowBox[{"x", " ", "+", " ", 
+                  RowBox[{"I", " ", "y"}]}]}], ",", " ", 
+                RowBox[{"\[Alpha]\[Tau]", " ", "\[Rule]", " ", "var"}]}], 
+               "}"}]}], " ", "//", " ", "Abs"}], ",", " ", 
+            RowBox[{"{", 
+             RowBox[{"x", ",", " ", 
+              RowBox[{"-", "range"}], ",", " ", "range"}], "}"}], ",", " ", 
+            RowBox[{"{", 
+             RowBox[{"y", ",", " ", 
+              RowBox[{"-", "range"}], ",", " ", "range"}], "}"}], ",", " ", 
+            RowBox[{"ImageSize", "\[Rule]", "Medium"}], ",", " ", 
+            RowBox[{"AxesLabel", "\[Rule]", 
+             RowBox[{"{", 
+              RowBox[{"\"\<Re\>\"", ",", " ", "\"\<Im\>\""}], "}"}]}], ",", 
+            " ", 
+            RowBox[{"PlotLabel", "\[Rule]", "\"\<Abs\>\""}]}], "]"}], ",", 
+          "\[IndentingNewLine]", 
+          RowBox[{"Plot3D", "[", 
+           RowBox[{
+            RowBox[{
+             RowBox[{"poles\[Alpha]\[Tau]", " ", "/.", " ", 
+              RowBox[{"{", 
+               RowBox[{
+                RowBox[{"s", " ", "\[Rule]", " ", 
+                 RowBox[{"x", " ", "+", " ", 
+                  RowBox[{"I", " ", "y"}]}]}], ",", " ", 
+                RowBox[{"\[Alpha]\[Tau]", " ", "\[Rule]", " ", "var"}]}], 
+               "}"}]}], " ", "//", " ", "Arg"}], ",", " ", 
+            RowBox[{"{", 
+             RowBox[{"x", ",", " ", 
+              RowBox[{"-", "range"}], ",", " ", "range"}], "}"}], ",", " ", 
+            RowBox[{"{", 
+             RowBox[{"y", ",", " ", 
+              RowBox[{"-", "range"}], ",", " ", "range"}], "}"}], ",", " ", 
+            RowBox[{"ImageSize", "\[Rule]", "Medium"}], ",", " ", 
+            RowBox[{"AxesLabel", "\[Rule]", 
+             RowBox[{"{", 
+              RowBox[{"\"\<Re\>\"", ",", " ", "\"\<Im\>\""}], "}"}]}], ",", 
+            " ", 
+            RowBox[{"PlotLabel", "\[Rule]", "\"\<Arg\>\""}]}], "]"}]}], " ", 
+         "}"}], "\[IndentingNewLine]", "]"}]}], "}"}], " ", "]"}], ",", 
+    "\[IndentingNewLine]", 
+    RowBox[{"{", 
+     RowBox[{
+      RowBox[{"{", 
+       RowBox[{"var", ",", " ", "1.1", ",", " ", "\"\<\[Alpha]\[Tau]\>\""}], 
+       "}"}], ",", " ", 
+      RowBox[{"-", "10"}], ",", " ", "10"}], "}"}], ",", " ", 
+    RowBox[{"{", 
+     RowBox[{
+      RowBox[{"{", 
+       RowBox[{"range", ",", " ", "10"}], "}"}], ",", " ", "0", ",", " ", 
+      "10000"}], "}"}]}], 
+   "]"}]}]], "Input",ExpressionUUID->"65c9764f-f877-4cec-9b97-3e2b5e28dc80"],
+
+Cell["\<\
+Using the \[OpenCurlyDoubleQuote]hard-way\[CloseCurlyDoubleQuote] limit \
+previously calculated, we can verify the observation the steady state \
+velocity is unbounded for such \[Alpha]\[Tau].\
+\>", "Text",ExpressionUUID->"1c31c5a9-ef68-4de2-bcf8-b90e06eee428"],
+
+Cell[BoxData[{
+ RowBox[{
+  RowBox[{
+   RowBox[{
+    RowBox[{
+     RowBox[{"genericVelLimit", " ", "/.", " ", "aMotor"}], " ", "/.", " ", 
+     "parameterQuantities"}], " ", "//", " ", "siUnits"}], " ", "//", " ", 
+   "clearUnits"}], " ", "//", " ", "N"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{
+   RowBox[{"%", " ", "/.", " ", 
+    RowBox[{"\[Alpha]\[Tau]", " ", "\[Rule]", " ", "#"}]}], "&"}], " ", "/@", 
+  " ", 
+  RowBox[{"{", 
+   RowBox[{"0", ",", " ", 
+    RowBox[{"1", "/", "2"}], ",", " ", "1", ",", " ", "2"}], 
+   "}"}]}]}], "Input",ExpressionUUID->"74244c3f-2d8f-43e2-811a-bec7c9a3cad3"],
+
+Cell["An analogous analytic development awaits further work.", \
+"Text",ExpressionUUID->"2a039c23-027a-469e-b505-48f4313a651b"],
+
+Cell[BoxData[
+ RowBox[{"Collect", "[", 
+  RowBox[{
+   RowBox[{"den", " ", "//", " ", "Expand"}], ",", " ", "s"}], 
+  "]"}]], "Input",ExpressionUUID->"f099d44a-0c42-4cbd-8ab1-d96927942d0f"]
+}, Open  ]]
+}, Open  ]]
 }, Open  ]],
 
 Cell[CellGroupData[{
 
 Cell["Back EMF vs Applied Voltage", \
-"Subsection",ExpressionUUID->"c37a253b-504f-4c0e-a54a-a3f483e112b3"],
+"Section",ExpressionUUID->"c37a253b-504f-4c0e-a54a-a3f483e112b3"],
 
 Cell[TextData[{
  "We want to know the steady-state velocity",
@@ -3557,12 +3752,24 @@ Cell[BoxData[{
      RowBox[{"IndependentUnit", "[", "\"\<ticks\>\"", "]"}], " ", "/", " ", 
      "\"\<Revolutions\>\""}]}], 
    "]"}]}]}], "Input",ExpressionUUID->"52cc7ae3-a547-434e-892f-a1f8b53a67b4"]
-}, Open  ]]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell["Revision History", \
+"Section",ExpressionUUID->"276978c4-a71c-4a3f-acf0-32b83569abc0"],
+
+Cell["\<\
+2018.07.23 Added acceleration-dependant external torque. Corrected \
+\[OpenCurlyDoubleQuote]viscous friction\[CloseCurlyDoubleQuote] to \
+\[OpenCurlyDoubleQuote]viscous drag\[CloseCurlyDoubleQuote]. Clarified usage \
+of units.\
+\>", "Item",ExpressionUUID->"715f5052-0999-47b1-a524-c954bf32626e"]
 }, Open  ]]
 }, Open  ]]
 },
-WindowSize->{1063, 1532},
-WindowMargins->{{Automatic, 805}, {Automatic, 1}},
+WindowSize->{1063, 1457},
+WindowMargins->{{1337, Automatic}, {Automatic, 16}},
 PrintingCopies->1,
 PrintingPageRange->{32000, 32000},
 PrintingOptions->{"Magnification"->1.,
@@ -3581,7 +3788,7 @@ StyleDefinitions->Notebook[{
      FrontEnd`FileName[{"Report"}, "StandardReport.nb", CharacterEncoding -> 
        "UTF-8"]]], 
    Cell[
-    StyleData[All, "Printout"], Magnification -> 0.50]}, Visible -> False, 
+    StyleData[All, "Printout"], Magnification -> 0.5]}, Visible -> False, 
   FrontEndVersion -> "11.3 for Microsoft Windows (64-bit) (March 6, 2018)", 
   StyleDefinitions -> "PrivateStylesheetFormatting.nb"]
 ]
