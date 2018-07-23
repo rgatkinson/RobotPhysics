@@ -2695,37 +2695,49 @@ Cell["\<\
 We define time domain functions for all the motor state of interest.\
 \>", "Text",ExpressionUUID->"3b85f158-80d8-4ce8-bba8-1a51e4747b04"],
 
-Cell[BoxData[{
+Cell[BoxData[
  RowBox[{"Clear", "[", 
   RowBox[{
   "motorPosition", ",", " ", "motorVelocity", ",", " ", "motorAcceleration", 
    ",", " ", "motorCurrent", ",", " ", "motorEMF", ",", "motorTorque"}], 
-  "]"}], "\[IndentingNewLine]", 
+  "]"}]], "Input",ExpressionUUID->"f7aa751f-85ac-4faa-95f9-b1d4ea041506"],
+
+Cell[BoxData[
  RowBox[{
   RowBox[{"motorPosition", " ", "=", " ", 
    RowBox[{"makeMotorTimeDomainFunction", "[", "motorPositionModel", "]"}]}], 
-  ";"}], "\[IndentingNewLine]", 
+  ";"}]], "Input",ExpressionUUID->"4825ea3e-c04f-4395-ba05-65fea0811aeb"],
+
+Cell[BoxData[
  RowBox[{
   RowBox[{"motorVelocity", " ", "=", " ", 
    RowBox[{"makeMotorTimeDomainFunction", "[", "motorVelocityModel", "]"}]}], 
-  ";"}], "\[IndentingNewLine]", 
+  ";"}]], "Input",ExpressionUUID->"0ff2e8a6-be74-4935-a45f-c5c7d9fec48c"],
+
+Cell[BoxData[
  RowBox[{
   RowBox[{"motorAcceleration", " ", "=", " ", 
    RowBox[{
    "makeMotorTimeDomainFunction", "[", "motorAccelerationModel", "]"}]}], 
-  ";"}], "\[IndentingNewLine]", 
+  ";"}]], "Input",ExpressionUUID->"cbed89f5-73b1-4f7e-a30c-fe717d0dc374"],
+
+Cell[BoxData[
  RowBox[{
   RowBox[{"motorCurrent", " ", "=", " ", 
    RowBox[{"makeMotorTimeDomainFunction", "[", "motorCurrentModel", "]"}]}], 
-  ";"}], "\[IndentingNewLine]", 
+  ";"}]], "Input",ExpressionUUID->"e02d0c4f-8a5d-4298-89b9-157c2e7f6170"],
+
+Cell[BoxData[
  RowBox[{
   RowBox[{"motorEMF", " ", "=", " ", 
    RowBox[{"makeMotorTimeDomainFunction", "[", "motorEMFModel", "]"}]}], 
-  ";"}], "\[IndentingNewLine]", 
+  ";"}]], "Input",ExpressionUUID->"ec4cb7e9-3431-4be4-a254-8c4e986add40"],
+
+Cell[BoxData[
  RowBox[{
   RowBox[{"motorTorque", " ", "=", " ", 
    RowBox[{"makeMotorTimeDomainFunction", "[", "motorTorqueModel", "]"}]}], 
-  ";"}]}], "Input",ExpressionUUID->"985ea76b-d5ae-4847-8d9e-dcbc969e0e63"]
+  ";"}]], "Input",ExpressionUUID->"985ea76b-d5ae-4847-8d9e-dcbc969e0e63"]
 }, Open  ]]
 }, Open  ]],
 
@@ -3234,6 +3246,11 @@ Cell[CellGroupData[{
 Cell["Calculating Steady State Values", \
 "Subsection",ExpressionUUID->"caf76008-1094-4dab-89d2-46ed4cc1fba0"],
 
+Cell[CellGroupData[{
+
+Cell["Brute Force vs The Final Value Theorem", \
+"Subsubsection",ExpressionUUID->"60c7f88f-780e-4f57-a32e-e9913bd73444"],
+
 Cell["\<\
 We explore the steady state behavior, the limit of the time domain functions \
 as time goes to infinity.\
@@ -3398,7 +3415,8 @@ Cell["\<\
 We observe that, for velocity, at least, the Final Value Theorem approach \
 gives the same value as does the brute force approach. Huzzah! Moreover, \
 computing the Final Value Theorem values is much more efficient.\
-\>", "Text",ExpressionUUID->"be65bbb2-39ae-4481-b1a9-b9f0deb32949"],
+\>", "Text",ExpressionUUID->"be65bbb2-39ae-4481-b1a9-b9f0deb32949"]
+}, Open  ]],
 
 Cell[CellGroupData[{
 
@@ -3414,8 +3432,8 @@ Specifically: that all non-zero poles of the transfer function must have \
 negative real parts, and the transfer function must have at most one pole at \
 the origin (Ref: \
 http://www-personal.umich.edu/~dsbaero/others/39-FVTrevisited.pdf). The \
-predicate exhibited in the ConditionalExpression of brute-force result \
-capture exactly these conditions. When using the Final Value Theorem on any \
+predicate exhibited in the ConditionalExpression of the brute-force result \
+captures exactly these conditions. When using the Final Value Theorem on any \
 concrete system, we will need to test the conditions in any particular \
 application. Lets illustrate by looking at the velocity model. \
 \>", "Text",ExpressionUUID->"e117fff3-adcb-4da9-97dd-48b3e9dd049e"],
@@ -3469,104 +3487,98 @@ Cell[BoxData[{
 
 Cell["\<\
 By exploring the system a bit, we can see that for certain values of \[Alpha]\
-\[Tau] (specifically any \[Alpha]\[Tau] (slightly?) bigger than one), poles \
-exist in the right hand plane, and thus the Final Value Theorem does not \
-apply:\
+\[Tau] (in this one example, apparently any \[Alpha]\[Tau] bigger than one), \
+poles exist in the right hand plane, and thus the Final Value Theorem does \
+not apply:\
 \>", "Text",ExpressionUUID->"551ea5cc-8ccf-4586-ab6a-aef2d1b6ffc3"],
 
 Cell[BoxData[
- RowBox[{
-  RowBox[{"(*", 
-   RowBox[{
-    RowBox[{"poles\[Alpha]\[Tau]", "=", 
-     RowBox[{"N", "[", "poles\[Alpha]\[Tau]", "]"}]}], ";"}], "*)"}], 
-  "\[IndentingNewLine]", 
-  RowBox[{"Manipulate", "[", "\[IndentingNewLine]", 
-   RowBox[{
-    RowBox[{"Column", "[", 
+ RowBox[{"Manipulate", "[", "\[IndentingNewLine]", 
+  RowBox[{
+   RowBox[{"Column", "[", 
+    RowBox[{"{", 
+     RowBox[{
+      RowBox[{"poles\[Alpha]\[Tau]", " ", "/.", " ", 
+       RowBox[{"{", 
+        RowBox[{"\[Alpha]\[Tau]", " ", "\[Rule]", " ", "var"}], "}"}]}], ",", 
+      " ", "\[IndentingNewLine]", 
+      RowBox[{"poles", " ", "\[Rule]", " ", 
+       RowBox[{"(", 
+        RowBox[{
+         RowBox[{"s", " ", "/.", " ", 
+          RowBox[{"Solve", "[", 
+           RowBox[{
+            RowBox[{
+             RowBox[{"Evaluate", "[", 
+              RowBox[{"poles\[Alpha]\[Tau]", " ", "/.", " ", 
+               RowBox[{"{", 
+                RowBox[{"\[Alpha]\[Tau]", " ", "\[Rule]", " ", "var"}], 
+                "}"}]}], "]"}], "\[Equal]", "0"}], ",", " ", "s"}], "]"}]}], 
+         " ", "//", " ", "ReIm"}], ")"}]}], ",", "\[IndentingNewLine]", 
+      RowBox[{"Row", "[", "\[IndentingNewLine]", 
+       RowBox[{"{", 
+        RowBox[{
+         RowBox[{"Plot3D", "[", 
+          RowBox[{
+           RowBox[{
+            RowBox[{"poles\[Alpha]\[Tau]", " ", "/.", " ", 
+             RowBox[{"{", 
+              RowBox[{
+               RowBox[{"s", " ", "\[Rule]", " ", 
+                RowBox[{"x", " ", "+", " ", 
+                 RowBox[{"I", " ", "y"}]}]}], ",", " ", 
+               RowBox[{"\[Alpha]\[Tau]", " ", "\[Rule]", " ", "var"}]}], 
+              "}"}]}], " ", "//", " ", "Abs"}], ",", " ", 
+           RowBox[{"{", 
+            RowBox[{"x", ",", " ", 
+             RowBox[{"-", "range"}], ",", " ", "range"}], "}"}], ",", " ", 
+           RowBox[{"{", 
+            RowBox[{"y", ",", " ", 
+             RowBox[{"-", "range"}], ",", " ", "range"}], "}"}], ",", " ", 
+           RowBox[{"ImageSize", "\[Rule]", "Medium"}], ",", " ", 
+           RowBox[{"AxesLabel", "\[Rule]", 
+            RowBox[{"{", 
+             RowBox[{"\"\<Re\>\"", ",", " ", "\"\<Im\>\""}], "}"}]}], ",", 
+           " ", 
+           RowBox[{"PlotLabel", "\[Rule]", "\"\<Abs\>\""}]}], "]"}], ",", 
+         "\[IndentingNewLine]", 
+         RowBox[{"Plot3D", "[", 
+          RowBox[{
+           RowBox[{
+            RowBox[{"poles\[Alpha]\[Tau]", " ", "/.", " ", 
+             RowBox[{"{", 
+              RowBox[{
+               RowBox[{"s", " ", "\[Rule]", " ", 
+                RowBox[{"x", " ", "+", " ", 
+                 RowBox[{"I", " ", "y"}]}]}], ",", " ", 
+               RowBox[{"\[Alpha]\[Tau]", " ", "\[Rule]", " ", "var"}]}], 
+              "}"}]}], " ", "//", " ", "Arg"}], ",", " ", 
+           RowBox[{"{", 
+            RowBox[{"x", ",", " ", 
+             RowBox[{"-", "range"}], ",", " ", "range"}], "}"}], ",", " ", 
+           RowBox[{"{", 
+            RowBox[{"y", ",", " ", 
+             RowBox[{"-", "range"}], ",", " ", "range"}], "}"}], ",", " ", 
+           RowBox[{"ImageSize", "\[Rule]", "Medium"}], ",", " ", 
+           RowBox[{"AxesLabel", "\[Rule]", 
+            RowBox[{"{", 
+             RowBox[{"\"\<Re\>\"", ",", " ", "\"\<Im\>\""}], "}"}]}], ",", 
+           " ", 
+           RowBox[{"PlotLabel", "\[Rule]", "\"\<Arg\>\""}]}], "]"}]}], " ", 
+        "}"}], "\[IndentingNewLine]", "]"}]}], "}"}], " ", "]"}], ",", 
+   "\[IndentingNewLine]", 
+   RowBox[{"{", 
+    RowBox[{
      RowBox[{"{", 
-      RowBox[{
-       RowBox[{"poles\[Alpha]\[Tau]", " ", "/.", " ", 
-        RowBox[{"{", 
-         RowBox[{"\[Alpha]\[Tau]", " ", "\[Rule]", " ", "var"}], "}"}]}], ",",
-        " ", "\[IndentingNewLine]", 
-       RowBox[{"poles", " ", "\[Rule]", " ", 
-        RowBox[{"(", 
-         RowBox[{
-          RowBox[{"s", " ", "/.", " ", 
-           RowBox[{"Solve", "[", 
-            RowBox[{
-             RowBox[{
-              RowBox[{"Evaluate", "[", 
-               RowBox[{"poles\[Alpha]\[Tau]", " ", "/.", " ", 
-                RowBox[{"{", 
-                 RowBox[{"\[Alpha]\[Tau]", " ", "\[Rule]", " ", "var"}], 
-                 "}"}]}], "]"}], "\[Equal]", "0"}], ",", " ", "s"}], "]"}]}], 
-          " ", "//", " ", "ReIm"}], ")"}]}], ",", "\[IndentingNewLine]", 
-       RowBox[{"Row", "[", "\[IndentingNewLine]", 
-        RowBox[{"{", 
-         RowBox[{
-          RowBox[{"Plot3D", "[", 
-           RowBox[{
-            RowBox[{
-             RowBox[{"poles\[Alpha]\[Tau]", " ", "/.", " ", 
-              RowBox[{"{", 
-               RowBox[{
-                RowBox[{"s", " ", "\[Rule]", " ", 
-                 RowBox[{"x", " ", "+", " ", 
-                  RowBox[{"I", " ", "y"}]}]}], ",", " ", 
-                RowBox[{"\[Alpha]\[Tau]", " ", "\[Rule]", " ", "var"}]}], 
-               "}"}]}], " ", "//", " ", "Abs"}], ",", " ", 
-            RowBox[{"{", 
-             RowBox[{"x", ",", " ", 
-              RowBox[{"-", "range"}], ",", " ", "range"}], "}"}], ",", " ", 
-            RowBox[{"{", 
-             RowBox[{"y", ",", " ", 
-              RowBox[{"-", "range"}], ",", " ", "range"}], "}"}], ",", " ", 
-            RowBox[{"ImageSize", "\[Rule]", "Medium"}], ",", " ", 
-            RowBox[{"AxesLabel", "\[Rule]", 
-             RowBox[{"{", 
-              RowBox[{"\"\<Re\>\"", ",", " ", "\"\<Im\>\""}], "}"}]}], ",", 
-            " ", 
-            RowBox[{"PlotLabel", "\[Rule]", "\"\<Abs\>\""}]}], "]"}], ",", 
-          "\[IndentingNewLine]", 
-          RowBox[{"Plot3D", "[", 
-           RowBox[{
-            RowBox[{
-             RowBox[{"poles\[Alpha]\[Tau]", " ", "/.", " ", 
-              RowBox[{"{", 
-               RowBox[{
-                RowBox[{"s", " ", "\[Rule]", " ", 
-                 RowBox[{"x", " ", "+", " ", 
-                  RowBox[{"I", " ", "y"}]}]}], ",", " ", 
-                RowBox[{"\[Alpha]\[Tau]", " ", "\[Rule]", " ", "var"}]}], 
-               "}"}]}], " ", "//", " ", "Arg"}], ",", " ", 
-            RowBox[{"{", 
-             RowBox[{"x", ",", " ", 
-              RowBox[{"-", "range"}], ",", " ", "range"}], "}"}], ",", " ", 
-            RowBox[{"{", 
-             RowBox[{"y", ",", " ", 
-              RowBox[{"-", "range"}], ",", " ", "range"}], "}"}], ",", " ", 
-            RowBox[{"ImageSize", "\[Rule]", "Medium"}], ",", " ", 
-            RowBox[{"AxesLabel", "\[Rule]", 
-             RowBox[{"{", 
-              RowBox[{"\"\<Re\>\"", ",", " ", "\"\<Im\>\""}], "}"}]}], ",", 
-            " ", 
-            RowBox[{"PlotLabel", "\[Rule]", "\"\<Arg\>\""}]}], "]"}]}], " ", 
-         "}"}], "\[IndentingNewLine]", "]"}]}], "}"}], " ", "]"}], ",", 
-    "\[IndentingNewLine]", 
-    RowBox[{"{", 
-     RowBox[{
-      RowBox[{"{", 
-       RowBox[{"var", ",", " ", "1.1", ",", " ", "\"\<\[Alpha]\[Tau]\>\""}], 
-       "}"}], ",", " ", 
-      RowBox[{"-", "10"}], ",", " ", "10"}], "}"}], ",", " ", 
-    RowBox[{"{", 
-     RowBox[{
-      RowBox[{"{", 
-       RowBox[{"range", ",", " ", "10"}], "}"}], ",", " ", "0", ",", " ", 
-      "10000"}], "}"}]}], 
-   "]"}]}]], "Input",ExpressionUUID->"65c9764f-f877-4cec-9b97-3e2b5e28dc80"],
+      RowBox[{"var", ",", " ", "1.1", ",", " ", "\"\<\[Alpha]\[Tau]\>\""}], 
+      "}"}], ",", " ", 
+     RowBox[{"-", "10"}], ",", " ", "10"}], "}"}], ",", " ", 
+   RowBox[{"{", 
+    RowBox[{
+     RowBox[{"{", 
+      RowBox[{"range", ",", " ", "10"}], "}"}], ",", " ", "0", ",", " ", 
+     "10000"}], "}"}]}], 
+  "]"}]], "Input",ExpressionUUID->"65c9764f-f877-4cec-9b97-3e2b5e28dc80"],
 
 Cell["\<\
 Using the \[OpenCurlyDoubleQuote]hard-way\[CloseCurlyDoubleQuote] limit \
@@ -3592,8 +3604,9 @@ Cell[BoxData[{
     RowBox[{"1", "/", "2"}], ",", " ", "1", ",", " ", "2"}], 
    "}"}]}]}], "Input",ExpressionUUID->"74244c3f-2d8f-43e2-811a-bec7c9a3cad3"],
 
-Cell["An analogous analytic development awaits further work.", \
-"Text",ExpressionUUID->"2a039c23-027a-469e-b505-48f4313a651b"],
+Cell["\<\
+An analogous analytic development awaits a future revision to this document.\
+\>", "Text",ExpressionUUID->"2a039c23-027a-469e-b505-48f4313a651b"],
 
 Cell[BoxData[
  RowBox[{"Collect", "[", 
