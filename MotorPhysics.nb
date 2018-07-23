@@ -39,7 +39,7 @@ Cell[BoxData[
    RowBox[{"NotebookDirectory", "[", "]"}], " ", "<>", " ", 
    "\"\<Utilities.m\>\""}], 
   "]"}]], "Input",ExpressionUUID->"00da5f52-c4e4-4d20-9d91-5577a43f3731"]
-}, Closed]],
+}, Open  ]],
 
 Cell[CellGroupData[{
 
@@ -1167,7 +1167,7 @@ Cell[BoxData[
    "J", ",", " ", "b", ",", " ", "Ke", ",", " ", "Kt", ",", " ", "R", ",", 
     " ", "L"}], 
    "}"}]}]], "Input",ExpressionUUID->"e040b396-c8fb-46d1-84d2-b04509a22dd7"]
-}, Closed]],
+}, Open  ]],
 
 Cell[CellGroupData[{
 
@@ -1278,7 +1278,7 @@ Cell[BoxData[
  RowBox[{"diffEqns", " ", "//", " ", 
   "prettyPrint"}]], \
 "Input",ExpressionUUID->"a6035ae8-1286-41cd-8182-fd83560bf599"]
-}, Closed]],
+}, Open  ]],
 
 Cell[CellGroupData[{
 
@@ -1354,8 +1354,8 @@ Cell[BoxData[{
      "initialConditions"}]}], ")"}], " ", "//", " ", 
   "prettyPrint"}]}], \
 "Input",ExpressionUUID->"f7cc3dd9-953c-4fa9-a8b5-abdb91830726"]
-}, Closed]]
-}, Closed]],
+}, Open  ]]
+}, Open  ]],
 
 Cell[CellGroupData[{
 
@@ -1605,7 +1605,7 @@ Cell[BoxData[{
     RowBox[{"parseUnit", "[", "\"\<N m s\>\"", "]"}], " ", "/", " ", 
     RowBox[{"parseUnit", "[", "\"\<Radians^2\>\"", "]"}]}]}], 
   ";"}]}], "Input",ExpressionUUID->"81a7fa61-e053-47d5-8b63-93b959eaf86d"]
-}, Closed]],
+}, Open  ]],
 
 Cell[CellGroupData[{
 
@@ -1993,7 +1993,7 @@ Cell[BoxData[
 "Input",ExpressionUUID->"4fd5c58e-a4d2-45d0-bd28-8f0bc5271d17"]
 }, Open  ]]
 }, Open  ]]
-}, Closed]],
+}, Open  ]],
 
 Cell[CellGroupData[{
 
@@ -2162,7 +2162,7 @@ Cell[BoxData[{
  RowBox[{"%", " ", "//", " ", 
   "ColumnForm"}]}], \
 "Input",ExpressionUUID->"793cb62c-f831-44a0-84c6-f201fff3c88a"]
-}, Closed]],
+}, Open  ]],
 
 Cell[CellGroupData[{
 
@@ -2226,7 +2226,7 @@ Cell[BoxData[{
   "makeModel", "[", "\[Tau]", 
    "]"}]}]}], "Input",ExpressionUUID->"9523c233-8594-44c4-9af3-c19b86f37845"]
 }, Open  ]]
-}, Closed]],
+}, Open  ]],
 
 Cell[CellGroupData[{
 
@@ -2475,7 +2475,7 @@ Cell[BoxData[{
     "\[IndentingNewLine]", "}"}]}], " ", "//", " ", 
   "ColumnForm"}]}], \
 "Input",ExpressionUUID->"dcf6ccb3-5874-41cb-8a08-809ea53e0503"]
-}, Closed]],
+}, Open  ]],
 
 Cell[CellGroupData[{
 
@@ -2675,7 +2675,7 @@ Cell[BoxData[{
 
 Cell["Huzzah. Going forward, we will use the convolution approach.", \
 "Text",ExpressionUUID->"b39dd1b4-bae4-4e80-bd62-c686c568a47e"]
-}, Closed]],
+}, Open  ]],
 
 Cell[CellGroupData[{
 
@@ -2759,7 +2759,7 @@ Cell[BoxData[
       RowBox[{"t", ",", " ", "\"\<Seconds\>\""}], "]"}]}]}], 
    "\[IndentingNewLine]", 
    "}"}]}]], "Input",ExpressionUUID->"32a28296-3f0c-4580-91a5-98f91d7a4beb"]
-}, Closed]],
+}, Open  ]],
 
 Cell[CellGroupData[{
 
@@ -3579,8 +3579,10 @@ StyleDefinitions->Notebook[{
     StyleData[
     StyleDefinitions -> 
      FrontEnd`FileName[{"Report"}, "StandardReport.nb", CharacterEncoding -> 
-       "UTF-8"]]]}, Visible -> False, FrontEndVersion -> 
-  "11.3 for Microsoft Windows (64-bit) (March 6, 2018)", StyleDefinitions -> 
-  "PrivateStylesheetFormatting.nb"]
+       "UTF-8"]]], 
+   Cell[
+    StyleData[All, "Printout"], Magnification -> 0.50]}, Visible -> False, 
+  FrontEndVersion -> "11.3 for Microsoft Windows (64-bit) (March 6, 2018)", 
+  StyleDefinitions -> "PrivateStylesheetFormatting.nb"]
 ]
 
