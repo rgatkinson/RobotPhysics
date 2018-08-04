@@ -3880,7 +3880,15 @@ Cell["\<\
 The \[OpenCurlyDoubleQuote]Indeterminate\[CloseCurlyDoubleQuote] result \
 regarding position is Mathematica informing us that it has proven to itself \
 that the limit does not exist.\
-\>", "Text",ExpressionUUID->"36fc6ee0-50da-416d-8538-9f4fed912875"]
+\>", "Text",ExpressionUUID->"36fc6ee0-50da-416d-8538-9f4fed912875"],
+
+Cell[BoxData[
+ RowBox[{"saveDefinitions", "[", 
+  RowBox[{
+   RowBox[{"outputDirectory", " ", "<>", " ", "\"\<SteadyState.m\>\""}], ",", 
+   " ", 
+   RowBox[{"{", "ss", "}"}]}], 
+  "]"}]], "Input",ExpressionUUID->"5aed011e-a7a9-4c2c-9a08-6ef2d65f763c"]
 }, Open  ]],
 
 Cell[CellGroupData[{
