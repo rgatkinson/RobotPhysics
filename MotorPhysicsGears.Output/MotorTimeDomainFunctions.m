@@ -1,7 +1,7 @@
 motorPosition = Function[{eaActual$, \[Tau]aActual$}, 
-     Module[{exprT$}, exprT$ = expr$18317 /. {ea$18317 -> eaActual$, 
-          \[Tau]a$18317 -> \[Tau]aActual$}; Function[{tActual$}, 
-        exprT$ /. t$18317 -> tActual$]]]
+     Module[{exprT$}, exprT$ = expr$18365 /. {ea$18365 -> eaActual$, 
+          \[Tau]a$18365 -> \[Tau]aActual$}; Function[{tActual$}, 
+        exprT$ /. t$18365 -> tActual$]]]
  
 Attributes[eaActual$] = {Temporary}
  
@@ -9,9 +9,9 @@ Attributes[\[Tau]aActual$] = {Temporary}
  
 Attributes[exprT$] = {Temporary}
  
-Attributes[expr$18317] = {Temporary}
+Attributes[expr$18365] = {Temporary}
  
-expr$18317 = {Integrate[Kt*\[Eta]*\[CapitalNu]^2*
+expr$18365 = {Integrate[Kt*\[Eta]*\[CapitalNu]^2*
         ((bout*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + b*R*\[Eta]*\[CapitalNu]^2)^
           (-1) - (-(bout*E^((-bout/(2*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
                 (Jout*R)/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
@@ -246,28 +246,28 @@ expr$18317 = {Integrate[Kt*\[Eta]*\[CapitalNu]^2*
                 \[CapitalNu]^2)^2]))*\[Tau]a22[t23 - \[Tau]27], 
        {\[Tau]27, 0, t23}]}
  
-Attributes[ea$18317] = {Temporary}
+Attributes[ea$18365] = {Temporary}
  
-ea$18317 = ea21
+ea$18365 = ea21
  
-Attributes[\[Tau]a$18317] = {Temporary}
+Attributes[\[Tau]a$18365] = {Temporary}
  
-\[Tau]a$18317 = \[Tau]a22
+\[Tau]a$18365 = \[Tau]a22
  
 Attributes[tActual$] = {Temporary}
  
-Attributes[t$18317] = {Temporary}
+Attributes[t$18365] = {Temporary}
  
-t$18317 = t23
+t$18365 = t23
  
 motorVelocity = Function[{eaActual$, \[Tau]aActual$}, 
-     Module[{exprT$}, exprT$ = expr$19105 /. {ea$19105 -> eaActual$, 
-          \[Tau]a$19105 -> \[Tau]aActual$}; Function[{tActual$}, 
-        exprT$ /. t$19105 -> tActual$]]]
+     Module[{exprT$}, exprT$ = expr$19153 /. {ea$19153 -> eaActual$, 
+          \[Tau]a$19153 -> \[Tau]aActual$}; Function[{tActual$}, 
+        exprT$ /. t$19153 -> tActual$]]]
  
-Attributes[expr$19105] = {Temporary}
+Attributes[expr$19153] = {Temporary}
  
-expr$19105 = 
+expr$19153 = 
     {Integrate[-(((E^((-bout/(2*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
               (Jout*R)/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
               (b*\[Eta]*\[CapitalNu]^2)/(2*(Jout + J*\[Eta]*\[CapitalNu]^
@@ -393,26 +393,26 @@ expr$19105 =
            (bout*L + Jout*R + b*L*\[Eta]*\[CapitalNu]^2 + 
              J*R*\[Eta]*\[CapitalNu]^2)^2]), {\[Tau]34, 0, t30}]}
  
-Attributes[ea$19105] = {Temporary}
+Attributes[ea$19153] = {Temporary}
  
-ea$19105 = ea28
+ea$19153 = ea28
  
-Attributes[\[Tau]a$19105] = {Temporary}
+Attributes[\[Tau]a$19153] = {Temporary}
  
-\[Tau]a$19105 = \[Tau]a29
+\[Tau]a$19153 = \[Tau]a29
  
-Attributes[t$19105] = {Temporary}
+Attributes[t$19153] = {Temporary}
  
-t$19105 = t30
+t$19153 = t30
  
 motorAcceleration = Function[{eaActual$, \[Tau]aActual$}, 
-     Module[{exprT$}, exprT$ = expr$21019 /. {ea$21019 -> eaActual$, 
-          \[Tau]a$21019 -> \[Tau]aActual$}; Function[{tActual$}, 
-        exprT$ /. t$21019 -> tActual$]]]
+     Module[{exprT$}, exprT$ = expr$21069 /. {ea$21069 -> eaActual$, 
+          \[Tau]a$21069 -> \[Tau]aActual$}; Function[{tActual$}, 
+        exprT$ /. t$21069 -> tActual$]]]
  
-Attributes[expr$21019] = {Temporary}
+Attributes[expr$21069] = {Temporary}
  
-expr$21019 = {Integrate[(Kt*\[Eta]*\[CapitalNu]^2*
+expr$21069 = {Integrate[(Kt*\[Eta]*\[CapitalNu]^2*
          (bout*E^((-bout/(2*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
               (Jout*R)/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
               (b*\[Eta]*\[CapitalNu]^2)/(2*(Jout + J*\[Eta]*\[CapitalNu]^
@@ -746,26 +746,26 @@ expr$21019 = {Integrate[(Kt*\[Eta]*\[CapitalNu]^2*
           (Jout + J*\[Eta]*\[CapitalNu]^2))*\[Tau]a36[t37 - \[Tau]41], 
        {\[Tau]41, 0, t37}]}
  
-Attributes[ea$21019] = {Temporary}
+Attributes[ea$21069] = {Temporary}
  
-ea$21019 = ea35
+ea$21069 = ea35
  
-Attributes[\[Tau]a$21019] = {Temporary}
+Attributes[\[Tau]a$21069] = {Temporary}
  
-\[Tau]a$21019 = \[Tau]a36
+\[Tau]a$21069 = \[Tau]a36
  
-Attributes[t$21019] = {Temporary}
+Attributes[t$21069] = {Temporary}
  
-t$21019 = t37
+t$21069 = t37
  
 motorCurrent = Function[{eaActual$, \[Tau]aActual$}, 
-     Module[{exprT$}, exprT$ = expr$100930 /. {ea$100930 -> eaActual$, 
-          \[Tau]a$100930 -> \[Tau]aActual$}; Function[{tActual$}, 
-        exprT$ /. t$100930 -> tActual$]]]
+     Module[{exprT$}, exprT$ = expr$105022 /. {ea$105022 -> eaActual$, 
+          \[Tau]a$105022 -> \[Tau]aActual$}; Function[{tActual$}, 
+        exprT$ /. t$105022 -> tActual$]]]
  
-Attributes[expr$100930] = {Temporary}
+Attributes[expr$105022] = {Temporary}
  
-expr$100930 = 
+expr$105022 = 
     {Integrate[((-(bout*E^((-bout/(2*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
                (Jout*R)/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^2)) - (b*\[Eta]*
                  \[CapitalNu]^2)/(2*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
@@ -891,26 +891,26 @@ expr$100930 =
           (bout*L + Jout*R + b*L*\[Eta]*\[CapitalNu]^2 + 
             J*R*\[Eta]*\[CapitalNu]^2)^2], {\[Tau]56, 0, t52}]}
  
-Attributes[ea$100930] = {Temporary}
+Attributes[ea$105022] = {Temporary}
  
-ea$100930 = ea50
+ea$105022 = ea50
  
-Attributes[\[Tau]a$100930] = {Temporary}
+Attributes[\[Tau]a$105022] = {Temporary}
  
-\[Tau]a$100930 = \[Tau]a51
+\[Tau]a$105022 = \[Tau]a51
  
-Attributes[t$100930] = {Temporary}
+Attributes[t$105022] = {Temporary}
  
-t$100930 = t52
+t$105022 = t52
  
 motorEMF = Function[{eaActual$, \[Tau]aActual$}, Module[{exprT$}, 
-      exprT$ = expr$102861 /. {ea$102861 -> eaActual$, \[Tau]a$102861 -> 
+      exprT$ = expr$106953 /. {ea$106953 -> eaActual$, \[Tau]a$106953 -> 
            \[Tau]aActual$}; Function[{tActual$}, 
-        exprT$ /. t$102861 -> tActual$]]]
+        exprT$ /. t$106953 -> tActual$]]]
  
-Attributes[expr$102861] = {Temporary}
+Attributes[expr$106953] = {Temporary}
  
-expr$102861 = 
+expr$106953 = 
     {Integrate[-(((E^((-bout/(2*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
               (Jout*R)/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
               (b*\[Eta]*\[CapitalNu]^2)/(2*(Jout + J*\[Eta]*\[CapitalNu]^
@@ -1036,26 +1036,26 @@ expr$102861 =
            (bout*L + Jout*R + b*L*\[Eta]*\[CapitalNu]^2 + 
              J*R*\[Eta]*\[CapitalNu]^2)^2]), {\[Tau]63, 0, t59}]}
  
-Attributes[ea$102861] = {Temporary}
+Attributes[ea$106953] = {Temporary}
  
-ea$102861 = ea57
+ea$106953 = ea57
  
-Attributes[\[Tau]a$102861] = {Temporary}
+Attributes[\[Tau]a$106953] = {Temporary}
  
-\[Tau]a$102861 = \[Tau]a58
+\[Tau]a$106953 = \[Tau]a58
  
-Attributes[t$102861] = {Temporary}
+Attributes[t$106953] = {Temporary}
  
-t$102861 = t59
+t$106953 = t59
  
 motorTorque = Function[{eaActual$, \[Tau]aActual$}, 
-     Module[{exprT$}, exprT$ = expr$104792 /. {ea$104792 -> eaActual$, 
-          \[Tau]a$104792 -> \[Tau]aActual$}; Function[{tActual$}, 
-        exprT$ /. t$104792 -> tActual$]]]
+     Module[{exprT$}, exprT$ = expr$108884 /. {ea$108884 -> eaActual$, 
+          \[Tau]a$108884 -> \[Tau]aActual$}; Function[{tActual$}, 
+        exprT$ /. t$108884 -> tActual$]]]
  
-Attributes[expr$104792] = {Temporary}
+Attributes[expr$108884] = {Temporary}
  
-expr$104792 = 
+expr$108884 = 
     {Integrate[(Kt*(-(bout*E^((-bout/(2*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
                (Jout*R)/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^2)) - (b*\[Eta]*
                  \[CapitalNu]^2)/(2*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
@@ -1181,26 +1181,26 @@ expr$104792 =
           (bout*L + Jout*R + b*L*\[Eta]*\[CapitalNu]^2 + 
             J*R*\[Eta]*\[CapitalNu]^2)^2], {\[Tau]70, 0, t66}]}
  
-Attributes[ea$104792] = {Temporary}
+Attributes[ea$108884] = {Temporary}
  
-ea$104792 = ea64
+ea$108884 = ea64
  
-Attributes[\[Tau]a$104792] = {Temporary}
+Attributes[\[Tau]a$108884] = {Temporary}
  
-\[Tau]a$104792 = \[Tau]a65
+\[Tau]a$108884 = \[Tau]a65
  
-Attributes[t$104792] = {Temporary}
+Attributes[t$108884] = {Temporary}
  
-t$104792 = t66
+t$108884 = t66
  
 motorPositionOut = Function[{eaActual$, \[Tau]aActual$}, 
-     Module[{exprT$}, exprT$ = expr$106723 /. {ea$106723 -> eaActual$, 
-          \[Tau]a$106723 -> \[Tau]aActual$}; Function[{tActual$}, 
-        exprT$ /. t$106723 -> tActual$]]]
+     Module[{exprT$}, exprT$ = expr$110815 /. {ea$110815 -> eaActual$, 
+          \[Tau]a$110815 -> \[Tau]aActual$}; Function[{tActual$}, 
+        exprT$ /. t$110815 -> tActual$]]]
  
-Attributes[expr$106723] = {Temporary}
+Attributes[expr$110815] = {Temporary}
  
-expr$106723 = {Integrate[Kt*\[Eta]*\[CapitalNu]*
+expr$110815 = {Integrate[Kt*\[Eta]*\[CapitalNu]*
         ((bout*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + b*R*\[Eta]*\[CapitalNu]^2)^
           (-1) - (-(bout*E^((-bout/(2*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
                 (Jout*R)/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
@@ -1435,26 +1435,26 @@ expr$106723 = {Integrate[Kt*\[Eta]*\[CapitalNu]*
                 \[CapitalNu]^2)^2]))*\[Tau]a72[t73 - \[Tau]77], 
        {\[Tau]77, 0, t73}]}
  
-Attributes[ea$106723] = {Temporary}
+Attributes[ea$110815] = {Temporary}
  
-ea$106723 = ea71
+ea$110815 = ea71
  
-Attributes[\[Tau]a$106723] = {Temporary}
+Attributes[\[Tau]a$110815] = {Temporary}
  
-\[Tau]a$106723 = \[Tau]a72
+\[Tau]a$110815 = \[Tau]a72
  
-Attributes[t$106723] = {Temporary}
+Attributes[t$110815] = {Temporary}
  
-t$106723 = t73
+t$110815 = t73
  
 motorVelocityOut = Function[{eaActual$, \[Tau]aActual$}, 
-     Module[{exprT$}, exprT$ = expr$107507 /. {ea$107507 -> eaActual$, 
-          \[Tau]a$107507 -> \[Tau]aActual$}; Function[{tActual$}, 
-        exprT$ /. t$107507 -> tActual$]]]
+     Module[{exprT$}, exprT$ = expr$111599 /. {ea$111599 -> eaActual$, 
+          \[Tau]a$111599 -> \[Tau]aActual$}; Function[{tActual$}, 
+        exprT$ /. t$111599 -> tActual$]]]
  
-Attributes[expr$107507] = {Temporary}
+Attributes[expr$111599] = {Temporary}
  
-expr$107507 = 
+expr$111599 = 
     {Integrate[-(((E^((-bout/(2*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
               (Jout*R)/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
               (b*\[Eta]*\[CapitalNu]^2)/(2*(Jout + J*\[Eta]*\[CapitalNu]^
@@ -1580,26 +1580,26 @@ expr$107507 =
            (bout*L + Jout*R + b*L*\[Eta]*\[CapitalNu]^2 + 
              J*R*\[Eta]*\[CapitalNu]^2)^2]), {\[Tau]84, 0, t80}]}
  
-Attributes[ea$107507] = {Temporary}
+Attributes[ea$111599] = {Temporary}
  
-ea$107507 = ea78
+ea$111599 = ea78
  
-Attributes[\[Tau]a$107507] = {Temporary}
+Attributes[\[Tau]a$111599] = {Temporary}
  
-\[Tau]a$107507 = \[Tau]a79
+\[Tau]a$111599 = \[Tau]a79
  
-Attributes[t$107507] = {Temporary}
+Attributes[t$111599] = {Temporary}
  
-t$107507 = t80
+t$111599 = t80
  
 motorAccelerationOut = Function[{eaActual$, \[Tau]aActual$}, 
-     Module[{exprT$}, exprT$ = expr$109438 /. {ea$109438 -> eaActual$, 
-          \[Tau]a$109438 -> \[Tau]aActual$}; Function[{tActual$}, 
-        exprT$ /. t$109438 -> tActual$]]]
+     Module[{exprT$}, exprT$ = expr$113530 /. {ea$113530 -> eaActual$, 
+          \[Tau]a$113530 -> \[Tau]aActual$}; Function[{tActual$}, 
+        exprT$ /. t$113530 -> tActual$]]]
  
-Attributes[expr$109438] = {Temporary}
+Attributes[expr$113530] = {Temporary}
  
-expr$109438 = {Integrate[(Kt*\[Eta]*\[CapitalNu]*
+expr$113530 = {Integrate[(Kt*\[Eta]*\[CapitalNu]*
          (bout*E^((-bout/(2*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
               (Jout*R)/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
               (b*\[Eta]*\[CapitalNu]^2)/(2*(Jout + J*\[Eta]*\[CapitalNu]^
@@ -1932,17 +1932,17 @@ expr$109438 = {Integrate[(Kt*\[Eta]*\[CapitalNu]*
           (Jout + J*\[Eta]*\[CapitalNu]^2))*\[Tau]a86[t87 - \[Tau]91], 
        {\[Tau]91, 0, t87}]}
  
-Attributes[ea$109438] = {Temporary}
+Attributes[ea$113530] = {Temporary}
  
-ea$109438 = ea85
+ea$113530 = ea85
  
-Attributes[\[Tau]a$109438] = {Temporary}
+Attributes[\[Tau]a$113530] = {Temporary}
  
-\[Tau]a$109438 = \[Tau]a86
+\[Tau]a$113530 = \[Tau]a86
  
-Attributes[t$109438] = {Temporary}
+Attributes[t$113530] = {Temporary}
  
-t$109438 = t87
+t$113530 = t87
  
 makeMotorTimeDomainFunction[model_] := makeMotorTimeDomainFunction[model, 
      makeTimeDomainFunctionConvolve]
