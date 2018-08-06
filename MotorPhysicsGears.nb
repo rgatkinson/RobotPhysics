@@ -3206,9 +3206,10 @@ Cell[BoxData[{
     "]"}], " ", ":=", " ", 
    RowBox[{"Module", "[", 
     RowBox[{
-     RowBox[{"{", 
-      RowBox[{"\[Tau]", "=", 
-       RowBox[{"Unique", "[", "\"\<\[Tau]\>\"", "]"}]}], "}"}], ",", 
+     RowBox[{"{", "\[Tau]", 
+      RowBox[{"(*", 
+       RowBox[{"=", 
+        RowBox[{"Unique", "[", "\"\<\[Tau]\>\"", "]"}]}], "*)"}], "}"}], ",", 
      "\[IndentingNewLine]", 
      RowBox[{"Assuming", "[", 
       RowBox[{
@@ -3327,55 +3328,30 @@ Cell[BoxData[{
    "\[IndentingNewLine]", 
    RowBox[{"Module", "[", 
     RowBox[{
-     RowBox[{"{", 
-      RowBox[{"vbat", 
-       RowBox[{"(*", " ", 
-        RowBox[{"=", " ", 
-         RowBox[{"Unique", "[", "\"\<ea\>\"", "]"}]}], "*)"}], ",", " ", 
-       "\[Tau]auto", 
-       RowBox[{"(*", 
-        RowBox[{"=", 
-         RowBox[{"Unique", "[", "\"\<\[Tau]a\>\"", "]"}]}], "*)"}], ",", " ", 
-       "t", 
-       RowBox[{"(*", 
-        RowBox[{"=", 
-         RowBox[{"Unique", "[", "\"\<t\>\"", "]"}]}], "*)"}], ",", " ", 
-       "expr"}], "}"}], ",", "\[IndentingNewLine]", 
-     RowBox[{
-      RowBox[{"expr", "=", " ", 
-       RowBox[{
-        RowBox[{"builder", "[", 
-         RowBox[{"model", ",", " ", 
-          RowBox[{"{", 
-           RowBox[{
-            RowBox[{
-             RowBox[{"vbat", "[", "#", "]"}], "&"}], ",", " ", 
-            RowBox[{
-             RowBox[{"\[Tau]auto", "[", "#", "]"}], "&"}]}], "}"}]}], "]"}], 
-        "[", "t", "]"}]}], ";", "\[IndentingNewLine]", 
-      RowBox[{"Function", "[", 
-       RowBox[{
-        RowBox[{"{", 
-         RowBox[{"vbatActual", ",", " ", "\[Tau]autoActual"}], "}"}], ",", 
-        " ", 
-        RowBox[{"Module", "[", 
+     RowBox[{"{", "t", 
+      RowBox[{"(*", 
+       RowBox[{"=", 
+        RowBox[{"Unique", "[", "\"\<t\>\"", "]"}]}], "*)"}], "}"}], ",", 
+     "\[IndentingNewLine]", 
+     RowBox[{"Function", "[", 
+      RowBox[{
+       RowBox[{"{", 
+        RowBox[{"vbat", ",", " ", "\[Tau]auto"}], "}"}], ",", " ", 
+       RowBox[{"Module", "[", 
+        RowBox[{
+         RowBox[{"{", "fn", "}"}], ",", "\[IndentingNewLine]", 
          RowBox[{
-          RowBox[{"{", "exprT", "}"}], ",", "\[IndentingNewLine]", 
-          RowBox[{
-           RowBox[{"exprT", " ", "=", " ", 
-            RowBox[{"expr", " ", "/.", " ", 
+          RowBox[{"fn", " ", "=", " ", 
+           RowBox[{"builder", "[", 
+            RowBox[{"model", ",", " ", 
              RowBox[{"{", 
               RowBox[{
-               RowBox[{"vbat", " ", "\[Rule]", " ", "vbatActual"}], ",", " ", 
                RowBox[{
-               "\[Tau]auto", " ", "\[Rule]", " ", "\[Tau]autoActual"}]}], 
-              "}"}]}]}], ";", "\[IndentingNewLine]", 
-           RowBox[{"Function", "[", 
-            RowBox[{
-             RowBox[{"{", "tActual", "}"}], ",", " ", 
-             RowBox[{"exprT", " ", "/.", " ", 
-              RowBox[{"t", " ", "\[Rule]", " ", "tActual"}]}]}], "]"}]}]}], 
-         "]"}]}], "\[IndentingNewLine]", "]"}]}]}], 
+                RowBox[{"vbat", "[", "#", "]"}], "&"}], ",", " ", 
+               RowBox[{
+                RowBox[{"\[Tau]auto", "[", "#", "]"}], "&"}]}], "}"}]}], 
+            "]"}]}], ";", "\[IndentingNewLine]", "fn"}]}], 
+        "\[IndentingNewLine]", "]"}]}], "]"}]}], 
     "]"}]}]}]}], \
 "Input",ExpressionUUID->"9f2df7a2-e59b-4441-96bd-3f3a470153e8"]
 }, Open  ]],
@@ -3405,42 +3381,84 @@ Cell[BoxData[
    ",", " ", "motorCurrent", ",", " ", "motorEMF", ",", "motorTorque"}], 
   "]"}]], "Input",ExpressionUUID->"f7aa751f-85ac-4faa-95f9-b1d4ea041506"],
 
-Cell[BoxData[
+Cell[BoxData[{
  RowBox[{
   RowBox[{"motorPosition", " ", "=", " ", 
    RowBox[{"makeMotorTimeDomainFunction", "[", "motorPositionModel", "]"}]}], 
-  ";"}]], "Input",ExpressionUUID->"4825ea3e-c04f-4395-ba05-65fea0811aeb"],
+  ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"motorPositionConstVbat", " ", "=", " ", 
+   RowBox[{"motorPosition", "[", 
+    RowBox[{
+     RowBox[{"Vbat", " ", "&"}], ",", " ", 
+     RowBox[{"0", "&"}]}], "]"}]}], 
+  ";"}]}], "Input",ExpressionUUID->"4825ea3e-c04f-4395-ba05-65fea0811aeb"],
 
-Cell[BoxData[
+Cell[BoxData[{
  RowBox[{
   RowBox[{"motorVelocity", " ", "=", " ", 
    RowBox[{"makeMotorTimeDomainFunction", "[", "motorVelocityModel", "]"}]}], 
-  ";"}]], "Input",ExpressionUUID->"0ff2e8a6-be74-4935-a45f-c5c7d9fec48c"],
+  ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"motorVelocityConstVbat", " ", "=", " ", 
+   RowBox[{"motorVelocity", "[", 
+    RowBox[{
+     RowBox[{"Vbat", " ", "&"}], ",", " ", 
+     RowBox[{"0", "&"}]}], "]"}]}], 
+  ";"}]}], "Input",ExpressionUUID->"0ff2e8a6-be74-4935-a45f-c5c7d9fec48c"],
 
-Cell[BoxData[
+Cell[BoxData[{
  RowBox[{
   RowBox[{"motorAcceleration", " ", "=", " ", 
    RowBox[{
    "makeMotorTimeDomainFunction", "[", "motorAccelerationModel", "]"}]}], 
-  ";"}]], "Input",ExpressionUUID->"cbed89f5-73b1-4f7e-a30c-fe717d0dc374"],
+  ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"motorAccelerationConstVbat", " ", "=", " ", 
+   RowBox[{"motorAcceleration", "[", 
+    RowBox[{
+     RowBox[{"Vbat", " ", "&"}], ",", " ", 
+     RowBox[{"0", "&"}]}], "]"}]}], 
+  ";"}]}], "Input",ExpressionUUID->"cbed89f5-73b1-4f7e-a30c-fe717d0dc374"],
 
-Cell[BoxData[
+Cell[BoxData[{
  RowBox[{
   RowBox[{"motorCurrent", " ", "=", " ", 
    RowBox[{"makeMotorTimeDomainFunction", "[", "motorCurrentModel", "]"}]}], 
-  ";"}]], "Input",ExpressionUUID->"e02d0c4f-8a5d-4298-89b9-157c2e7f6170"],
+  ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"motorCurrentConstVbat", " ", "=", " ", 
+   RowBox[{"motorCurrent", "[", 
+    RowBox[{
+     RowBox[{"Vbat", " ", "&"}], ",", " ", 
+     RowBox[{"0", "&"}]}], "]"}]}], 
+  ";"}]}], "Input",ExpressionUUID->"e02d0c4f-8a5d-4298-89b9-157c2e7f6170"],
 
-Cell[BoxData[
+Cell[BoxData[{
  RowBox[{
   RowBox[{"motorEMF", " ", "=", " ", 
    RowBox[{"makeMotorTimeDomainFunction", "[", "motorEMFModel", "]"}]}], 
-  ";"}]], "Input",ExpressionUUID->"ec4cb7e9-3431-4be4-a254-8c4e986add40"],
+  ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"motorEMFConstVbat", " ", "=", " ", 
+   RowBox[{"motorEMF", "[", 
+    RowBox[{
+     RowBox[{"Vbat", " ", "&"}], ",", " ", 
+     RowBox[{"0", "&"}]}], "]"}]}], 
+  ";"}]}], "Input",ExpressionUUID->"ec4cb7e9-3431-4be4-a254-8c4e986add40"],
 
-Cell[BoxData[
+Cell[BoxData[{
  RowBox[{
   RowBox[{"motorTorque", " ", "=", " ", 
    RowBox[{"makeMotorTimeDomainFunction", "[", "motorTorqueModel", "]"}]}], 
-  ";"}]], "Input",ExpressionUUID->"985ea76b-d5ae-4847-8d9e-dcbc969e0e63"],
+  ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"motorTorqueConstVbat", " ", "=", " ", 
+   RowBox[{"motorTorque", "[", 
+    RowBox[{
+     RowBox[{"Vbat", " ", "&"}], ",", " ", 
+     RowBox[{"0", "&"}]}], "]"}]}], 
+  ";"}]}], "Input",ExpressionUUID->"985ea76b-d5ae-4847-8d9e-dcbc969e0e63"],
 
 Cell[TextData[{
  "The ",
@@ -3456,26 +3474,47 @@ Cell[BoxData[
    "motorAccelerationOut"}], 
   "]"}]], "Input",ExpressionUUID->"1364d912-9aeb-461d-8517-d9a01bc42eff"],
 
-Cell[BoxData[
+Cell[BoxData[{
  RowBox[{
   RowBox[{"motorPositionOut", " ", "=", " ", 
    RowBox[{
    "makeMotorTimeDomainFunction", "[", "motorPositionOutModel", "]"}]}], 
-  ";"}]], "Input",ExpressionUUID->"0695a59a-43d3-4ec6-b3ad-0b28bb129ed0"],
+  ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"motorPositionOutConstVbat", " ", "=", " ", 
+   RowBox[{"motorPositionOut", "[", 
+    RowBox[{
+     RowBox[{"Vbat", " ", "&"}], ",", " ", 
+     RowBox[{"0", "&"}]}], "]"}]}], 
+  ";"}]}], "Input",ExpressionUUID->"0695a59a-43d3-4ec6-b3ad-0b28bb129ed0"],
 
-Cell[BoxData[
+Cell[BoxData[{
  RowBox[{
   RowBox[{"motorVelocityOut", " ", "=", " ", 
    RowBox[{
    "makeMotorTimeDomainFunction", "[", "motorVelocityOutModel", "]"}]}], 
-  ";"}]], "Input",ExpressionUUID->"39ef8f3f-830b-4538-927e-8e8d00fdbcc6"],
+  ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"motorVelocityOutConstVbat", " ", "=", " ", 
+   RowBox[{"motorVelocityOut", "[", 
+    RowBox[{
+     RowBox[{"Vbat", " ", "&"}], ",", " ", 
+     RowBox[{"0", "&"}]}], "]"}]}], 
+  ";"}]}], "Input",ExpressionUUID->"39ef8f3f-830b-4538-927e-8e8d00fdbcc6"],
 
-Cell[BoxData[
+Cell[BoxData[{
  RowBox[{
   RowBox[{"motorAccelerationOut", " ", "=", " ", 
    RowBox[{
    "makeMotorTimeDomainFunction", "[", "motorAccelerationOutModel", "]"}]}], 
-  ";"}]], "Input",ExpressionUUID->"8b875939-8531-4116-8bc1-73d3fdf4e243"],
+  ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"motorAccelerationOutConstVbat", " ", "=", " ", 
+   RowBox[{"motorAccelerationOut", "[", 
+    RowBox[{
+     RowBox[{"Vbat", " ", "&"}], ",", " ", 
+     RowBox[{"0", "&"}]}], "]"}]}], 
+  ";"}]}], "Input",ExpressionUUID->"8b875939-8531-4116-8bc1-73d3fdf4e243"],
 
 Cell["\<\
 Save these time domain functions so we can load them in later without having \
@@ -3488,14 +3527,20 @@ Cell[BoxData[
    RowBox[{
    "outputDirectory", " ", "<>", " ", "\"\<MotorTimeDomainFunctions.m\>\""}], 
    ",", "\[IndentingNewLine]", 
-   RowBox[{"{", 
+   RowBox[{"{", "\[IndentingNewLine]", 
     RowBox[{
     "motorPosition", ",", " ", "motorVelocity", ",", " ", "motorAcceleration",
       ",", " ", "motorCurrent", ",", " ", "motorEMF", ",", "motorTorque", ",",
-      " ", "motorPositionOut", ",", " ", "motorVelocityOut", ",", " ", 
-     "motorAccelerationOut", ",", " ", "makeMotorTimeDomainFunction"}], 
-    "}"}]}], "]"}]], \
-"Input",ExpressionUUID->"3e2387ff-b9ba-4668-9be7-e51fa5aa9e1b"]
+      " ", "\[IndentingNewLine]", "motorPositionOut", ",", " ", 
+     "motorVelocityOut", ",", " ", "motorAccelerationOut", ",", " ", 
+     "\[IndentingNewLine]", "motorPositionConstVbat", ",", " ", 
+     "motorVelocityConstVbat", ",", " ", "motorAccelerationConstVbat", ",", 
+     " ", "motorCurrentConstVbat", ",", " ", "motorEMFConstVbat", ",", 
+     "motorTorqueConstVbat", ",", " ", "\[IndentingNewLine]", 
+     "motorPositionOutConstVbat", ",", " ", "motorVelocityOutConstVbat", ",", 
+     " ", "motorAccelerationOutConstVbat", ",", " ", "\[IndentingNewLine]", 
+     "makeMotorTimeDomainFunction"}], "\[IndentingNewLine]", "}"}]}], 
+  "]"}]], "Input",ExpressionUUID->"3e2387ff-b9ba-4668-9be7-e51fa5aa9e1b"]
 }, Open  ]]
 }, Open  ]],
 
@@ -3978,6 +4023,15 @@ Cell[BoxData[{
          RowBox[{"model", "[", "s", "]"}], " ", ".", "xformedInputs"}], ")"}],
         "[", 
        RowBox[{"[", "1", "]"}], "]"}]}], ";", " ", "\[IndentingNewLine]", 
+     RowBox[{"(*", 
+      RowBox[{
+       RowBox[{
+       "Limit", " ", "is", " ", "really", " ", "slow", " ", "if", " ", "we", 
+        " ", "include", " ", "assumptions", " ", 
+        RowBox[{"(", 
+         RowBox[{"!", "?"}], ")"}]}], ",", " ", 
+       RowBox[{"so", " ", 
+        RowBox[{"don", "'"}], "t"}]}], "*)"}], "\[IndentingNewLine]", 
      RowBox[{"Block", "[", 
       RowBox[{
        RowBox[{"{", 
@@ -4197,13 +4251,12 @@ Cell[TextData[{
 Cell[BoxData[
  RowBox[{"saveDefinitions", "[", 
   RowBox[{
-   RowBox[{"outputDirectory", " ", "<>", " ", "\"\<Utilities.m\>\""}], ",", 
-   " ", 
+   RowBox[{"outputDirectory", " ", "<>", " ", "\"\<Misc.m\>\""}], ",", " ", 
    RowBox[{"{", 
     RowBox[{
     "importMotorData", ",", " ", "motorParameters", ",", " ", "motorLoad", 
-     ",", " ", "flywheel", ",", " ", "addMotorLoad", ",", " ", 
-     "massOnPulley"}], "}"}]}], 
+     ",", " ", "flywheel", ",", " ", "addMotorLoad", ",", " ", "massOnPulley",
+      ",", " ", "applyTimeFunction"}], "}"}]}], 
   "]"}]], "Input",ExpressionUUID->"c45ebd44-b3b2-4cff-b948-c9753ddbb17e"]
 }, Open  ]],
 
@@ -4235,7 +4288,7 @@ discussion\
 }, Open  ]]
 },
 WindowSize->{1186, 1459},
-WindowMargins->{{1239, Automatic}, {Automatic, 33}},
+WindowMargins->{{Automatic, 1164}, {Automatic, 20}},
 PrintingCopies->1,
 PrintingPageRange->{32000, 32000},
 PrintingOptions->{"Magnification"->1.,
