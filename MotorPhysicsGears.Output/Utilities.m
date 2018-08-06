@@ -11,14 +11,14 @@ motorParameters[motorData_, motorName_, opts:OptionsPattern[]] :=
       row = Select[motorData, #1[[1]] == motorName & ][[1]]; 
        paramValues = (#1[[1]] -> toRational[row[[#1[[2]]]]] & ) /@ 
          {{R, 2}, {L, 4}, {KeShaft, 5}, {KtShaft, 6}, {Ke, 7}, {Kt, 8}, 
-          {J, 9}, {b, 10}, {\[CapitalNu], 11}, {\[Eta], 
+          {J, 9}, {B, 10}, {\[CapitalNu], 11}, {\[Eta], 
            If[OptionValue[Efficiency] == "Forward", 12, 13]}}; 
        quantify = Function[{name, value}, qty = name /. parameterQuantities; 
           name -> Quantity[value, QuantityUnit[qty]]]; 
        assoc = Association[(quantify @@ #1 & ) /@ paramValues]; 
        assoc[Jout] = Quantity[0, siAngularInertialUnits]; 
-       assoc[bout] = Quantity[0, siAngularViscousDragUnits]; 
-       assoc[const\[Tau]out] = Quantity[0, siTorqueUnits]; 
+       assoc[Bout] = Quantity[0, siAngularViscousDragUnits]; 
+       assoc[const\[Tau]auto] = Quantity[0, siTorqueUnits]; 
        If[ !OptionValue[Geared], assoc[\[CapitalNu]] = 1; assoc[\[Eta]] = 1; 
          assoc[Ke] = assoc[KeShaft]; assoc[Kt] = assoc[KtShaft]; ]; 
        assoc[KeShaft] =. ; assoc[KtShaft] =. ; simplifyUnits[siUnits[assoc]]]]
@@ -85,11 +85,12 @@ parameterQuantities = <|R -> Quantity[R, "Ohms"],
      Derivative[1][i][t] -> Quantity[Derivative[1][i][t], 
        "Amperes"/"Seconds"], Derivative[2][i][t] -> 
       Quantity[Derivative[2][i][t], "Amperes"/"Seconds"^2], 
-     ea[t] -> Quantity[ea[t], "Volts"], e[t] -> Quantity[e[t], "Volts"], 
+     vbat[t] -> Quantity[vbat[t], "Volts"], constvbat -> 
+      Quantity[constvbat, "Volts"], vg[t] -> Quantity[vg[t], "Volts"], 
      J -> Quantity[J, ("Meters"*"Newtons"*"Seconds"^2)/"Radians"^2], 
      Jout -> Quantity[Jout, ("Meters"*"Newtons"*"Seconds"^2)/"Radians"^2], 
-     b -> Quantity[b, ("Meters"*"Newtons"*"Seconds")/"Radians"^2], 
-     bout -> Quantity[bout, ("Meters"*"Newtons"*"Seconds")/"Radians"^2], 
+     B -> Quantity[B, ("Meters"*"Newtons"*"Seconds")/"Radians"^2], 
+     Bout -> Quantity[Bout, ("Meters"*"Newtons"*"Seconds")/"Radians"^2], 
      Ke -> Quantity[Ke, ("Seconds"*"Volts")/"Radians"], 
      KeShaft -> Quantity[KeShaft, ("Seconds"*"Volts")/"Radians"], 
      Kt -> Quantity[Kt, ("Meters"*"Newtons")/("Amperes"*"Radians")], 
@@ -102,14 +103,14 @@ parameterQuantities = <|R -> Quantity[R, "Ohms"],
      Derivative[2][\[Theta]][t] -> Quantity[Derivative[2][\[Theta]][t], 
        "Radians"/"Seconds"^2], Derivative[2][\[Theta]out][t] -> 
       Quantity[Derivative[2][\[Theta]out][t], "Radians"], 
-     \[CapitalOmega][t] -> Quantity[\[CapitalOmega][t], "Radians"/"Seconds"], 
+     \[Omega][t] -> Quantity[\[Omega][t], "Radians"/"Seconds"], 
      \[Alpha][t] -> Quantity[\[Alpha][t], "Radians"/"Seconds"^2], 
      \[Tau][t] -> Quantity[\[Tau][t], ("Meters"*"Newtons")/"Radians"], 
-     \[Tau]a[t] -> Quantity[\[Tau]a[t], ("Meters"*"Newtons")/"Radians"], 
-     \[Tau]out[t] -> Quantity[\[Tau]out[t], ("Meters"*"Newtons")/"Radians"], 
-     const\[Tau]out -> Quantity[const\[Tau]out, ("Meters"*"Newtons")/
-        "Radians"], \[CapitalNu] -> Quantity[\[CapitalNu], 
-       "DimensionlessUnit"], \[Eta] -> Quantity[\[Eta], "DimensionlessUnit"]|>
+     \[Tau]auto[t] -> Quantity[\[Tau]auto[t], ("Meters"*"Newtons")/
+        "Radians"], const\[Tau]auto -> Quantity[const\[Tau]auto, 
+       ("Meters"*"Newtons")/"Radians"], \[CapitalNu] -> 
+      Quantity[\[CapitalNu], "DimensionlessUnit"], 
+     \[Eta] -> Quantity[\[Eta], "DimensionlessUnit"]|>
  
 Attributes[Derivative] = {NHoldAll, ReadProtected}
  
@@ -129,14 +130,14 @@ siUnits[expr_] := mapQuantities[expr, UnitConvert]
  
 motorLoad[opts:OptionsPattern[]] := Module[{assoc = Association[]}, 
      assoc[Jout] = OptionValue[J] + OptionValue[Jout]; 
-      assoc[bout] = OptionValue[b] + OptionValue[bout]; 
-      assoc[const\[Tau]out] = OptionValue[const\[Tau]out]; assoc]
+      assoc[Bout] = OptionValue[B] + OptionValue[Bout]; 
+      assoc[const\[Tau]auto] = OptionValue[const\[Tau]auto]; assoc]
  
 Options[motorLoad] = {J -> Quantity[0, ("Meters"*"Newtons"*"Seconds"^2)/
         "Radians"^2], Jout -> Quantity[0, ("Meters"*"Newtons"*"Seconds"^2)/
-        "Radians"^2], b -> Quantity[0, ("Meters"*"Newtons"*"Seconds")/
-        "Radians"^2], bout -> Quantity[0, ("Meters"*"Newtons"*"Seconds")/
-        "Radians"^2], const\[Tau]out -> Quantity[0, ("Meters"*"Newtons")/
+        "Radians"^2], B -> Quantity[0, ("Meters"*"Newtons"*"Seconds")/
+        "Radians"^2], Bout -> Quantity[0, ("Meters"*"Newtons"*"Seconds")/
+        "Radians"^2], const\[Tau]auto -> Quantity[0, ("Meters"*"Newtons")/
         "Radians"]}
  
 flywheel[mass_, radius_] := motorLoad[
@@ -144,9 +145,9 @@ flywheel[mass_, radius_] := motorLoad[
  
 addMotorLoad[motor_, load_] := Module[{assoc}, assoc = Association[motor]; 
       assoc[Jout] = (Jout /. motor) + (Jout /. load); 
-      assoc[bout] = (bout /. motor) + (bout /. load); 
-      assoc[const\[Tau]out] = (const\[Tau]out /. motor) + 
-        (const\[Tau]out /. load); assoc]
+      assoc[Bout] = (Bout /. motor) + (Bout /. load); 
+      assoc[const\[Tau]auto] = (const\[Tau]auto /. motor) + 
+        (const\[Tau]auto /. load); assoc]
  
 massOnPulley[mass_, radius_] := Module[{gravityAcceleration, gravityForce, 
       angularAcceleration, tangentialAcceleration, tangentialForce, tension, 
@@ -159,7 +160,7 @@ massOnPulley[mass_, radius_] := Module[{gravityAcceleration, gravityForce,
       tension = gravityForce + tangentialForce; 
       torque = tension*(radius/radians); unit = QuantityUnit[torque]; 
       parts = List @@ Apart[QuantityMagnitude[torque]]; 
-      motorLoad[const\[Tau]out -> Quantity[parts[[1]], unit], 
+      motorLoad[const\[Tau]auto -> Quantity[parts[[1]], unit], 
        Jout -> Quantity[parts[[2]], unit]/angularAcceleration]]
  
 siAngularAccelerationUnits = "Radians"/"Seconds"^2

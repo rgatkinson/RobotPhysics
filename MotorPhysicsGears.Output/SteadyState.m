@@ -1,12 +1,12 @@
 ss = {ssPos -> Indeterminate, ssVel -> 
-      (\[CapitalNu]*(const\[Tau]out*R + ea*Kt*\[Eta]*\[CapitalNu]))/
-       (bout*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + b*R*\[Eta]*\[CapitalNu]^2), 
-     ssAcc -> 0, ssEmf -> (Ke*\[CapitalNu]*(const\[Tau]out*R + 
-         ea*Kt*\[Eta]*\[CapitalNu]))/(bout*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + 
-        b*R*\[Eta]*\[CapitalNu]^2), 
-     ssCur -> (bout*ea - const\[Tau]out*Ke*\[CapitalNu] + 
-        b*ea*\[Eta]*\[CapitalNu]^2)/(bout*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + 
-        b*R*\[Eta]*\[CapitalNu]^2), 
-     ssTor -> (Kt*(bout*ea - const\[Tau]out*Ke*\[CapitalNu] + 
-         b*ea*\[Eta]*\[CapitalNu]^2))/(bout*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + 
-        b*R*\[Eta]*\[CapitalNu]^2)}
+      (\[CapitalNu]*(const\[Tau]auto*R + constvbat*Kt*\[Eta]*\[CapitalNu]))/
+       (Bout*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + B*R*\[Eta]*\[CapitalNu]^2), 
+     ssAcc -> 0, ssEmf -> (Ke*\[CapitalNu]*(const\[Tau]auto*R + 
+         constvbat*Kt*\[Eta]*\[CapitalNu]))/(Bout*R + 
+        Ke*Kt*\[Eta]*\[CapitalNu]^2 + B*R*\[Eta]*\[CapitalNu]^2), 
+     ssCur -> (Bout*constvbat - const\[Tau]auto*Ke*\[CapitalNu] + 
+        B*constvbat*\[Eta]*\[CapitalNu]^2)/(Bout*R + 
+        Ke*Kt*\[Eta]*\[CapitalNu]^2 + B*R*\[Eta]*\[CapitalNu]^2), 
+     ssTor -> (Kt*(Bout*constvbat - const\[Tau]auto*Ke*\[CapitalNu] + 
+         B*constvbat*\[Eta]*\[CapitalNu]^2))/
+       (Bout*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + B*R*\[Eta]*\[CapitalNu]^2)}
