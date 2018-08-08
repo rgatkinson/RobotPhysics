@@ -57,7 +57,7 @@ Cell[BoxData[
 "Input",ExpressionUUID->"bc300395-a636-4323-80dc-7b4ed98516b6"],
 
 Cell[BoxData["\<\"C:\\\\ftc\\\\RobotPhysics\\\\MotorPhysicsGears.Output\\\\\"\
-\>"], "Output",ExpressionUUID->"84dfc034-e092-4400-b2ef-fdfa000eadcd"]
+\>"], "Output",ExpressionUUID->"fc33228a-8b46-491e-adfb-f7e27370df6f"]
 }, Open  ]],
 
 Cell[CellGroupData[{
@@ -129,7 +129,7 @@ Cell[BoxData[
    RowBox[{"B", "\[GreaterEqual]", "0"}], ",", 
    RowBox[{"J", "\[GreaterEqual]", "0"}], ",", 
    RowBox[{"t", "\[GreaterEqual]", "0"}]}], 
-  "}"}]], "Output",ExpressionUUID->"897aed2b-d910-488c-9286-ce6a1f42dc4d"]
+  "}"}]], "Output",ExpressionUUID->"7eb98b8a-b312-420b-8eef-402de8fe350a"]
 }, Open  ]],
 
 Cell[BoxData[
@@ -197,7 +197,7 @@ Cell[BoxData[
  RowBox[{"{", 
   RowBox[{"ssEmf", "\[Equal]", 
    RowBox[{"Ke", " ", "\[CapitalOmega]"}]}], 
-  "}"}]], "Output",ExpressionUUID->"5cb2ee84-ce7d-4d81-ac7f-ca25bb52ef44"]
+  "}"}]], "Output",ExpressionUUID->"09311ce5-0143-4ea0-a2d2-f540c37467a5"]
 }, Open  ]]
 }, Open  ]],
 
@@ -246,7 +246,7 @@ Cell[BoxData[
       MultilineFunction->None], "[", "t", "]"}]}]}], "\[Equal]", 
   RowBox[{
   "vapp", "[", "t", 
-   "]"}]}]], "Output",ExpressionUUID->"f788d89b-d4c4-4afb-90e9-d3facc092839"]
+   "]"}]}]], "Output",ExpressionUUID->"cc5b47a0-4023-4042-be47-c7a742ea5c78"]
 }, Open  ]],
 
 Cell["\<\
@@ -280,7 +280,7 @@ Cell[BoxData[
   RowBox[{"vg", "[", "t", "]"}], "\[Equal]", 
   RowBox[{
   "vapp", "[", "t", 
-   "]"}]}]], "Output",ExpressionUUID->"054e56f2-9bf1-4a48-b163-8c17d35e2aa9"]
+   "]"}]}]], "Output",ExpressionUUID->"bff8c093-d95c-4fed-9039-cfacf51735a1"]
 }, Open  ]],
 
 Cell["\<\
@@ -312,7 +312,7 @@ Cell[BoxData[
   RowBox[{
    RowBox[{"controlProp0", "\[Equal]", "0"}], ",", 
    RowBox[{"voltProp0", "\[Equal]", "ssEmf"}]}], 
-  "}"}]], "Output",ExpressionUUID->"ceb0a7db-dab9-4d84-b2f4-8e73fcaed822"]
+  "}"}]], "Output",ExpressionUUID->"b0635660-dbc1-4f91-96f7-dd8046092a54"]
 }, Open  ]],
 
 Cell["\<\
@@ -331,7 +331,7 @@ Cell[BoxData[
 Cell[BoxData[
  RowBox[{"{", 
   RowBox[{"voltProp100", "\[Equal]", "0"}], 
-  "}"}]], "Output",ExpressionUUID->"ef6dd64c-2513-4a7d-955d-b673b20ccdec"]
+  "}"}]], "Output",ExpressionUUID->"9705b5a0-4bd4-4f44-9d86-387a703b2798"]
 }, Open  ]],
 
 Cell["\<\
@@ -361,10 +361,10 @@ Cell[BoxData[{
   "]"}]}], "Input",ExpressionUUID->"fa88c94f-0dda-4ad4-b173-f7dc08ff9794"],
 
 Cell[BoxData["voltProp100"], \
-"Output",ExpressionUUID->"cb4ba724-07aa-4398-a4c9-1e5a8980d0d0"],
+"Output",ExpressionUUID->"85543b9d-1bab-4240-b17f-3fa66852aa23"],
 
 Cell[BoxData["voltProp0"], \
-"Output",ExpressionUUID->"93055f42-c68a-4fef-8102-6a699ce44a4a"]
+"Output",ExpressionUUID->"86da2420-4e81-4c60-8bb7-cf1e47c69aca"]
 }, Open  ]]
 }, Open  ]],
 
@@ -401,7 +401,7 @@ Cell[BoxData[
 Cell[BoxData[
  RowBox[{"{", 
   RowBox[{"voltReverse0", "\[Equal]", "diodeDrop"}], 
-  "}"}]], "Output",ExpressionUUID->"d80674c0-18ed-4125-bddc-b8558c28c125"]
+  "}"}]], "Output",ExpressionUUID->"901c171a-48a4-4671-affb-10ed7df45f7d"]
 }, Open  ]],
 
 Cell["\<\
@@ -427,7 +427,7 @@ Cell[BoxData[
     RowBox[{"-", "controlMax"}]}], ",", 
    RowBox[{"voltReverse100", "\[Equal]", 
     RowBox[{"-", "batteryVoltage"}]}]}], 
-  "}"}]], "Output",ExpressionUUID->"7d1fa642-0bcc-44d1-9753-7915ca96a982"]
+  "}"}]], "Output",ExpressionUUID->"dd8e3d6a-0749-41a8-94f1-c798a52bf7d5"]
 }, Open  ]]
 }, Open  ]],
 
@@ -475,10 +475,10 @@ Cell[BoxData[{
 017e44d0cd64"],
 
 Cell[BoxData["voltReverse100"], \
-"Output",ExpressionUUID->"3f2a7b21-9716-4e98-9104-181db0b48bdd"],
+"Output",ExpressionUUID->"1023c89f-01f7-4323-81e9-26c4ebf5f74f"],
 
 Cell[BoxData["voltReverse0"], \
-"Output",ExpressionUUID->"ed785885-c2b9-4e32-b5c7-a6e69eb6ff41"]
+"Output",ExpressionUUID->"c05afc91-61fe-43c5-b1a7-1990f6c089bf"]
 }, Open  ]],
 
 Cell[TextData[{
@@ -544,7 +544,7 @@ Cell[BoxData[
         RowBox[{"-", "voltReverse0"}], "+", "voltReverse100"}], ")"}]}], 
      RowBox[{
       RowBox[{"-", "controlReverse0"}], "+", "controlReverse100"}]]}]}], 
-  "}"}]], "Output",ExpressionUUID->"ac9eae2b-8a88-457f-86ed-9fc6b253cad3"]
+  "}"}]], "Output",ExpressionUUID->"2f54e71a-c54d-43a6-9a15-27ad60bee7d0"]
 }, Open  ]]
 }, Open  ]],
 
@@ -611,7 +611,7 @@ Cell[BoxData[
       RowBox[{"-", "voltReverse0"}], "+", "voltReverse100"}], 
      RowBox[{
       RowBox[{"-", "controlReverse0"}], "+", "controlReverse100"}]]}]}], 
-  "}"}]], "Output",ExpressionUUID->"e3869228-4822-461e-a652-b54b8e1245d3"]
+  "}"}]], "Output",ExpressionUUID->"8f244a4d-74ae-4596-903b-a76137d6037e"]
 }, Open  ]]
 }, Open  ]],
 
@@ -715,7 +715,7 @@ $CellContext`voltProp100), $CellContext`slope == \
       Editable->True],
      StripOnInput->False,
      FontSize->15], TextForm]], "InlineText",ExpressionUUID->
-   "239a54b6-bf7c-43b2-9617-f988c0f4887b"],
+   "461b4603-ad07-4f14-8d51-ae19b90cf900"],
   Text[
    Style[
     TraditionalForm[
@@ -735,7 +735,7 @@ $CellContext`controlProp100)^(-1) (-$CellContext`voltProp0 + \
 $CellContext`voltProp100), $CellContext`slope == \
 (-$CellContext`controlReverse0 + $CellContext`controlReverse100)^(-1) \
 (-$CellContext`voltReverse0 + $CellContext`voltReverse100)}]], FontSize -> 
-    15]]]], "Output",ExpressionUUID->"7ae74d66-e150-4cc8-8ab1-33b0d73d8976"]
+    15]]]], "Output",ExpressionUUID->"38cb3dfe-48ba-4f30-b7cf-9b257218bcba"]
 }, Open  ]]
 }, Open  ]],
 
@@ -845,7 +845,7 @@ $CellContext`ssEmf -> $CellContext`Ke $CellContext`\[CapitalOmega]}],
       Editable->True],
      StripOnInput->False,
      FontSize->15], TextForm]], "InlineText",ExpressionUUID->
-   "6f1f1149-3a39-4086-9a41-414564fa4872"],
+   "c18249e5-4ee9-4b45-be3a-8dc1b03a5a15"],
   Text[
    Style[
     TraditionalForm[
@@ -865,27 +865,232 @@ $CellContext`controlProp0 ->
        0, $CellContext`controlReverse100 -> -$CellContext`controlMax, \
 $CellContext`ssEmf -> $CellContext`Ke $CellContext`\[CapitalOmega]}]], 
     FontSize -> 
-    15]]]], "Output",ExpressionUUID->"fb6af68f-d776-4180-8e12-6e1da53d1957"]
+    15]]]], "Output",ExpressionUUID->"7eb1f0b1-5018-42c6-b569-2e5ddbf45133"]
+}, Open  ]]
 }, Open  ]],
 
-Cell["The control transition point we seek is the following:", \
-"Text",ExpressionUUID->"a5ff93ce-9991-46a4-a904-7199d4351c7b"],
+Cell[CellGroupData[{
+
+Cell[TextData[{
+ 
+ CounterBox["Section"],
+ ".",
+ 
+ CounterBox["Subsection"],
+ ". Results"
+}], "Subsection",ExpressionUUID->"e8506fee-4e99-4d1e-b2f6-b08388c9b429"],
+
+Cell["\<\
+The control transition point (and it\[CloseCurlyQuote]s dancing partner) we \
+seek is the following:\
+\>", "Text",ExpressionUUID->"a5ff93ce-9991-46a4-a904-7199d4351c7b"],
 
 Cell[CellGroupData[{
 
 Cell[BoxData[
- RowBox[{"controlTransition", " ", "/.", " ", "soln"}]], "Input",
+ RowBox[{"result", " ", "=", " ", 
+  RowBox[{
+   RowBox[{"{", 
+    RowBox[{
+     RowBox[{
+      RowBox[{
+      "\"\<controlTransition\>\"", " ", "\[Rule]", " ", "controlTransition"}],
+       " ", "/.", " ", "soln"}], ",", " ", 
+     RowBox[{
+      RowBox[{"\"\<controlOther\>\"", " ", "\[Rule]", " ", "controlOther"}], 
+      " ", "/.", " ", "soln"}]}], "}"}], " ", "//", " ", 
+   "Simplify"}]}]], "Input",
  CellFrameColor->GrayLevel[
   0],ExpressionUUID->"c8ecf1d5-b1cd-4c60-a778-c793b6d0d67b"],
 
 Cell[BoxData[
- RowBox[{"-", 
-  FractionBox[
-   RowBox[{"controlMax", " ", "Ke", " ", "\[CapitalOmega]"}], 
-   RowBox[{"batteryVoltage", "+", 
-    RowBox[{"Ke", " ", "\[CapitalOmega]"}]}]]}]], "Output",
+ RowBox[{"{", 
+  RowBox[{
+   RowBox[{"\<\"controlTransition\"\>", "\[Rule]", 
+    RowBox[{"-", 
+     FractionBox[
+      RowBox[{"controlMax", " ", "Ke", " ", "\[CapitalOmega]"}], 
+      RowBox[{"batteryVoltage", "+", 
+       RowBox[{"Ke", " ", "\[CapitalOmega]"}]}]]}]}], ",", 
+   RowBox[{"\<\"controlOther\"\>", "\[Rule]", 
+    FractionBox[
+     RowBox[{"controlMax", " ", 
+      RowBox[{"(", 
+       RowBox[{"diodeDrop", "-", 
+        RowBox[{"Ke", " ", "\[CapitalOmega]"}]}], ")"}]}], 
+     RowBox[{"batteryVoltage", "+", 
+      RowBox[{"Ke", " ", "\[CapitalOmega]"}]}]]}]}], "}"}]], "Output",
  CellFrameColor->GrayLevel[
-  0],ExpressionUUID->"e9f68014-0de8-4177-a8a2-5af5508e4f57"]
+  0],ExpressionUUID->"9e48567e-362f-41bd-8db6-a0709c391d69"]
+}, Open  ]],
+
+Cell["\<\
+Let\[CloseCurlyQuote]s check out the units and see what this looks like in \
+encoder counts per second instead of radians per second.\
+\>", "Text",ExpressionUUID->"4786306c-619e-491a-9130-883bb6b5bdbf"],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[{
+ RowBox[{
+  RowBox[{"tpsToRadiansPerSec", "[", "cps_", "]"}], " ", ":=", " ", 
+  RowBox[{
+   RowBox[{
+    RowBox[{"Quantity", "[", 
+     RowBox[{"cps", ",", " ", 
+      RowBox[{
+       RowBox[{"IndependentUnit", "[", "\"\<counts\>\"", "]"}], "/", " ", 
+       "\"\<Seconds\>\""}]}], "]"}], " ", "/", " ", 
+    RowBox[{"Quantity", "[", 
+     RowBox[{"countsPerRev", ",", " ", 
+      RowBox[{
+       RowBox[{"IndependentUnit", "[", "\"\<counts\>\"", "]"}], "/", " ", 
+       "\"\<Revolutions\>\""}]}], "]"}]}], " ", "*", " ", 
+   RowBox[{"Quantity", "[", 
+    RowBox[{
+     RowBox[{"2", " ", "Pi"}], ",", " ", 
+     RowBox[{"\"\<Radians\>\"", " ", "/", " ", "\"\<Revolutions\>\""}]}], 
+    "]"}]}]}], "\[IndentingNewLine]", 
+ RowBox[{"tpsToRadiansPerSec", "[", "cps", 
+  "]"}]}], "Input",ExpressionUUID->"51ffed64-9cd3-4c35-a905-36a3cff7920f"],
+
+Cell[BoxData[
+ TemplateBox[{FractionBox[
+    RowBox[{"2", " ", "cps", " ", "\[Pi]"}], "countsPerRev"],
+   RowBox[{"\"rad\"", "\[InvisibleSpace]", "\"/\"", "\[InvisibleSpace]", 
+     "\"s\""}],"radians per second",FractionBox["\"Radians\"", "\"Seconds\""]},
+  "Quantity"]], \
+"Output",ExpressionUUID->"b7ee6053-b080-48ee-bd97-19605126546f"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[{
+ RowBox[{"resultUnits", " ", "=", " ", 
+  RowBox[{"{", "\[IndentingNewLine]", 
+   RowBox[{
+    RowBox[{"controlMax", " ", "\[Rule]", " ", 
+     RowBox[{"Quantity", "[", 
+      RowBox[{"controlMax", ",", " ", 
+       RowBox[{"IndependentUnit", "[", "\"\<pids\>\"", "]"}]}], "]"}]}], ",", 
+    " ", "\[IndentingNewLine]", 
+    RowBox[{"batteryVoltage", " ", "\[Rule]", " ", 
+     RowBox[{"Quantity", "[", 
+      RowBox[{"batteryVoltage", ",", " ", "\"\<Volts\>\""}], "]"}]}], ",", 
+    "\[IndentingNewLine]", 
+    RowBox[{"Ke", " ", "\[Rule]", " ", 
+     RowBox[{
+      RowBox[{"Quantity", "[", 
+       RowBox[{"Ke", ",", " ", "\"\<Volt Seconds\>\""}], "]"}], " ", "/", " ", 
+      RowBox[{"Quantity", "[", 
+       RowBox[{"1", ",", " ", "\"\<Radians\>\""}], "]"}]}]}], ",", 
+    "\[IndentingNewLine]", 
+    RowBox[{"diodeDrop", "\[Rule]", " ", 
+     RowBox[{"Quantity", "[", 
+      RowBox[{"diodeDrop", ",", " ", "\"\<Volts\>\""}], "]"}]}], ",", 
+    "\[IndentingNewLine]", 
+    RowBox[{"\[CapitalOmega]", " ", "\[Rule]", " ", 
+     RowBox[{"tpsToRadiansPerSec", "[", "cps", "]"}]}]}], 
+   "\[IndentingNewLine]", "}"}]}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"result", "/.", " ", "resultUnits"}], " ", "//", " ", 
+  "Simplify"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{
+   RowBox[{"result", "/.", " ", "resultUnits"}], " ", "//", " ", "Simplify"}],
+   " ", "//", " ", 
+  "clearUnits"}]}], \
+"Input",ExpressionUUID->"9d1f1d22-fa13-40ca-9ddb-c414b8067f0f"],
+
+Cell[BoxData[
+ RowBox[{"{", 
+  RowBox[{
+   RowBox[{"controlMax", "\[Rule]", 
+    TemplateBox[{"controlMax",RowBox[{
+        FrameBox[
+         StyleBox["\"pids\"", ShowStringCharacters -> False], FrameMargins -> 
+         1, FrameStyle -> GrayLevel[0.85], BaselinePosition -> Baseline, 
+         RoundingRadius -> 3, StripOnInput -> False]}],"pids",
+      RowBox[{"IndependentUnit", "[", "\"pids\"", "]"}]},
+     "Quantity"]}], ",", 
+   RowBox[{"batteryVoltage", "\[Rule]", 
+    TemplateBox[{"batteryVoltage","\"V\"","volts","\"Volts\""},
+     "Quantity"]}], ",", 
+   RowBox[{"Ke", "\[Rule]", 
+    TemplateBox[{
+     "Ke",RowBox[{
+       "\"s\"", "\[ThinSpace]", "\"V\"", "\[InvisibleSpace]", "\"/\"", 
+        "\[InvisibleSpace]", "\"rad\""}],"second volts per radian",FractionBox[
+       RowBox[{"\"Seconds\"", " ", "\"Volts\""}], "\"Radians\""]},
+     "Quantity"]}], ",", 
+   RowBox[{"diodeDrop", "\[Rule]", 
+    TemplateBox[{"diodeDrop","\"V\"","volts","\"Volts\""},
+     "Quantity"]}], ",", 
+   RowBox[{"\[CapitalOmega]", "\[Rule]", 
+    TemplateBox[{FractionBox[
+       RowBox[{"2", " ", "cps", " ", "\[Pi]"}], "countsPerRev"],
+      RowBox[{"\"rad\"", "\[InvisibleSpace]", "\"/\"", "\[InvisibleSpace]", 
+        "\"s\""}],"radians per second",FractionBox[
+      "\"Radians\"", "\"Seconds\""]},
+     "Quantity"]}]}], 
+  "}"}]], "Output",ExpressionUUID->"5739d184-835c-4007-981c-67cfef933ca9"],
+
+Cell[BoxData[
+ RowBox[{"{", 
+  RowBox[{
+   RowBox[{"\<\"controlTransition\"\>", "\[Rule]", 
+    TemplateBox[{RowBox[{"-", 
+        FractionBox[
+         RowBox[{
+          "2", " ", "controlMax", " ", "cps", " ", "Ke", " ", "\[Pi]"}], 
+         RowBox[{
+           RowBox[{"batteryVoltage", " ", "countsPerRev"}], "+", 
+           RowBox[{"2", " ", "cps", " ", "Ke", " ", "\[Pi]"}]}]]}],RowBox[{
+        FrameBox[
+         StyleBox["\"pids\"", ShowStringCharacters -> False], FrameMargins -> 
+         1, FrameStyle -> GrayLevel[0.85], BaselinePosition -> Baseline, 
+         RoundingRadius -> 3, StripOnInput -> False]}],"pids",
+      RowBox[{"IndependentUnit", "[", "\"pids\"", "]"}]},
+     "Quantity"]}], ",", 
+   RowBox[{"\<\"controlOther\"\>", "\[Rule]", 
+    TemplateBox[{FractionBox[
+       RowBox[{"controlMax", " ", 
+         RowBox[{"(", 
+           RowBox[{
+             RowBox[{"countsPerRev", " ", "diodeDrop"}], "-", 
+             RowBox[{"2", " ", "cps", " ", "Ke", " ", "\[Pi]"}]}], ")"}]}], 
+       RowBox[{
+         RowBox[{"batteryVoltage", " ", "countsPerRev"}], "+", 
+         RowBox[{"2", " ", "cps", " ", "Ke", " ", "\[Pi]"}]}]],RowBox[{
+        FrameBox[
+         StyleBox["\"pids\"", ShowStringCharacters -> False], FrameMargins -> 
+         1, FrameStyle -> GrayLevel[0.85], BaselinePosition -> Baseline, 
+         RoundingRadius -> 3, StripOnInput -> False]}],"pids",
+      RowBox[{"IndependentUnit", "[", "\"pids\"", "]"}]},
+     "Quantity"]}]}], 
+  "}"}]], "Output",ExpressionUUID->"b2420fc1-2965-471d-b562-f692edc25658"],
+
+Cell[BoxData[
+ RowBox[{"{", 
+  RowBox[{
+   RowBox[{"\<\"controlTransition\"\>", "\[Rule]", 
+    RowBox[{"-", 
+     FractionBox[
+      RowBox[{"2", " ", "controlMax", " ", "cps", " ", "Ke", " ", "\[Pi]"}], 
+      RowBox[{
+       RowBox[{"batteryVoltage", " ", "countsPerRev"}], "+", 
+       RowBox[{"2", " ", "cps", " ", "Ke", " ", "\[Pi]"}]}]]}]}], ",", 
+   RowBox[{"\<\"controlOther\"\>", "\[Rule]", 
+    FractionBox[
+     RowBox[{"controlMax", " ", 
+      RowBox[{"(", 
+       RowBox[{
+        RowBox[{"countsPerRev", " ", "diodeDrop"}], "-", 
+        RowBox[{"2", " ", "cps", " ", "Ke", " ", "\[Pi]"}]}], ")"}]}], 
+     RowBox[{
+      RowBox[{"batteryVoltage", " ", "countsPerRev"}], "+", 
+      RowBox[{"2", " ", "cps", " ", "Ke", " ", "\[Pi]"}]}]]}]}], 
+  "}"}]], "Output",ExpressionUUID->"1c25d739-6e3a-438e-9f6f-30efbb7b4f17"]
 }, Open  ]]
 }, Open  ]]
 }, Open  ]],
@@ -937,7 +1142,7 @@ Cell[BoxData[
    RowBox[{
     RowBox[{"-", "controlReverse0"}], "+", 
     "controlReverse100"}]]}]], \
-"Output",ExpressionUUID->"19fe4559-331d-45a2-a1fa-2c3e3de06b4d"],
+"Output",ExpressionUUID->"dae4243d-ab28-4054-996e-4301e5b96a0b"],
 
 Cell[BoxData[
  RowBox[{
@@ -970,10 +1175,10 @@ Cell[BoxData[
       RowBox[{
       "Ke", " ", 
        "\[CapitalOmega]"}]}]]}]]}]], \
-"Output",ExpressionUUID->"c6dca60d-f9df-4309-94e6-50809a60c066"],
+"Output",ExpressionUUID->"43ae77d4-9077-41f9-b5dd-0444cce624da"],
 
 Cell[BoxData["0"], \
-"Output",ExpressionUUID->"7ec72475-9456-43ee-b831-6bc45b5f9fb1"]
+"Output",ExpressionUUID->"fc4aceb5-20c4-4141-bea1-dad42d4c331d"]
 }, Open  ]]
 }, Open  ]],
 
@@ -1037,7 +1242,7 @@ Cell[BoxData[
    RowBox[{"Bafter", "\[Rule]", "0"}], ",", 
    RowBox[{"const\[Tau]appafter", "\[Rule]", "0"}]}], 
   "\[RightAssociation]"}]], \
-"Output",ExpressionUUID->"a6047dc3-d3a9-4355-b72b-2c1051da8cf9"],
+"Output",ExpressionUUID->"ec18f1f0-eca7-48a1-b2dd-cc4246f00c1a"],
 
 Cell[BoxData[
  RowBox[{"{", 
@@ -1048,7 +1253,7 @@ Cell[BoxData[
     FractionBox["533", "500"]}], ",", 
    RowBox[{"batteryVoltage", "\[Rule]", "12"}], ",", 
    RowBox[{"controlMax", "\[Rule]", "32767"}]}], 
-  "}"}]], "Output",ExpressionUUID->"ce625831-5e92-4b22-b921-87a8d86cd611"]
+  "}"}]], "Output",ExpressionUUID->"cf962800-0049-4447-b009-6c4bf90eab45"]
 }, Open  ]],
 
 Cell["There are three points of relevance to us.", \
@@ -1086,7 +1291,7 @@ Cell[BoxData[
    RowBox[{"R", "\[Rule]", 
     RowBox[{"{", 
      RowBox[{"controlReverse100", ",", "voltReverse100"}], "}"}]}]}], 
-  "}"}]], "Output",ExpressionUUID->"d481f3b0-976f-42b4-9f04-f1728b66692e"]
+  "}"}]], "Output",ExpressionUUID->"5e0f2e78-76ad-45ad-9809-31ce93d5e9f8"]
 }, Open  ]],
 
 Cell["\<\
@@ -1107,7 +1312,7 @@ Cell[BoxData[
   "N"}]], "Input",ExpressionUUID->"5dbf16ec-edaa-490e-b22a-4740c8e94339"],
 
 Cell[BoxData["10.272586520362077`"], \
-"Output",ExpressionUUID->"531effd8-af12-4220-bf52-e1470706c133"]
+"Output",ExpressionUUID->"786c792c-44a9-48f8-91b6-f44a830e6d2d"]
 }, Open  ]],
 
 Cell["\<\
@@ -1200,7 +1405,7 @@ Cell[BoxData[{
 Cell[BoxData[
  RowBox[{"{", 
   RowBox[{"\[CapitalOmega]", "\[Rule]", "10.27`"}], 
-  "}"}]], "Output",ExpressionUUID->"da69d373-8730-4005-ad9e-a2c076e97fd1"],
+  "}"}]], "Output",ExpressionUUID->"d71aedbc-9d4b-42be-9916-b284575c6955"],
 
 Cell[BoxData[
  GraphicsBox[{{{{}, {}, 
@@ -1236,7 +1441,7 @@ aN2SqP98s4hUcMYUrQsopFzaZX+ULSLfmVSHqOZT2Cqw3ca4LCJc1hE1YTaF
 sv10/JV2EZmYcv+p/CaFX/LKMty/iIhThkHljWsUTMcuPfhiOExSVom1krIo
 iOwOVT9yGyaCVw3hB65SuB7r2h0aNkz+AyMmmwg=
         "]]},
-      Annotation[#, "Charting`Private`Tag$803823#1"]& ]}, {}, {}}, {{{}, {}, 
+      Annotation[#, "Charting`Private`Tag$837593#1"]& ]}, {}, {}}, {{{}, {}, 
      TagBox[
       {RGBColor[0, 0, 1], AbsoluteThickness[1.6], Opacity[1.], 
        LineBox[CompressedData["
@@ -1269,7 +1474,7 @@ AVszpx2p3O2YUTQsHn5JwPjH7Fpn6RY8/6LQvK2TgIzt29wv0QH9ZiNF5d0E
 tAwSj9S5tmjhoCG82UeA/tVwvE5fj+p+vUT8AAGD7ItZBJfA6TihIGSQAJVU
 l6BdXG38+16o0aEhApj7aal+YzYVWO9wx3WEgP8ApsFlPw==
         "]]},
-      Annotation[#, "Charting`Private`Tag$803868#1"]& ]}, {}, {}}, {{}, {{}, 
+      Annotation[#, "Charting`Private`Tag$837638#1"]& ]}, {}, {}}, {{}, {{}, 
      {GrayLevel[0], PointSize[0.012833333333333334`], AbsoluteThickness[1.6], 
       PointBox[{{0., 10.94782}, {-15632.300494774669`, 
        0.}, {-32767., -12.}}]}, {}}, {}, {}, {}, {}}},
@@ -1316,7 +1521,7 @@ l6BdXG38+16o0aEhApj7aal+YzYVWO9wx3WEgP8ApsFlPw==
   Ticks->{
    Automatic, 
     Automatic}]], \
-"Output",ExpressionUUID->"2cbea09f-1e0f-4187-97ad-189bd2b1ff78"]
+"Output",ExpressionUUID->"cb25e8a8-186d-4841-b7cc-411b4ab540b4"]
 }, Open  ]],
 
 Cell["\<\
@@ -1339,8 +1544,8 @@ Cell["2018.08.07 Initial version.", \
 }, Open  ]]
 }, Open  ]]
 },
-WindowSize->{1197, 1459},
-WindowMargins->{{Automatic, 958}, {Automatic, 19}},
+WindowSize->{1014, 1459},
+WindowMargins->{{104, Automatic}, {Automatic, 38}},
 PrintingCopies->1,
 PrintingPageRange->{32000, 32000},
 PrintingOptions->{"Magnification"->1.,
