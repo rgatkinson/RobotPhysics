@@ -1,14 +1,14 @@
-motorPosition = Function[{vbat$, \[Tau]auto$}, 
+motorPosition = Function[{vapp$, \[Tau]appafter$}, 
      Module[{fn$}, fn$ = makeTimeDomainFunctionConvolve[TransferFunctionModel[
           {{{Kt*\[Eta]*\[CapitalNu]^2, (R + L*s)*\[CapitalNu]}}, 
-           Ke*Kt*s*\[Eta]*\[CapitalNu]^2 + s*(R + L*s)*(Bout + Jout*s + 
-              (B + J*s)*\[Eta]*\[CapitalNu]^2)}, s, SystemsModelLabels -> 
-           {{"vbat", "\[Tau]auto"}, "\[Theta]", Automatic}], 
-         {vbat$[#1] & , \[Tau]auto$[#1] & }]; fn$]]
+           s*(Ke*Kt*\[Eta]*\[CapitalNu]^2 + (R + L*s)*(Bafter + Jafter*s + 
+               (B + J*s)*\[Eta]*\[CapitalNu]^2))}, s, SystemsModelLabels -> 
+           {{"vapp", "\[Tau]appafter"}, "\[Theta]", Automatic}], 
+         {vapp$[#1] & , \[Tau]appafter$[#1] & }]; fn$]]
  
-Attributes[vbat$] = {Temporary}
+Attributes[vapp$] = {Temporary}
  
-Attributes[\[Tau]auto$] = {Temporary}
+Attributes[\[Tau]appafter$] = {Temporary}
  
 Attributes[fn$] = {Temporary}
  
@@ -25,2064 +25,2112 @@ convolve[fExpr_, gExpr_, exprVar_, t_] := Module[{\[Tau]},
       Integrate[(fExpr /. exprVar -> \[Tau])*(gExpr /. 
          exprVar -> t - \[Tau]), {\[Tau], 0, t}]]]
  
-parameterAssumptions = {Element[Bout, Reals], Element[constvbat, Reals], 
-     Element[const\[Tau]auto, Reals], Element[Jout, Reals], 
-     Element[i[_], Reals], Element[vbat[_], Reals], Element[vg[_], Reals], 
+parameterAssumptions = {Element[Bafter, Reals], Element[constvapp, Reals], 
+     Element[const\[Tau]appafter, Reals], Element[Jafter, Reals], 
+     Element[i[_], Reals], Element[vapp[_], Reals], Element[vg[_], Reals], 
      Element[\[Alpha][_], Reals], Element[\[Theta][_], Reals], 
-     Element[\[Tau][_], Reals], Element[\[Tau]auto[_], Reals], 
+     Element[\[Tau][_], Reals], Element[\[Tau]appafter[_], Reals], 
      Element[\[Omega][_], Reals], Ke > 0, Kt > 0, L > 0, R > 0, \[Eta] > 0, 
      \[CapitalNu] > 0, B >= 0, J >= 0, t >= 0}
  
-motorVelocity = Function[{vbat$, \[Tau]auto$}, 
+motorVelocity = Function[{vapp$, \[Tau]appafter$}, 
      Module[{fn$}, fn$ = makeTimeDomainFunctionConvolve[TransferFunctionModel[
           {{{Kt*\[Eta]*\[CapitalNu]^2, (R + L*s)*\[CapitalNu]}}, 
-           Bout*(R + L*s) + Jout*s*(R + L*s) + (Ke*Kt + (B + J*s)*(R + L*s))*
-             \[Eta]*\[CapitalNu]^2}, s, SystemsModelLabels -> 
-           {{"vbat", "\[Tau]auto"}, "\[Omega]", Automatic}], 
-         {vbat$[#1] & , \[Tau]auto$[#1] & }]; fn$]]
+           Ke*Kt*\[Eta]*\[CapitalNu]^2 + (R + L*s)*(Bafter + Jafter*s + 
+              (B + J*s)*\[Eta]*\[CapitalNu]^2)}, s, SystemsModelLabels -> 
+           {{"vapp", "\[Tau]appafter"}, "\[Omega]", Automatic}], 
+         {vapp$[#1] & , \[Tau]appafter$[#1] & }]; fn$]]
  
-motorAcceleration = Function[{vbat$, \[Tau]auto$}, 
+motorAcceleration = Function[{vapp$, \[Tau]appafter$}, 
      Module[{fn$}, fn$ = makeTimeDomainFunctionConvolve[TransferFunctionModel[
           {{{Kt*s*\[Eta]*\[CapitalNu]^2, s*(R + L*s)*\[CapitalNu]}}, 
-           Bout*(R + L*s) + Jout*s*(R + L*s) + (Ke*Kt + (B + J*s)*(R + L*s))*
-             \[Eta]*\[CapitalNu]^2}, s, SystemsModelLabels -> 
-           {{"vbat", "\[Tau]auto"}, "\[Alpha]", Automatic}], 
-         {vbat$[#1] & , \[Tau]auto$[#1] & }]; fn$]]
+           Ke*Kt*\[Eta]*\[CapitalNu]^2 + (R + L*s)*(Bafter + Jafter*s + 
+              (B + J*s)*\[Eta]*\[CapitalNu]^2)}, s, SystemsModelLabels -> 
+           {{"vapp", "\[Tau]appafter"}, "\[Alpha]", Automatic}], 
+         {vapp$[#1] & , \[Tau]appafter$[#1] & }]; fn$]]
  
-motorCurrent = Function[{vbat$, \[Tau]auto$}, Module[{fn$}, 
-      fn$ = makeTimeDomainFunctionConvolve[TransferFunctionModel[
-          {{{Bout + Jout*s + (B + J*s)*\[Eta]*\[CapitalNu]^2, 
+motorCurrent = Function[{vapp$, \[Tau]appafter$}, 
+     Module[{fn$}, fn$ = makeTimeDomainFunctionConvolve[TransferFunctionModel[
+          {{{Bafter + Jafter*s + (B + J*s)*\[Eta]*\[CapitalNu]^2, 
              -(Ke*\[CapitalNu])}}, Ke*Kt*\[Eta]*\[CapitalNu]^2 + 
-            (R + L*s)*(Bout + Jout*s + (B + J*s)*\[Eta]*\[CapitalNu]^2)}, s, 
-          SystemsModelLabels -> {{"vbat", "\[Tau]auto"}, "i", Automatic}], 
-         {vbat$[#1] & , \[Tau]auto$[#1] & }]; fn$]]
+            (R + L*s)*(Bafter + Jafter*s + (B + J*s)*\[Eta]*\[CapitalNu]^2)}, 
+          s, SystemsModelLabels -> {{"vapp", "\[Tau]appafter"}, "i", 
+            Automatic}], {vapp$[#1] & , \[Tau]appafter$[#1] & }]; fn$]]
  
-motorEMF = Function[{vbat$, \[Tau]auto$}, Module[{fn$}, 
+motorEMF = Function[{vapp$, \[Tau]appafter$}, Module[{fn$}, 
       fn$ = makeTimeDomainFunctionConvolve[TransferFunctionModel[
           {{{Ke*Kt*\[Eta]*\[CapitalNu]^2, Ke*(R + L*s)*\[CapitalNu]}}, 
-           Bout*(R + L*s) + Jout*s*(R + L*s) + (Ke*Kt + (B + J*s)*(R + L*s))*
-             \[Eta]*\[CapitalNu]^2}, s, SystemsModelLabels -> 
-           {{"vbat", "\[Tau]auto"}, "vg", Automatic}], 
-         {vbat$[#1] & , \[Tau]auto$[#1] & }]; fn$]]
+           Ke*Kt*\[Eta]*\[CapitalNu]^2 + (R + L*s)*(Bafter + Jafter*s + 
+              (B + J*s)*\[Eta]*\[CapitalNu]^2)}, s, SystemsModelLabels -> 
+           {{"vapp", "\[Tau]appafter"}, "vg", Automatic}], 
+         {vapp$[#1] & , \[Tau]appafter$[#1] & }]; fn$]]
  
-motorTorque = Function[{vbat$, \[Tau]auto$}, Module[{fn$}, 
-      fn$ = makeTimeDomainFunctionConvolve[TransferFunctionModel[
-          {{{Kt*(Bout + Jout*s + (B + J*s)*\[Eta]*\[CapitalNu]^2), 
+motorTorque = Function[{vapp$, \[Tau]appafter$}, 
+     Module[{fn$}, fn$ = makeTimeDomainFunctionConvolve[TransferFunctionModel[
+          {{{Kt*(Bafter + Jafter*s + (B + J*s)*\[Eta]*\[CapitalNu]^2), 
              -(Ke*Kt*\[CapitalNu])}}, Ke*Kt*\[Eta]*\[CapitalNu]^2 + 
-            (R + L*s)*(Bout + Jout*s + (B + J*s)*\[Eta]*\[CapitalNu]^2)}, s, 
-          SystemsModelLabels -> {{"vbat", "\[Tau]auto"}, "\[Tau]", 
-            Automatic}], {vbat$[#1] & , \[Tau]auto$[#1] & }]; fn$]]
+            (R + L*s)*(Bafter + Jafter*s + (B + J*s)*\[Eta]*\[CapitalNu]^2)}, 
+          s, SystemsModelLabels -> {{"vapp", "\[Tau]appafter"}, "\[Tau]", 
+            Automatic}], {vapp$[#1] & , \[Tau]appafter$[#1] & }]; fn$]]
  
-motorPositionOut = Function[{vbat$, \[Tau]auto$}, 
+motorPositionOut = Function[{vapp$, \[Tau]appafter$}, 
      Module[{fn$}, fn$ = makeTimeDomainFunctionConvolve[TransferFunctionModel[
           {{{Kt*\[Eta]*\[CapitalNu], R + L*s}}, 
-           Ke*Kt*s*\[Eta]*\[CapitalNu]^2 + s*(R + L*s)*(Bout + Jout*s + 
+           s*(Ke*Kt*\[Eta]*\[CapitalNu]^2 + (R + L*s)*(Bafter + Jafter*s + 
+               (B + J*s)*\[Eta]*\[CapitalNu]^2))}, s, SystemsModelLabels -> 
+           {{"vapp", "\[Tau]appafter"}, "\[Theta]after", Automatic}], 
+         {vapp$[#1] & , \[Tau]appafter$[#1] & }]; fn$]]
+ 
+motorVelocityOut = Function[{vapp$, \[Tau]appafter$}, 
+     Module[{fn$}, fn$ = makeTimeDomainFunctionConvolve[TransferFunctionModel[
+          {{{Kt*\[Eta]*\[CapitalNu], R + L*s}}, Ke*Kt*\[Eta]*\[CapitalNu]^2 + 
+            (R + L*s)*(Bafter + Jafter*s + (B + J*s)*\[Eta]*\[CapitalNu]^2)}, 
+          s, SystemsModelLabels -> {{"vapp", "\[Tau]appafter"}, 
+            "\[Omega]out", Automatic}], {vapp$[#1] & , 
+          \[Tau]appafter$[#1] & }]; fn$]]
+ 
+motorAccelerationOut = Function[{vapp$, \[Tau]appafter$}, 
+     Module[{fn$}, fn$ = makeTimeDomainFunctionConvolve[TransferFunctionModel[
+          {{{Kt*s*\[Eta]*\[CapitalNu], s*(R + L*s)}}, 
+           Ke*Kt*\[Eta]*\[CapitalNu]^2 + (R + L*s)*(Bafter + Jafter*s + 
               (B + J*s)*\[Eta]*\[CapitalNu]^2)}, s, SystemsModelLabels -> 
-           {{"vbat", "\[Tau]auto"}, "\[Theta]out", Automatic}], 
-         {vbat$[#1] & , \[Tau]auto$[#1] & }]; fn$]]
+           {{"vapp", "\[Tau]appafter"}, "\[Alpha]out", Automatic}], 
+         {vapp$[#1] & , \[Tau]appafter$[#1] & }]; fn$]]
  
-motorVelocityOut = Function[{vbat$, \[Tau]auto$}, 
-     Module[{fn$}, fn$ = makeTimeDomainFunctionConvolve[TransferFunctionModel[
-          {{{Kt*\[Eta]*\[CapitalNu], R + L*s}}, Bout*(R + L*s) + 
-            Jout*s*(R + L*s) + (Ke*Kt + (B + J*s)*(R + L*s))*\[Eta]*
-             \[CapitalNu]^2}, s, SystemsModelLabels -> 
-           {{"vbat", "\[Tau]auto"}, "\[Omega]out", Automatic}], 
-         {vbat$[#1] & , \[Tau]auto$[#1] & }]; fn$]]
- 
-motorAccelerationOut = Function[{vbat$, \[Tau]auto$}, 
-     Module[{fn$}, fn$ = makeTimeDomainFunctionConvolve[TransferFunctionModel[
-          {{{Kt*s*\[Eta]*\[CapitalNu], s*(R + L*s)}}, Bout*(R + L*s) + 
-            Jout*s*(R + L*s) + (Ke*Kt + (B + J*s)*(R + L*s))*\[Eta]*
-             \[CapitalNu]^2}, s, SystemsModelLabels -> 
-           {{"vbat", "\[Tau]auto"}, "\[Alpha]out", Automatic}], 
-         {vbat$[#1] & , \[Tau]auto$[#1] & }]; fn$]]
- 
-motorPositionConstVbat = Function[{t$}, Module[{convolutions$}, 
-      convolutions$ = (convolve[modelExpr$10815[[#1]], 
-           {(Vbat & )[#1] & , (0 & )[#1] & }[[#1]][\[Tau]$10815], 
-           \[Tau]$10815, t$] & ) /@ Range[1, Length[{(Vbat & )[#1] & , 
+motorPositionConstvapp = Function[{t$}, Module[{convolutions$}, 
+      convolutions$ = (convolve[modelExpr$18334[[#1]], 
+           {(vbat & )[#1] & , (0 & )[#1] & }[[#1]][\[Tau]$18334], 
+           \[Tau]$18334, t$] & ) /@ Range[1, Length[{(vbat & )[#1] & , 
             (0 & )[#1] & }]]; {Total[convolutions$]}]]
  
 Attributes[t$] = {Temporary}
  
 Attributes[convolutions$] = {Temporary}
  
-Attributes[modelExpr$10815] = {Temporary}
+Attributes[modelExpr$18334] = {Temporary}
  
-modelExpr$10815 = {Kt*\[Eta]*\[CapitalNu]^2*
-      ((Bout*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + B*R*\[Eta]*\[CapitalNu]^2)^
-        (-1) - (-(Bout*E^((-Bout/(2*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-              (Jout*R)/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-              (B*\[Eta]*\[CapitalNu]^2)/(2*(Jout + J*\[Eta]*\[CapitalNu]^
-                   2)) - (J*R*\[Eta]*\[CapitalNu]^2)/(2*L*(Jout + 
-                 J*\[Eta]*\[CapitalNu]^2)) - Sqrt[-4*(Jout*L + J*L*\[Eta]*
-                    \[CapitalNu]^2)*(Bout*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + 
-                   B*R*\[Eta]*\[CapitalNu]^2) + (Bout*L + Jout*R + 
+modelExpr$18334 = {Kt*\[Eta]*\[CapitalNu]^2*
+      ((Bafter*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + B*R*\[Eta]*\[CapitalNu]^2)^
+        (-1) - (-(Bafter*E^((-Bafter/(2*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+              (Jafter*R)/(2*L*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+              (B*\[Eta]*\[CapitalNu]^2)/(2*(Jafter + J*\[Eta]*\[CapitalNu]^
+                   2)) - (J*R*\[Eta]*\[CapitalNu]^2)/(2*L*(Jafter + 
+                 J*\[Eta]*\[CapitalNu]^2)) - Sqrt[-4*(Jafter*L + J*L*\[Eta]*
+                    \[CapitalNu]^2)*(Bafter*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + 
+                   B*R*\[Eta]*\[CapitalNu]^2) + (Bafter*L + Jafter*R + 
                    B*L*\[Eta]*\[CapitalNu]^2 + J*R*\[Eta]*\[CapitalNu]^2)^2]/(
-                2*L*(Jout + J*\[Eta]*\[CapitalNu]^2)))*\[Tau]$10815)*L) + 
-         Bout*E^((-Bout/(2*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-             (Jout*R)/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-             (B*\[Eta]*\[CapitalNu]^2)/(2*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-             (J*R*\[Eta]*\[CapitalNu]^2)/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^
-                  2)) + Sqrt[-4*(Jout*L + J*L*\[Eta]*\[CapitalNu]^2)*
-                 (Bout*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + B*R*\[Eta]*
-                   \[CapitalNu]^2) + (Bout*L + Jout*R + B*L*\[Eta]*
-                   \[CapitalNu]^2 + J*R*\[Eta]*\[CapitalNu]^2)^2]/
-              (2*L*(Jout + J*\[Eta]*\[CapitalNu]^2)))*\[Tau]$10815)*L - 
-         E^((-Bout/(2*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-             (Jout*R)/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-             (B*\[Eta]*\[CapitalNu]^2)/(2*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-             (J*R*\[Eta]*\[CapitalNu]^2)/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^
-                  2)) - Sqrt[-4*(Jout*L + J*L*\[Eta]*\[CapitalNu]^2)*
-                 (Bout*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + B*R*\[Eta]*
-                   \[CapitalNu]^2) + (Bout*L + Jout*R + B*L*\[Eta]*
-                   \[CapitalNu]^2 + J*R*\[Eta]*\[CapitalNu]^2)^2]/
-              (2*L*(Jout + J*\[Eta]*\[CapitalNu]^2)))*\[Tau]$10815)*Jout*R + 
-         E^((-Bout/(2*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-             (Jout*R)/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-             (B*\[Eta]*\[CapitalNu]^2)/(2*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-             (J*R*\[Eta]*\[CapitalNu]^2)/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^
-                  2)) + Sqrt[-4*(Jout*L + J*L*\[Eta]*\[CapitalNu]^2)*
-                 (Bout*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + B*R*\[Eta]*
-                   \[CapitalNu]^2) + (Bout*L + Jout*R + B*L*\[Eta]*
-                   \[CapitalNu]^2 + J*R*\[Eta]*\[CapitalNu]^2)^2]/
-              (2*L*(Jout + J*\[Eta]*\[CapitalNu]^2)))*\[Tau]$10815)*Jout*R - 
-         B*E^((-Bout/(2*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-             (Jout*R)/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-             (B*\[Eta]*\[CapitalNu]^2)/(2*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-             (J*R*\[Eta]*\[CapitalNu]^2)/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^
-                  2)) - Sqrt[-4*(Jout*L + J*L*\[Eta]*\[CapitalNu]^2)*
-                 (Bout*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + B*R*\[Eta]*
-                   \[CapitalNu]^2) + (Bout*L + Jout*R + B*L*\[Eta]*
-                   \[CapitalNu]^2 + J*R*\[Eta]*\[CapitalNu]^2)^2]/
-              (2*L*(Jout + J*\[Eta]*\[CapitalNu]^2)))*\[Tau]$10815)*L*\[Eta]*
-          \[CapitalNu]^2 + B*E^((-Bout/(2*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-             (Jout*R)/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-             (B*\[Eta]*\[CapitalNu]^2)/(2*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-             (J*R*\[Eta]*\[CapitalNu]^2)/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^
-                  2)) + Sqrt[-4*(Jout*L + J*L*\[Eta]*\[CapitalNu]^2)*
-                 (Bout*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + B*R*\[Eta]*
-                   \[CapitalNu]^2) + (Bout*L + Jout*R + B*L*\[Eta]*
-                   \[CapitalNu]^2 + J*R*\[Eta]*\[CapitalNu]^2)^2]/
-              (2*L*(Jout + J*\[Eta]*\[CapitalNu]^2)))*\[Tau]$10815)*L*\[Eta]*
-          \[CapitalNu]^2 - E^((-Bout/(2*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-             (Jout*R)/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-             (B*\[Eta]*\[CapitalNu]^2)/(2*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-             (J*R*\[Eta]*\[CapitalNu]^2)/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^
-                  2)) - Sqrt[-4*(Jout*L + J*L*\[Eta]*\[CapitalNu]^2)*
-                 (Bout*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + B*R*\[Eta]*
-                   \[CapitalNu]^2) + (Bout*L + Jout*R + B*L*\[Eta]*
-                   \[CapitalNu]^2 + J*R*\[Eta]*\[CapitalNu]^2)^2]/
-              (2*L*(Jout + J*\[Eta]*\[CapitalNu]^2)))*\[Tau]$10815)*J*R*
+                2*L*(Jafter + J*\[Eta]*\[CapitalNu]^2)))*\[Tau]$18334)*L) + 
+         Bafter*E^((-Bafter/(2*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+             (Jafter*R)/(2*L*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+             (B*\[Eta]*\[CapitalNu]^2)/(2*(Jafter + J*\[Eta]*\[CapitalNu]^
+                  2)) - (J*R*\[Eta]*\[CapitalNu]^2)/(2*L*(Jafter + 
+                J*\[Eta]*\[CapitalNu]^2)) + Sqrt[-4*(Jafter*L + J*L*\[Eta]*
+                   \[CapitalNu]^2)*(Bafter*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + 
+                  B*R*\[Eta]*\[CapitalNu]^2) + (Bafter*L + Jafter*R + 
+                  B*L*\[Eta]*\[CapitalNu]^2 + J*R*\[Eta]*\[CapitalNu]^2)^2]/
+              (2*L*(Jafter + J*\[Eta]*\[CapitalNu]^2)))*\[Tau]$18334)*L - 
+         E^((-Bafter/(2*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+             (Jafter*R)/(2*L*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+             (B*\[Eta]*\[CapitalNu]^2)/(2*(Jafter + J*\[Eta]*\[CapitalNu]^
+                  2)) - (J*R*\[Eta]*\[CapitalNu]^2)/(2*L*(Jafter + 
+                J*\[Eta]*\[CapitalNu]^2)) - Sqrt[-4*(Jafter*L + J*L*\[Eta]*
+                   \[CapitalNu]^2)*(Bafter*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + 
+                  B*R*\[Eta]*\[CapitalNu]^2) + (Bafter*L + Jafter*R + 
+                  B*L*\[Eta]*\[CapitalNu]^2 + J*R*\[Eta]*\[CapitalNu]^2)^2]/
+              (2*L*(Jafter + J*\[Eta]*\[CapitalNu]^2)))*\[Tau]$18334)*Jafter*
+          R + E^((-Bafter/(2*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+             (Jafter*R)/(2*L*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+             (B*\[Eta]*\[CapitalNu]^2)/(2*(Jafter + J*\[Eta]*\[CapitalNu]^
+                  2)) - (J*R*\[Eta]*\[CapitalNu]^2)/(2*L*(Jafter + 
+                J*\[Eta]*\[CapitalNu]^2)) + Sqrt[-4*(Jafter*L + J*L*\[Eta]*
+                   \[CapitalNu]^2)*(Bafter*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + 
+                  B*R*\[Eta]*\[CapitalNu]^2) + (Bafter*L + Jafter*R + 
+                  B*L*\[Eta]*\[CapitalNu]^2 + J*R*\[Eta]*\[CapitalNu]^2)^2]/
+              (2*L*(Jafter + J*\[Eta]*\[CapitalNu]^2)))*\[Tau]$18334)*Jafter*
+          R - B*E^((-Bafter/(2*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+             (Jafter*R)/(2*L*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+             (B*\[Eta]*\[CapitalNu]^2)/(2*(Jafter + J*\[Eta]*\[CapitalNu]^
+                  2)) - (J*R*\[Eta]*\[CapitalNu]^2)/(2*L*(Jafter + 
+                J*\[Eta]*\[CapitalNu]^2)) - Sqrt[-4*(Jafter*L + J*L*\[Eta]*
+                   \[CapitalNu]^2)*(Bafter*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + 
+                  B*R*\[Eta]*\[CapitalNu]^2) + (Bafter*L + Jafter*R + 
+                  B*L*\[Eta]*\[CapitalNu]^2 + J*R*\[Eta]*\[CapitalNu]^2)^2]/
+              (2*L*(Jafter + J*\[Eta]*\[CapitalNu]^2)))*\[Tau]$18334)*L*
           \[Eta]*\[CapitalNu]^2 + 
-         E^((-Bout/(2*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-             (Jout*R)/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-             (B*\[Eta]*\[CapitalNu]^2)/(2*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-             (J*R*\[Eta]*\[CapitalNu]^2)/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^
-                  2)) + Sqrt[-4*(Jout*L + J*L*\[Eta]*\[CapitalNu]^2)*
-                 (Bout*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + B*R*\[Eta]*
-                   \[CapitalNu]^2) + (Bout*L + Jout*R + B*L*\[Eta]*
-                   \[CapitalNu]^2 + J*R*\[Eta]*\[CapitalNu]^2)^2]/
-              (2*L*(Jout + J*\[Eta]*\[CapitalNu]^2)))*\[Tau]$10815)*J*R*
-          \[Eta]*\[CapitalNu]^2 + 
-         E^((-Bout/(2*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-             (Jout*R)/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-             (B*\[Eta]*\[CapitalNu]^2)/(2*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-             (J*R*\[Eta]*\[CapitalNu]^2)/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^
-                  2)) - Sqrt[-4*(Jout*L + J*L*\[Eta]*\[CapitalNu]^2)*
-                 (Bout*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + B*R*\[Eta]*
-                   \[CapitalNu]^2) + (Bout*L + Jout*R + B*L*\[Eta]*
-                   \[CapitalNu]^2 + J*R*\[Eta]*\[CapitalNu]^2)^2]/
-              (2*L*(Jout + J*\[Eta]*\[CapitalNu]^2)))*\[Tau]$10815)*
-          Sqrt[-4*(Jout*L + J*L*\[Eta]*\[CapitalNu]^2)*(Bout*R + 
-              Ke*Kt*\[Eta]*\[CapitalNu]^2 + B*R*\[Eta]*\[CapitalNu]^2) + 
-            (Bout*L + Jout*R + B*L*\[Eta]*\[CapitalNu]^2 + J*R*\[Eta]*
-               \[CapitalNu]^2)^2] + 
-         E^((-Bout/(2*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-             (Jout*R)/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-             (B*\[Eta]*\[CapitalNu]^2)/(2*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-             (J*R*\[Eta]*\[CapitalNu]^2)/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^
-                  2)) + Sqrt[-4*(Jout*L + J*L*\[Eta]*\[CapitalNu]^2)*
-                 (Bout*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + B*R*\[Eta]*
-                   \[CapitalNu]^2) + (Bout*L + Jout*R + B*L*\[Eta]*
-                   \[CapitalNu]^2 + J*R*\[Eta]*\[CapitalNu]^2)^2]/
-              (2*L*(Jout + J*\[Eta]*\[CapitalNu]^2)))*\[Tau]$10815)*
-          Sqrt[-4*(Jout*L + J*L*\[Eta]*\[CapitalNu]^2)*(Bout*R + 
-              Ke*Kt*\[Eta]*\[CapitalNu]^2 + B*R*\[Eta]*\[CapitalNu]^2) + 
-            (Bout*L + Jout*R + B*L*\[Eta]*\[CapitalNu]^2 + J*R*\[Eta]*
-               \[CapitalNu]^2)^2])/(2*(Bout*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + 
-          B*R*\[Eta]*\[CapitalNu]^2)*
-         Sqrt[-4*(Jout*L + J*L*\[Eta]*\[CapitalNu]^2)*(Bout*R + 
-             Ke*Kt*\[Eta]*\[CapitalNu]^2 + B*R*\[Eta]*\[CapitalNu]^2) + 
-           (Bout*L + Jout*R + B*L*\[Eta]*\[CapitalNu]^2 + 
-             J*R*\[Eta]*\[CapitalNu]^2)^2])), 
-     \[CapitalNu]*(R/(Bout*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + 
-         B*R*\[Eta]*\[CapitalNu]^2) - 
-       (Bout*E^((-Bout/(2*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-             (Jout*R)/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-             (B*\[Eta]*\[CapitalNu]^2)/(2*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-             (J*R*\[Eta]*\[CapitalNu]^2)/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^
-                  2)) - Sqrt[-4*(Jout*L + J*L*\[Eta]*\[CapitalNu]^2)*
-                 (Bout*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + B*R*\[Eta]*
-                   \[CapitalNu]^2) + (Bout*L + Jout*R + B*L*\[Eta]*
-                   \[CapitalNu]^2 + J*R*\[Eta]*\[CapitalNu]^2)^2]/
-              (2*L*(Jout + J*\[Eta]*\[CapitalNu]^2)))*\[Tau]$10815)*L*R - 
-         Bout*E^((-Bout/(2*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-             (Jout*R)/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-             (B*\[Eta]*\[CapitalNu]^2)/(2*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-             (J*R*\[Eta]*\[CapitalNu]^2)/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^
-                  2)) + Sqrt[-4*(Jout*L + J*L*\[Eta]*\[CapitalNu]^2)*
-                 (Bout*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + B*R*\[Eta]*
-                   \[CapitalNu]^2) + (Bout*L + Jout*R + B*L*\[Eta]*
-                   \[CapitalNu]^2 + J*R*\[Eta]*\[CapitalNu]^2)^2]/
-              (2*L*(Jout + J*\[Eta]*\[CapitalNu]^2)))*\[Tau]$10815)*L*R - 
-         E^((-Bout/(2*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-             (Jout*R)/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-             (B*\[Eta]*\[CapitalNu]^2)/(2*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-             (J*R*\[Eta]*\[CapitalNu]^2)/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^
-                  2)) - Sqrt[-4*(Jout*L + J*L*\[Eta]*\[CapitalNu]^2)*
-                 (Bout*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + B*R*\[Eta]*
-                   \[CapitalNu]^2) + (Bout*L + Jout*R + B*L*\[Eta]*
-                   \[CapitalNu]^2 + J*R*\[Eta]*\[CapitalNu]^2)^2]/
-              (2*L*(Jout + J*\[Eta]*\[CapitalNu]^2)))*\[Tau]$10815)*Jout*
-          R^2 + E^((-Bout/(2*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-             (Jout*R)/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-             (B*\[Eta]*\[CapitalNu]^2)/(2*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-             (J*R*\[Eta]*\[CapitalNu]^2)/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^
-                  2)) + Sqrt[-4*(Jout*L + J*L*\[Eta]*\[CapitalNu]^2)*
-                 (Bout*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + B*R*\[Eta]*
-                   \[CapitalNu]^2) + (Bout*L + Jout*R + B*L*\[Eta]*
-                   \[CapitalNu]^2 + J*R*\[Eta]*\[CapitalNu]^2)^2]/
-              (2*L*(Jout + J*\[Eta]*\[CapitalNu]^2)))*\[Tau]$10815)*Jout*
-          R^2 + 2*E^((-Bout/(2*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-             (Jout*R)/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-             (B*\[Eta]*\[CapitalNu]^2)/(2*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-             (J*R*\[Eta]*\[CapitalNu]^2)/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^
-                  2)) - Sqrt[-4*(Jout*L + J*L*\[Eta]*\[CapitalNu]^2)*
-                 (Bout*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + B*R*\[Eta]*
-                   \[CapitalNu]^2) + (Bout*L + Jout*R + B*L*\[Eta]*
-                   \[CapitalNu]^2 + J*R*\[Eta]*\[CapitalNu]^2)^2]/
-              (2*L*(Jout + J*\[Eta]*\[CapitalNu]^2)))*\[Tau]$10815)*Ke*Kt*L*
+         B*E^((-Bafter/(2*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+             (Jafter*R)/(2*L*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+             (B*\[Eta]*\[CapitalNu]^2)/(2*(Jafter + J*\[Eta]*\[CapitalNu]^
+                  2)) - (J*R*\[Eta]*\[CapitalNu]^2)/(2*L*(Jafter + 
+                J*\[Eta]*\[CapitalNu]^2)) + Sqrt[-4*(Jafter*L + J*L*\[Eta]*
+                   \[CapitalNu]^2)*(Bafter*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + 
+                  B*R*\[Eta]*\[CapitalNu]^2) + (Bafter*L + Jafter*R + 
+                  B*L*\[Eta]*\[CapitalNu]^2 + J*R*\[Eta]*\[CapitalNu]^2)^2]/
+              (2*L*(Jafter + J*\[Eta]*\[CapitalNu]^2)))*\[Tau]$18334)*L*
           \[Eta]*\[CapitalNu]^2 - 
-         2*E^((-Bout/(2*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-             (Jout*R)/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-             (B*\[Eta]*\[CapitalNu]^2)/(2*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-             (J*R*\[Eta]*\[CapitalNu]^2)/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^
-                  2)) + Sqrt[-4*(Jout*L + J*L*\[Eta]*\[CapitalNu]^2)*
-                 (Bout*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + B*R*\[Eta]*
-                   \[CapitalNu]^2) + (Bout*L + Jout*R + B*L*\[Eta]*
-                   \[CapitalNu]^2 + J*R*\[Eta]*\[CapitalNu]^2)^2]/
-              (2*L*(Jout + J*\[Eta]*\[CapitalNu]^2)))*\[Tau]$10815)*Ke*Kt*L*
+         E^((-Bafter/(2*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+             (Jafter*R)/(2*L*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+             (B*\[Eta]*\[CapitalNu]^2)/(2*(Jafter + J*\[Eta]*\[CapitalNu]^
+                  2)) - (J*R*\[Eta]*\[CapitalNu]^2)/(2*L*(Jafter + 
+                J*\[Eta]*\[CapitalNu]^2)) - Sqrt[-4*(Jafter*L + J*L*\[Eta]*
+                   \[CapitalNu]^2)*(Bafter*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + 
+                  B*R*\[Eta]*\[CapitalNu]^2) + (Bafter*L + Jafter*R + 
+                  B*L*\[Eta]*\[CapitalNu]^2 + J*R*\[Eta]*\[CapitalNu]^2)^2]/
+              (2*L*(Jafter + J*\[Eta]*\[CapitalNu]^2)))*\[Tau]$18334)*J*R*
           \[Eta]*\[CapitalNu]^2 + 
-         B*E^((-Bout/(2*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-             (Jout*R)/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-             (B*\[Eta]*\[CapitalNu]^2)/(2*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-             (J*R*\[Eta]*\[CapitalNu]^2)/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^
-                  2)) - Sqrt[-4*(Jout*L + J*L*\[Eta]*\[CapitalNu]^2)*
-                 (Bout*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + B*R*\[Eta]*
-                   \[CapitalNu]^2) + (Bout*L + Jout*R + B*L*\[Eta]*
-                   \[CapitalNu]^2 + J*R*\[Eta]*\[CapitalNu]^2)^2]/
-              (2*L*(Jout + J*\[Eta]*\[CapitalNu]^2)))*\[Tau]$10815)*L*R*
-          \[Eta]*\[CapitalNu]^2 - 
-         B*E^((-Bout/(2*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-             (Jout*R)/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-             (B*\[Eta]*\[CapitalNu]^2)/(2*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-             (J*R*\[Eta]*\[CapitalNu]^2)/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^
-                  2)) + Sqrt[-4*(Jout*L + J*L*\[Eta]*\[CapitalNu]^2)*
-                 (Bout*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + B*R*\[Eta]*
-                   \[CapitalNu]^2) + (Bout*L + Jout*R + B*L*\[Eta]*
-                   \[CapitalNu]^2 + J*R*\[Eta]*\[CapitalNu]^2)^2]/
-              (2*L*(Jout + J*\[Eta]*\[CapitalNu]^2)))*\[Tau]$10815)*L*R*
-          \[Eta]*\[CapitalNu]^2 - 
-         E^((-Bout/(2*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-             (Jout*R)/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-             (B*\[Eta]*\[CapitalNu]^2)/(2*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-             (J*R*\[Eta]*\[CapitalNu]^2)/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^
-                  2)) - Sqrt[-4*(Jout*L + J*L*\[Eta]*\[CapitalNu]^2)*
-                 (Bout*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + B*R*\[Eta]*
-                   \[CapitalNu]^2) + (Bout*L + Jout*R + B*L*\[Eta]*
-                   \[CapitalNu]^2 + J*R*\[Eta]*\[CapitalNu]^2)^2]/
-              (2*L*(Jout + J*\[Eta]*\[CapitalNu]^2)))*\[Tau]$10815)*J*R^2*
+         E^((-Bafter/(2*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+             (Jafter*R)/(2*L*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+             (B*\[Eta]*\[CapitalNu]^2)/(2*(Jafter + J*\[Eta]*\[CapitalNu]^
+                  2)) - (J*R*\[Eta]*\[CapitalNu]^2)/(2*L*(Jafter + 
+                J*\[Eta]*\[CapitalNu]^2)) + Sqrt[-4*(Jafter*L + J*L*\[Eta]*
+                   \[CapitalNu]^2)*(Bafter*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + 
+                  B*R*\[Eta]*\[CapitalNu]^2) + (Bafter*L + Jafter*R + 
+                  B*L*\[Eta]*\[CapitalNu]^2 + J*R*\[Eta]*\[CapitalNu]^2)^2]/
+              (2*L*(Jafter + J*\[Eta]*\[CapitalNu]^2)))*\[Tau]$18334)*J*R*
           \[Eta]*\[CapitalNu]^2 + 
-         E^((-Bout/(2*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-             (Jout*R)/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-             (B*\[Eta]*\[CapitalNu]^2)/(2*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-             (J*R*\[Eta]*\[CapitalNu]^2)/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^
-                  2)) + Sqrt[-4*(Jout*L + J*L*\[Eta]*\[CapitalNu]^2)*
-                 (Bout*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + B*R*\[Eta]*
-                   \[CapitalNu]^2) + (Bout*L + Jout*R + B*L*\[Eta]*
-                   \[CapitalNu]^2 + J*R*\[Eta]*\[CapitalNu]^2)^2]/
-              (2*L*(Jout + J*\[Eta]*\[CapitalNu]^2)))*\[Tau]$10815)*J*R^2*
-          \[Eta]*\[CapitalNu]^2 + 
-         E^((-Bout/(2*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-             (Jout*R)/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-             (B*\[Eta]*\[CapitalNu]^2)/(2*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-             (J*R*\[Eta]*\[CapitalNu]^2)/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^
-                  2)) - Sqrt[-4*(Jout*L + J*L*\[Eta]*\[CapitalNu]^2)*
-                 (Bout*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + B*R*\[Eta]*
-                   \[CapitalNu]^2) + (Bout*L + Jout*R + B*L*\[Eta]*
-                   \[CapitalNu]^2 + J*R*\[Eta]*\[CapitalNu]^2)^2]/
-              (2*L*(Jout + J*\[Eta]*\[CapitalNu]^2)))*\[Tau]$10815)*R*
-          Sqrt[-4*(Jout*L + J*L*\[Eta]*\[CapitalNu]^2)*(Bout*R + 
+         E^((-Bafter/(2*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+             (Jafter*R)/(2*L*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+             (B*\[Eta]*\[CapitalNu]^2)/(2*(Jafter + J*\[Eta]*\[CapitalNu]^
+                  2)) - (J*R*\[Eta]*\[CapitalNu]^2)/(2*L*(Jafter + 
+                J*\[Eta]*\[CapitalNu]^2)) - Sqrt[-4*(Jafter*L + J*L*\[Eta]*
+                   \[CapitalNu]^2)*(Bafter*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + 
+                  B*R*\[Eta]*\[CapitalNu]^2) + (Bafter*L + Jafter*R + 
+                  B*L*\[Eta]*\[CapitalNu]^2 + J*R*\[Eta]*\[CapitalNu]^2)^2]/
+              (2*L*(Jafter + J*\[Eta]*\[CapitalNu]^2)))*\[Tau]$18334)*
+          Sqrt[-4*(Jafter*L + J*L*\[Eta]*\[CapitalNu]^2)*(Bafter*R + 
               Ke*Kt*\[Eta]*\[CapitalNu]^2 + B*R*\[Eta]*\[CapitalNu]^2) + 
-            (Bout*L + Jout*R + B*L*\[Eta]*\[CapitalNu]^2 + J*R*\[Eta]*
-               \[CapitalNu]^2)^2] + 
-         E^((-Bout/(2*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-             (Jout*R)/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-             (B*\[Eta]*\[CapitalNu]^2)/(2*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-             (J*R*\[Eta]*\[CapitalNu]^2)/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^
-                  2)) + Sqrt[-4*(Jout*L + J*L*\[Eta]*\[CapitalNu]^2)*
-                 (Bout*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + B*R*\[Eta]*
-                   \[CapitalNu]^2) + (Bout*L + Jout*R + B*L*\[Eta]*
-                   \[CapitalNu]^2 + J*R*\[Eta]*\[CapitalNu]^2)^2]/
-              (2*L*(Jout + J*\[Eta]*\[CapitalNu]^2)))*\[Tau]$10815)*R*
-          Sqrt[-4*(Jout*L + J*L*\[Eta]*\[CapitalNu]^2)*(Bout*R + 
+            (Bafter*L + Jafter*R + B*L*\[Eta]*\[CapitalNu]^2 + 
+              J*R*\[Eta]*\[CapitalNu]^2)^2] + 
+         E^((-Bafter/(2*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+             (Jafter*R)/(2*L*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+             (B*\[Eta]*\[CapitalNu]^2)/(2*(Jafter + J*\[Eta]*\[CapitalNu]^
+                  2)) - (J*R*\[Eta]*\[CapitalNu]^2)/(2*L*(Jafter + 
+                J*\[Eta]*\[CapitalNu]^2)) + Sqrt[-4*(Jafter*L + J*L*\[Eta]*
+                   \[CapitalNu]^2)*(Bafter*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + 
+                  B*R*\[Eta]*\[CapitalNu]^2) + (Bafter*L + Jafter*R + 
+                  B*L*\[Eta]*\[CapitalNu]^2 + J*R*\[Eta]*\[CapitalNu]^2)^2]/
+              (2*L*(Jafter + J*\[Eta]*\[CapitalNu]^2)))*\[Tau]$18334)*
+          Sqrt[-4*(Jafter*L + J*L*\[Eta]*\[CapitalNu]^2)*(Bafter*R + 
               Ke*Kt*\[Eta]*\[CapitalNu]^2 + B*R*\[Eta]*\[CapitalNu]^2) + 
-            (Bout*L + Jout*R + B*L*\[Eta]*\[CapitalNu]^2 + J*R*\[Eta]*
-               \[CapitalNu]^2)^2])/(2*(Bout*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + 
-          B*R*\[Eta]*\[CapitalNu]^2)*
-         Sqrt[-4*(Jout*L + J*L*\[Eta]*\[CapitalNu]^2)*(Bout*R + 
-             Ke*Kt*\[Eta]*\[CapitalNu]^2 + B*R*\[Eta]*\[CapitalNu]^2) + 
-           (Bout*L + Jout*R + B*L*\[Eta]*\[CapitalNu]^2 + 
-             J*R*\[Eta]*\[CapitalNu]^2)^2]))}
- 
-Attributes[\[Tau]$10815] = {Temporary}
- 
-motorVelocityConstVbat = Function[{t$}, Module[{convolutions$}, 
-      convolutions$ = (convolve[modelExpr$10897[[#1]], 
-           {(Vbat & )[#1] & , (0 & )[#1] & }[[#1]][\[Tau]$10897], 
-           \[Tau]$10897, t$] & ) /@ Range[1, Length[{(Vbat & )[#1] & , 
-            (0 & )[#1] & }]]; {Total[convolutions$]}]]
- 
-Attributes[modelExpr$10897] = {Temporary}
- 
-modelExpr$10897 = 
-    {-(((E^((-Bout/(2*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-            (Jout*R)/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-            (B*\[Eta]*\[CapitalNu]^2)/(2*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-            (J*R*\[Eta]*\[CapitalNu]^2)/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^
-                 2)) - Sqrt[-4*(Jout*L + J*L*\[Eta]*\[CapitalNu]^2)*
-                (Bout*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + B*R*\[Eta]*
-                  \[CapitalNu]^2) + (Bout*L + Jout*R + B*L*\[Eta]*
-                  \[CapitalNu]^2 + J*R*\[Eta]*\[CapitalNu]^2)^2]/
-             (2*L*(Jout + J*\[Eta]*\[CapitalNu]^2)))*\[Tau]$10897) - 
-         E^((-Bout/(2*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-            (Jout*R)/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-            (B*\[Eta]*\[CapitalNu]^2)/(2*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-            (J*R*\[Eta]*\[CapitalNu]^2)/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^
-                 2)) + Sqrt[-4*(Jout*L + J*L*\[Eta]*\[CapitalNu]^2)*
-                (Bout*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + B*R*\[Eta]*
-                  \[CapitalNu]^2) + (Bout*L + Jout*R + B*L*\[Eta]*
-                  \[CapitalNu]^2 + J*R*\[Eta]*\[CapitalNu]^2)^2]/
-             (2*L*(Jout + J*\[Eta]*\[CapitalNu]^2)))*\[Tau]$10897))*Kt*\[Eta]*
-        \[CapitalNu]^2)/Sqrt[-4*(Jout*L + J*L*\[Eta]*\[CapitalNu]^2)*
-          (Bout*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + B*R*\[Eta]*
-            \[CapitalNu]^2) + (Bout*L + Jout*R + B*L*\[Eta]*\[CapitalNu]^2 + 
-           J*R*\[Eta]*\[CapitalNu]^2)^2]), 
-     (\[CapitalNu]*(Bout*E^((-Bout/(2*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-            (Jout*R)/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-            (B*\[Eta]*\[CapitalNu]^2)/(2*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-            (J*R*\[Eta]*\[CapitalNu]^2)/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^
-                 2)) - Sqrt[-4*(Jout*L + J*L*\[Eta]*\[CapitalNu]^2)*
-                (Bout*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + B*R*\[Eta]*
-                  \[CapitalNu]^2) + (Bout*L + Jout*R + B*L*\[Eta]*
-                  \[CapitalNu]^2 + J*R*\[Eta]*\[CapitalNu]^2)^2]/
-             (2*L*(Jout + J*\[Eta]*\[CapitalNu]^2)))*\[Tau]$10897)*L - 
-        Bout*E^((-Bout/(2*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-            (Jout*R)/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-            (B*\[Eta]*\[CapitalNu]^2)/(2*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-            (J*R*\[Eta]*\[CapitalNu]^2)/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^
-                 2)) + Sqrt[-4*(Jout*L + J*L*\[Eta]*\[CapitalNu]^2)*
-                (Bout*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + B*R*\[Eta]*
-                  \[CapitalNu]^2) + (Bout*L + Jout*R + B*L*\[Eta]*
-                  \[CapitalNu]^2 + J*R*\[Eta]*\[CapitalNu]^2)^2]/
-             (2*L*(Jout + J*\[Eta]*\[CapitalNu]^2)))*\[Tau]$10897)*L - 
-        E^((-Bout/(2*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-            (Jout*R)/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-            (B*\[Eta]*\[CapitalNu]^2)/(2*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-            (J*R*\[Eta]*\[CapitalNu]^2)/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^
-                 2)) - Sqrt[-4*(Jout*L + J*L*\[Eta]*\[CapitalNu]^2)*
-                (Bout*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + B*R*\[Eta]*
-                  \[CapitalNu]^2) + (Bout*L + Jout*R + B*L*\[Eta]*
-                  \[CapitalNu]^2 + J*R*\[Eta]*\[CapitalNu]^2)^2]/
-             (2*L*(Jout + J*\[Eta]*\[CapitalNu]^2)))*\[Tau]$10897)*Jout*R + 
-        E^((-Bout/(2*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-            (Jout*R)/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-            (B*\[Eta]*\[CapitalNu]^2)/(2*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-            (J*R*\[Eta]*\[CapitalNu]^2)/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^
-                 2)) + Sqrt[-4*(Jout*L + J*L*\[Eta]*\[CapitalNu]^2)*
-                (Bout*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + B*R*\[Eta]*
-                  \[CapitalNu]^2) + (Bout*L + Jout*R + B*L*\[Eta]*
-                  \[CapitalNu]^2 + J*R*\[Eta]*\[CapitalNu]^2)^2]/
-             (2*L*(Jout + J*\[Eta]*\[CapitalNu]^2)))*\[Tau]$10897)*Jout*R + 
-        B*E^((-Bout/(2*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-            (Jout*R)/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-            (B*\[Eta]*\[CapitalNu]^2)/(2*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-            (J*R*\[Eta]*\[CapitalNu]^2)/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^
-                 2)) - Sqrt[-4*(Jout*L + J*L*\[Eta]*\[CapitalNu]^2)*
-                (Bout*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + B*R*\[Eta]*
-                  \[CapitalNu]^2) + (Bout*L + Jout*R + B*L*\[Eta]*
-                  \[CapitalNu]^2 + J*R*\[Eta]*\[CapitalNu]^2)^2]/
-             (2*L*(Jout + J*\[Eta]*\[CapitalNu]^2)))*\[Tau]$10897)*L*\[Eta]*
-         \[CapitalNu]^2 - B*E^((-Bout/(2*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-            (Jout*R)/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-            (B*\[Eta]*\[CapitalNu]^2)/(2*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-            (J*R*\[Eta]*\[CapitalNu]^2)/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^
-                 2)) + Sqrt[-4*(Jout*L + J*L*\[Eta]*\[CapitalNu]^2)*
-                (Bout*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + B*R*\[Eta]*
-                  \[CapitalNu]^2) + (Bout*L + Jout*R + B*L*\[Eta]*
-                  \[CapitalNu]^2 + J*R*\[Eta]*\[CapitalNu]^2)^2]/
-             (2*L*(Jout + J*\[Eta]*\[CapitalNu]^2)))*\[Tau]$10897)*L*\[Eta]*
-         \[CapitalNu]^2 - E^((-Bout/(2*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-            (Jout*R)/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-            (B*\[Eta]*\[CapitalNu]^2)/(2*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-            (J*R*\[Eta]*\[CapitalNu]^2)/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^
-                 2)) - Sqrt[-4*(Jout*L + J*L*\[Eta]*\[CapitalNu]^2)*
-                (Bout*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + B*R*\[Eta]*
-                  \[CapitalNu]^2) + (Bout*L + Jout*R + B*L*\[Eta]*
-                  \[CapitalNu]^2 + J*R*\[Eta]*\[CapitalNu]^2)^2]/
-             (2*L*(Jout + J*\[Eta]*\[CapitalNu]^2)))*\[Tau]$10897)*J*R*\[Eta]*
-         \[CapitalNu]^2 + E^((-Bout/(2*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-            (Jout*R)/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-            (B*\[Eta]*\[CapitalNu]^2)/(2*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-            (J*R*\[Eta]*\[CapitalNu]^2)/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^
-                 2)) + Sqrt[-4*(Jout*L + J*L*\[Eta]*\[CapitalNu]^2)*
-                (Bout*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + B*R*\[Eta]*
-                  \[CapitalNu]^2) + (Bout*L + Jout*R + B*L*\[Eta]*
-                  \[CapitalNu]^2 + J*R*\[Eta]*\[CapitalNu]^2)^2]/
-             (2*L*(Jout + J*\[Eta]*\[CapitalNu]^2)))*\[Tau]$10897)*J*R*\[Eta]*
-         \[CapitalNu]^2 + E^((-Bout/(2*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-            (Jout*R)/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-            (B*\[Eta]*\[CapitalNu]^2)/(2*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-            (J*R*\[Eta]*\[CapitalNu]^2)/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^
-                 2)) - Sqrt[-4*(Jout*L + J*L*\[Eta]*\[CapitalNu]^2)*
-                (Bout*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + B*R*\[Eta]*
-                  \[CapitalNu]^2) + (Bout*L + Jout*R + B*L*\[Eta]*
-                  \[CapitalNu]^2 + J*R*\[Eta]*\[CapitalNu]^2)^2]/
-             (2*L*(Jout + J*\[Eta]*\[CapitalNu]^2)))*\[Tau]$10897)*
-         Sqrt[-4*(Jout*L + J*L*\[Eta]*\[CapitalNu]^2)*(Bout*R + 
-             Ke*Kt*\[Eta]*\[CapitalNu]^2 + B*R*\[Eta]*\[CapitalNu]^2) + 
-           (Bout*L + Jout*R + B*L*\[Eta]*\[CapitalNu]^2 + 
-             J*R*\[Eta]*\[CapitalNu]^2)^2] + 
-        E^((-Bout/(2*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-            (Jout*R)/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-            (B*\[Eta]*\[CapitalNu]^2)/(2*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-            (J*R*\[Eta]*\[CapitalNu]^2)/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^
-                 2)) + Sqrt[-4*(Jout*L + J*L*\[Eta]*\[CapitalNu]^2)*
-                (Bout*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + B*R*\[Eta]*
-                  \[CapitalNu]^2) + (Bout*L + Jout*R + B*L*\[Eta]*
-                  \[CapitalNu]^2 + J*R*\[Eta]*\[CapitalNu]^2)^2]/
-             (2*L*(Jout + J*\[Eta]*\[CapitalNu]^2)))*\[Tau]$10897)*
-         Sqrt[-4*(Jout*L + J*L*\[Eta]*\[CapitalNu]^2)*(Bout*R + 
-             Ke*Kt*\[Eta]*\[CapitalNu]^2 + B*R*\[Eta]*\[CapitalNu]^2) + 
-           (Bout*L + Jout*R + B*L*\[Eta]*\[CapitalNu]^2 + 
-             J*R*\[Eta]*\[CapitalNu]^2)^2]))/
-      (2*(Jout + J*\[Eta]*\[CapitalNu]^2)*
-       Sqrt[-4*(Jout*L + J*L*\[Eta]*\[CapitalNu]^2)*
-          (Bout*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + B*R*\[Eta]*
-            \[CapitalNu]^2) + (Bout*L + Jout*R + B*L*\[Eta]*\[CapitalNu]^2 + 
-           J*R*\[Eta]*\[CapitalNu]^2)^2])}
- 
-Attributes[\[Tau]$10897] = {Temporary}
- 
-motorAccelerationConstVbat = Function[{t$}, Module[{convolutions$}, 
-      convolutions$ = (convolve[modelExpr$10967[[#1]], 
-           {(Vbat & )[#1] & , (0 & )[#1] & }[[#1]][\[Tau]$10967], 
-           \[Tau]$10967, t$] & ) /@ Range[1, Length[{(Vbat & )[#1] & , 
-            (0 & )[#1] & }]]; {Total[convolutions$]}]]
- 
-Attributes[modelExpr$10967] = {Temporary}
- 
-modelExpr$10967 = {(Kt*\[Eta]*\[CapitalNu]^2*
-       (Bout*E^((-Bout/(2*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-            (Jout*R)/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-            (B*\[Eta]*\[CapitalNu]^2)/(2*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-            (J*R*\[Eta]*\[CapitalNu]^2)/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^
-                 2)) - Sqrt[-4*(Jout*L + J*L*\[Eta]*\[CapitalNu]^2)*
-                (Bout*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + B*R*\[Eta]*
-                  \[CapitalNu]^2) + (Bout*L + Jout*R + B*L*\[Eta]*
-                  \[CapitalNu]^2 + J*R*\[Eta]*\[CapitalNu]^2)^2]/
-             (2*L*(Jout + J*\[Eta]*\[CapitalNu]^2)))*\[Tau]$10967)*L - 
-        Bout*E^((-Bout/(2*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-            (Jout*R)/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-            (B*\[Eta]*\[CapitalNu]^2)/(2*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-            (J*R*\[Eta]*\[CapitalNu]^2)/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^
-                 2)) + Sqrt[-4*(Jout*L + J*L*\[Eta]*\[CapitalNu]^2)*
-                (Bout*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + B*R*\[Eta]*
-                  \[CapitalNu]^2) + (Bout*L + Jout*R + B*L*\[Eta]*
-                  \[CapitalNu]^2 + J*R*\[Eta]*\[CapitalNu]^2)^2]/
-             (2*L*(Jout + J*\[Eta]*\[CapitalNu]^2)))*\[Tau]$10967)*L + 
-        E^((-Bout/(2*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-            (Jout*R)/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-            (B*\[Eta]*\[CapitalNu]^2)/(2*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-            (J*R*\[Eta]*\[CapitalNu]^2)/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^
-                 2)) - Sqrt[-4*(Jout*L + J*L*\[Eta]*\[CapitalNu]^2)*
-                (Bout*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + B*R*\[Eta]*
-                  \[CapitalNu]^2) + (Bout*L + Jout*R + B*L*\[Eta]*
-                  \[CapitalNu]^2 + J*R*\[Eta]*\[CapitalNu]^2)^2]/
-             (2*L*(Jout + J*\[Eta]*\[CapitalNu]^2)))*\[Tau]$10967)*Jout*R - 
-        E^((-Bout/(2*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-            (Jout*R)/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-            (B*\[Eta]*\[CapitalNu]^2)/(2*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-            (J*R*\[Eta]*\[CapitalNu]^2)/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^
-                 2)) + Sqrt[-4*(Jout*L + J*L*\[Eta]*\[CapitalNu]^2)*
-                (Bout*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + B*R*\[Eta]*
-                  \[CapitalNu]^2) + (Bout*L + Jout*R + B*L*\[Eta]*
-                  \[CapitalNu]^2 + J*R*\[Eta]*\[CapitalNu]^2)^2]/
-             (2*L*(Jout + J*\[Eta]*\[CapitalNu]^2)))*\[Tau]$10967)*Jout*R + 
-        B*E^((-Bout/(2*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-            (Jout*R)/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-            (B*\[Eta]*\[CapitalNu]^2)/(2*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-            (J*R*\[Eta]*\[CapitalNu]^2)/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^
-                 2)) - Sqrt[-4*(Jout*L + J*L*\[Eta]*\[CapitalNu]^2)*
-                (Bout*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + B*R*\[Eta]*
-                  \[CapitalNu]^2) + (Bout*L + Jout*R + B*L*\[Eta]*
-                  \[CapitalNu]^2 + J*R*\[Eta]*\[CapitalNu]^2)^2]/
-             (2*L*(Jout + J*\[Eta]*\[CapitalNu]^2)))*\[Tau]$10967)*L*\[Eta]*
-         \[CapitalNu]^2 - B*E^((-Bout/(2*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-            (Jout*R)/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-            (B*\[Eta]*\[CapitalNu]^2)/(2*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-            (J*R*\[Eta]*\[CapitalNu]^2)/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^
-                 2)) + Sqrt[-4*(Jout*L + J*L*\[Eta]*\[CapitalNu]^2)*
-                (Bout*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + B*R*\[Eta]*
-                  \[CapitalNu]^2) + (Bout*L + Jout*R + B*L*\[Eta]*
-                  \[CapitalNu]^2 + J*R*\[Eta]*\[CapitalNu]^2)^2]/
-             (2*L*(Jout + J*\[Eta]*\[CapitalNu]^2)))*\[Tau]$10967)*L*\[Eta]*
-         \[CapitalNu]^2 + E^((-Bout/(2*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-            (Jout*R)/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-            (B*\[Eta]*\[CapitalNu]^2)/(2*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-            (J*R*\[Eta]*\[CapitalNu]^2)/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^
-                 2)) - Sqrt[-4*(Jout*L + J*L*\[Eta]*\[CapitalNu]^2)*
-                (Bout*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + B*R*\[Eta]*
-                  \[CapitalNu]^2) + (Bout*L + Jout*R + B*L*\[Eta]*
-                  \[CapitalNu]^2 + J*R*\[Eta]*\[CapitalNu]^2)^2]/
-             (2*L*(Jout + J*\[Eta]*\[CapitalNu]^2)))*\[Tau]$10967)*J*R*\[Eta]*
-         \[CapitalNu]^2 - E^((-Bout/(2*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-            (Jout*R)/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-            (B*\[Eta]*\[CapitalNu]^2)/(2*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-            (J*R*\[Eta]*\[CapitalNu]^2)/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^
-                 2)) + Sqrt[-4*(Jout*L + J*L*\[Eta]*\[CapitalNu]^2)*
-                (Bout*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + B*R*\[Eta]*
-                  \[CapitalNu]^2) + (Bout*L + Jout*R + B*L*\[Eta]*
-                  \[CapitalNu]^2 + J*R*\[Eta]*\[CapitalNu]^2)^2]/
-             (2*L*(Jout + J*\[Eta]*\[CapitalNu]^2)))*\[Tau]$10967)*J*R*\[Eta]*
-         \[CapitalNu]^2 + E^((-Bout/(2*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-            (Jout*R)/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-            (B*\[Eta]*\[CapitalNu]^2)/(2*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-            (J*R*\[Eta]*\[CapitalNu]^2)/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^
-                 2)) - Sqrt[-4*(Jout*L + J*L*\[Eta]*\[CapitalNu]^2)*
-                (Bout*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + B*R*\[Eta]*
-                  \[CapitalNu]^2) + (Bout*L + Jout*R + B*L*\[Eta]*
-                  \[CapitalNu]^2 + J*R*\[Eta]*\[CapitalNu]^2)^2]/
-             (2*L*(Jout + J*\[Eta]*\[CapitalNu]^2)))*\[Tau]$10967)*
-         Sqrt[-4*(Jout*L + J*L*\[Eta]*\[CapitalNu]^2)*(Bout*R + 
-             Ke*Kt*\[Eta]*\[CapitalNu]^2 + B*R*\[Eta]*\[CapitalNu]^2) + 
-           (Bout*L + Jout*R + B*L*\[Eta]*\[CapitalNu]^2 + 
-             J*R*\[Eta]*\[CapitalNu]^2)^2] + 
-        E^((-Bout/(2*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-            (Jout*R)/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-            (B*\[Eta]*\[CapitalNu]^2)/(2*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-            (J*R*\[Eta]*\[CapitalNu]^2)/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^
-                 2)) + Sqrt[-4*(Jout*L + J*L*\[Eta]*\[CapitalNu]^2)*
-                (Bout*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + B*R*\[Eta]*
-                  \[CapitalNu]^2) + (Bout*L + Jout*R + B*L*\[Eta]*
-                  \[CapitalNu]^2 + J*R*\[Eta]*\[CapitalNu]^2)^2]/
-             (2*L*(Jout + J*\[Eta]*\[CapitalNu]^2)))*\[Tau]$10967)*
-         Sqrt[-4*(Jout*L + J*L*\[Eta]*\[CapitalNu]^2)*(Bout*R + 
-             Ke*Kt*\[Eta]*\[CapitalNu]^2 + B*R*\[Eta]*\[CapitalNu]^2) + 
-           (Bout*L + Jout*R + B*L*\[Eta]*\[CapitalNu]^2 + 
-             J*R*\[Eta]*\[CapitalNu]^2)^2]))/
-      (2*L*(Jout + J*\[Eta]*\[CapitalNu]^2)*
-       Sqrt[-4*(Jout*L + J*L*\[Eta]*\[CapitalNu]^2)*
-          (Bout*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + B*R*\[Eta]*
-            \[CapitalNu]^2) + (Bout*L + Jout*R + B*L*\[Eta]*\[CapitalNu]^2 + 
-           J*R*\[Eta]*\[CapitalNu]^2)^2]), \[CapitalNu]*
-      ((-(Bout^2*E^((-Bout/(2*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-              (Jout*R)/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-              (B*\[Eta]*\[CapitalNu]^2)/(2*(Jout + J*\[Eta]*\[CapitalNu]^
-                   2)) - (J*R*\[Eta]*\[CapitalNu]^2)/(2*L*(Jout + 
-                 J*\[Eta]*\[CapitalNu]^2)) - Sqrt[-4*(Jout*L + J*L*\[Eta]*
-                    \[CapitalNu]^2)*(Bout*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + 
-                   B*R*\[Eta]*\[CapitalNu]^2) + (Bout*L + Jout*R + 
-                   B*L*\[Eta]*\[CapitalNu]^2 + J*R*\[Eta]*\[CapitalNu]^2)^2]/(
-                2*L*(Jout + J*\[Eta]*\[CapitalNu]^2)))*\[Tau]$10967)*L) + 
-         Bout^2*E^((-Bout/(2*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-             (Jout*R)/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-             (B*\[Eta]*\[CapitalNu]^2)/(2*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-             (J*R*\[Eta]*\[CapitalNu]^2)/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^
-                  2)) + Sqrt[-4*(Jout*L + J*L*\[Eta]*\[CapitalNu]^2)*
-                 (Bout*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + B*R*\[Eta]*
-                   \[CapitalNu]^2) + (Bout*L + Jout*R + B*L*\[Eta]*
-                   \[CapitalNu]^2 + J*R*\[Eta]*\[CapitalNu]^2)^2]/
-              (2*L*(Jout + J*\[Eta]*\[CapitalNu]^2)))*\[Tau]$10967)*L + 
-         Bout*E^((-Bout/(2*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-             (Jout*R)/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-             (B*\[Eta]*\[CapitalNu]^2)/(2*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-             (J*R*\[Eta]*\[CapitalNu]^2)/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^
-                  2)) - Sqrt[-4*(Jout*L + J*L*\[Eta]*\[CapitalNu]^2)*
-                 (Bout*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + B*R*\[Eta]*
-                   \[CapitalNu]^2) + (Bout*L + Jout*R + B*L*\[Eta]*
-                   \[CapitalNu]^2 + J*R*\[Eta]*\[CapitalNu]^2)^2]/
-              (2*L*(Jout + J*\[Eta]*\[CapitalNu]^2)))*\[Tau]$10967)*Jout*R - 
-         Bout*E^((-Bout/(2*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-             (Jout*R)/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-             (B*\[Eta]*\[CapitalNu]^2)/(2*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-             (J*R*\[Eta]*\[CapitalNu]^2)/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^
-                  2)) + Sqrt[-4*(Jout*L + J*L*\[Eta]*\[CapitalNu]^2)*
-                 (Bout*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + B*R*\[Eta]*
-                   \[CapitalNu]^2) + (Bout*L + Jout*R + B*L*\[Eta]*
-                   \[CapitalNu]^2 + J*R*\[Eta]*\[CapitalNu]^2)^2]/
-              (2*L*(Jout + J*\[Eta]*\[CapitalNu]^2)))*\[Tau]$10967)*Jout*R + 
-         2*E^((-Bout/(2*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-             (Jout*R)/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-             (B*\[Eta]*\[CapitalNu]^2)/(2*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-             (J*R*\[Eta]*\[CapitalNu]^2)/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^
-                  2)) - Sqrt[-4*(Jout*L + J*L*\[Eta]*\[CapitalNu]^2)*
-                 (Bout*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + B*R*\[Eta]*
-                   \[CapitalNu]^2) + (Bout*L + Jout*R + B*L*\[Eta]*
-                   \[CapitalNu]^2 + J*R*\[Eta]*\[CapitalNu]^2)^2]/
-              (2*L*(Jout + J*\[Eta]*\[CapitalNu]^2)))*\[Tau]$10967)*Jout*Ke*
-          Kt*\[Eta]*\[CapitalNu]^2 - 
-         2*E^((-Bout/(2*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-             (Jout*R)/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-             (B*\[Eta]*\[CapitalNu]^2)/(2*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-             (J*R*\[Eta]*\[CapitalNu]^2)/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^
-                  2)) + Sqrt[-4*(Jout*L + J*L*\[Eta]*\[CapitalNu]^2)*
-                 (Bout*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + B*R*\[Eta]*
-                   \[CapitalNu]^2) + (Bout*L + Jout*R + B*L*\[Eta]*
-                   \[CapitalNu]^2 + J*R*\[Eta]*\[CapitalNu]^2)^2]/
-              (2*L*(Jout + J*\[Eta]*\[CapitalNu]^2)))*\[Tau]$10967)*Jout*Ke*
-          Kt*\[Eta]*\[CapitalNu]^2 - 2*B*Bout*
-          E^((-Bout/(2*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-             (Jout*R)/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-             (B*\[Eta]*\[CapitalNu]^2)/(2*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-             (J*R*\[Eta]*\[CapitalNu]^2)/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^
-                  2)) - Sqrt[-4*(Jout*L + J*L*\[Eta]*\[CapitalNu]^2)*
-                 (Bout*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + B*R*\[Eta]*
-                   \[CapitalNu]^2) + (Bout*L + Jout*R + B*L*\[Eta]*
-                   \[CapitalNu]^2 + J*R*\[Eta]*\[CapitalNu]^2)^2]/
-              (2*L*(Jout + J*\[Eta]*\[CapitalNu]^2)))*\[Tau]$10967)*L*\[Eta]*
-          \[CapitalNu]^2 + 2*B*Bout*
-          E^((-Bout/(2*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-             (Jout*R)/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-             (B*\[Eta]*\[CapitalNu]^2)/(2*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-             (J*R*\[Eta]*\[CapitalNu]^2)/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^
-                  2)) + Sqrt[-4*(Jout*L + J*L*\[Eta]*\[CapitalNu]^2)*
-                 (Bout*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + B*R*\[Eta]*
-                   \[CapitalNu]^2) + (Bout*L + Jout*R + B*L*\[Eta]*
-                   \[CapitalNu]^2 + J*R*\[Eta]*\[CapitalNu]^2)^2]/
-              (2*L*(Jout + J*\[Eta]*\[CapitalNu]^2)))*\[Tau]$10967)*L*\[Eta]*
-          \[CapitalNu]^2 + Bout*E^((-Bout/(2*(Jout + J*\[Eta]*\[CapitalNu]^
-                  2)) - (Jout*R)/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-             (B*\[Eta]*\[CapitalNu]^2)/(2*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-             (J*R*\[Eta]*\[CapitalNu]^2)/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^
-                  2)) - Sqrt[-4*(Jout*L + J*L*\[Eta]*\[CapitalNu]^2)*
-                 (Bout*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + B*R*\[Eta]*
-                   \[CapitalNu]^2) + (Bout*L + Jout*R + B*L*\[Eta]*
-                   \[CapitalNu]^2 + J*R*\[Eta]*\[CapitalNu]^2)^2]/
-              (2*L*(Jout + J*\[Eta]*\[CapitalNu]^2)))*\[Tau]$10967)*J*R*
-          \[Eta]*\[CapitalNu]^2 - 
-         Bout*E^((-Bout/(2*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-             (Jout*R)/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-             (B*\[Eta]*\[CapitalNu]^2)/(2*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-             (J*R*\[Eta]*\[CapitalNu]^2)/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^
-                  2)) + Sqrt[-4*(Jout*L + J*L*\[Eta]*\[CapitalNu]^2)*
-                 (Bout*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + B*R*\[Eta]*
-                   \[CapitalNu]^2) + (Bout*L + Jout*R + B*L*\[Eta]*
-                   \[CapitalNu]^2 + J*R*\[Eta]*\[CapitalNu]^2)^2]/
-              (2*L*(Jout + J*\[Eta]*\[CapitalNu]^2)))*\[Tau]$10967)*J*R*
-          \[Eta]*\[CapitalNu]^2 + 
-         B*E^((-Bout/(2*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-             (Jout*R)/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-             (B*\[Eta]*\[CapitalNu]^2)/(2*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-             (J*R*\[Eta]*\[CapitalNu]^2)/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^
-                  2)) - Sqrt[-4*(Jout*L + J*L*\[Eta]*\[CapitalNu]^2)*
-                 (Bout*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + B*R*\[Eta]*
-                   \[CapitalNu]^2) + (Bout*L + Jout*R + B*L*\[Eta]*
-                   \[CapitalNu]^2 + J*R*\[Eta]*\[CapitalNu]^2)^2]/
-              (2*L*(Jout + J*\[Eta]*\[CapitalNu]^2)))*\[Tau]$10967)*Jout*R*
-          \[Eta]*\[CapitalNu]^2 - 
-         B*E^((-Bout/(2*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-             (Jout*R)/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-             (B*\[Eta]*\[CapitalNu]^2)/(2*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-             (J*R*\[Eta]*\[CapitalNu]^2)/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^
-                  2)) + Sqrt[-4*(Jout*L + J*L*\[Eta]*\[CapitalNu]^2)*
-                 (Bout*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + B*R*\[Eta]*
-                   \[CapitalNu]^2) + (Bout*L + Jout*R + B*L*\[Eta]*
-                   \[CapitalNu]^2 + J*R*\[Eta]*\[CapitalNu]^2)^2]/
-              (2*L*(Jout + J*\[Eta]*\[CapitalNu]^2)))*\[Tau]$10967)*Jout*R*
-          \[Eta]*\[CapitalNu]^2 + 
-         2*E^((-Bout/(2*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-             (Jout*R)/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-             (B*\[Eta]*\[CapitalNu]^2)/(2*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-             (J*R*\[Eta]*\[CapitalNu]^2)/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^
-                  2)) - Sqrt[-4*(Jout*L + J*L*\[Eta]*\[CapitalNu]^2)*
-                 (Bout*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + B*R*\[Eta]*
-                   \[CapitalNu]^2) + (Bout*L + Jout*R + B*L*\[Eta]*
-                   \[CapitalNu]^2 + J*R*\[Eta]*\[CapitalNu]^2)^2]/
-              (2*L*(Jout + J*\[Eta]*\[CapitalNu]^2)))*\[Tau]$10967)*J*Ke*Kt*
-          \[Eta]^2*\[CapitalNu]^4 - 
-         2*E^((-Bout/(2*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-             (Jout*R)/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-             (B*\[Eta]*\[CapitalNu]^2)/(2*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-             (J*R*\[Eta]*\[CapitalNu]^2)/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^
-                  2)) + Sqrt[-4*(Jout*L + J*L*\[Eta]*\[CapitalNu]^2)*
-                 (Bout*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + B*R*\[Eta]*
-                   \[CapitalNu]^2) + (Bout*L + Jout*R + B*L*\[Eta]*
-                   \[CapitalNu]^2 + J*R*\[Eta]*\[CapitalNu]^2)^2]/
-              (2*L*(Jout + J*\[Eta]*\[CapitalNu]^2)))*\[Tau]$10967)*J*Ke*Kt*
-          \[Eta]^2*\[CapitalNu]^4 - 
-         B^2*E^((-Bout/(2*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-             (Jout*R)/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-             (B*\[Eta]*\[CapitalNu]^2)/(2*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-             (J*R*\[Eta]*\[CapitalNu]^2)/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^
-                  2)) - Sqrt[-4*(Jout*L + J*L*\[Eta]*\[CapitalNu]^2)*
-                 (Bout*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + B*R*\[Eta]*
-                   \[CapitalNu]^2) + (Bout*L + Jout*R + B*L*\[Eta]*
-                   \[CapitalNu]^2 + J*R*\[Eta]*\[CapitalNu]^2)^2]/
-              (2*L*(Jout + J*\[Eta]*\[CapitalNu]^2)))*\[Tau]$10967)*L*
-          \[Eta]^2*\[CapitalNu]^4 + 
-         B^2*E^((-Bout/(2*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-             (Jout*R)/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-             (B*\[Eta]*\[CapitalNu]^2)/(2*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-             (J*R*\[Eta]*\[CapitalNu]^2)/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^
-                  2)) + Sqrt[-4*(Jout*L + J*L*\[Eta]*\[CapitalNu]^2)*
-                 (Bout*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + B*R*\[Eta]*
-                   \[CapitalNu]^2) + (Bout*L + Jout*R + B*L*\[Eta]*
-                   \[CapitalNu]^2 + J*R*\[Eta]*\[CapitalNu]^2)^2]/
-              (2*L*(Jout + J*\[Eta]*\[CapitalNu]^2)))*\[Tau]$10967)*L*
-          \[Eta]^2*\[CapitalNu]^4 + 
-         B*E^((-Bout/(2*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-             (Jout*R)/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-             (B*\[Eta]*\[CapitalNu]^2)/(2*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-             (J*R*\[Eta]*\[CapitalNu]^2)/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^
-                  2)) - Sqrt[-4*(Jout*L + J*L*\[Eta]*\[CapitalNu]^2)*
-                 (Bout*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + B*R*\[Eta]*
-                   \[CapitalNu]^2) + (Bout*L + Jout*R + B*L*\[Eta]*
-                   \[CapitalNu]^2 + J*R*\[Eta]*\[CapitalNu]^2)^2]/
-              (2*L*(Jout + J*\[Eta]*\[CapitalNu]^2)))*\[Tau]$10967)*J*R*
-          \[Eta]^2*\[CapitalNu]^4 - 
-         B*E^((-Bout/(2*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-             (Jout*R)/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-             (B*\[Eta]*\[CapitalNu]^2)/(2*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-             (J*R*\[Eta]*\[CapitalNu]^2)/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^
-                  2)) + Sqrt[-4*(Jout*L + J*L*\[Eta]*\[CapitalNu]^2)*
-                 (Bout*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + B*R*\[Eta]*
-                   \[CapitalNu]^2) + (Bout*L + Jout*R + B*L*\[Eta]*
-                   \[CapitalNu]^2 + J*R*\[Eta]*\[CapitalNu]^2)^2]/
-              (2*L*(Jout + J*\[Eta]*\[CapitalNu]^2)))*\[Tau]$10967)*J*R*
-          \[Eta]^2*\[CapitalNu]^4 - 
-         Bout*E^((-Bout/(2*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-             (Jout*R)/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-             (B*\[Eta]*\[CapitalNu]^2)/(2*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-             (J*R*\[Eta]*\[CapitalNu]^2)/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^
-                  2)) - Sqrt[-4*(Jout*L + J*L*\[Eta]*\[CapitalNu]^2)*
-                 (Bout*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + B*R*\[Eta]*
-                   \[CapitalNu]^2) + (Bout*L + Jout*R + B*L*\[Eta]*
-                   \[CapitalNu]^2 + J*R*\[Eta]*\[CapitalNu]^2)^2]/
-              (2*L*(Jout + J*\[Eta]*\[CapitalNu]^2)))*\[Tau]$10967)*
-          Sqrt[-4*(Jout*L + J*L*\[Eta]*\[CapitalNu]^2)*(Bout*R + 
-              Ke*Kt*\[Eta]*\[CapitalNu]^2 + B*R*\[Eta]*\[CapitalNu]^2) + 
-            (Bout*L + Jout*R + B*L*\[Eta]*\[CapitalNu]^2 + J*R*\[Eta]*
-               \[CapitalNu]^2)^2] - 
-         Bout*E^((-Bout/(2*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-             (Jout*R)/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-             (B*\[Eta]*\[CapitalNu]^2)/(2*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-             (J*R*\[Eta]*\[CapitalNu]^2)/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^
-                  2)) + Sqrt[-4*(Jout*L + J*L*\[Eta]*\[CapitalNu]^2)*
-                 (Bout*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + B*R*\[Eta]*
-                   \[CapitalNu]^2) + (Bout*L + Jout*R + B*L*\[Eta]*
-                   \[CapitalNu]^2 + J*R*\[Eta]*\[CapitalNu]^2)^2]/
-              (2*L*(Jout + J*\[Eta]*\[CapitalNu]^2)))*\[Tau]$10967)*
-          Sqrt[-4*(Jout*L + J*L*\[Eta]*\[CapitalNu]^2)*(Bout*R + 
-              Ke*Kt*\[Eta]*\[CapitalNu]^2 + B*R*\[Eta]*\[CapitalNu]^2) + 
-            (Bout*L + Jout*R + B*L*\[Eta]*\[CapitalNu]^2 + J*R*\[Eta]*
-               \[CapitalNu]^2)^2] - 
-         B*E^((-Bout/(2*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-             (Jout*R)/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-             (B*\[Eta]*\[CapitalNu]^2)/(2*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-             (J*R*\[Eta]*\[CapitalNu]^2)/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^
-                  2)) - Sqrt[-4*(Jout*L + J*L*\[Eta]*\[CapitalNu]^2)*
-                 (Bout*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + B*R*\[Eta]*
-                   \[CapitalNu]^2) + (Bout*L + Jout*R + B*L*\[Eta]*
-                   \[CapitalNu]^2 + J*R*\[Eta]*\[CapitalNu]^2)^2]/
-              (2*L*(Jout + J*\[Eta]*\[CapitalNu]^2)))*\[Tau]$10967)*\[Eta]*
-          \[CapitalNu]^2*Sqrt[-4*(Jout*L + J*L*\[Eta]*\[CapitalNu]^2)*
-             (Bout*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + B*R*\[Eta]*\[CapitalNu]^
-                2) + (Bout*L + Jout*R + B*L*\[Eta]*\[CapitalNu]^2 + 
-              J*R*\[Eta]*\[CapitalNu]^2)^2] - 
-         B*E^((-Bout/(2*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-             (Jout*R)/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-             (B*\[Eta]*\[CapitalNu]^2)/(2*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-             (J*R*\[Eta]*\[CapitalNu]^2)/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^
-                  2)) + Sqrt[-4*(Jout*L + J*L*\[Eta]*\[CapitalNu]^2)*
-                 (Bout*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + B*R*\[Eta]*
-                   \[CapitalNu]^2) + (Bout*L + Jout*R + B*L*\[Eta]*
-                   \[CapitalNu]^2 + J*R*\[Eta]*\[CapitalNu]^2)^2]/
-              (2*L*(Jout + J*\[Eta]*\[CapitalNu]^2)))*\[Tau]$10967)*\[Eta]*
-          \[CapitalNu]^2*Sqrt[-4*(Jout*L + J*L*\[Eta]*\[CapitalNu]^2)*
-             (Bout*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + B*R*\[Eta]*\[CapitalNu]^
-                2) + (Bout*L + Jout*R + B*L*\[Eta]*\[CapitalNu]^2 + 
+            (Bafter*L + Jafter*R + B*L*\[Eta]*\[CapitalNu]^2 + 
               J*R*\[Eta]*\[CapitalNu]^2)^2])/
-        (2*(Jout + J*\[Eta]*\[CapitalNu]^2)^2*
-         Sqrt[-4*(Jout*L + J*L*\[Eta]*\[CapitalNu]^2)*(Bout*R + 
-             Ke*Kt*\[Eta]*\[CapitalNu]^2 + B*R*\[Eta]*\[CapitalNu]^2) + 
-           (Bout*L + Jout*R + B*L*\[Eta]*\[CapitalNu]^2 + 
-             J*R*\[Eta]*\[CapitalNu]^2)^2]) + DiracDelta[\[Tau]$10967]/
-        (Jout + J*\[Eta]*\[CapitalNu]^2))}
+        (2*(Bafter*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + B*R*\[Eta]*
+           \[CapitalNu]^2)*Sqrt[-4*(Jafter*L + J*L*\[Eta]*\[CapitalNu]^2)*
+            (Bafter*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + B*R*\[Eta]*
+              \[CapitalNu]^2) + (Bafter*L + Jafter*R + B*L*\[Eta]*
+              \[CapitalNu]^2 + J*R*\[Eta]*\[CapitalNu]^2)^2])), 
+     \[CapitalNu]*(R/(Bafter*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + 
+         B*R*\[Eta]*\[CapitalNu]^2) - 
+       (Bafter*E^((-Bafter/(2*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+             (Jafter*R)/(2*L*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+             (B*\[Eta]*\[CapitalNu]^2)/(2*(Jafter + J*\[Eta]*\[CapitalNu]^
+                  2)) - (J*R*\[Eta]*\[CapitalNu]^2)/(2*L*(Jafter + 
+                J*\[Eta]*\[CapitalNu]^2)) - Sqrt[-4*(Jafter*L + J*L*\[Eta]*
+                   \[CapitalNu]^2)*(Bafter*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + 
+                  B*R*\[Eta]*\[CapitalNu]^2) + (Bafter*L + Jafter*R + 
+                  B*L*\[Eta]*\[CapitalNu]^2 + J*R*\[Eta]*\[CapitalNu]^2)^2]/
+              (2*L*(Jafter + J*\[Eta]*\[CapitalNu]^2)))*\[Tau]$18334)*L*R - 
+         Bafter*E^((-Bafter/(2*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+             (Jafter*R)/(2*L*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+             (B*\[Eta]*\[CapitalNu]^2)/(2*(Jafter + J*\[Eta]*\[CapitalNu]^
+                  2)) - (J*R*\[Eta]*\[CapitalNu]^2)/(2*L*(Jafter + 
+                J*\[Eta]*\[CapitalNu]^2)) + Sqrt[-4*(Jafter*L + J*L*\[Eta]*
+                   \[CapitalNu]^2)*(Bafter*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + 
+                  B*R*\[Eta]*\[CapitalNu]^2) + (Bafter*L + Jafter*R + 
+                  B*L*\[Eta]*\[CapitalNu]^2 + J*R*\[Eta]*\[CapitalNu]^2)^2]/
+              (2*L*(Jafter + J*\[Eta]*\[CapitalNu]^2)))*\[Tau]$18334)*L*R - 
+         E^((-Bafter/(2*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+             (Jafter*R)/(2*L*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+             (B*\[Eta]*\[CapitalNu]^2)/(2*(Jafter + J*\[Eta]*\[CapitalNu]^
+                  2)) - (J*R*\[Eta]*\[CapitalNu]^2)/(2*L*(Jafter + 
+                J*\[Eta]*\[CapitalNu]^2)) - Sqrt[-4*(Jafter*L + J*L*\[Eta]*
+                   \[CapitalNu]^2)*(Bafter*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + 
+                  B*R*\[Eta]*\[CapitalNu]^2) + (Bafter*L + Jafter*R + 
+                  B*L*\[Eta]*\[CapitalNu]^2 + J*R*\[Eta]*\[CapitalNu]^2)^2]/
+              (2*L*(Jafter + J*\[Eta]*\[CapitalNu]^2)))*\[Tau]$18334)*Jafter*
+          R^2 + E^((-Bafter/(2*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+             (Jafter*R)/(2*L*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+             (B*\[Eta]*\[CapitalNu]^2)/(2*(Jafter + J*\[Eta]*\[CapitalNu]^
+                  2)) - (J*R*\[Eta]*\[CapitalNu]^2)/(2*L*(Jafter + 
+                J*\[Eta]*\[CapitalNu]^2)) + Sqrt[-4*(Jafter*L + J*L*\[Eta]*
+                   \[CapitalNu]^2)*(Bafter*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + 
+                  B*R*\[Eta]*\[CapitalNu]^2) + (Bafter*L + Jafter*R + 
+                  B*L*\[Eta]*\[CapitalNu]^2 + J*R*\[Eta]*\[CapitalNu]^2)^2]/
+              (2*L*(Jafter + J*\[Eta]*\[CapitalNu]^2)))*\[Tau]$18334)*Jafter*
+          R^2 + 2*E^((-Bafter/(2*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+             (Jafter*R)/(2*L*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+             (B*\[Eta]*\[CapitalNu]^2)/(2*(Jafter + J*\[Eta]*\[CapitalNu]^
+                  2)) - (J*R*\[Eta]*\[CapitalNu]^2)/(2*L*(Jafter + 
+                J*\[Eta]*\[CapitalNu]^2)) - Sqrt[-4*(Jafter*L + J*L*\[Eta]*
+                   \[CapitalNu]^2)*(Bafter*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + 
+                  B*R*\[Eta]*\[CapitalNu]^2) + (Bafter*L + Jafter*R + 
+                  B*L*\[Eta]*\[CapitalNu]^2 + J*R*\[Eta]*\[CapitalNu]^2)^2]/
+              (2*L*(Jafter + J*\[Eta]*\[CapitalNu]^2)))*\[Tau]$18334)*Ke*Kt*L*
+          \[Eta]*\[CapitalNu]^2 - 
+         2*E^((-Bafter/(2*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+             (Jafter*R)/(2*L*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+             (B*\[Eta]*\[CapitalNu]^2)/(2*(Jafter + J*\[Eta]*\[CapitalNu]^
+                  2)) - (J*R*\[Eta]*\[CapitalNu]^2)/(2*L*(Jafter + 
+                J*\[Eta]*\[CapitalNu]^2)) + Sqrt[-4*(Jafter*L + J*L*\[Eta]*
+                   \[CapitalNu]^2)*(Bafter*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + 
+                  B*R*\[Eta]*\[CapitalNu]^2) + (Bafter*L + Jafter*R + 
+                  B*L*\[Eta]*\[CapitalNu]^2 + J*R*\[Eta]*\[CapitalNu]^2)^2]/
+              (2*L*(Jafter + J*\[Eta]*\[CapitalNu]^2)))*\[Tau]$18334)*Ke*Kt*L*
+          \[Eta]*\[CapitalNu]^2 + 
+         B*E^((-Bafter/(2*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+             (Jafter*R)/(2*L*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+             (B*\[Eta]*\[CapitalNu]^2)/(2*(Jafter + J*\[Eta]*\[CapitalNu]^
+                  2)) - (J*R*\[Eta]*\[CapitalNu]^2)/(2*L*(Jafter + 
+                J*\[Eta]*\[CapitalNu]^2)) - Sqrt[-4*(Jafter*L + J*L*\[Eta]*
+                   \[CapitalNu]^2)*(Bafter*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + 
+                  B*R*\[Eta]*\[CapitalNu]^2) + (Bafter*L + Jafter*R + 
+                  B*L*\[Eta]*\[CapitalNu]^2 + J*R*\[Eta]*\[CapitalNu]^2)^2]/
+              (2*L*(Jafter + J*\[Eta]*\[CapitalNu]^2)))*\[Tau]$18334)*L*R*
+          \[Eta]*\[CapitalNu]^2 - 
+         B*E^((-Bafter/(2*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+             (Jafter*R)/(2*L*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+             (B*\[Eta]*\[CapitalNu]^2)/(2*(Jafter + J*\[Eta]*\[CapitalNu]^
+                  2)) - (J*R*\[Eta]*\[CapitalNu]^2)/(2*L*(Jafter + 
+                J*\[Eta]*\[CapitalNu]^2)) + Sqrt[-4*(Jafter*L + J*L*\[Eta]*
+                   \[CapitalNu]^2)*(Bafter*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + 
+                  B*R*\[Eta]*\[CapitalNu]^2) + (Bafter*L + Jafter*R + 
+                  B*L*\[Eta]*\[CapitalNu]^2 + J*R*\[Eta]*\[CapitalNu]^2)^2]/
+              (2*L*(Jafter + J*\[Eta]*\[CapitalNu]^2)))*\[Tau]$18334)*L*R*
+          \[Eta]*\[CapitalNu]^2 - 
+         E^((-Bafter/(2*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+             (Jafter*R)/(2*L*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+             (B*\[Eta]*\[CapitalNu]^2)/(2*(Jafter + J*\[Eta]*\[CapitalNu]^
+                  2)) - (J*R*\[Eta]*\[CapitalNu]^2)/(2*L*(Jafter + 
+                J*\[Eta]*\[CapitalNu]^2)) - Sqrt[-4*(Jafter*L + J*L*\[Eta]*
+                   \[CapitalNu]^2)*(Bafter*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + 
+                  B*R*\[Eta]*\[CapitalNu]^2) + (Bafter*L + Jafter*R + 
+                  B*L*\[Eta]*\[CapitalNu]^2 + J*R*\[Eta]*\[CapitalNu]^2)^2]/
+              (2*L*(Jafter + J*\[Eta]*\[CapitalNu]^2)))*\[Tau]$18334)*J*R^2*
+          \[Eta]*\[CapitalNu]^2 + 
+         E^((-Bafter/(2*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+             (Jafter*R)/(2*L*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+             (B*\[Eta]*\[CapitalNu]^2)/(2*(Jafter + J*\[Eta]*\[CapitalNu]^
+                  2)) - (J*R*\[Eta]*\[CapitalNu]^2)/(2*L*(Jafter + 
+                J*\[Eta]*\[CapitalNu]^2)) + Sqrt[-4*(Jafter*L + J*L*\[Eta]*
+                   \[CapitalNu]^2)*(Bafter*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + 
+                  B*R*\[Eta]*\[CapitalNu]^2) + (Bafter*L + Jafter*R + 
+                  B*L*\[Eta]*\[CapitalNu]^2 + J*R*\[Eta]*\[CapitalNu]^2)^2]/
+              (2*L*(Jafter + J*\[Eta]*\[CapitalNu]^2)))*\[Tau]$18334)*J*R^2*
+          \[Eta]*\[CapitalNu]^2 + 
+         E^((-Bafter/(2*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+             (Jafter*R)/(2*L*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+             (B*\[Eta]*\[CapitalNu]^2)/(2*(Jafter + J*\[Eta]*\[CapitalNu]^
+                  2)) - (J*R*\[Eta]*\[CapitalNu]^2)/(2*L*(Jafter + 
+                J*\[Eta]*\[CapitalNu]^2)) - Sqrt[-4*(Jafter*L + J*L*\[Eta]*
+                   \[CapitalNu]^2)*(Bafter*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + 
+                  B*R*\[Eta]*\[CapitalNu]^2) + (Bafter*L + Jafter*R + 
+                  B*L*\[Eta]*\[CapitalNu]^2 + J*R*\[Eta]*\[CapitalNu]^2)^2]/
+              (2*L*(Jafter + J*\[Eta]*\[CapitalNu]^2)))*\[Tau]$18334)*R*
+          Sqrt[-4*(Jafter*L + J*L*\[Eta]*\[CapitalNu]^2)*(Bafter*R + 
+              Ke*Kt*\[Eta]*\[CapitalNu]^2 + B*R*\[Eta]*\[CapitalNu]^2) + 
+            (Bafter*L + Jafter*R + B*L*\[Eta]*\[CapitalNu]^2 + 
+              J*R*\[Eta]*\[CapitalNu]^2)^2] + 
+         E^((-Bafter/(2*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+             (Jafter*R)/(2*L*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+             (B*\[Eta]*\[CapitalNu]^2)/(2*(Jafter + J*\[Eta]*\[CapitalNu]^
+                  2)) - (J*R*\[Eta]*\[CapitalNu]^2)/(2*L*(Jafter + 
+                J*\[Eta]*\[CapitalNu]^2)) + Sqrt[-4*(Jafter*L + J*L*\[Eta]*
+                   \[CapitalNu]^2)*(Bafter*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + 
+                  B*R*\[Eta]*\[CapitalNu]^2) + (Bafter*L + Jafter*R + 
+                  B*L*\[Eta]*\[CapitalNu]^2 + J*R*\[Eta]*\[CapitalNu]^2)^2]/
+              (2*L*(Jafter + J*\[Eta]*\[CapitalNu]^2)))*\[Tau]$18334)*R*
+          Sqrt[-4*(Jafter*L + J*L*\[Eta]*\[CapitalNu]^2)*(Bafter*R + 
+              Ke*Kt*\[Eta]*\[CapitalNu]^2 + B*R*\[Eta]*\[CapitalNu]^2) + 
+            (Bafter*L + Jafter*R + B*L*\[Eta]*\[CapitalNu]^2 + 
+              J*R*\[Eta]*\[CapitalNu]^2)^2])/
+        (2*(Bafter*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + B*R*\[Eta]*
+           \[CapitalNu]^2)*Sqrt[-4*(Jafter*L + J*L*\[Eta]*\[CapitalNu]^2)*
+            (Bafter*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + B*R*\[Eta]*
+              \[CapitalNu]^2) + (Bafter*L + Jafter*R + B*L*\[Eta]*
+              \[CapitalNu]^2 + J*R*\[Eta]*\[CapitalNu]^2)^2]))}
  
-Attributes[\[Tau]$10967] = {Temporary}
+Attributes[\[Tau]$18334] = {Temporary}
  
-motorCurrentConstVbat = Function[{t$}, Module[{convolutions$}, 
-      convolutions$ = (convolve[modelExpr$11039[[#1]], 
-           {(Vbat & )[#1] & , (0 & )[#1] & }[[#1]][\[Tau]$11039], 
-           \[Tau]$11039, t$] & ) /@ Range[1, Length[{(Vbat & )[#1] & , 
+motorVelocityConstvapp = Function[{t$}, Module[{convolutions$}, 
+      convolutions$ = (convolve[modelExpr$18416[[#1]], 
+           {(vbat & )[#1] & , (0 & )[#1] & }[[#1]][\[Tau]$18416], 
+           \[Tau]$18416, t$] & ) /@ Range[1, Length[{(vbat & )[#1] & , 
             (0 & )[#1] & }]]; {Total[convolutions$]}]]
  
-Attributes[modelExpr$11039] = {Temporary}
+Attributes[modelExpr$18416] = {Temporary}
  
-modelExpr$11039 = 
-    {(-(Bout*E^((-Bout/(2*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-            (Jout*R)/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-            (B*\[Eta]*\[CapitalNu]^2)/(2*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-            (J*R*\[Eta]*\[CapitalNu]^2)/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^
-                 2)) - Sqrt[-4*(Jout*L + J*L*\[Eta]*\[CapitalNu]^2)*
-                (Bout*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + B*R*\[Eta]*
-                  \[CapitalNu]^2) + (Bout*L + Jout*R + B*L*\[Eta]*
-                  \[CapitalNu]^2 + J*R*\[Eta]*\[CapitalNu]^2)^2]/
-             (2*L*(Jout + J*\[Eta]*\[CapitalNu]^2)))*\[Tau]$11039)*L) + 
-       Bout*E^((-Bout/(2*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-           (Jout*R)/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-           (B*\[Eta]*\[CapitalNu]^2)/(2*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-           (J*R*\[Eta]*\[CapitalNu]^2)/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^
-                2)) + Sqrt[-4*(Jout*L + J*L*\[Eta]*\[CapitalNu]^2)*(Bout*R + 
-                Ke*Kt*\[Eta]*\[CapitalNu]^2 + B*R*\[Eta]*\[CapitalNu]^2) + 
-              (Bout*L + Jout*R + B*L*\[Eta]*\[CapitalNu]^2 + J*R*\[Eta]*
-                 \[CapitalNu]^2)^2]/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^2)))*
-          \[Tau]$11039)*L + E^((-Bout/(2*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-           (Jout*R)/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-           (B*\[Eta]*\[CapitalNu]^2)/(2*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-           (J*R*\[Eta]*\[CapitalNu]^2)/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^
-                2)) - Sqrt[-4*(Jout*L + J*L*\[Eta]*\[CapitalNu]^2)*(Bout*R + 
-                Ke*Kt*\[Eta]*\[CapitalNu]^2 + B*R*\[Eta]*\[CapitalNu]^2) + 
-              (Bout*L + Jout*R + B*L*\[Eta]*\[CapitalNu]^2 + J*R*\[Eta]*
-                 \[CapitalNu]^2)^2]/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^2)))*
-          \[Tau]$11039)*Jout*R - 
-       E^((-Bout/(2*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-           (Jout*R)/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-           (B*\[Eta]*\[CapitalNu]^2)/(2*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-           (J*R*\[Eta]*\[CapitalNu]^2)/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^
-                2)) + Sqrt[-4*(Jout*L + J*L*\[Eta]*\[CapitalNu]^2)*(Bout*R + 
-                Ke*Kt*\[Eta]*\[CapitalNu]^2 + B*R*\[Eta]*\[CapitalNu]^2) + 
-              (Bout*L + Jout*R + B*L*\[Eta]*\[CapitalNu]^2 + J*R*\[Eta]*
-                 \[CapitalNu]^2)^2]/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^2)))*
-          \[Tau]$11039)*Jout*R - 
-       B*E^((-Bout/(2*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-           (Jout*R)/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-           (B*\[Eta]*\[CapitalNu]^2)/(2*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-           (J*R*\[Eta]*\[CapitalNu]^2)/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^
-                2)) - Sqrt[-4*(Jout*L + J*L*\[Eta]*\[CapitalNu]^2)*(Bout*R + 
-                Ke*Kt*\[Eta]*\[CapitalNu]^2 + B*R*\[Eta]*\[CapitalNu]^2) + 
-              (Bout*L + Jout*R + B*L*\[Eta]*\[CapitalNu]^2 + J*R*\[Eta]*
-                 \[CapitalNu]^2)^2]/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^2)))*
-          \[Tau]$11039)*L*\[Eta]*\[CapitalNu]^2 + 
-       B*E^((-Bout/(2*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-           (Jout*R)/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-           (B*\[Eta]*\[CapitalNu]^2)/(2*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-           (J*R*\[Eta]*\[CapitalNu]^2)/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^
-                2)) + Sqrt[-4*(Jout*L + J*L*\[Eta]*\[CapitalNu]^2)*(Bout*R + 
-                Ke*Kt*\[Eta]*\[CapitalNu]^2 + B*R*\[Eta]*\[CapitalNu]^2) + 
-              (Bout*L + Jout*R + B*L*\[Eta]*\[CapitalNu]^2 + J*R*\[Eta]*
-                 \[CapitalNu]^2)^2]/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^2)))*
-          \[Tau]$11039)*L*\[Eta]*\[CapitalNu]^2 + 
-       E^((-Bout/(2*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-           (Jout*R)/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-           (B*\[Eta]*\[CapitalNu]^2)/(2*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-           (J*R*\[Eta]*\[CapitalNu]^2)/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^
-                2)) - Sqrt[-4*(Jout*L + J*L*\[Eta]*\[CapitalNu]^2)*(Bout*R + 
-                Ke*Kt*\[Eta]*\[CapitalNu]^2 + B*R*\[Eta]*\[CapitalNu]^2) + 
-              (Bout*L + Jout*R + B*L*\[Eta]*\[CapitalNu]^2 + J*R*\[Eta]*
-                 \[CapitalNu]^2)^2]/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^2)))*
-          \[Tau]$11039)*J*R*\[Eta]*\[CapitalNu]^2 - 
-       E^((-Bout/(2*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-           (Jout*R)/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-           (B*\[Eta]*\[CapitalNu]^2)/(2*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-           (J*R*\[Eta]*\[CapitalNu]^2)/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^
-                2)) + Sqrt[-4*(Jout*L + J*L*\[Eta]*\[CapitalNu]^2)*(Bout*R + 
-                Ke*Kt*\[Eta]*\[CapitalNu]^2 + B*R*\[Eta]*\[CapitalNu]^2) + 
-              (Bout*L + Jout*R + B*L*\[Eta]*\[CapitalNu]^2 + J*R*\[Eta]*
-                 \[CapitalNu]^2)^2]/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^2)))*
-          \[Tau]$11039)*J*R*\[Eta]*\[CapitalNu]^2 + 
-       E^((-Bout/(2*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-           (Jout*R)/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-           (B*\[Eta]*\[CapitalNu]^2)/(2*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-           (J*R*\[Eta]*\[CapitalNu]^2)/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^
-                2)) - Sqrt[-4*(Jout*L + J*L*\[Eta]*\[CapitalNu]^2)*(Bout*R + 
-                Ke*Kt*\[Eta]*\[CapitalNu]^2 + B*R*\[Eta]*\[CapitalNu]^2) + 
-              (Bout*L + Jout*R + B*L*\[Eta]*\[CapitalNu]^2 + J*R*\[Eta]*
-                 \[CapitalNu]^2)^2]/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^2)))*
-          \[Tau]$11039)*Sqrt[-4*(Jout*L + J*L*\[Eta]*\[CapitalNu]^2)*
-           (Bout*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + B*R*\[Eta]*
-             \[CapitalNu]^2) + (Bout*L + Jout*R + B*L*\[Eta]*\[CapitalNu]^2 + 
-            J*R*\[Eta]*\[CapitalNu]^2)^2] + 
-       E^((-Bout/(2*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-           (Jout*R)/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-           (B*\[Eta]*\[CapitalNu]^2)/(2*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-           (J*R*\[Eta]*\[CapitalNu]^2)/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^
-                2)) + Sqrt[-4*(Jout*L + J*L*\[Eta]*\[CapitalNu]^2)*(Bout*R + 
-                Ke*Kt*\[Eta]*\[CapitalNu]^2 + B*R*\[Eta]*\[CapitalNu]^2) + 
-              (Bout*L + Jout*R + B*L*\[Eta]*\[CapitalNu]^2 + J*R*\[Eta]*
-                 \[CapitalNu]^2)^2]/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^2)))*
-          \[Tau]$11039)*Sqrt[-4*(Jout*L + J*L*\[Eta]*\[CapitalNu]^2)*
-           (Bout*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + B*R*\[Eta]*
-             \[CapitalNu]^2) + (Bout*L + Jout*R + B*L*\[Eta]*\[CapitalNu]^2 + 
-            J*R*\[Eta]*\[CapitalNu]^2)^2])/
-      (2*L*Sqrt[-4*(Jout*L + J*L*\[Eta]*\[CapitalNu]^2)*
-          (Bout*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + B*R*\[Eta]*
-            \[CapitalNu]^2) + (Bout*L + Jout*R + B*L*\[Eta]*\[CapitalNu]^2 + 
-           J*R*\[Eta]*\[CapitalNu]^2)^2]), 
-     ((E^((-Bout/(2*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-           (Jout*R)/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-           (B*\[Eta]*\[CapitalNu]^2)/(2*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-           (J*R*\[Eta]*\[CapitalNu]^2)/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^
-                2)) - Sqrt[-4*(Jout*L + J*L*\[Eta]*\[CapitalNu]^2)*(Bout*R + 
-                Ke*Kt*\[Eta]*\[CapitalNu]^2 + B*R*\[Eta]*\[CapitalNu]^2) + 
-              (Bout*L + Jout*R + B*L*\[Eta]*\[CapitalNu]^2 + J*R*\[Eta]*
-                 \[CapitalNu]^2)^2]/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^2)))*
-          \[Tau]$11039) - E^((-Bout/(2*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-           (Jout*R)/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-           (B*\[Eta]*\[CapitalNu]^2)/(2*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-           (J*R*\[Eta]*\[CapitalNu]^2)/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^
-                2)) + Sqrt[-4*(Jout*L + J*L*\[Eta]*\[CapitalNu]^2)*(Bout*R + 
-                Ke*Kt*\[Eta]*\[CapitalNu]^2 + B*R*\[Eta]*\[CapitalNu]^2) + 
-              (Bout*L + Jout*R + B*L*\[Eta]*\[CapitalNu]^2 + J*R*\[Eta]*
-                 \[CapitalNu]^2)^2]/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^2)))*
-          \[Tau]$11039))*Ke*\[CapitalNu])/
-      Sqrt[-4*(Jout*L + J*L*\[Eta]*\[CapitalNu]^2)*
-         (Bout*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + B*R*\[Eta]*\[CapitalNu]^2) + 
-        (Bout*L + Jout*R + B*L*\[Eta]*\[CapitalNu]^2 + 
-          J*R*\[Eta]*\[CapitalNu]^2)^2]}
- 
-Attributes[\[Tau]$11039] = {Temporary}
- 
-motorEMFConstVbat = Function[{t$}, Module[{convolutions$}, 
-      convolutions$ = (convolve[modelExpr$11109[[#1]], 
-           {(Vbat & )[#1] & , (0 & )[#1] & }[[#1]][\[Tau]$11109], 
-           \[Tau]$11109, t$] & ) /@ Range[1, Length[{(Vbat & )[#1] & , 
-            (0 & )[#1] & }]]; {Total[convolutions$]}]]
- 
-Attributes[modelExpr$11109] = {Temporary}
- 
-modelExpr$11109 = 
-    {-(((E^((-Bout/(2*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-            (Jout*R)/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-            (B*\[Eta]*\[CapitalNu]^2)/(2*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-            (J*R*\[Eta]*\[CapitalNu]^2)/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^
-                 2)) - Sqrt[-4*(Jout*L + J*L*\[Eta]*\[CapitalNu]^2)*
-                (Bout*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + B*R*\[Eta]*
-                  \[CapitalNu]^2) + (Bout*L + Jout*R + B*L*\[Eta]*
-                  \[CapitalNu]^2 + J*R*\[Eta]*\[CapitalNu]^2)^2]/
-             (2*L*(Jout + J*\[Eta]*\[CapitalNu]^2)))*\[Tau]$11109) - 
-         E^((-Bout/(2*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-            (Jout*R)/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-            (B*\[Eta]*\[CapitalNu]^2)/(2*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-            (J*R*\[Eta]*\[CapitalNu]^2)/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^
-                 2)) + Sqrt[-4*(Jout*L + J*L*\[Eta]*\[CapitalNu]^2)*
-                (Bout*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + B*R*\[Eta]*
-                  \[CapitalNu]^2) + (Bout*L + Jout*R + B*L*\[Eta]*
-                  \[CapitalNu]^2 + J*R*\[Eta]*\[CapitalNu]^2)^2]/
-             (2*L*(Jout + J*\[Eta]*\[CapitalNu]^2)))*\[Tau]$11109))*Ke*Kt*
-        \[Eta]*\[CapitalNu]^2)/Sqrt[-4*(Jout*L + J*L*\[Eta]*\[CapitalNu]^2)*
-          (Bout*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + B*R*\[Eta]*
-            \[CapitalNu]^2) + (Bout*L + Jout*R + B*L*\[Eta]*\[CapitalNu]^2 + 
-           J*R*\[Eta]*\[CapitalNu]^2)^2]), 
-     (Ke*\[CapitalNu]*(Bout*E^((-Bout/(2*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-            (Jout*R)/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-            (B*\[Eta]*\[CapitalNu]^2)/(2*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-            (J*R*\[Eta]*\[CapitalNu]^2)/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^
-                 2)) - Sqrt[-4*(Jout*L + J*L*\[Eta]*\[CapitalNu]^2)*
-                (Bout*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + B*R*\[Eta]*
-                  \[CapitalNu]^2) + (Bout*L + Jout*R + B*L*\[Eta]*
-                  \[CapitalNu]^2 + J*R*\[Eta]*\[CapitalNu]^2)^2]/
-             (2*L*(Jout + J*\[Eta]*\[CapitalNu]^2)))*\[Tau]$11109)*L - 
-        Bout*E^((-Bout/(2*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-            (Jout*R)/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-            (B*\[Eta]*\[CapitalNu]^2)/(2*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-            (J*R*\[Eta]*\[CapitalNu]^2)/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^
-                 2)) + Sqrt[-4*(Jout*L + J*L*\[Eta]*\[CapitalNu]^2)*
-                (Bout*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + B*R*\[Eta]*
-                  \[CapitalNu]^2) + (Bout*L + Jout*R + B*L*\[Eta]*
-                  \[CapitalNu]^2 + J*R*\[Eta]*\[CapitalNu]^2)^2]/
-             (2*L*(Jout + J*\[Eta]*\[CapitalNu]^2)))*\[Tau]$11109)*L - 
-        E^((-Bout/(2*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-            (Jout*R)/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-            (B*\[Eta]*\[CapitalNu]^2)/(2*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-            (J*R*\[Eta]*\[CapitalNu]^2)/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^
-                 2)) - Sqrt[-4*(Jout*L + J*L*\[Eta]*\[CapitalNu]^2)*
-                (Bout*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + B*R*\[Eta]*
-                  \[CapitalNu]^2) + (Bout*L + Jout*R + B*L*\[Eta]*
-                  \[CapitalNu]^2 + J*R*\[Eta]*\[CapitalNu]^2)^2]/
-             (2*L*(Jout + J*\[Eta]*\[CapitalNu]^2)))*\[Tau]$11109)*Jout*R + 
-        E^((-Bout/(2*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-            (Jout*R)/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-            (B*\[Eta]*\[CapitalNu]^2)/(2*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-            (J*R*\[Eta]*\[CapitalNu]^2)/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^
-                 2)) + Sqrt[-4*(Jout*L + J*L*\[Eta]*\[CapitalNu]^2)*
-                (Bout*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + B*R*\[Eta]*
-                  \[CapitalNu]^2) + (Bout*L + Jout*R + B*L*\[Eta]*
-                  \[CapitalNu]^2 + J*R*\[Eta]*\[CapitalNu]^2)^2]/
-             (2*L*(Jout + J*\[Eta]*\[CapitalNu]^2)))*\[Tau]$11109)*Jout*R + 
-        B*E^((-Bout/(2*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-            (Jout*R)/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-            (B*\[Eta]*\[CapitalNu]^2)/(2*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-            (J*R*\[Eta]*\[CapitalNu]^2)/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^
-                 2)) - Sqrt[-4*(Jout*L + J*L*\[Eta]*\[CapitalNu]^2)*
-                (Bout*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + B*R*\[Eta]*
-                  \[CapitalNu]^2) + (Bout*L + Jout*R + B*L*\[Eta]*
-                  \[CapitalNu]^2 + J*R*\[Eta]*\[CapitalNu]^2)^2]/
-             (2*L*(Jout + J*\[Eta]*\[CapitalNu]^2)))*\[Tau]$11109)*L*\[Eta]*
-         \[CapitalNu]^2 - B*E^((-Bout/(2*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-            (Jout*R)/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-            (B*\[Eta]*\[CapitalNu]^2)/(2*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-            (J*R*\[Eta]*\[CapitalNu]^2)/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^
-                 2)) + Sqrt[-4*(Jout*L + J*L*\[Eta]*\[CapitalNu]^2)*
-                (Bout*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + B*R*\[Eta]*
-                  \[CapitalNu]^2) + (Bout*L + Jout*R + B*L*\[Eta]*
-                  \[CapitalNu]^2 + J*R*\[Eta]*\[CapitalNu]^2)^2]/
-             (2*L*(Jout + J*\[Eta]*\[CapitalNu]^2)))*\[Tau]$11109)*L*\[Eta]*
-         \[CapitalNu]^2 - E^((-Bout/(2*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-            (Jout*R)/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-            (B*\[Eta]*\[CapitalNu]^2)/(2*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-            (J*R*\[Eta]*\[CapitalNu]^2)/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^
-                 2)) - Sqrt[-4*(Jout*L + J*L*\[Eta]*\[CapitalNu]^2)*
-                (Bout*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + B*R*\[Eta]*
-                  \[CapitalNu]^2) + (Bout*L + Jout*R + B*L*\[Eta]*
-                  \[CapitalNu]^2 + J*R*\[Eta]*\[CapitalNu]^2)^2]/
-             (2*L*(Jout + J*\[Eta]*\[CapitalNu]^2)))*\[Tau]$11109)*J*R*\[Eta]*
-         \[CapitalNu]^2 + E^((-Bout/(2*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-            (Jout*R)/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-            (B*\[Eta]*\[CapitalNu]^2)/(2*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-            (J*R*\[Eta]*\[CapitalNu]^2)/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^
-                 2)) + Sqrt[-4*(Jout*L + J*L*\[Eta]*\[CapitalNu]^2)*
-                (Bout*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + B*R*\[Eta]*
-                  \[CapitalNu]^2) + (Bout*L + Jout*R + B*L*\[Eta]*
-                  \[CapitalNu]^2 + J*R*\[Eta]*\[CapitalNu]^2)^2]/
-             (2*L*(Jout + J*\[Eta]*\[CapitalNu]^2)))*\[Tau]$11109)*J*R*\[Eta]*
-         \[CapitalNu]^2 + E^((-Bout/(2*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-            (Jout*R)/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-            (B*\[Eta]*\[CapitalNu]^2)/(2*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-            (J*R*\[Eta]*\[CapitalNu]^2)/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^
-                 2)) - Sqrt[-4*(Jout*L + J*L*\[Eta]*\[CapitalNu]^2)*
-                (Bout*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + B*R*\[Eta]*
-                  \[CapitalNu]^2) + (Bout*L + Jout*R + B*L*\[Eta]*
-                  \[CapitalNu]^2 + J*R*\[Eta]*\[CapitalNu]^2)^2]/
-             (2*L*(Jout + J*\[Eta]*\[CapitalNu]^2)))*\[Tau]$11109)*
-         Sqrt[-4*(Jout*L + J*L*\[Eta]*\[CapitalNu]^2)*(Bout*R + 
+modelExpr$18416 = 
+    {-(((E^((-Bafter/(2*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+            (Jafter*R)/(2*L*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+            (B*\[Eta]*\[CapitalNu]^2)/(2*(Jafter + J*\[Eta]*\[CapitalNu]^
+                 2)) - (J*R*\[Eta]*\[CapitalNu]^2)/(2*L*(Jafter + J*\[Eta]*
+                \[CapitalNu]^2)) - Sqrt[-4*(Jafter*L + J*L*\[Eta]*
+                  \[CapitalNu]^2)*(Bafter*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + 
+                 B*R*\[Eta]*\[CapitalNu]^2) + (Bafter*L + Jafter*R + 
+                 B*L*\[Eta]*\[CapitalNu]^2 + J*R*\[Eta]*\[CapitalNu]^2)^2]/
+             (2*L*(Jafter + J*\[Eta]*\[CapitalNu]^2)))*\[Tau]$18416) - 
+         E^((-Bafter/(2*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+            (Jafter*R)/(2*L*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+            (B*\[Eta]*\[CapitalNu]^2)/(2*(Jafter + J*\[Eta]*\[CapitalNu]^
+                 2)) - (J*R*\[Eta]*\[CapitalNu]^2)/(2*L*(Jafter + J*\[Eta]*
+                \[CapitalNu]^2)) + Sqrt[-4*(Jafter*L + J*L*\[Eta]*
+                  \[CapitalNu]^2)*(Bafter*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + 
+                 B*R*\[Eta]*\[CapitalNu]^2) + (Bafter*L + Jafter*R + 
+                 B*L*\[Eta]*\[CapitalNu]^2 + J*R*\[Eta]*\[CapitalNu]^2)^2]/
+             (2*L*(Jafter + J*\[Eta]*\[CapitalNu]^2)))*\[Tau]$18416))*Kt*
+        \[Eta]*\[CapitalNu]^2)/Sqrt[-4*(Jafter*L + J*L*\[Eta]*\[CapitalNu]^2)*
+          (Bafter*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + B*R*\[Eta]*
+            \[CapitalNu]^2) + (Bafter*L + Jafter*R + B*L*\[Eta]*
+            \[CapitalNu]^2 + J*R*\[Eta]*\[CapitalNu]^2)^2]), 
+     (\[CapitalNu]*
+       (Bafter*E^((-Bafter/(2*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+            (Jafter*R)/(2*L*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+            (B*\[Eta]*\[CapitalNu]^2)/(2*(Jafter + J*\[Eta]*\[CapitalNu]^
+                 2)) - (J*R*\[Eta]*\[CapitalNu]^2)/(2*L*(Jafter + J*\[Eta]*
+                \[CapitalNu]^2)) - Sqrt[-4*(Jafter*L + J*L*\[Eta]*
+                  \[CapitalNu]^2)*(Bafter*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + 
+                 B*R*\[Eta]*\[CapitalNu]^2) + (Bafter*L + Jafter*R + 
+                 B*L*\[Eta]*\[CapitalNu]^2 + J*R*\[Eta]*\[CapitalNu]^2)^2]/
+             (2*L*(Jafter + J*\[Eta]*\[CapitalNu]^2)))*\[Tau]$18416)*L - 
+        Bafter*E^((-Bafter/(2*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+            (Jafter*R)/(2*L*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+            (B*\[Eta]*\[CapitalNu]^2)/(2*(Jafter + J*\[Eta]*\[CapitalNu]^
+                 2)) - (J*R*\[Eta]*\[CapitalNu]^2)/(2*L*(Jafter + J*\[Eta]*
+                \[CapitalNu]^2)) + Sqrt[-4*(Jafter*L + J*L*\[Eta]*
+                  \[CapitalNu]^2)*(Bafter*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + 
+                 B*R*\[Eta]*\[CapitalNu]^2) + (Bafter*L + Jafter*R + 
+                 B*L*\[Eta]*\[CapitalNu]^2 + J*R*\[Eta]*\[CapitalNu]^2)^2]/
+             (2*L*(Jafter + J*\[Eta]*\[CapitalNu]^2)))*\[Tau]$18416)*L - 
+        E^((-Bafter/(2*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+            (Jafter*R)/(2*L*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+            (B*\[Eta]*\[CapitalNu]^2)/(2*(Jafter + J*\[Eta]*\[CapitalNu]^
+                 2)) - (J*R*\[Eta]*\[CapitalNu]^2)/(2*L*(Jafter + J*\[Eta]*
+                \[CapitalNu]^2)) - Sqrt[-4*(Jafter*L + J*L*\[Eta]*
+                  \[CapitalNu]^2)*(Bafter*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + 
+                 B*R*\[Eta]*\[CapitalNu]^2) + (Bafter*L + Jafter*R + 
+                 B*L*\[Eta]*\[CapitalNu]^2 + J*R*\[Eta]*\[CapitalNu]^2)^2]/
+             (2*L*(Jafter + J*\[Eta]*\[CapitalNu]^2)))*\[Tau]$18416)*Jafter*
+         R + E^((-Bafter/(2*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+            (Jafter*R)/(2*L*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+            (B*\[Eta]*\[CapitalNu]^2)/(2*(Jafter + J*\[Eta]*\[CapitalNu]^
+                 2)) - (J*R*\[Eta]*\[CapitalNu]^2)/(2*L*(Jafter + J*\[Eta]*
+                \[CapitalNu]^2)) + Sqrt[-4*(Jafter*L + J*L*\[Eta]*
+                  \[CapitalNu]^2)*(Bafter*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + 
+                 B*R*\[Eta]*\[CapitalNu]^2) + (Bafter*L + Jafter*R + 
+                 B*L*\[Eta]*\[CapitalNu]^2 + J*R*\[Eta]*\[CapitalNu]^2)^2]/
+             (2*L*(Jafter + J*\[Eta]*\[CapitalNu]^2)))*\[Tau]$18416)*Jafter*
+         R + B*E^((-Bafter/(2*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+            (Jafter*R)/(2*L*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+            (B*\[Eta]*\[CapitalNu]^2)/(2*(Jafter + J*\[Eta]*\[CapitalNu]^
+                 2)) - (J*R*\[Eta]*\[CapitalNu]^2)/(2*L*(Jafter + J*\[Eta]*
+                \[CapitalNu]^2)) - Sqrt[-4*(Jafter*L + J*L*\[Eta]*
+                  \[CapitalNu]^2)*(Bafter*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + 
+                 B*R*\[Eta]*\[CapitalNu]^2) + (Bafter*L + Jafter*R + 
+                 B*L*\[Eta]*\[CapitalNu]^2 + J*R*\[Eta]*\[CapitalNu]^2)^2]/
+             (2*L*(Jafter + J*\[Eta]*\[CapitalNu]^2)))*\[Tau]$18416)*L*\[Eta]*
+         \[CapitalNu]^2 - 
+        B*E^((-Bafter/(2*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+            (Jafter*R)/(2*L*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+            (B*\[Eta]*\[CapitalNu]^2)/(2*(Jafter + J*\[Eta]*\[CapitalNu]^
+                 2)) - (J*R*\[Eta]*\[CapitalNu]^2)/(2*L*(Jafter + J*\[Eta]*
+                \[CapitalNu]^2)) + Sqrt[-4*(Jafter*L + J*L*\[Eta]*
+                  \[CapitalNu]^2)*(Bafter*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + 
+                 B*R*\[Eta]*\[CapitalNu]^2) + (Bafter*L + Jafter*R + 
+                 B*L*\[Eta]*\[CapitalNu]^2 + J*R*\[Eta]*\[CapitalNu]^2)^2]/
+             (2*L*(Jafter + J*\[Eta]*\[CapitalNu]^2)))*\[Tau]$18416)*L*\[Eta]*
+         \[CapitalNu]^2 - 
+        E^((-Bafter/(2*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+            (Jafter*R)/(2*L*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+            (B*\[Eta]*\[CapitalNu]^2)/(2*(Jafter + J*\[Eta]*\[CapitalNu]^
+                 2)) - (J*R*\[Eta]*\[CapitalNu]^2)/(2*L*(Jafter + J*\[Eta]*
+                \[CapitalNu]^2)) - Sqrt[-4*(Jafter*L + J*L*\[Eta]*
+                  \[CapitalNu]^2)*(Bafter*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + 
+                 B*R*\[Eta]*\[CapitalNu]^2) + (Bafter*L + Jafter*R + 
+                 B*L*\[Eta]*\[CapitalNu]^2 + J*R*\[Eta]*\[CapitalNu]^2)^2]/
+             (2*L*(Jafter + J*\[Eta]*\[CapitalNu]^2)))*\[Tau]$18416)*J*R*
+         \[Eta]*\[CapitalNu]^2 + 
+        E^((-Bafter/(2*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+            (Jafter*R)/(2*L*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+            (B*\[Eta]*\[CapitalNu]^2)/(2*(Jafter + J*\[Eta]*\[CapitalNu]^
+                 2)) - (J*R*\[Eta]*\[CapitalNu]^2)/(2*L*(Jafter + J*\[Eta]*
+                \[CapitalNu]^2)) + Sqrt[-4*(Jafter*L + J*L*\[Eta]*
+                  \[CapitalNu]^2)*(Bafter*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + 
+                 B*R*\[Eta]*\[CapitalNu]^2) + (Bafter*L + Jafter*R + 
+                 B*L*\[Eta]*\[CapitalNu]^2 + J*R*\[Eta]*\[CapitalNu]^2)^2]/
+             (2*L*(Jafter + J*\[Eta]*\[CapitalNu]^2)))*\[Tau]$18416)*J*R*
+         \[Eta]*\[CapitalNu]^2 + 
+        E^((-Bafter/(2*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+            (Jafter*R)/(2*L*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+            (B*\[Eta]*\[CapitalNu]^2)/(2*(Jafter + J*\[Eta]*\[CapitalNu]^
+                 2)) - (J*R*\[Eta]*\[CapitalNu]^2)/(2*L*(Jafter + J*\[Eta]*
+                \[CapitalNu]^2)) - Sqrt[-4*(Jafter*L + J*L*\[Eta]*
+                  \[CapitalNu]^2)*(Bafter*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + 
+                 B*R*\[Eta]*\[CapitalNu]^2) + (Bafter*L + Jafter*R + 
+                 B*L*\[Eta]*\[CapitalNu]^2 + J*R*\[Eta]*\[CapitalNu]^2)^2]/
+             (2*L*(Jafter + J*\[Eta]*\[CapitalNu]^2)))*\[Tau]$18416)*
+         Sqrt[-4*(Jafter*L + J*L*\[Eta]*\[CapitalNu]^2)*(Bafter*R + 
              Ke*Kt*\[Eta]*\[CapitalNu]^2 + B*R*\[Eta]*\[CapitalNu]^2) + 
-           (Bout*L + Jout*R + B*L*\[Eta]*\[CapitalNu]^2 + 
+           (Bafter*L + Jafter*R + B*L*\[Eta]*\[CapitalNu]^2 + 
              J*R*\[Eta]*\[CapitalNu]^2)^2] + 
-        E^((-Bout/(2*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-            (Jout*R)/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-            (B*\[Eta]*\[CapitalNu]^2)/(2*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-            (J*R*\[Eta]*\[CapitalNu]^2)/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^
-                 2)) + Sqrt[-4*(Jout*L + J*L*\[Eta]*\[CapitalNu]^2)*
-                (Bout*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + B*R*\[Eta]*
-                  \[CapitalNu]^2) + (Bout*L + Jout*R + B*L*\[Eta]*
-                  \[CapitalNu]^2 + J*R*\[Eta]*\[CapitalNu]^2)^2]/
-             (2*L*(Jout + J*\[Eta]*\[CapitalNu]^2)))*\[Tau]$11109)*
-         Sqrt[-4*(Jout*L + J*L*\[Eta]*\[CapitalNu]^2)*(Bout*R + 
+        E^((-Bafter/(2*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+            (Jafter*R)/(2*L*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+            (B*\[Eta]*\[CapitalNu]^2)/(2*(Jafter + J*\[Eta]*\[CapitalNu]^
+                 2)) - (J*R*\[Eta]*\[CapitalNu]^2)/(2*L*(Jafter + J*\[Eta]*
+                \[CapitalNu]^2)) + Sqrt[-4*(Jafter*L + J*L*\[Eta]*
+                  \[CapitalNu]^2)*(Bafter*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + 
+                 B*R*\[Eta]*\[CapitalNu]^2) + (Bafter*L + Jafter*R + 
+                 B*L*\[Eta]*\[CapitalNu]^2 + J*R*\[Eta]*\[CapitalNu]^2)^2]/
+             (2*L*(Jafter + J*\[Eta]*\[CapitalNu]^2)))*\[Tau]$18416)*
+         Sqrt[-4*(Jafter*L + J*L*\[Eta]*\[CapitalNu]^2)*(Bafter*R + 
              Ke*Kt*\[Eta]*\[CapitalNu]^2 + B*R*\[Eta]*\[CapitalNu]^2) + 
-           (Bout*L + Jout*R + B*L*\[Eta]*\[CapitalNu]^2 + 
+           (Bafter*L + Jafter*R + B*L*\[Eta]*\[CapitalNu]^2 + 
              J*R*\[Eta]*\[CapitalNu]^2)^2]))/
-      (2*(Jout + J*\[Eta]*\[CapitalNu]^2)*
-       Sqrt[-4*(Jout*L + J*L*\[Eta]*\[CapitalNu]^2)*
-          (Bout*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + B*R*\[Eta]*
-            \[CapitalNu]^2) + (Bout*L + Jout*R + B*L*\[Eta]*\[CapitalNu]^2 + 
+      (2*(Jafter + J*\[Eta]*\[CapitalNu]^2)*
+       Sqrt[-4*(Jafter*L + J*L*\[Eta]*\[CapitalNu]^2)*(Bafter*R + 
+           Ke*Kt*\[Eta]*\[CapitalNu]^2 + B*R*\[Eta]*\[CapitalNu]^2) + 
+         (Bafter*L + Jafter*R + B*L*\[Eta]*\[CapitalNu]^2 + 
            J*R*\[Eta]*\[CapitalNu]^2)^2])}
  
-Attributes[\[Tau]$11109] = {Temporary}
+Attributes[\[Tau]$18416] = {Temporary}
  
-motorTorqueConstVbat = Function[{t$}, Module[{convolutions$}, 
-      convolutions$ = (convolve[modelExpr$11179[[#1]], 
-           {(Vbat & )[#1] & , (0 & )[#1] & }[[#1]][\[Tau]$11179], 
-           \[Tau]$11179, t$] & ) /@ Range[1, Length[{(Vbat & )[#1] & , 
+motorAccelerationConstvapp = Function[{t$}, Module[{convolutions$}, 
+      convolutions$ = (convolve[modelExpr$18486[[#1]], 
+           {(vbat & )[#1] & , (0 & )[#1] & }[[#1]][\[Tau]$18486], 
+           \[Tau]$18486, t$] & ) /@ Range[1, Length[{(vbat & )[#1] & , 
             (0 & )[#1] & }]]; {Total[convolutions$]}]]
  
-Attributes[modelExpr$11179] = {Temporary}
+Attributes[modelExpr$18486] = {Temporary}
  
-modelExpr$11179 = 
-    {(Kt*(-(Bout*E^((-Bout/(2*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-             (Jout*R)/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-             (B*\[Eta]*\[CapitalNu]^2)/(2*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-             (J*R*\[Eta]*\[CapitalNu]^2)/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^
-                  2)) - Sqrt[-4*(Jout*L + J*L*\[Eta]*\[CapitalNu]^2)*
-                 (Bout*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + B*R*\[Eta]*
-                   \[CapitalNu]^2) + (Bout*L + Jout*R + B*L*\[Eta]*
-                   \[CapitalNu]^2 + J*R*\[Eta]*\[CapitalNu]^2)^2]/
-              (2*L*(Jout + J*\[Eta]*\[CapitalNu]^2)))*\[Tau]$11179)*L) + 
-        Bout*E^((-Bout/(2*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-            (Jout*R)/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-            (B*\[Eta]*\[CapitalNu]^2)/(2*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-            (J*R*\[Eta]*\[CapitalNu]^2)/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^
-                 2)) + Sqrt[-4*(Jout*L + J*L*\[Eta]*\[CapitalNu]^2)*
-                (Bout*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + B*R*\[Eta]*
-                  \[CapitalNu]^2) + (Bout*L + Jout*R + B*L*\[Eta]*
-                  \[CapitalNu]^2 + J*R*\[Eta]*\[CapitalNu]^2)^2]/
-             (2*L*(Jout + J*\[Eta]*\[CapitalNu]^2)))*\[Tau]$11179)*L + 
-        E^((-Bout/(2*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-            (Jout*R)/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-            (B*\[Eta]*\[CapitalNu]^2)/(2*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-            (J*R*\[Eta]*\[CapitalNu]^2)/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^
-                 2)) - Sqrt[-4*(Jout*L + J*L*\[Eta]*\[CapitalNu]^2)*
-                (Bout*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + B*R*\[Eta]*
-                  \[CapitalNu]^2) + (Bout*L + Jout*R + B*L*\[Eta]*
-                  \[CapitalNu]^2 + J*R*\[Eta]*\[CapitalNu]^2)^2]/
-             (2*L*(Jout + J*\[Eta]*\[CapitalNu]^2)))*\[Tau]$11179)*Jout*R - 
-        E^((-Bout/(2*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-            (Jout*R)/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-            (B*\[Eta]*\[CapitalNu]^2)/(2*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-            (J*R*\[Eta]*\[CapitalNu]^2)/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^
-                 2)) + Sqrt[-4*(Jout*L + J*L*\[Eta]*\[CapitalNu]^2)*
-                (Bout*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + B*R*\[Eta]*
-                  \[CapitalNu]^2) + (Bout*L + Jout*R + B*L*\[Eta]*
-                  \[CapitalNu]^2 + J*R*\[Eta]*\[CapitalNu]^2)^2]/
-             (2*L*(Jout + J*\[Eta]*\[CapitalNu]^2)))*\[Tau]$11179)*Jout*R - 
-        B*E^((-Bout/(2*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-            (Jout*R)/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-            (B*\[Eta]*\[CapitalNu]^2)/(2*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-            (J*R*\[Eta]*\[CapitalNu]^2)/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^
-                 2)) - Sqrt[-4*(Jout*L + J*L*\[Eta]*\[CapitalNu]^2)*
-                (Bout*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + B*R*\[Eta]*
-                  \[CapitalNu]^2) + (Bout*L + Jout*R + B*L*\[Eta]*
-                  \[CapitalNu]^2 + J*R*\[Eta]*\[CapitalNu]^2)^2]/
-             (2*L*(Jout + J*\[Eta]*\[CapitalNu]^2)))*\[Tau]$11179)*L*\[Eta]*
-         \[CapitalNu]^2 + B*E^((-Bout/(2*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-            (Jout*R)/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-            (B*\[Eta]*\[CapitalNu]^2)/(2*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-            (J*R*\[Eta]*\[CapitalNu]^2)/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^
-                 2)) + Sqrt[-4*(Jout*L + J*L*\[Eta]*\[CapitalNu]^2)*
-                (Bout*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + B*R*\[Eta]*
-                  \[CapitalNu]^2) + (Bout*L + Jout*R + B*L*\[Eta]*
-                  \[CapitalNu]^2 + J*R*\[Eta]*\[CapitalNu]^2)^2]/
-             (2*L*(Jout + J*\[Eta]*\[CapitalNu]^2)))*\[Tau]$11179)*L*\[Eta]*
-         \[CapitalNu]^2 + E^((-Bout/(2*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-            (Jout*R)/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-            (B*\[Eta]*\[CapitalNu]^2)/(2*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-            (J*R*\[Eta]*\[CapitalNu]^2)/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^
-                 2)) - Sqrt[-4*(Jout*L + J*L*\[Eta]*\[CapitalNu]^2)*
-                (Bout*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + B*R*\[Eta]*
-                  \[CapitalNu]^2) + (Bout*L + Jout*R + B*L*\[Eta]*
-                  \[CapitalNu]^2 + J*R*\[Eta]*\[CapitalNu]^2)^2]/
-             (2*L*(Jout + J*\[Eta]*\[CapitalNu]^2)))*\[Tau]$11179)*J*R*\[Eta]*
-         \[CapitalNu]^2 - E^((-Bout/(2*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-            (Jout*R)/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-            (B*\[Eta]*\[CapitalNu]^2)/(2*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-            (J*R*\[Eta]*\[CapitalNu]^2)/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^
-                 2)) + Sqrt[-4*(Jout*L + J*L*\[Eta]*\[CapitalNu]^2)*
-                (Bout*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + B*R*\[Eta]*
-                  \[CapitalNu]^2) + (Bout*L + Jout*R + B*L*\[Eta]*
-                  \[CapitalNu]^2 + J*R*\[Eta]*\[CapitalNu]^2)^2]/
-             (2*L*(Jout + J*\[Eta]*\[CapitalNu]^2)))*\[Tau]$11179)*J*R*\[Eta]*
-         \[CapitalNu]^2 + E^((-Bout/(2*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-            (Jout*R)/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-            (B*\[Eta]*\[CapitalNu]^2)/(2*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-            (J*R*\[Eta]*\[CapitalNu]^2)/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^
-                 2)) - Sqrt[-4*(Jout*L + J*L*\[Eta]*\[CapitalNu]^2)*
-                (Bout*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + B*R*\[Eta]*
-                  \[CapitalNu]^2) + (Bout*L + Jout*R + B*L*\[Eta]*
-                  \[CapitalNu]^2 + J*R*\[Eta]*\[CapitalNu]^2)^2]/
-             (2*L*(Jout + J*\[Eta]*\[CapitalNu]^2)))*\[Tau]$11179)*
-         Sqrt[-4*(Jout*L + J*L*\[Eta]*\[CapitalNu]^2)*(Bout*R + 
-             Ke*Kt*\[Eta]*\[CapitalNu]^2 + B*R*\[Eta]*\[CapitalNu]^2) + 
-           (Bout*L + Jout*R + B*L*\[Eta]*\[CapitalNu]^2 + 
-             J*R*\[Eta]*\[CapitalNu]^2)^2] + 
-        E^((-Bout/(2*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-            (Jout*R)/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-            (B*\[Eta]*\[CapitalNu]^2)/(2*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-            (J*R*\[Eta]*\[CapitalNu]^2)/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^
-                 2)) + Sqrt[-4*(Jout*L + J*L*\[Eta]*\[CapitalNu]^2)*
-                (Bout*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + B*R*\[Eta]*
-                  \[CapitalNu]^2) + (Bout*L + Jout*R + B*L*\[Eta]*
-                  \[CapitalNu]^2 + J*R*\[Eta]*\[CapitalNu]^2)^2]/
-             (2*L*(Jout + J*\[Eta]*\[CapitalNu]^2)))*\[Tau]$11179)*
-         Sqrt[-4*(Jout*L + J*L*\[Eta]*\[CapitalNu]^2)*(Bout*R + 
-             Ke*Kt*\[Eta]*\[CapitalNu]^2 + B*R*\[Eta]*\[CapitalNu]^2) + 
-           (Bout*L + Jout*R + B*L*\[Eta]*\[CapitalNu]^2 + 
-             J*R*\[Eta]*\[CapitalNu]^2)^2]))/
-      (2*L*Sqrt[-4*(Jout*L + J*L*\[Eta]*\[CapitalNu]^2)*
-          (Bout*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + B*R*\[Eta]*
-            \[CapitalNu]^2) + (Bout*L + Jout*R + B*L*\[Eta]*\[CapitalNu]^2 + 
-           J*R*\[Eta]*\[CapitalNu]^2)^2]), 
-     ((E^((-Bout/(2*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-           (Jout*R)/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-           (B*\[Eta]*\[CapitalNu]^2)/(2*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-           (J*R*\[Eta]*\[CapitalNu]^2)/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^
-                2)) - Sqrt[-4*(Jout*L + J*L*\[Eta]*\[CapitalNu]^2)*(Bout*R + 
-                Ke*Kt*\[Eta]*\[CapitalNu]^2 + B*R*\[Eta]*\[CapitalNu]^2) + 
-              (Bout*L + Jout*R + B*L*\[Eta]*\[CapitalNu]^2 + J*R*\[Eta]*
-                 \[CapitalNu]^2)^2]/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^2)))*
-          \[Tau]$11179) - E^((-Bout/(2*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-           (Jout*R)/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-           (B*\[Eta]*\[CapitalNu]^2)/(2*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-           (J*R*\[Eta]*\[CapitalNu]^2)/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^
-                2)) + Sqrt[-4*(Jout*L + J*L*\[Eta]*\[CapitalNu]^2)*(Bout*R + 
-                Ke*Kt*\[Eta]*\[CapitalNu]^2 + B*R*\[Eta]*\[CapitalNu]^2) + 
-              (Bout*L + Jout*R + B*L*\[Eta]*\[CapitalNu]^2 + J*R*\[Eta]*
-                 \[CapitalNu]^2)^2]/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^2)))*
-          \[Tau]$11179))*Ke*Kt*\[CapitalNu])/
-      Sqrt[-4*(Jout*L + J*L*\[Eta]*\[CapitalNu]^2)*
-         (Bout*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + B*R*\[Eta]*\[CapitalNu]^2) + 
-        (Bout*L + Jout*R + B*L*\[Eta]*\[CapitalNu]^2 + 
-          J*R*\[Eta]*\[CapitalNu]^2)^2]}
- 
-Attributes[\[Tau]$11179] = {Temporary}
- 
-motorPositionOutConstVbat = Function[{t$}, Module[{convolutions$}, 
-      convolutions$ = (convolve[modelExpr$11249[[#1]], 
-           {(Vbat & )[#1] & , (0 & )[#1] & }[[#1]][\[Tau]$11249], 
-           \[Tau]$11249, t$] & ) /@ Range[1, Length[{(Vbat & )[#1] & , 
-            (0 & )[#1] & }]]; {Total[convolutions$]}]]
- 
-Attributes[modelExpr$11249] = {Temporary}
- 
-modelExpr$11249 = {Kt*\[Eta]*\[CapitalNu]*
-      ((Bout*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + B*R*\[Eta]*\[CapitalNu]^2)^
-        (-1) - (-(Bout*E^((-Bout/(2*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-              (Jout*R)/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-              (B*\[Eta]*\[CapitalNu]^2)/(2*(Jout + J*\[Eta]*\[CapitalNu]^
-                   2)) - (J*R*\[Eta]*\[CapitalNu]^2)/(2*L*(Jout + 
-                 J*\[Eta]*\[CapitalNu]^2)) - Sqrt[-4*(Jout*L + J*L*\[Eta]*
-                    \[CapitalNu]^2)*(Bout*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + 
-                   B*R*\[Eta]*\[CapitalNu]^2) + (Bout*L + Jout*R + 
-                   B*L*\[Eta]*\[CapitalNu]^2 + J*R*\[Eta]*\[CapitalNu]^2)^2]/(
-                2*L*(Jout + J*\[Eta]*\[CapitalNu]^2)))*\[Tau]$11249)*L) + 
-         Bout*E^((-Bout/(2*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-             (Jout*R)/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-             (B*\[Eta]*\[CapitalNu]^2)/(2*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-             (J*R*\[Eta]*\[CapitalNu]^2)/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^
-                  2)) + Sqrt[-4*(Jout*L + J*L*\[Eta]*\[CapitalNu]^2)*
-                 (Bout*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + B*R*\[Eta]*
-                   \[CapitalNu]^2) + (Bout*L + Jout*R + B*L*\[Eta]*
-                   \[CapitalNu]^2 + J*R*\[Eta]*\[CapitalNu]^2)^2]/
-              (2*L*(Jout + J*\[Eta]*\[CapitalNu]^2)))*\[Tau]$11249)*L - 
-         E^((-Bout/(2*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-             (Jout*R)/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-             (B*\[Eta]*\[CapitalNu]^2)/(2*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-             (J*R*\[Eta]*\[CapitalNu]^2)/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^
-                  2)) - Sqrt[-4*(Jout*L + J*L*\[Eta]*\[CapitalNu]^2)*
-                 (Bout*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + B*R*\[Eta]*
-                   \[CapitalNu]^2) + (Bout*L + Jout*R + B*L*\[Eta]*
-                   \[CapitalNu]^2 + J*R*\[Eta]*\[CapitalNu]^2)^2]/
-              (2*L*(Jout + J*\[Eta]*\[CapitalNu]^2)))*\[Tau]$11249)*Jout*R + 
-         E^((-Bout/(2*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-             (Jout*R)/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-             (B*\[Eta]*\[CapitalNu]^2)/(2*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-             (J*R*\[Eta]*\[CapitalNu]^2)/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^
-                  2)) + Sqrt[-4*(Jout*L + J*L*\[Eta]*\[CapitalNu]^2)*
-                 (Bout*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + B*R*\[Eta]*
-                   \[CapitalNu]^2) + (Bout*L + Jout*R + B*L*\[Eta]*
-                   \[CapitalNu]^2 + J*R*\[Eta]*\[CapitalNu]^2)^2]/
-              (2*L*(Jout + J*\[Eta]*\[CapitalNu]^2)))*\[Tau]$11249)*Jout*R - 
-         B*E^((-Bout/(2*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-             (Jout*R)/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-             (B*\[Eta]*\[CapitalNu]^2)/(2*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-             (J*R*\[Eta]*\[CapitalNu]^2)/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^
-                  2)) - Sqrt[-4*(Jout*L + J*L*\[Eta]*\[CapitalNu]^2)*
-                 (Bout*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + B*R*\[Eta]*
-                   \[CapitalNu]^2) + (Bout*L + Jout*R + B*L*\[Eta]*
-                   \[CapitalNu]^2 + J*R*\[Eta]*\[CapitalNu]^2)^2]/
-              (2*L*(Jout + J*\[Eta]*\[CapitalNu]^2)))*\[Tau]$11249)*L*\[Eta]*
-          \[CapitalNu]^2 + B*E^((-Bout/(2*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-             (Jout*R)/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-             (B*\[Eta]*\[CapitalNu]^2)/(2*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-             (J*R*\[Eta]*\[CapitalNu]^2)/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^
-                  2)) + Sqrt[-4*(Jout*L + J*L*\[Eta]*\[CapitalNu]^2)*
-                 (Bout*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + B*R*\[Eta]*
-                   \[CapitalNu]^2) + (Bout*L + Jout*R + B*L*\[Eta]*
-                   \[CapitalNu]^2 + J*R*\[Eta]*\[CapitalNu]^2)^2]/
-              (2*L*(Jout + J*\[Eta]*\[CapitalNu]^2)))*\[Tau]$11249)*L*\[Eta]*
-          \[CapitalNu]^2 - E^((-Bout/(2*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-             (Jout*R)/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-             (B*\[Eta]*\[CapitalNu]^2)/(2*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-             (J*R*\[Eta]*\[CapitalNu]^2)/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^
-                  2)) - Sqrt[-4*(Jout*L + J*L*\[Eta]*\[CapitalNu]^2)*
-                 (Bout*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + B*R*\[Eta]*
-                   \[CapitalNu]^2) + (Bout*L + Jout*R + B*L*\[Eta]*
-                   \[CapitalNu]^2 + J*R*\[Eta]*\[CapitalNu]^2)^2]/
-              (2*L*(Jout + J*\[Eta]*\[CapitalNu]^2)))*\[Tau]$11249)*J*R*
-          \[Eta]*\[CapitalNu]^2 + 
-         E^((-Bout/(2*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-             (Jout*R)/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-             (B*\[Eta]*\[CapitalNu]^2)/(2*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-             (J*R*\[Eta]*\[CapitalNu]^2)/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^
-                  2)) + Sqrt[-4*(Jout*L + J*L*\[Eta]*\[CapitalNu]^2)*
-                 (Bout*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + B*R*\[Eta]*
-                   \[CapitalNu]^2) + (Bout*L + Jout*R + B*L*\[Eta]*
-                   \[CapitalNu]^2 + J*R*\[Eta]*\[CapitalNu]^2)^2]/
-              (2*L*(Jout + J*\[Eta]*\[CapitalNu]^2)))*\[Tau]$11249)*J*R*
-          \[Eta]*\[CapitalNu]^2 + 
-         E^((-Bout/(2*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-             (Jout*R)/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-             (B*\[Eta]*\[CapitalNu]^2)/(2*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-             (J*R*\[Eta]*\[CapitalNu]^2)/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^
-                  2)) - Sqrt[-4*(Jout*L + J*L*\[Eta]*\[CapitalNu]^2)*
-                 (Bout*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + B*R*\[Eta]*
-                   \[CapitalNu]^2) + (Bout*L + Jout*R + B*L*\[Eta]*
-                   \[CapitalNu]^2 + J*R*\[Eta]*\[CapitalNu]^2)^2]/
-              (2*L*(Jout + J*\[Eta]*\[CapitalNu]^2)))*\[Tau]$11249)*
-          Sqrt[-4*(Jout*L + J*L*\[Eta]*\[CapitalNu]^2)*(Bout*R + 
-              Ke*Kt*\[Eta]*\[CapitalNu]^2 + B*R*\[Eta]*\[CapitalNu]^2) + 
-            (Bout*L + Jout*R + B*L*\[Eta]*\[CapitalNu]^2 + J*R*\[Eta]*
-               \[CapitalNu]^2)^2] + 
-         E^((-Bout/(2*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-             (Jout*R)/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-             (B*\[Eta]*\[CapitalNu]^2)/(2*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-             (J*R*\[Eta]*\[CapitalNu]^2)/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^
-                  2)) + Sqrt[-4*(Jout*L + J*L*\[Eta]*\[CapitalNu]^2)*
-                 (Bout*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + B*R*\[Eta]*
-                   \[CapitalNu]^2) + (Bout*L + Jout*R + B*L*\[Eta]*
-                   \[CapitalNu]^2 + J*R*\[Eta]*\[CapitalNu]^2)^2]/
-              (2*L*(Jout + J*\[Eta]*\[CapitalNu]^2)))*\[Tau]$11249)*
-          Sqrt[-4*(Jout*L + J*L*\[Eta]*\[CapitalNu]^2)*(Bout*R + 
-              Ke*Kt*\[Eta]*\[CapitalNu]^2 + B*R*\[Eta]*\[CapitalNu]^2) + 
-            (Bout*L + Jout*R + B*L*\[Eta]*\[CapitalNu]^2 + J*R*\[Eta]*
-               \[CapitalNu]^2)^2])/(2*(Bout*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + 
-          B*R*\[Eta]*\[CapitalNu]^2)*
-         Sqrt[-4*(Jout*L + J*L*\[Eta]*\[CapitalNu]^2)*(Bout*R + 
-             Ke*Kt*\[Eta]*\[CapitalNu]^2 + B*R*\[Eta]*\[CapitalNu]^2) + 
-           (Bout*L + Jout*R + B*L*\[Eta]*\[CapitalNu]^2 + 
-             J*R*\[Eta]*\[CapitalNu]^2)^2])), 
-     R/(Bout*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + B*R*\[Eta]*\[CapitalNu]^2) - 
-      (Bout*E^((-Bout/(2*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-            (Jout*R)/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-            (B*\[Eta]*\[CapitalNu]^2)/(2*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-            (J*R*\[Eta]*\[CapitalNu]^2)/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^
-                 2)) - Sqrt[-4*(Jout*L + J*L*\[Eta]*\[CapitalNu]^2)*
-                (Bout*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + B*R*\[Eta]*
-                  \[CapitalNu]^2) + (Bout*L + Jout*R + B*L*\[Eta]*
-                  \[CapitalNu]^2 + J*R*\[Eta]*\[CapitalNu]^2)^2]/
-             (2*L*(Jout + J*\[Eta]*\[CapitalNu]^2)))*\[Tau]$11249)*L*R - 
-        Bout*E^((-Bout/(2*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-            (Jout*R)/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-            (B*\[Eta]*\[CapitalNu]^2)/(2*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-            (J*R*\[Eta]*\[CapitalNu]^2)/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^
-                 2)) + Sqrt[-4*(Jout*L + J*L*\[Eta]*\[CapitalNu]^2)*
-                (Bout*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + B*R*\[Eta]*
-                  \[CapitalNu]^2) + (Bout*L + Jout*R + B*L*\[Eta]*
-                  \[CapitalNu]^2 + J*R*\[Eta]*\[CapitalNu]^2)^2]/
-             (2*L*(Jout + J*\[Eta]*\[CapitalNu]^2)))*\[Tau]$11249)*L*R - 
-        E^((-Bout/(2*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-            (Jout*R)/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-            (B*\[Eta]*\[CapitalNu]^2)/(2*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-            (J*R*\[Eta]*\[CapitalNu]^2)/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^
-                 2)) - Sqrt[-4*(Jout*L + J*L*\[Eta]*\[CapitalNu]^2)*
-                (Bout*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + B*R*\[Eta]*
-                  \[CapitalNu]^2) + (Bout*L + Jout*R + B*L*\[Eta]*
-                  \[CapitalNu]^2 + J*R*\[Eta]*\[CapitalNu]^2)^2]/
-             (2*L*(Jout + J*\[Eta]*\[CapitalNu]^2)))*\[Tau]$11249)*Jout*R^2 + 
-        E^((-Bout/(2*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-            (Jout*R)/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-            (B*\[Eta]*\[CapitalNu]^2)/(2*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-            (J*R*\[Eta]*\[CapitalNu]^2)/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^
-                 2)) + Sqrt[-4*(Jout*L + J*L*\[Eta]*\[CapitalNu]^2)*
-                (Bout*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + B*R*\[Eta]*
-                  \[CapitalNu]^2) + (Bout*L + Jout*R + B*L*\[Eta]*
-                  \[CapitalNu]^2 + J*R*\[Eta]*\[CapitalNu]^2)^2]/
-             (2*L*(Jout + J*\[Eta]*\[CapitalNu]^2)))*\[Tau]$11249)*Jout*R^2 + 
-        2*E^((-Bout/(2*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-            (Jout*R)/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-            (B*\[Eta]*\[CapitalNu]^2)/(2*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-            (J*R*\[Eta]*\[CapitalNu]^2)/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^
-                 2)) - Sqrt[-4*(Jout*L + J*L*\[Eta]*\[CapitalNu]^2)*
-                (Bout*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + B*R*\[Eta]*
-                  \[CapitalNu]^2) + (Bout*L + Jout*R + B*L*\[Eta]*
-                  \[CapitalNu]^2 + J*R*\[Eta]*\[CapitalNu]^2)^2]/
-             (2*L*(Jout + J*\[Eta]*\[CapitalNu]^2)))*\[Tau]$11249)*Ke*Kt*L*
+modelExpr$18486 = {(Kt*\[Eta]*\[CapitalNu]^2*
+       (Bafter*E^((-Bafter/(2*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+            (Jafter*R)/(2*L*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+            (B*\[Eta]*\[CapitalNu]^2)/(2*(Jafter + J*\[Eta]*\[CapitalNu]^
+                 2)) - (J*R*\[Eta]*\[CapitalNu]^2)/(2*L*(Jafter + J*\[Eta]*
+                \[CapitalNu]^2)) - Sqrt[-4*(Jafter*L + J*L*\[Eta]*
+                  \[CapitalNu]^2)*(Bafter*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + 
+                 B*R*\[Eta]*\[CapitalNu]^2) + (Bafter*L + Jafter*R + 
+                 B*L*\[Eta]*\[CapitalNu]^2 + J*R*\[Eta]*\[CapitalNu]^2)^2]/
+             (2*L*(Jafter + J*\[Eta]*\[CapitalNu]^2)))*\[Tau]$18486)*L - 
+        Bafter*E^((-Bafter/(2*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+            (Jafter*R)/(2*L*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+            (B*\[Eta]*\[CapitalNu]^2)/(2*(Jafter + J*\[Eta]*\[CapitalNu]^
+                 2)) - (J*R*\[Eta]*\[CapitalNu]^2)/(2*L*(Jafter + J*\[Eta]*
+                \[CapitalNu]^2)) + Sqrt[-4*(Jafter*L + J*L*\[Eta]*
+                  \[CapitalNu]^2)*(Bafter*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + 
+                 B*R*\[Eta]*\[CapitalNu]^2) + (Bafter*L + Jafter*R + 
+                 B*L*\[Eta]*\[CapitalNu]^2 + J*R*\[Eta]*\[CapitalNu]^2)^2]/
+             (2*L*(Jafter + J*\[Eta]*\[CapitalNu]^2)))*\[Tau]$18486)*L + 
+        E^((-Bafter/(2*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+            (Jafter*R)/(2*L*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+            (B*\[Eta]*\[CapitalNu]^2)/(2*(Jafter + J*\[Eta]*\[CapitalNu]^
+                 2)) - (J*R*\[Eta]*\[CapitalNu]^2)/(2*L*(Jafter + J*\[Eta]*
+                \[CapitalNu]^2)) - Sqrt[-4*(Jafter*L + J*L*\[Eta]*
+                  \[CapitalNu]^2)*(Bafter*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + 
+                 B*R*\[Eta]*\[CapitalNu]^2) + (Bafter*L + Jafter*R + 
+                 B*L*\[Eta]*\[CapitalNu]^2 + J*R*\[Eta]*\[CapitalNu]^2)^2]/
+             (2*L*(Jafter + J*\[Eta]*\[CapitalNu]^2)))*\[Tau]$18486)*Jafter*
+         R - E^((-Bafter/(2*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+            (Jafter*R)/(2*L*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+            (B*\[Eta]*\[CapitalNu]^2)/(2*(Jafter + J*\[Eta]*\[CapitalNu]^
+                 2)) - (J*R*\[Eta]*\[CapitalNu]^2)/(2*L*(Jafter + J*\[Eta]*
+                \[CapitalNu]^2)) + Sqrt[-4*(Jafter*L + J*L*\[Eta]*
+                  \[CapitalNu]^2)*(Bafter*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + 
+                 B*R*\[Eta]*\[CapitalNu]^2) + (Bafter*L + Jafter*R + 
+                 B*L*\[Eta]*\[CapitalNu]^2 + J*R*\[Eta]*\[CapitalNu]^2)^2]/
+             (2*L*(Jafter + J*\[Eta]*\[CapitalNu]^2)))*\[Tau]$18486)*Jafter*
+         R + B*E^((-Bafter/(2*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+            (Jafter*R)/(2*L*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+            (B*\[Eta]*\[CapitalNu]^2)/(2*(Jafter + J*\[Eta]*\[CapitalNu]^
+                 2)) - (J*R*\[Eta]*\[CapitalNu]^2)/(2*L*(Jafter + J*\[Eta]*
+                \[CapitalNu]^2)) - Sqrt[-4*(Jafter*L + J*L*\[Eta]*
+                  \[CapitalNu]^2)*(Bafter*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + 
+                 B*R*\[Eta]*\[CapitalNu]^2) + (Bafter*L + Jafter*R + 
+                 B*L*\[Eta]*\[CapitalNu]^2 + J*R*\[Eta]*\[CapitalNu]^2)^2]/
+             (2*L*(Jafter + J*\[Eta]*\[CapitalNu]^2)))*\[Tau]$18486)*L*\[Eta]*
+         \[CapitalNu]^2 - 
+        B*E^((-Bafter/(2*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+            (Jafter*R)/(2*L*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+            (B*\[Eta]*\[CapitalNu]^2)/(2*(Jafter + J*\[Eta]*\[CapitalNu]^
+                 2)) - (J*R*\[Eta]*\[CapitalNu]^2)/(2*L*(Jafter + J*\[Eta]*
+                \[CapitalNu]^2)) + Sqrt[-4*(Jafter*L + J*L*\[Eta]*
+                  \[CapitalNu]^2)*(Bafter*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + 
+                 B*R*\[Eta]*\[CapitalNu]^2) + (Bafter*L + Jafter*R + 
+                 B*L*\[Eta]*\[CapitalNu]^2 + J*R*\[Eta]*\[CapitalNu]^2)^2]/
+             (2*L*(Jafter + J*\[Eta]*\[CapitalNu]^2)))*\[Tau]$18486)*L*\[Eta]*
+         \[CapitalNu]^2 + 
+        E^((-Bafter/(2*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+            (Jafter*R)/(2*L*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+            (B*\[Eta]*\[CapitalNu]^2)/(2*(Jafter + J*\[Eta]*\[CapitalNu]^
+                 2)) - (J*R*\[Eta]*\[CapitalNu]^2)/(2*L*(Jafter + J*\[Eta]*
+                \[CapitalNu]^2)) - Sqrt[-4*(Jafter*L + J*L*\[Eta]*
+                  \[CapitalNu]^2)*(Bafter*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + 
+                 B*R*\[Eta]*\[CapitalNu]^2) + (Bafter*L + Jafter*R + 
+                 B*L*\[Eta]*\[CapitalNu]^2 + J*R*\[Eta]*\[CapitalNu]^2)^2]/
+             (2*L*(Jafter + J*\[Eta]*\[CapitalNu]^2)))*\[Tau]$18486)*J*R*
          \[Eta]*\[CapitalNu]^2 - 
-        2*E^((-Bout/(2*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-            (Jout*R)/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-            (B*\[Eta]*\[CapitalNu]^2)/(2*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-            (J*R*\[Eta]*\[CapitalNu]^2)/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^
-                 2)) + Sqrt[-4*(Jout*L + J*L*\[Eta]*\[CapitalNu]^2)*
-                (Bout*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + B*R*\[Eta]*
-                  \[CapitalNu]^2) + (Bout*L + Jout*R + B*L*\[Eta]*
-                  \[CapitalNu]^2 + J*R*\[Eta]*\[CapitalNu]^2)^2]/
-             (2*L*(Jout + J*\[Eta]*\[CapitalNu]^2)))*\[Tau]$11249)*Ke*Kt*L*
+        E^((-Bafter/(2*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+            (Jafter*R)/(2*L*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+            (B*\[Eta]*\[CapitalNu]^2)/(2*(Jafter + J*\[Eta]*\[CapitalNu]^
+                 2)) - (J*R*\[Eta]*\[CapitalNu]^2)/(2*L*(Jafter + J*\[Eta]*
+                \[CapitalNu]^2)) + Sqrt[-4*(Jafter*L + J*L*\[Eta]*
+                  \[CapitalNu]^2)*(Bafter*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + 
+                 B*R*\[Eta]*\[CapitalNu]^2) + (Bafter*L + Jafter*R + 
+                 B*L*\[Eta]*\[CapitalNu]^2 + J*R*\[Eta]*\[CapitalNu]^2)^2]/
+             (2*L*(Jafter + J*\[Eta]*\[CapitalNu]^2)))*\[Tau]$18486)*J*R*
          \[Eta]*\[CapitalNu]^2 + 
-        B*E^((-Bout/(2*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-            (Jout*R)/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-            (B*\[Eta]*\[CapitalNu]^2)/(2*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-            (J*R*\[Eta]*\[CapitalNu]^2)/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^
-                 2)) - Sqrt[-4*(Jout*L + J*L*\[Eta]*\[CapitalNu]^2)*
-                (Bout*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + B*R*\[Eta]*
-                  \[CapitalNu]^2) + (Bout*L + Jout*R + B*L*\[Eta]*
-                  \[CapitalNu]^2 + J*R*\[Eta]*\[CapitalNu]^2)^2]/
-             (2*L*(Jout + J*\[Eta]*\[CapitalNu]^2)))*\[Tau]$11249)*L*R*\[Eta]*
-         \[CapitalNu]^2 - B*E^((-Bout/(2*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-            (Jout*R)/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-            (B*\[Eta]*\[CapitalNu]^2)/(2*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-            (J*R*\[Eta]*\[CapitalNu]^2)/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^
-                 2)) + Sqrt[-4*(Jout*L + J*L*\[Eta]*\[CapitalNu]^2)*
-                (Bout*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + B*R*\[Eta]*
-                  \[CapitalNu]^2) + (Bout*L + Jout*R + B*L*\[Eta]*
-                  \[CapitalNu]^2 + J*R*\[Eta]*\[CapitalNu]^2)^2]/
-             (2*L*(Jout + J*\[Eta]*\[CapitalNu]^2)))*\[Tau]$11249)*L*R*\[Eta]*
-         \[CapitalNu]^2 - E^((-Bout/(2*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-            (Jout*R)/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-            (B*\[Eta]*\[CapitalNu]^2)/(2*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-            (J*R*\[Eta]*\[CapitalNu]^2)/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^
-                 2)) - Sqrt[-4*(Jout*L + J*L*\[Eta]*\[CapitalNu]^2)*
-                (Bout*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + B*R*\[Eta]*
-                  \[CapitalNu]^2) + (Bout*L + Jout*R + B*L*\[Eta]*
-                  \[CapitalNu]^2 + J*R*\[Eta]*\[CapitalNu]^2)^2]/
-             (2*L*(Jout + J*\[Eta]*\[CapitalNu]^2)))*\[Tau]$11249)*J*R^2*
-         \[Eta]*\[CapitalNu]^2 + 
-        E^((-Bout/(2*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-            (Jout*R)/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-            (B*\[Eta]*\[CapitalNu]^2)/(2*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-            (J*R*\[Eta]*\[CapitalNu]^2)/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^
-                 2)) + Sqrt[-4*(Jout*L + J*L*\[Eta]*\[CapitalNu]^2)*
-                (Bout*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + B*R*\[Eta]*
-                  \[CapitalNu]^2) + (Bout*L + Jout*R + B*L*\[Eta]*
-                  \[CapitalNu]^2 + J*R*\[Eta]*\[CapitalNu]^2)^2]/
-             (2*L*(Jout + J*\[Eta]*\[CapitalNu]^2)))*\[Tau]$11249)*J*R^2*
-         \[Eta]*\[CapitalNu]^2 + 
-        E^((-Bout/(2*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-            (Jout*R)/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-            (B*\[Eta]*\[CapitalNu]^2)/(2*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-            (J*R*\[Eta]*\[CapitalNu]^2)/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^
-                 2)) - Sqrt[-4*(Jout*L + J*L*\[Eta]*\[CapitalNu]^2)*
-                (Bout*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + B*R*\[Eta]*
-                  \[CapitalNu]^2) + (Bout*L + Jout*R + B*L*\[Eta]*
-                  \[CapitalNu]^2 + J*R*\[Eta]*\[CapitalNu]^2)^2]/
-             (2*L*(Jout + J*\[Eta]*\[CapitalNu]^2)))*\[Tau]$11249)*R*
-         Sqrt[-4*(Jout*L + J*L*\[Eta]*\[CapitalNu]^2)*(Bout*R + 
+        E^((-Bafter/(2*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+            (Jafter*R)/(2*L*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+            (B*\[Eta]*\[CapitalNu]^2)/(2*(Jafter + J*\[Eta]*\[CapitalNu]^
+                 2)) - (J*R*\[Eta]*\[CapitalNu]^2)/(2*L*(Jafter + J*\[Eta]*
+                \[CapitalNu]^2)) - Sqrt[-4*(Jafter*L + J*L*\[Eta]*
+                  \[CapitalNu]^2)*(Bafter*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + 
+                 B*R*\[Eta]*\[CapitalNu]^2) + (Bafter*L + Jafter*R + 
+                 B*L*\[Eta]*\[CapitalNu]^2 + J*R*\[Eta]*\[CapitalNu]^2)^2]/
+             (2*L*(Jafter + J*\[Eta]*\[CapitalNu]^2)))*\[Tau]$18486)*
+         Sqrt[-4*(Jafter*L + J*L*\[Eta]*\[CapitalNu]^2)*(Bafter*R + 
              Ke*Kt*\[Eta]*\[CapitalNu]^2 + B*R*\[Eta]*\[CapitalNu]^2) + 
-           (Bout*L + Jout*R + B*L*\[Eta]*\[CapitalNu]^2 + 
+           (Bafter*L + Jafter*R + B*L*\[Eta]*\[CapitalNu]^2 + 
              J*R*\[Eta]*\[CapitalNu]^2)^2] + 
-        E^((-Bout/(2*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-            (Jout*R)/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-            (B*\[Eta]*\[CapitalNu]^2)/(2*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-            (J*R*\[Eta]*\[CapitalNu]^2)/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^
-                 2)) + Sqrt[-4*(Jout*L + J*L*\[Eta]*\[CapitalNu]^2)*
-                (Bout*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + B*R*\[Eta]*
-                  \[CapitalNu]^2) + (Bout*L + Jout*R + B*L*\[Eta]*
-                  \[CapitalNu]^2 + J*R*\[Eta]*\[CapitalNu]^2)^2]/
-             (2*L*(Jout + J*\[Eta]*\[CapitalNu]^2)))*\[Tau]$11249)*R*
-         Sqrt[-4*(Jout*L + J*L*\[Eta]*\[CapitalNu]^2)*(Bout*R + 
+        E^((-Bafter/(2*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+            (Jafter*R)/(2*L*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+            (B*\[Eta]*\[CapitalNu]^2)/(2*(Jafter + J*\[Eta]*\[CapitalNu]^
+                 2)) - (J*R*\[Eta]*\[CapitalNu]^2)/(2*L*(Jafter + J*\[Eta]*
+                \[CapitalNu]^2)) + Sqrt[-4*(Jafter*L + J*L*\[Eta]*
+                  \[CapitalNu]^2)*(Bafter*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + 
+                 B*R*\[Eta]*\[CapitalNu]^2) + (Bafter*L + Jafter*R + 
+                 B*L*\[Eta]*\[CapitalNu]^2 + J*R*\[Eta]*\[CapitalNu]^2)^2]/
+             (2*L*(Jafter + J*\[Eta]*\[CapitalNu]^2)))*\[Tau]$18486)*
+         Sqrt[-4*(Jafter*L + J*L*\[Eta]*\[CapitalNu]^2)*(Bafter*R + 
              Ke*Kt*\[Eta]*\[CapitalNu]^2 + B*R*\[Eta]*\[CapitalNu]^2) + 
-           (Bout*L + Jout*R + B*L*\[Eta]*\[CapitalNu]^2 + 
-             J*R*\[Eta]*\[CapitalNu]^2)^2])/
-       (2*(Bout*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + B*R*\[Eta]*\[CapitalNu]^2)*
-        Sqrt[-4*(Jout*L + J*L*\[Eta]*\[CapitalNu]^2)*(Bout*R + 
+           (Bafter*L + Jafter*R + B*L*\[Eta]*\[CapitalNu]^2 + 
+             J*R*\[Eta]*\[CapitalNu]^2)^2]))/
+      (2*L*(Jafter + J*\[Eta]*\[CapitalNu]^2)*
+       Sqrt[-4*(Jafter*L + J*L*\[Eta]*\[CapitalNu]^2)*(Bafter*R + 
+           Ke*Kt*\[Eta]*\[CapitalNu]^2 + B*R*\[Eta]*\[CapitalNu]^2) + 
+         (Bafter*L + Jafter*R + B*L*\[Eta]*\[CapitalNu]^2 + 
+           J*R*\[Eta]*\[CapitalNu]^2)^2]), \[CapitalNu]*
+      ((-(Bafter^2*E^((-Bafter/(2*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+              (Jafter*R)/(2*L*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+              (B*\[Eta]*\[CapitalNu]^2)/(2*(Jafter + J*\[Eta]*\[CapitalNu]^
+                   2)) - (J*R*\[Eta]*\[CapitalNu]^2)/(2*L*(Jafter + 
+                 J*\[Eta]*\[CapitalNu]^2)) - Sqrt[-4*(Jafter*L + J*L*\[Eta]*
+                    \[CapitalNu]^2)*(Bafter*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + 
+                   B*R*\[Eta]*\[CapitalNu]^2) + (Bafter*L + Jafter*R + 
+                   B*L*\[Eta]*\[CapitalNu]^2 + J*R*\[Eta]*\[CapitalNu]^2)^2]/(
+                2*L*(Jafter + J*\[Eta]*\[CapitalNu]^2)))*\[Tau]$18486)*L) + 
+         Bafter^2*E^((-Bafter/(2*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+             (Jafter*R)/(2*L*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+             (B*\[Eta]*\[CapitalNu]^2)/(2*(Jafter + J*\[Eta]*\[CapitalNu]^
+                  2)) - (J*R*\[Eta]*\[CapitalNu]^2)/(2*L*(Jafter + 
+                J*\[Eta]*\[CapitalNu]^2)) + Sqrt[-4*(Jafter*L + J*L*\[Eta]*
+                   \[CapitalNu]^2)*(Bafter*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + 
+                  B*R*\[Eta]*\[CapitalNu]^2) + (Bafter*L + Jafter*R + 
+                  B*L*\[Eta]*\[CapitalNu]^2 + J*R*\[Eta]*\[CapitalNu]^2)^2]/
+              (2*L*(Jafter + J*\[Eta]*\[CapitalNu]^2)))*\[Tau]$18486)*L + 
+         Bafter*E^((-Bafter/(2*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+             (Jafter*R)/(2*L*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+             (B*\[Eta]*\[CapitalNu]^2)/(2*(Jafter + J*\[Eta]*\[CapitalNu]^
+                  2)) - (J*R*\[Eta]*\[CapitalNu]^2)/(2*L*(Jafter + 
+                J*\[Eta]*\[CapitalNu]^2)) - Sqrt[-4*(Jafter*L + J*L*\[Eta]*
+                   \[CapitalNu]^2)*(Bafter*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + 
+                  B*R*\[Eta]*\[CapitalNu]^2) + (Bafter*L + Jafter*R + 
+                  B*L*\[Eta]*\[CapitalNu]^2 + J*R*\[Eta]*\[CapitalNu]^2)^2]/
+              (2*L*(Jafter + J*\[Eta]*\[CapitalNu]^2)))*\[Tau]$18486)*Jafter*
+          R - Bafter*E^((-Bafter/(2*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+             (Jafter*R)/(2*L*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+             (B*\[Eta]*\[CapitalNu]^2)/(2*(Jafter + J*\[Eta]*\[CapitalNu]^
+                  2)) - (J*R*\[Eta]*\[CapitalNu]^2)/(2*L*(Jafter + 
+                J*\[Eta]*\[CapitalNu]^2)) + Sqrt[-4*(Jafter*L + J*L*\[Eta]*
+                   \[CapitalNu]^2)*(Bafter*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + 
+                  B*R*\[Eta]*\[CapitalNu]^2) + (Bafter*L + Jafter*R + 
+                  B*L*\[Eta]*\[CapitalNu]^2 + J*R*\[Eta]*\[CapitalNu]^2)^2]/
+              (2*L*(Jafter + J*\[Eta]*\[CapitalNu]^2)))*\[Tau]$18486)*Jafter*
+          R + 2*E^((-Bafter/(2*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+             (Jafter*R)/(2*L*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+             (B*\[Eta]*\[CapitalNu]^2)/(2*(Jafter + J*\[Eta]*\[CapitalNu]^
+                  2)) - (J*R*\[Eta]*\[CapitalNu]^2)/(2*L*(Jafter + 
+                J*\[Eta]*\[CapitalNu]^2)) - Sqrt[-4*(Jafter*L + J*L*\[Eta]*
+                   \[CapitalNu]^2)*(Bafter*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + 
+                  B*R*\[Eta]*\[CapitalNu]^2) + (Bafter*L + Jafter*R + 
+                  B*L*\[Eta]*\[CapitalNu]^2 + J*R*\[Eta]*\[CapitalNu]^2)^2]/
+              (2*L*(Jafter + J*\[Eta]*\[CapitalNu]^2)))*\[Tau]$18486)*Jafter*
+          Ke*Kt*\[Eta]*\[CapitalNu]^2 - 
+         2*E^((-Bafter/(2*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+             (Jafter*R)/(2*L*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+             (B*\[Eta]*\[CapitalNu]^2)/(2*(Jafter + J*\[Eta]*\[CapitalNu]^
+                  2)) - (J*R*\[Eta]*\[CapitalNu]^2)/(2*L*(Jafter + 
+                J*\[Eta]*\[CapitalNu]^2)) + Sqrt[-4*(Jafter*L + J*L*\[Eta]*
+                   \[CapitalNu]^2)*(Bafter*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + 
+                  B*R*\[Eta]*\[CapitalNu]^2) + (Bafter*L + Jafter*R + 
+                  B*L*\[Eta]*\[CapitalNu]^2 + J*R*\[Eta]*\[CapitalNu]^2)^2]/
+              (2*L*(Jafter + J*\[Eta]*\[CapitalNu]^2)))*\[Tau]$18486)*Jafter*
+          Ke*Kt*\[Eta]*\[CapitalNu]^2 - 2*B*Bafter*
+          E^((-Bafter/(2*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+             (Jafter*R)/(2*L*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+             (B*\[Eta]*\[CapitalNu]^2)/(2*(Jafter + J*\[Eta]*\[CapitalNu]^
+                  2)) - (J*R*\[Eta]*\[CapitalNu]^2)/(2*L*(Jafter + 
+                J*\[Eta]*\[CapitalNu]^2)) - Sqrt[-4*(Jafter*L + J*L*\[Eta]*
+                   \[CapitalNu]^2)*(Bafter*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + 
+                  B*R*\[Eta]*\[CapitalNu]^2) + (Bafter*L + Jafter*R + 
+                  B*L*\[Eta]*\[CapitalNu]^2 + J*R*\[Eta]*\[CapitalNu]^2)^2]/
+              (2*L*(Jafter + J*\[Eta]*\[CapitalNu]^2)))*\[Tau]$18486)*L*
+          \[Eta]*\[CapitalNu]^2 + 2*B*Bafter*
+          E^((-Bafter/(2*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+             (Jafter*R)/(2*L*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+             (B*\[Eta]*\[CapitalNu]^2)/(2*(Jafter + J*\[Eta]*\[CapitalNu]^
+                  2)) - (J*R*\[Eta]*\[CapitalNu]^2)/(2*L*(Jafter + 
+                J*\[Eta]*\[CapitalNu]^2)) + Sqrt[-4*(Jafter*L + J*L*\[Eta]*
+                   \[CapitalNu]^2)*(Bafter*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + 
+                  B*R*\[Eta]*\[CapitalNu]^2) + (Bafter*L + Jafter*R + 
+                  B*L*\[Eta]*\[CapitalNu]^2 + J*R*\[Eta]*\[CapitalNu]^2)^2]/
+              (2*L*(Jafter + J*\[Eta]*\[CapitalNu]^2)))*\[Tau]$18486)*L*
+          \[Eta]*\[CapitalNu]^2 + Bafter*
+          E^((-Bafter/(2*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+             (Jafter*R)/(2*L*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+             (B*\[Eta]*\[CapitalNu]^2)/(2*(Jafter + J*\[Eta]*\[CapitalNu]^
+                  2)) - (J*R*\[Eta]*\[CapitalNu]^2)/(2*L*(Jafter + 
+                J*\[Eta]*\[CapitalNu]^2)) - Sqrt[-4*(Jafter*L + J*L*\[Eta]*
+                   \[CapitalNu]^2)*(Bafter*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + 
+                  B*R*\[Eta]*\[CapitalNu]^2) + (Bafter*L + Jafter*R + 
+                  B*L*\[Eta]*\[CapitalNu]^2 + J*R*\[Eta]*\[CapitalNu]^2)^2]/
+              (2*L*(Jafter + J*\[Eta]*\[CapitalNu]^2)))*\[Tau]$18486)*J*R*
+          \[Eta]*\[CapitalNu]^2 - Bafter*
+          E^((-Bafter/(2*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+             (Jafter*R)/(2*L*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+             (B*\[Eta]*\[CapitalNu]^2)/(2*(Jafter + J*\[Eta]*\[CapitalNu]^
+                  2)) - (J*R*\[Eta]*\[CapitalNu]^2)/(2*L*(Jafter + 
+                J*\[Eta]*\[CapitalNu]^2)) + Sqrt[-4*(Jafter*L + J*L*\[Eta]*
+                   \[CapitalNu]^2)*(Bafter*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + 
+                  B*R*\[Eta]*\[CapitalNu]^2) + (Bafter*L + Jafter*R + 
+                  B*L*\[Eta]*\[CapitalNu]^2 + J*R*\[Eta]*\[CapitalNu]^2)^2]/
+              (2*L*(Jafter + J*\[Eta]*\[CapitalNu]^2)))*\[Tau]$18486)*J*R*
+          \[Eta]*\[CapitalNu]^2 + 
+         B*E^((-Bafter/(2*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+             (Jafter*R)/(2*L*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+             (B*\[Eta]*\[CapitalNu]^2)/(2*(Jafter + J*\[Eta]*\[CapitalNu]^
+                  2)) - (J*R*\[Eta]*\[CapitalNu]^2)/(2*L*(Jafter + 
+                J*\[Eta]*\[CapitalNu]^2)) - Sqrt[-4*(Jafter*L + J*L*\[Eta]*
+                   \[CapitalNu]^2)*(Bafter*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + 
+                  B*R*\[Eta]*\[CapitalNu]^2) + (Bafter*L + Jafter*R + 
+                  B*L*\[Eta]*\[CapitalNu]^2 + J*R*\[Eta]*\[CapitalNu]^2)^2]/
+              (2*L*(Jafter + J*\[Eta]*\[CapitalNu]^2)))*\[Tau]$18486)*Jafter*
+          R*\[Eta]*\[CapitalNu]^2 - 
+         B*E^((-Bafter/(2*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+             (Jafter*R)/(2*L*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+             (B*\[Eta]*\[CapitalNu]^2)/(2*(Jafter + J*\[Eta]*\[CapitalNu]^
+                  2)) - (J*R*\[Eta]*\[CapitalNu]^2)/(2*L*(Jafter + 
+                J*\[Eta]*\[CapitalNu]^2)) + Sqrt[-4*(Jafter*L + J*L*\[Eta]*
+                   \[CapitalNu]^2)*(Bafter*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + 
+                  B*R*\[Eta]*\[CapitalNu]^2) + (Bafter*L + Jafter*R + 
+                  B*L*\[Eta]*\[CapitalNu]^2 + J*R*\[Eta]*\[CapitalNu]^2)^2]/
+              (2*L*(Jafter + J*\[Eta]*\[CapitalNu]^2)))*\[Tau]$18486)*Jafter*
+          R*\[Eta]*\[CapitalNu]^2 + 
+         2*E^((-Bafter/(2*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+             (Jafter*R)/(2*L*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+             (B*\[Eta]*\[CapitalNu]^2)/(2*(Jafter + J*\[Eta]*\[CapitalNu]^
+                  2)) - (J*R*\[Eta]*\[CapitalNu]^2)/(2*L*(Jafter + 
+                J*\[Eta]*\[CapitalNu]^2)) - Sqrt[-4*(Jafter*L + J*L*\[Eta]*
+                   \[CapitalNu]^2)*(Bafter*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + 
+                  B*R*\[Eta]*\[CapitalNu]^2) + (Bafter*L + Jafter*R + 
+                  B*L*\[Eta]*\[CapitalNu]^2 + J*R*\[Eta]*\[CapitalNu]^2)^2]/
+              (2*L*(Jafter + J*\[Eta]*\[CapitalNu]^2)))*\[Tau]$18486)*J*Ke*Kt*
+          \[Eta]^2*\[CapitalNu]^4 - 
+         2*E^((-Bafter/(2*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+             (Jafter*R)/(2*L*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+             (B*\[Eta]*\[CapitalNu]^2)/(2*(Jafter + J*\[Eta]*\[CapitalNu]^
+                  2)) - (J*R*\[Eta]*\[CapitalNu]^2)/(2*L*(Jafter + 
+                J*\[Eta]*\[CapitalNu]^2)) + Sqrt[-4*(Jafter*L + J*L*\[Eta]*
+                   \[CapitalNu]^2)*(Bafter*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + 
+                  B*R*\[Eta]*\[CapitalNu]^2) + (Bafter*L + Jafter*R + 
+                  B*L*\[Eta]*\[CapitalNu]^2 + J*R*\[Eta]*\[CapitalNu]^2)^2]/
+              (2*L*(Jafter + J*\[Eta]*\[CapitalNu]^2)))*\[Tau]$18486)*J*Ke*Kt*
+          \[Eta]^2*\[CapitalNu]^4 - 
+         B^2*E^((-Bafter/(2*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+             (Jafter*R)/(2*L*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+             (B*\[Eta]*\[CapitalNu]^2)/(2*(Jafter + J*\[Eta]*\[CapitalNu]^
+                  2)) - (J*R*\[Eta]*\[CapitalNu]^2)/(2*L*(Jafter + 
+                J*\[Eta]*\[CapitalNu]^2)) - Sqrt[-4*(Jafter*L + J*L*\[Eta]*
+                   \[CapitalNu]^2)*(Bafter*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + 
+                  B*R*\[Eta]*\[CapitalNu]^2) + (Bafter*L + Jafter*R + 
+                  B*L*\[Eta]*\[CapitalNu]^2 + J*R*\[Eta]*\[CapitalNu]^2)^2]/
+              (2*L*(Jafter + J*\[Eta]*\[CapitalNu]^2)))*\[Tau]$18486)*L*
+          \[Eta]^2*\[CapitalNu]^4 + 
+         B^2*E^((-Bafter/(2*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+             (Jafter*R)/(2*L*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+             (B*\[Eta]*\[CapitalNu]^2)/(2*(Jafter + J*\[Eta]*\[CapitalNu]^
+                  2)) - (J*R*\[Eta]*\[CapitalNu]^2)/(2*L*(Jafter + 
+                J*\[Eta]*\[CapitalNu]^2)) + Sqrt[-4*(Jafter*L + J*L*\[Eta]*
+                   \[CapitalNu]^2)*(Bafter*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + 
+                  B*R*\[Eta]*\[CapitalNu]^2) + (Bafter*L + Jafter*R + 
+                  B*L*\[Eta]*\[CapitalNu]^2 + J*R*\[Eta]*\[CapitalNu]^2)^2]/
+              (2*L*(Jafter + J*\[Eta]*\[CapitalNu]^2)))*\[Tau]$18486)*L*
+          \[Eta]^2*\[CapitalNu]^4 + 
+         B*E^((-Bafter/(2*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+             (Jafter*R)/(2*L*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+             (B*\[Eta]*\[CapitalNu]^2)/(2*(Jafter + J*\[Eta]*\[CapitalNu]^
+                  2)) - (J*R*\[Eta]*\[CapitalNu]^2)/(2*L*(Jafter + 
+                J*\[Eta]*\[CapitalNu]^2)) - Sqrt[-4*(Jafter*L + J*L*\[Eta]*
+                   \[CapitalNu]^2)*(Bafter*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + 
+                  B*R*\[Eta]*\[CapitalNu]^2) + (Bafter*L + Jafter*R + 
+                  B*L*\[Eta]*\[CapitalNu]^2 + J*R*\[Eta]*\[CapitalNu]^2)^2]/
+              (2*L*(Jafter + J*\[Eta]*\[CapitalNu]^2)))*\[Tau]$18486)*J*R*
+          \[Eta]^2*\[CapitalNu]^4 - 
+         B*E^((-Bafter/(2*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+             (Jafter*R)/(2*L*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+             (B*\[Eta]*\[CapitalNu]^2)/(2*(Jafter + J*\[Eta]*\[CapitalNu]^
+                  2)) - (J*R*\[Eta]*\[CapitalNu]^2)/(2*L*(Jafter + 
+                J*\[Eta]*\[CapitalNu]^2)) + Sqrt[-4*(Jafter*L + J*L*\[Eta]*
+                   \[CapitalNu]^2)*(Bafter*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + 
+                  B*R*\[Eta]*\[CapitalNu]^2) + (Bafter*L + Jafter*R + 
+                  B*L*\[Eta]*\[CapitalNu]^2 + J*R*\[Eta]*\[CapitalNu]^2)^2]/
+              (2*L*(Jafter + J*\[Eta]*\[CapitalNu]^2)))*\[Tau]$18486)*J*R*
+          \[Eta]^2*\[CapitalNu]^4 - Bafter*
+          E^((-Bafter/(2*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+             (Jafter*R)/(2*L*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+             (B*\[Eta]*\[CapitalNu]^2)/(2*(Jafter + J*\[Eta]*\[CapitalNu]^
+                  2)) - (J*R*\[Eta]*\[CapitalNu]^2)/(2*L*(Jafter + 
+                J*\[Eta]*\[CapitalNu]^2)) - Sqrt[-4*(Jafter*L + J*L*\[Eta]*
+                   \[CapitalNu]^2)*(Bafter*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + 
+                  B*R*\[Eta]*\[CapitalNu]^2) + (Bafter*L + Jafter*R + 
+                  B*L*\[Eta]*\[CapitalNu]^2 + J*R*\[Eta]*\[CapitalNu]^2)^2]/
+              (2*L*(Jafter + J*\[Eta]*\[CapitalNu]^2)))*\[Tau]$18486)*
+          Sqrt[-4*(Jafter*L + J*L*\[Eta]*\[CapitalNu]^2)*(Bafter*R + 
+              Ke*Kt*\[Eta]*\[CapitalNu]^2 + B*R*\[Eta]*\[CapitalNu]^2) + 
+            (Bafter*L + Jafter*R + B*L*\[Eta]*\[CapitalNu]^2 + 
+              J*R*\[Eta]*\[CapitalNu]^2)^2] - 
+         Bafter*E^((-Bafter/(2*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+             (Jafter*R)/(2*L*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+             (B*\[Eta]*\[CapitalNu]^2)/(2*(Jafter + J*\[Eta]*\[CapitalNu]^
+                  2)) - (J*R*\[Eta]*\[CapitalNu]^2)/(2*L*(Jafter + 
+                J*\[Eta]*\[CapitalNu]^2)) + Sqrt[-4*(Jafter*L + J*L*\[Eta]*
+                   \[CapitalNu]^2)*(Bafter*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + 
+                  B*R*\[Eta]*\[CapitalNu]^2) + (Bafter*L + Jafter*R + 
+                  B*L*\[Eta]*\[CapitalNu]^2 + J*R*\[Eta]*\[CapitalNu]^2)^2]/
+              (2*L*(Jafter + J*\[Eta]*\[CapitalNu]^2)))*\[Tau]$18486)*
+          Sqrt[-4*(Jafter*L + J*L*\[Eta]*\[CapitalNu]^2)*(Bafter*R + 
+              Ke*Kt*\[Eta]*\[CapitalNu]^2 + B*R*\[Eta]*\[CapitalNu]^2) + 
+            (Bafter*L + Jafter*R + B*L*\[Eta]*\[CapitalNu]^2 + 
+              J*R*\[Eta]*\[CapitalNu]^2)^2] - 
+         B*E^((-Bafter/(2*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+             (Jafter*R)/(2*L*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+             (B*\[Eta]*\[CapitalNu]^2)/(2*(Jafter + J*\[Eta]*\[CapitalNu]^
+                  2)) - (J*R*\[Eta]*\[CapitalNu]^2)/(2*L*(Jafter + 
+                J*\[Eta]*\[CapitalNu]^2)) - Sqrt[-4*(Jafter*L + J*L*\[Eta]*
+                   \[CapitalNu]^2)*(Bafter*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + 
+                  B*R*\[Eta]*\[CapitalNu]^2) + (Bafter*L + Jafter*R + 
+                  B*L*\[Eta]*\[CapitalNu]^2 + J*R*\[Eta]*\[CapitalNu]^2)^2]/
+              (2*L*(Jafter + J*\[Eta]*\[CapitalNu]^2)))*\[Tau]$18486)*\[Eta]*
+          \[CapitalNu]^2*Sqrt[-4*(Jafter*L + J*L*\[Eta]*\[CapitalNu]^2)*
+             (Bafter*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + B*R*\[Eta]*
+               \[CapitalNu]^2) + (Bafter*L + Jafter*R + B*L*\[Eta]*
+               \[CapitalNu]^2 + J*R*\[Eta]*\[CapitalNu]^2)^2] - 
+         B*E^((-Bafter/(2*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+             (Jafter*R)/(2*L*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+             (B*\[Eta]*\[CapitalNu]^2)/(2*(Jafter + J*\[Eta]*\[CapitalNu]^
+                  2)) - (J*R*\[Eta]*\[CapitalNu]^2)/(2*L*(Jafter + 
+                J*\[Eta]*\[CapitalNu]^2)) + Sqrt[-4*(Jafter*L + J*L*\[Eta]*
+                   \[CapitalNu]^2)*(Bafter*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + 
+                  B*R*\[Eta]*\[CapitalNu]^2) + (Bafter*L + Jafter*R + 
+                  B*L*\[Eta]*\[CapitalNu]^2 + J*R*\[Eta]*\[CapitalNu]^2)^2]/
+              (2*L*(Jafter + J*\[Eta]*\[CapitalNu]^2)))*\[Tau]$18486)*\[Eta]*
+          \[CapitalNu]^2*Sqrt[-4*(Jafter*L + J*L*\[Eta]*\[CapitalNu]^2)*
+             (Bafter*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + B*R*\[Eta]*
+               \[CapitalNu]^2) + (Bafter*L + Jafter*R + B*L*\[Eta]*
+               \[CapitalNu]^2 + J*R*\[Eta]*\[CapitalNu]^2)^2])/
+        (2*(Jafter + J*\[Eta]*\[CapitalNu]^2)^2*
+         Sqrt[-4*(Jafter*L + J*L*\[Eta]*\[CapitalNu]^2)*(Bafter*R + 
+             Ke*Kt*\[Eta]*\[CapitalNu]^2 + B*R*\[Eta]*\[CapitalNu]^2) + 
+           (Bafter*L + Jafter*R + B*L*\[Eta]*\[CapitalNu]^2 + 
+             J*R*\[Eta]*\[CapitalNu]^2)^2]) + DiracDelta[\[Tau]$18486]/
+        (Jafter + J*\[Eta]*\[CapitalNu]^2))}
+ 
+Attributes[\[Tau]$18486] = {Temporary}
+ 
+motorCurrentConstvapp = Function[{t$}, Module[{convolutions$}, 
+      convolutions$ = (convolve[modelExpr$18558[[#1]], 
+           {(vbat & )[#1] & , (0 & )[#1] & }[[#1]][\[Tau]$18558], 
+           \[Tau]$18558, t$] & ) /@ Range[1, Length[{(vbat & )[#1] & , 
+            (0 & )[#1] & }]]; {Total[convolutions$]}]]
+ 
+Attributes[modelExpr$18558] = {Temporary}
+ 
+modelExpr$18558 = 
+    {(-(Bafter*E^((-Bafter/(2*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+            (Jafter*R)/(2*L*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+            (B*\[Eta]*\[CapitalNu]^2)/(2*(Jafter + J*\[Eta]*\[CapitalNu]^
+                 2)) - (J*R*\[Eta]*\[CapitalNu]^2)/(2*L*(Jafter + J*\[Eta]*
+                \[CapitalNu]^2)) - Sqrt[-4*(Jafter*L + J*L*\[Eta]*
+                  \[CapitalNu]^2)*(Bafter*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + 
+                 B*R*\[Eta]*\[CapitalNu]^2) + (Bafter*L + Jafter*R + 
+                 B*L*\[Eta]*\[CapitalNu]^2 + J*R*\[Eta]*\[CapitalNu]^2)^2]/
+             (2*L*(Jafter + J*\[Eta]*\[CapitalNu]^2)))*\[Tau]$18558)*L) + 
+       Bafter*E^((-Bafter/(2*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+           (Jafter*R)/(2*L*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+           (B*\[Eta]*\[CapitalNu]^2)/(2*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+           (J*R*\[Eta]*\[CapitalNu]^2)/(2*L*(Jafter + J*\[Eta]*\[CapitalNu]^
+                2)) + Sqrt[-4*(Jafter*L + J*L*\[Eta]*\[CapitalNu]^2)*(
+                Bafter*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + B*R*\[Eta]*
+                 \[CapitalNu]^2) + (Bafter*L + Jafter*R + B*L*\[Eta]*
+                 \[CapitalNu]^2 + J*R*\[Eta]*\[CapitalNu]^2)^2]/
+            (2*L*(Jafter + J*\[Eta]*\[CapitalNu]^2)))*\[Tau]$18558)*L + 
+       E^((-Bafter/(2*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+           (Jafter*R)/(2*L*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+           (B*\[Eta]*\[CapitalNu]^2)/(2*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+           (J*R*\[Eta]*\[CapitalNu]^2)/(2*L*(Jafter + J*\[Eta]*\[CapitalNu]^
+                2)) - Sqrt[-4*(Jafter*L + J*L*\[Eta]*\[CapitalNu]^2)*(
+                Bafter*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + B*R*\[Eta]*
+                 \[CapitalNu]^2) + (Bafter*L + Jafter*R + B*L*\[Eta]*
+                 \[CapitalNu]^2 + J*R*\[Eta]*\[CapitalNu]^2)^2]/
+            (2*L*(Jafter + J*\[Eta]*\[CapitalNu]^2)))*\[Tau]$18558)*Jafter*
+        R - E^((-Bafter/(2*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+           (Jafter*R)/(2*L*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+           (B*\[Eta]*\[CapitalNu]^2)/(2*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+           (J*R*\[Eta]*\[CapitalNu]^2)/(2*L*(Jafter + J*\[Eta]*\[CapitalNu]^
+                2)) + Sqrt[-4*(Jafter*L + J*L*\[Eta]*\[CapitalNu]^2)*(
+                Bafter*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + B*R*\[Eta]*
+                 \[CapitalNu]^2) + (Bafter*L + Jafter*R + B*L*\[Eta]*
+                 \[CapitalNu]^2 + J*R*\[Eta]*\[CapitalNu]^2)^2]/
+            (2*L*(Jafter + J*\[Eta]*\[CapitalNu]^2)))*\[Tau]$18558)*Jafter*
+        R - B*E^((-Bafter/(2*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+           (Jafter*R)/(2*L*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+           (B*\[Eta]*\[CapitalNu]^2)/(2*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+           (J*R*\[Eta]*\[CapitalNu]^2)/(2*L*(Jafter + J*\[Eta]*\[CapitalNu]^
+                2)) - Sqrt[-4*(Jafter*L + J*L*\[Eta]*\[CapitalNu]^2)*(
+                Bafter*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + B*R*\[Eta]*
+                 \[CapitalNu]^2) + (Bafter*L + Jafter*R + B*L*\[Eta]*
+                 \[CapitalNu]^2 + J*R*\[Eta]*\[CapitalNu]^2)^2]/
+            (2*L*(Jafter + J*\[Eta]*\[CapitalNu]^2)))*\[Tau]$18558)*L*\[Eta]*
+        \[CapitalNu]^2 + 
+       B*E^((-Bafter/(2*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+           (Jafter*R)/(2*L*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+           (B*\[Eta]*\[CapitalNu]^2)/(2*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+           (J*R*\[Eta]*\[CapitalNu]^2)/(2*L*(Jafter + J*\[Eta]*\[CapitalNu]^
+                2)) + Sqrt[-4*(Jafter*L + J*L*\[Eta]*\[CapitalNu]^2)*(
+                Bafter*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + B*R*\[Eta]*
+                 \[CapitalNu]^2) + (Bafter*L + Jafter*R + B*L*\[Eta]*
+                 \[CapitalNu]^2 + J*R*\[Eta]*\[CapitalNu]^2)^2]/
+            (2*L*(Jafter + J*\[Eta]*\[CapitalNu]^2)))*\[Tau]$18558)*L*\[Eta]*
+        \[CapitalNu]^2 + E^((-Bafter/(2*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+           (Jafter*R)/(2*L*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+           (B*\[Eta]*\[CapitalNu]^2)/(2*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+           (J*R*\[Eta]*\[CapitalNu]^2)/(2*L*(Jafter + J*\[Eta]*\[CapitalNu]^
+                2)) - Sqrt[-4*(Jafter*L + J*L*\[Eta]*\[CapitalNu]^2)*(
+                Bafter*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + B*R*\[Eta]*
+                 \[CapitalNu]^2) + (Bafter*L + Jafter*R + B*L*\[Eta]*
+                 \[CapitalNu]^2 + J*R*\[Eta]*\[CapitalNu]^2)^2]/
+            (2*L*(Jafter + J*\[Eta]*\[CapitalNu]^2)))*\[Tau]$18558)*J*R*
+        \[Eta]*\[CapitalNu]^2 - 
+       E^((-Bafter/(2*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+           (Jafter*R)/(2*L*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+           (B*\[Eta]*\[CapitalNu]^2)/(2*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+           (J*R*\[Eta]*\[CapitalNu]^2)/(2*L*(Jafter + J*\[Eta]*\[CapitalNu]^
+                2)) + Sqrt[-4*(Jafter*L + J*L*\[Eta]*\[CapitalNu]^2)*(
+                Bafter*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + B*R*\[Eta]*
+                 \[CapitalNu]^2) + (Bafter*L + Jafter*R + B*L*\[Eta]*
+                 \[CapitalNu]^2 + J*R*\[Eta]*\[CapitalNu]^2)^2]/
+            (2*L*(Jafter + J*\[Eta]*\[CapitalNu]^2)))*\[Tau]$18558)*J*R*
+        \[Eta]*\[CapitalNu]^2 + 
+       E^((-Bafter/(2*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+           (Jafter*R)/(2*L*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+           (B*\[Eta]*\[CapitalNu]^2)/(2*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+           (J*R*\[Eta]*\[CapitalNu]^2)/(2*L*(Jafter + J*\[Eta]*\[CapitalNu]^
+                2)) - Sqrt[-4*(Jafter*L + J*L*\[Eta]*\[CapitalNu]^2)*(
+                Bafter*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + B*R*\[Eta]*
+                 \[CapitalNu]^2) + (Bafter*L + Jafter*R + B*L*\[Eta]*
+                 \[CapitalNu]^2 + J*R*\[Eta]*\[CapitalNu]^2)^2]/
+            (2*L*(Jafter + J*\[Eta]*\[CapitalNu]^2)))*\[Tau]$18558)*
+        Sqrt[-4*(Jafter*L + J*L*\[Eta]*\[CapitalNu]^2)*(Bafter*R + 
             Ke*Kt*\[Eta]*\[CapitalNu]^2 + B*R*\[Eta]*\[CapitalNu]^2) + 
-          (Bout*L + Jout*R + B*L*\[Eta]*\[CapitalNu]^2 + 
+          (Bafter*L + Jafter*R + B*L*\[Eta]*\[CapitalNu]^2 + 
+            J*R*\[Eta]*\[CapitalNu]^2)^2] + 
+       E^((-Bafter/(2*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+           (Jafter*R)/(2*L*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+           (B*\[Eta]*\[CapitalNu]^2)/(2*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+           (J*R*\[Eta]*\[CapitalNu]^2)/(2*L*(Jafter + J*\[Eta]*\[CapitalNu]^
+                2)) + Sqrt[-4*(Jafter*L + J*L*\[Eta]*\[CapitalNu]^2)*(
+                Bafter*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + B*R*\[Eta]*
+                 \[CapitalNu]^2) + (Bafter*L + Jafter*R + B*L*\[Eta]*
+                 \[CapitalNu]^2 + J*R*\[Eta]*\[CapitalNu]^2)^2]/
+            (2*L*(Jafter + J*\[Eta]*\[CapitalNu]^2)))*\[Tau]$18558)*
+        Sqrt[-4*(Jafter*L + J*L*\[Eta]*\[CapitalNu]^2)*(Bafter*R + 
+            Ke*Kt*\[Eta]*\[CapitalNu]^2 + B*R*\[Eta]*\[CapitalNu]^2) + 
+          (Bafter*L + Jafter*R + B*L*\[Eta]*\[CapitalNu]^2 + 
+            J*R*\[Eta]*\[CapitalNu]^2)^2])/
+      (2*L*Sqrt[-4*(Jafter*L + J*L*\[Eta]*\[CapitalNu]^2)*
+          (Bafter*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + B*R*\[Eta]*
+            \[CapitalNu]^2) + (Bafter*L + Jafter*R + B*L*\[Eta]*
+            \[CapitalNu]^2 + J*R*\[Eta]*\[CapitalNu]^2)^2]), 
+     ((E^((-Bafter/(2*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+           (Jafter*R)/(2*L*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+           (B*\[Eta]*\[CapitalNu]^2)/(2*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+           (J*R*\[Eta]*\[CapitalNu]^2)/(2*L*(Jafter + J*\[Eta]*\[CapitalNu]^
+                2)) - Sqrt[-4*(Jafter*L + J*L*\[Eta]*\[CapitalNu]^2)*(
+                Bafter*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + B*R*\[Eta]*
+                 \[CapitalNu]^2) + (Bafter*L + Jafter*R + B*L*\[Eta]*
+                 \[CapitalNu]^2 + J*R*\[Eta]*\[CapitalNu]^2)^2]/
+            (2*L*(Jafter + J*\[Eta]*\[CapitalNu]^2)))*\[Tau]$18558) - 
+        E^((-Bafter/(2*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+           (Jafter*R)/(2*L*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+           (B*\[Eta]*\[CapitalNu]^2)/(2*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+           (J*R*\[Eta]*\[CapitalNu]^2)/(2*L*(Jafter + J*\[Eta]*\[CapitalNu]^
+                2)) + Sqrt[-4*(Jafter*L + J*L*\[Eta]*\[CapitalNu]^2)*(
+                Bafter*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + B*R*\[Eta]*
+                 \[CapitalNu]^2) + (Bafter*L + Jafter*R + B*L*\[Eta]*
+                 \[CapitalNu]^2 + J*R*\[Eta]*\[CapitalNu]^2)^2]/
+            (2*L*(Jafter + J*\[Eta]*\[CapitalNu]^2)))*\[Tau]$18558))*Ke*
+       \[CapitalNu])/Sqrt[-4*(Jafter*L + J*L*\[Eta]*\[CapitalNu]^2)*
+         (Bafter*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + B*R*\[Eta]*
+           \[CapitalNu]^2) + (Bafter*L + Jafter*R + B*L*\[Eta]*
+           \[CapitalNu]^2 + J*R*\[Eta]*\[CapitalNu]^2)^2]}
+ 
+Attributes[\[Tau]$18558] = {Temporary}
+ 
+motorEMFConstvapp = Function[{t$}, Module[{convolutions$}, 
+      convolutions$ = (convolve[modelExpr$18628[[#1]], 
+           {(vbat & )[#1] & , (0 & )[#1] & }[[#1]][\[Tau]$18628], 
+           \[Tau]$18628, t$] & ) /@ Range[1, Length[{(vbat & )[#1] & , 
+            (0 & )[#1] & }]]; {Total[convolutions$]}]]
+ 
+Attributes[modelExpr$18628] = {Temporary}
+ 
+modelExpr$18628 = 
+    {-(((E^((-Bafter/(2*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+            (Jafter*R)/(2*L*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+            (B*\[Eta]*\[CapitalNu]^2)/(2*(Jafter + J*\[Eta]*\[CapitalNu]^
+                 2)) - (J*R*\[Eta]*\[CapitalNu]^2)/(2*L*(Jafter + J*\[Eta]*
+                \[CapitalNu]^2)) - Sqrt[-4*(Jafter*L + J*L*\[Eta]*
+                  \[CapitalNu]^2)*(Bafter*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + 
+                 B*R*\[Eta]*\[CapitalNu]^2) + (Bafter*L + Jafter*R + 
+                 B*L*\[Eta]*\[CapitalNu]^2 + J*R*\[Eta]*\[CapitalNu]^2)^2]/
+             (2*L*(Jafter + J*\[Eta]*\[CapitalNu]^2)))*\[Tau]$18628) - 
+         E^((-Bafter/(2*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+            (Jafter*R)/(2*L*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+            (B*\[Eta]*\[CapitalNu]^2)/(2*(Jafter + J*\[Eta]*\[CapitalNu]^
+                 2)) - (J*R*\[Eta]*\[CapitalNu]^2)/(2*L*(Jafter + J*\[Eta]*
+                \[CapitalNu]^2)) + Sqrt[-4*(Jafter*L + J*L*\[Eta]*
+                  \[CapitalNu]^2)*(Bafter*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + 
+                 B*R*\[Eta]*\[CapitalNu]^2) + (Bafter*L + Jafter*R + 
+                 B*L*\[Eta]*\[CapitalNu]^2 + J*R*\[Eta]*\[CapitalNu]^2)^2]/
+             (2*L*(Jafter + J*\[Eta]*\[CapitalNu]^2)))*\[Tau]$18628))*Ke*Kt*
+        \[Eta]*\[CapitalNu]^2)/Sqrt[-4*(Jafter*L + J*L*\[Eta]*\[CapitalNu]^2)*
+          (Bafter*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + B*R*\[Eta]*
+            \[CapitalNu]^2) + (Bafter*L + Jafter*R + B*L*\[Eta]*
+            \[CapitalNu]^2 + J*R*\[Eta]*\[CapitalNu]^2)^2]), 
+     (Ke*\[CapitalNu]*
+       (Bafter*E^((-Bafter/(2*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+            (Jafter*R)/(2*L*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+            (B*\[Eta]*\[CapitalNu]^2)/(2*(Jafter + J*\[Eta]*\[CapitalNu]^
+                 2)) - (J*R*\[Eta]*\[CapitalNu]^2)/(2*L*(Jafter + J*\[Eta]*
+                \[CapitalNu]^2)) - Sqrt[-4*(Jafter*L + J*L*\[Eta]*
+                  \[CapitalNu]^2)*(Bafter*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + 
+                 B*R*\[Eta]*\[CapitalNu]^2) + (Bafter*L + Jafter*R + 
+                 B*L*\[Eta]*\[CapitalNu]^2 + J*R*\[Eta]*\[CapitalNu]^2)^2]/
+             (2*L*(Jafter + J*\[Eta]*\[CapitalNu]^2)))*\[Tau]$18628)*L - 
+        Bafter*E^((-Bafter/(2*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+            (Jafter*R)/(2*L*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+            (B*\[Eta]*\[CapitalNu]^2)/(2*(Jafter + J*\[Eta]*\[CapitalNu]^
+                 2)) - (J*R*\[Eta]*\[CapitalNu]^2)/(2*L*(Jafter + J*\[Eta]*
+                \[CapitalNu]^2)) + Sqrt[-4*(Jafter*L + J*L*\[Eta]*
+                  \[CapitalNu]^2)*(Bafter*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + 
+                 B*R*\[Eta]*\[CapitalNu]^2) + (Bafter*L + Jafter*R + 
+                 B*L*\[Eta]*\[CapitalNu]^2 + J*R*\[Eta]*\[CapitalNu]^2)^2]/
+             (2*L*(Jafter + J*\[Eta]*\[CapitalNu]^2)))*\[Tau]$18628)*L - 
+        E^((-Bafter/(2*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+            (Jafter*R)/(2*L*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+            (B*\[Eta]*\[CapitalNu]^2)/(2*(Jafter + J*\[Eta]*\[CapitalNu]^
+                 2)) - (J*R*\[Eta]*\[CapitalNu]^2)/(2*L*(Jafter + J*\[Eta]*
+                \[CapitalNu]^2)) - Sqrt[-4*(Jafter*L + J*L*\[Eta]*
+                  \[CapitalNu]^2)*(Bafter*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + 
+                 B*R*\[Eta]*\[CapitalNu]^2) + (Bafter*L + Jafter*R + 
+                 B*L*\[Eta]*\[CapitalNu]^2 + J*R*\[Eta]*\[CapitalNu]^2)^2]/
+             (2*L*(Jafter + J*\[Eta]*\[CapitalNu]^2)))*\[Tau]$18628)*Jafter*
+         R + E^((-Bafter/(2*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+            (Jafter*R)/(2*L*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+            (B*\[Eta]*\[CapitalNu]^2)/(2*(Jafter + J*\[Eta]*\[CapitalNu]^
+                 2)) - (J*R*\[Eta]*\[CapitalNu]^2)/(2*L*(Jafter + J*\[Eta]*
+                \[CapitalNu]^2)) + Sqrt[-4*(Jafter*L + J*L*\[Eta]*
+                  \[CapitalNu]^2)*(Bafter*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + 
+                 B*R*\[Eta]*\[CapitalNu]^2) + (Bafter*L + Jafter*R + 
+                 B*L*\[Eta]*\[CapitalNu]^2 + J*R*\[Eta]*\[CapitalNu]^2)^2]/
+             (2*L*(Jafter + J*\[Eta]*\[CapitalNu]^2)))*\[Tau]$18628)*Jafter*
+         R + B*E^((-Bafter/(2*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+            (Jafter*R)/(2*L*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+            (B*\[Eta]*\[CapitalNu]^2)/(2*(Jafter + J*\[Eta]*\[CapitalNu]^
+                 2)) - (J*R*\[Eta]*\[CapitalNu]^2)/(2*L*(Jafter + J*\[Eta]*
+                \[CapitalNu]^2)) - Sqrt[-4*(Jafter*L + J*L*\[Eta]*
+                  \[CapitalNu]^2)*(Bafter*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + 
+                 B*R*\[Eta]*\[CapitalNu]^2) + (Bafter*L + Jafter*R + 
+                 B*L*\[Eta]*\[CapitalNu]^2 + J*R*\[Eta]*\[CapitalNu]^2)^2]/
+             (2*L*(Jafter + J*\[Eta]*\[CapitalNu]^2)))*\[Tau]$18628)*L*\[Eta]*
+         \[CapitalNu]^2 - 
+        B*E^((-Bafter/(2*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+            (Jafter*R)/(2*L*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+            (B*\[Eta]*\[CapitalNu]^2)/(2*(Jafter + J*\[Eta]*\[CapitalNu]^
+                 2)) - (J*R*\[Eta]*\[CapitalNu]^2)/(2*L*(Jafter + J*\[Eta]*
+                \[CapitalNu]^2)) + Sqrt[-4*(Jafter*L + J*L*\[Eta]*
+                  \[CapitalNu]^2)*(Bafter*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + 
+                 B*R*\[Eta]*\[CapitalNu]^2) + (Bafter*L + Jafter*R + 
+                 B*L*\[Eta]*\[CapitalNu]^2 + J*R*\[Eta]*\[CapitalNu]^2)^2]/
+             (2*L*(Jafter + J*\[Eta]*\[CapitalNu]^2)))*\[Tau]$18628)*L*\[Eta]*
+         \[CapitalNu]^2 - 
+        E^((-Bafter/(2*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+            (Jafter*R)/(2*L*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+            (B*\[Eta]*\[CapitalNu]^2)/(2*(Jafter + J*\[Eta]*\[CapitalNu]^
+                 2)) - (J*R*\[Eta]*\[CapitalNu]^2)/(2*L*(Jafter + J*\[Eta]*
+                \[CapitalNu]^2)) - Sqrt[-4*(Jafter*L + J*L*\[Eta]*
+                  \[CapitalNu]^2)*(Bafter*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + 
+                 B*R*\[Eta]*\[CapitalNu]^2) + (Bafter*L + Jafter*R + 
+                 B*L*\[Eta]*\[CapitalNu]^2 + J*R*\[Eta]*\[CapitalNu]^2)^2]/
+             (2*L*(Jafter + J*\[Eta]*\[CapitalNu]^2)))*\[Tau]$18628)*J*R*
+         \[Eta]*\[CapitalNu]^2 + 
+        E^((-Bafter/(2*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+            (Jafter*R)/(2*L*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+            (B*\[Eta]*\[CapitalNu]^2)/(2*(Jafter + J*\[Eta]*\[CapitalNu]^
+                 2)) - (J*R*\[Eta]*\[CapitalNu]^2)/(2*L*(Jafter + J*\[Eta]*
+                \[CapitalNu]^2)) + Sqrt[-4*(Jafter*L + J*L*\[Eta]*
+                  \[CapitalNu]^2)*(Bafter*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + 
+                 B*R*\[Eta]*\[CapitalNu]^2) + (Bafter*L + Jafter*R + 
+                 B*L*\[Eta]*\[CapitalNu]^2 + J*R*\[Eta]*\[CapitalNu]^2)^2]/
+             (2*L*(Jafter + J*\[Eta]*\[CapitalNu]^2)))*\[Tau]$18628)*J*R*
+         \[Eta]*\[CapitalNu]^2 + 
+        E^((-Bafter/(2*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+            (Jafter*R)/(2*L*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+            (B*\[Eta]*\[CapitalNu]^2)/(2*(Jafter + J*\[Eta]*\[CapitalNu]^
+                 2)) - (J*R*\[Eta]*\[CapitalNu]^2)/(2*L*(Jafter + J*\[Eta]*
+                \[CapitalNu]^2)) - Sqrt[-4*(Jafter*L + J*L*\[Eta]*
+                  \[CapitalNu]^2)*(Bafter*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + 
+                 B*R*\[Eta]*\[CapitalNu]^2) + (Bafter*L + Jafter*R + 
+                 B*L*\[Eta]*\[CapitalNu]^2 + J*R*\[Eta]*\[CapitalNu]^2)^2]/
+             (2*L*(Jafter + J*\[Eta]*\[CapitalNu]^2)))*\[Tau]$18628)*
+         Sqrt[-4*(Jafter*L + J*L*\[Eta]*\[CapitalNu]^2)*(Bafter*R + 
+             Ke*Kt*\[Eta]*\[CapitalNu]^2 + B*R*\[Eta]*\[CapitalNu]^2) + 
+           (Bafter*L + Jafter*R + B*L*\[Eta]*\[CapitalNu]^2 + 
+             J*R*\[Eta]*\[CapitalNu]^2)^2] + 
+        E^((-Bafter/(2*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+            (Jafter*R)/(2*L*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+            (B*\[Eta]*\[CapitalNu]^2)/(2*(Jafter + J*\[Eta]*\[CapitalNu]^
+                 2)) - (J*R*\[Eta]*\[CapitalNu]^2)/(2*L*(Jafter + J*\[Eta]*
+                \[CapitalNu]^2)) + Sqrt[-4*(Jafter*L + J*L*\[Eta]*
+                  \[CapitalNu]^2)*(Bafter*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + 
+                 B*R*\[Eta]*\[CapitalNu]^2) + (Bafter*L + Jafter*R + 
+                 B*L*\[Eta]*\[CapitalNu]^2 + J*R*\[Eta]*\[CapitalNu]^2)^2]/
+             (2*L*(Jafter + J*\[Eta]*\[CapitalNu]^2)))*\[Tau]$18628)*
+         Sqrt[-4*(Jafter*L + J*L*\[Eta]*\[CapitalNu]^2)*(Bafter*R + 
+             Ke*Kt*\[Eta]*\[CapitalNu]^2 + B*R*\[Eta]*\[CapitalNu]^2) + 
+           (Bafter*L + Jafter*R + B*L*\[Eta]*\[CapitalNu]^2 + 
+             J*R*\[Eta]*\[CapitalNu]^2)^2]))/
+      (2*(Jafter + J*\[Eta]*\[CapitalNu]^2)*
+       Sqrt[-4*(Jafter*L + J*L*\[Eta]*\[CapitalNu]^2)*(Bafter*R + 
+           Ke*Kt*\[Eta]*\[CapitalNu]^2 + B*R*\[Eta]*\[CapitalNu]^2) + 
+         (Bafter*L + Jafter*R + B*L*\[Eta]*\[CapitalNu]^2 + 
+           J*R*\[Eta]*\[CapitalNu]^2)^2])}
+ 
+Attributes[\[Tau]$18628] = {Temporary}
+ 
+motorTorqueConstvapp = Function[{t$}, Module[{convolutions$}, 
+      convolutions$ = (convolve[modelExpr$18698[[#1]], 
+           {(vbat & )[#1] & , (0 & )[#1] & }[[#1]][\[Tau]$18698], 
+           \[Tau]$18698, t$] & ) /@ Range[1, Length[{(vbat & )[#1] & , 
+            (0 & )[#1] & }]]; {Total[convolutions$]}]]
+ 
+Attributes[modelExpr$18698] = {Temporary}
+ 
+modelExpr$18698 = 
+    {(Kt*(-(Bafter*E^((-Bafter/(2*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+             (Jafter*R)/(2*L*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+             (B*\[Eta]*\[CapitalNu]^2)/(2*(Jafter + J*\[Eta]*\[CapitalNu]^
+                  2)) - (J*R*\[Eta]*\[CapitalNu]^2)/(2*L*(Jafter + 
+                J*\[Eta]*\[CapitalNu]^2)) - Sqrt[-4*(Jafter*L + J*L*\[Eta]*
+                   \[CapitalNu]^2)*(Bafter*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + 
+                  B*R*\[Eta]*\[CapitalNu]^2) + (Bafter*L + Jafter*R + 
+                  B*L*\[Eta]*\[CapitalNu]^2 + J*R*\[Eta]*\[CapitalNu]^2)^2]/
+              (2*L*(Jafter + J*\[Eta]*\[CapitalNu]^2)))*\[Tau]$18698)*L) + 
+        Bafter*E^((-Bafter/(2*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+            (Jafter*R)/(2*L*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+            (B*\[Eta]*\[CapitalNu]^2)/(2*(Jafter + J*\[Eta]*\[CapitalNu]^
+                 2)) - (J*R*\[Eta]*\[CapitalNu]^2)/(2*L*(Jafter + J*\[Eta]*
+                \[CapitalNu]^2)) + Sqrt[-4*(Jafter*L + J*L*\[Eta]*
+                  \[CapitalNu]^2)*(Bafter*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + 
+                 B*R*\[Eta]*\[CapitalNu]^2) + (Bafter*L + Jafter*R + 
+                 B*L*\[Eta]*\[CapitalNu]^2 + J*R*\[Eta]*\[CapitalNu]^2)^2]/
+             (2*L*(Jafter + J*\[Eta]*\[CapitalNu]^2)))*\[Tau]$18698)*L + 
+        E^((-Bafter/(2*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+            (Jafter*R)/(2*L*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+            (B*\[Eta]*\[CapitalNu]^2)/(2*(Jafter + J*\[Eta]*\[CapitalNu]^
+                 2)) - (J*R*\[Eta]*\[CapitalNu]^2)/(2*L*(Jafter + J*\[Eta]*
+                \[CapitalNu]^2)) - Sqrt[-4*(Jafter*L + J*L*\[Eta]*
+                  \[CapitalNu]^2)*(Bafter*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + 
+                 B*R*\[Eta]*\[CapitalNu]^2) + (Bafter*L + Jafter*R + 
+                 B*L*\[Eta]*\[CapitalNu]^2 + J*R*\[Eta]*\[CapitalNu]^2)^2]/
+             (2*L*(Jafter + J*\[Eta]*\[CapitalNu]^2)))*\[Tau]$18698)*Jafter*
+         R - E^((-Bafter/(2*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+            (Jafter*R)/(2*L*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+            (B*\[Eta]*\[CapitalNu]^2)/(2*(Jafter + J*\[Eta]*\[CapitalNu]^
+                 2)) - (J*R*\[Eta]*\[CapitalNu]^2)/(2*L*(Jafter + J*\[Eta]*
+                \[CapitalNu]^2)) + Sqrt[-4*(Jafter*L + J*L*\[Eta]*
+                  \[CapitalNu]^2)*(Bafter*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + 
+                 B*R*\[Eta]*\[CapitalNu]^2) + (Bafter*L + Jafter*R + 
+                 B*L*\[Eta]*\[CapitalNu]^2 + J*R*\[Eta]*\[CapitalNu]^2)^2]/
+             (2*L*(Jafter + J*\[Eta]*\[CapitalNu]^2)))*\[Tau]$18698)*Jafter*
+         R - B*E^((-Bafter/(2*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+            (Jafter*R)/(2*L*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+            (B*\[Eta]*\[CapitalNu]^2)/(2*(Jafter + J*\[Eta]*\[CapitalNu]^
+                 2)) - (J*R*\[Eta]*\[CapitalNu]^2)/(2*L*(Jafter + J*\[Eta]*
+                \[CapitalNu]^2)) - Sqrt[-4*(Jafter*L + J*L*\[Eta]*
+                  \[CapitalNu]^2)*(Bafter*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + 
+                 B*R*\[Eta]*\[CapitalNu]^2) + (Bafter*L + Jafter*R + 
+                 B*L*\[Eta]*\[CapitalNu]^2 + J*R*\[Eta]*\[CapitalNu]^2)^2]/
+             (2*L*(Jafter + J*\[Eta]*\[CapitalNu]^2)))*\[Tau]$18698)*L*\[Eta]*
+         \[CapitalNu]^2 + 
+        B*E^((-Bafter/(2*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+            (Jafter*R)/(2*L*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+            (B*\[Eta]*\[CapitalNu]^2)/(2*(Jafter + J*\[Eta]*\[CapitalNu]^
+                 2)) - (J*R*\[Eta]*\[CapitalNu]^2)/(2*L*(Jafter + J*\[Eta]*
+                \[CapitalNu]^2)) + Sqrt[-4*(Jafter*L + J*L*\[Eta]*
+                  \[CapitalNu]^2)*(Bafter*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + 
+                 B*R*\[Eta]*\[CapitalNu]^2) + (Bafter*L + Jafter*R + 
+                 B*L*\[Eta]*\[CapitalNu]^2 + J*R*\[Eta]*\[CapitalNu]^2)^2]/
+             (2*L*(Jafter + J*\[Eta]*\[CapitalNu]^2)))*\[Tau]$18698)*L*\[Eta]*
+         \[CapitalNu]^2 + 
+        E^((-Bafter/(2*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+            (Jafter*R)/(2*L*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+            (B*\[Eta]*\[CapitalNu]^2)/(2*(Jafter + J*\[Eta]*\[CapitalNu]^
+                 2)) - (J*R*\[Eta]*\[CapitalNu]^2)/(2*L*(Jafter + J*\[Eta]*
+                \[CapitalNu]^2)) - Sqrt[-4*(Jafter*L + J*L*\[Eta]*
+                  \[CapitalNu]^2)*(Bafter*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + 
+                 B*R*\[Eta]*\[CapitalNu]^2) + (Bafter*L + Jafter*R + 
+                 B*L*\[Eta]*\[CapitalNu]^2 + J*R*\[Eta]*\[CapitalNu]^2)^2]/
+             (2*L*(Jafter + J*\[Eta]*\[CapitalNu]^2)))*\[Tau]$18698)*J*R*
+         \[Eta]*\[CapitalNu]^2 - 
+        E^((-Bafter/(2*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+            (Jafter*R)/(2*L*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+            (B*\[Eta]*\[CapitalNu]^2)/(2*(Jafter + J*\[Eta]*\[CapitalNu]^
+                 2)) - (J*R*\[Eta]*\[CapitalNu]^2)/(2*L*(Jafter + J*\[Eta]*
+                \[CapitalNu]^2)) + Sqrt[-4*(Jafter*L + J*L*\[Eta]*
+                  \[CapitalNu]^2)*(Bafter*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + 
+                 B*R*\[Eta]*\[CapitalNu]^2) + (Bafter*L + Jafter*R + 
+                 B*L*\[Eta]*\[CapitalNu]^2 + J*R*\[Eta]*\[CapitalNu]^2)^2]/
+             (2*L*(Jafter + J*\[Eta]*\[CapitalNu]^2)))*\[Tau]$18698)*J*R*
+         \[Eta]*\[CapitalNu]^2 + 
+        E^((-Bafter/(2*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+            (Jafter*R)/(2*L*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+            (B*\[Eta]*\[CapitalNu]^2)/(2*(Jafter + J*\[Eta]*\[CapitalNu]^
+                 2)) - (J*R*\[Eta]*\[CapitalNu]^2)/(2*L*(Jafter + J*\[Eta]*
+                \[CapitalNu]^2)) - Sqrt[-4*(Jafter*L + J*L*\[Eta]*
+                  \[CapitalNu]^2)*(Bafter*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + 
+                 B*R*\[Eta]*\[CapitalNu]^2) + (Bafter*L + Jafter*R + 
+                 B*L*\[Eta]*\[CapitalNu]^2 + J*R*\[Eta]*\[CapitalNu]^2)^2]/
+             (2*L*(Jafter + J*\[Eta]*\[CapitalNu]^2)))*\[Tau]$18698)*
+         Sqrt[-4*(Jafter*L + J*L*\[Eta]*\[CapitalNu]^2)*(Bafter*R + 
+             Ke*Kt*\[Eta]*\[CapitalNu]^2 + B*R*\[Eta]*\[CapitalNu]^2) + 
+           (Bafter*L + Jafter*R + B*L*\[Eta]*\[CapitalNu]^2 + 
+             J*R*\[Eta]*\[CapitalNu]^2)^2] + 
+        E^((-Bafter/(2*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+            (Jafter*R)/(2*L*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+            (B*\[Eta]*\[CapitalNu]^2)/(2*(Jafter + J*\[Eta]*\[CapitalNu]^
+                 2)) - (J*R*\[Eta]*\[CapitalNu]^2)/(2*L*(Jafter + J*\[Eta]*
+                \[CapitalNu]^2)) + Sqrt[-4*(Jafter*L + J*L*\[Eta]*
+                  \[CapitalNu]^2)*(Bafter*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + 
+                 B*R*\[Eta]*\[CapitalNu]^2) + (Bafter*L + Jafter*R + 
+                 B*L*\[Eta]*\[CapitalNu]^2 + J*R*\[Eta]*\[CapitalNu]^2)^2]/
+             (2*L*(Jafter + J*\[Eta]*\[CapitalNu]^2)))*\[Tau]$18698)*
+         Sqrt[-4*(Jafter*L + J*L*\[Eta]*\[CapitalNu]^2)*(Bafter*R + 
+             Ke*Kt*\[Eta]*\[CapitalNu]^2 + B*R*\[Eta]*\[CapitalNu]^2) + 
+           (Bafter*L + Jafter*R + B*L*\[Eta]*\[CapitalNu]^2 + 
+             J*R*\[Eta]*\[CapitalNu]^2)^2]))/
+      (2*L*Sqrt[-4*(Jafter*L + J*L*\[Eta]*\[CapitalNu]^2)*
+          (Bafter*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + B*R*\[Eta]*
+            \[CapitalNu]^2) + (Bafter*L + Jafter*R + B*L*\[Eta]*
+            \[CapitalNu]^2 + J*R*\[Eta]*\[CapitalNu]^2)^2]), 
+     ((E^((-Bafter/(2*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+           (Jafter*R)/(2*L*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+           (B*\[Eta]*\[CapitalNu]^2)/(2*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+           (J*R*\[Eta]*\[CapitalNu]^2)/(2*L*(Jafter + J*\[Eta]*\[CapitalNu]^
+                2)) - Sqrt[-4*(Jafter*L + J*L*\[Eta]*\[CapitalNu]^2)*(
+                Bafter*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + B*R*\[Eta]*
+                 \[CapitalNu]^2) + (Bafter*L + Jafter*R + B*L*\[Eta]*
+                 \[CapitalNu]^2 + J*R*\[Eta]*\[CapitalNu]^2)^2]/
+            (2*L*(Jafter + J*\[Eta]*\[CapitalNu]^2)))*\[Tau]$18698) - 
+        E^((-Bafter/(2*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+           (Jafter*R)/(2*L*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+           (B*\[Eta]*\[CapitalNu]^2)/(2*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+           (J*R*\[Eta]*\[CapitalNu]^2)/(2*L*(Jafter + J*\[Eta]*\[CapitalNu]^
+                2)) + Sqrt[-4*(Jafter*L + J*L*\[Eta]*\[CapitalNu]^2)*(
+                Bafter*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + B*R*\[Eta]*
+                 \[CapitalNu]^2) + (Bafter*L + Jafter*R + B*L*\[Eta]*
+                 \[CapitalNu]^2 + J*R*\[Eta]*\[CapitalNu]^2)^2]/
+            (2*L*(Jafter + J*\[Eta]*\[CapitalNu]^2)))*\[Tau]$18698))*Ke*Kt*
+       \[CapitalNu])/Sqrt[-4*(Jafter*L + J*L*\[Eta]*\[CapitalNu]^2)*
+         (Bafter*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + B*R*\[Eta]*
+           \[CapitalNu]^2) + (Bafter*L + Jafter*R + B*L*\[Eta]*
+           \[CapitalNu]^2 + J*R*\[Eta]*\[CapitalNu]^2)^2]}
+ 
+Attributes[\[Tau]$18698] = {Temporary}
+ 
+motorPositionOutConstvapp = Function[{t$}, Module[{convolutions$}, 
+      convolutions$ = (convolve[modelExpr$18768[[#1]], 
+           {(vbat & )[#1] & , (0 & )[#1] & }[[#1]][\[Tau]$18768], 
+           \[Tau]$18768, t$] & ) /@ Range[1, Length[{(vbat & )[#1] & , 
+            (0 & )[#1] & }]]; {Total[convolutions$]}]]
+ 
+Attributes[modelExpr$18768] = {Temporary}
+ 
+modelExpr$18768 = {Kt*\[Eta]*\[CapitalNu]*
+      ((Bafter*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + B*R*\[Eta]*\[CapitalNu]^2)^
+        (-1) - (-(Bafter*E^((-Bafter/(2*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+              (Jafter*R)/(2*L*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+              (B*\[Eta]*\[CapitalNu]^2)/(2*(Jafter + J*\[Eta]*\[CapitalNu]^
+                   2)) - (J*R*\[Eta]*\[CapitalNu]^2)/(2*L*(Jafter + 
+                 J*\[Eta]*\[CapitalNu]^2)) - Sqrt[-4*(Jafter*L + J*L*\[Eta]*
+                    \[CapitalNu]^2)*(Bafter*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + 
+                   B*R*\[Eta]*\[CapitalNu]^2) + (Bafter*L + Jafter*R + 
+                   B*L*\[Eta]*\[CapitalNu]^2 + J*R*\[Eta]*\[CapitalNu]^2)^2]/(
+                2*L*(Jafter + J*\[Eta]*\[CapitalNu]^2)))*\[Tau]$18768)*L) + 
+         Bafter*E^((-Bafter/(2*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+             (Jafter*R)/(2*L*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+             (B*\[Eta]*\[CapitalNu]^2)/(2*(Jafter + J*\[Eta]*\[CapitalNu]^
+                  2)) - (J*R*\[Eta]*\[CapitalNu]^2)/(2*L*(Jafter + 
+                J*\[Eta]*\[CapitalNu]^2)) + Sqrt[-4*(Jafter*L + J*L*\[Eta]*
+                   \[CapitalNu]^2)*(Bafter*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + 
+                  B*R*\[Eta]*\[CapitalNu]^2) + (Bafter*L + Jafter*R + 
+                  B*L*\[Eta]*\[CapitalNu]^2 + J*R*\[Eta]*\[CapitalNu]^2)^2]/
+              (2*L*(Jafter + J*\[Eta]*\[CapitalNu]^2)))*\[Tau]$18768)*L - 
+         E^((-Bafter/(2*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+             (Jafter*R)/(2*L*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+             (B*\[Eta]*\[CapitalNu]^2)/(2*(Jafter + J*\[Eta]*\[CapitalNu]^
+                  2)) - (J*R*\[Eta]*\[CapitalNu]^2)/(2*L*(Jafter + 
+                J*\[Eta]*\[CapitalNu]^2)) - Sqrt[-4*(Jafter*L + J*L*\[Eta]*
+                   \[CapitalNu]^2)*(Bafter*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + 
+                  B*R*\[Eta]*\[CapitalNu]^2) + (Bafter*L + Jafter*R + 
+                  B*L*\[Eta]*\[CapitalNu]^2 + J*R*\[Eta]*\[CapitalNu]^2)^2]/
+              (2*L*(Jafter + J*\[Eta]*\[CapitalNu]^2)))*\[Tau]$18768)*Jafter*
+          R + E^((-Bafter/(2*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+             (Jafter*R)/(2*L*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+             (B*\[Eta]*\[CapitalNu]^2)/(2*(Jafter + J*\[Eta]*\[CapitalNu]^
+                  2)) - (J*R*\[Eta]*\[CapitalNu]^2)/(2*L*(Jafter + 
+                J*\[Eta]*\[CapitalNu]^2)) + Sqrt[-4*(Jafter*L + J*L*\[Eta]*
+                   \[CapitalNu]^2)*(Bafter*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + 
+                  B*R*\[Eta]*\[CapitalNu]^2) + (Bafter*L + Jafter*R + 
+                  B*L*\[Eta]*\[CapitalNu]^2 + J*R*\[Eta]*\[CapitalNu]^2)^2]/
+              (2*L*(Jafter + J*\[Eta]*\[CapitalNu]^2)))*\[Tau]$18768)*Jafter*
+          R - B*E^((-Bafter/(2*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+             (Jafter*R)/(2*L*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+             (B*\[Eta]*\[CapitalNu]^2)/(2*(Jafter + J*\[Eta]*\[CapitalNu]^
+                  2)) - (J*R*\[Eta]*\[CapitalNu]^2)/(2*L*(Jafter + 
+                J*\[Eta]*\[CapitalNu]^2)) - Sqrt[-4*(Jafter*L + J*L*\[Eta]*
+                   \[CapitalNu]^2)*(Bafter*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + 
+                  B*R*\[Eta]*\[CapitalNu]^2) + (Bafter*L + Jafter*R + 
+                  B*L*\[Eta]*\[CapitalNu]^2 + J*R*\[Eta]*\[CapitalNu]^2)^2]/
+              (2*L*(Jafter + J*\[Eta]*\[CapitalNu]^2)))*\[Tau]$18768)*L*
+          \[Eta]*\[CapitalNu]^2 + 
+         B*E^((-Bafter/(2*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+             (Jafter*R)/(2*L*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+             (B*\[Eta]*\[CapitalNu]^2)/(2*(Jafter + J*\[Eta]*\[CapitalNu]^
+                  2)) - (J*R*\[Eta]*\[CapitalNu]^2)/(2*L*(Jafter + 
+                J*\[Eta]*\[CapitalNu]^2)) + Sqrt[-4*(Jafter*L + J*L*\[Eta]*
+                   \[CapitalNu]^2)*(Bafter*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + 
+                  B*R*\[Eta]*\[CapitalNu]^2) + (Bafter*L + Jafter*R + 
+                  B*L*\[Eta]*\[CapitalNu]^2 + J*R*\[Eta]*\[CapitalNu]^2)^2]/
+              (2*L*(Jafter + J*\[Eta]*\[CapitalNu]^2)))*\[Tau]$18768)*L*
+          \[Eta]*\[CapitalNu]^2 - 
+         E^((-Bafter/(2*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+             (Jafter*R)/(2*L*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+             (B*\[Eta]*\[CapitalNu]^2)/(2*(Jafter + J*\[Eta]*\[CapitalNu]^
+                  2)) - (J*R*\[Eta]*\[CapitalNu]^2)/(2*L*(Jafter + 
+                J*\[Eta]*\[CapitalNu]^2)) - Sqrt[-4*(Jafter*L + J*L*\[Eta]*
+                   \[CapitalNu]^2)*(Bafter*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + 
+                  B*R*\[Eta]*\[CapitalNu]^2) + (Bafter*L + Jafter*R + 
+                  B*L*\[Eta]*\[CapitalNu]^2 + J*R*\[Eta]*\[CapitalNu]^2)^2]/
+              (2*L*(Jafter + J*\[Eta]*\[CapitalNu]^2)))*\[Tau]$18768)*J*R*
+          \[Eta]*\[CapitalNu]^2 + 
+         E^((-Bafter/(2*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+             (Jafter*R)/(2*L*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+             (B*\[Eta]*\[CapitalNu]^2)/(2*(Jafter + J*\[Eta]*\[CapitalNu]^
+                  2)) - (J*R*\[Eta]*\[CapitalNu]^2)/(2*L*(Jafter + 
+                J*\[Eta]*\[CapitalNu]^2)) + Sqrt[-4*(Jafter*L + J*L*\[Eta]*
+                   \[CapitalNu]^2)*(Bafter*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + 
+                  B*R*\[Eta]*\[CapitalNu]^2) + (Bafter*L + Jafter*R + 
+                  B*L*\[Eta]*\[CapitalNu]^2 + J*R*\[Eta]*\[CapitalNu]^2)^2]/
+              (2*L*(Jafter + J*\[Eta]*\[CapitalNu]^2)))*\[Tau]$18768)*J*R*
+          \[Eta]*\[CapitalNu]^2 + 
+         E^((-Bafter/(2*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+             (Jafter*R)/(2*L*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+             (B*\[Eta]*\[CapitalNu]^2)/(2*(Jafter + J*\[Eta]*\[CapitalNu]^
+                  2)) - (J*R*\[Eta]*\[CapitalNu]^2)/(2*L*(Jafter + 
+                J*\[Eta]*\[CapitalNu]^2)) - Sqrt[-4*(Jafter*L + J*L*\[Eta]*
+                   \[CapitalNu]^2)*(Bafter*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + 
+                  B*R*\[Eta]*\[CapitalNu]^2) + (Bafter*L + Jafter*R + 
+                  B*L*\[Eta]*\[CapitalNu]^2 + J*R*\[Eta]*\[CapitalNu]^2)^2]/
+              (2*L*(Jafter + J*\[Eta]*\[CapitalNu]^2)))*\[Tau]$18768)*
+          Sqrt[-4*(Jafter*L + J*L*\[Eta]*\[CapitalNu]^2)*(Bafter*R + 
+              Ke*Kt*\[Eta]*\[CapitalNu]^2 + B*R*\[Eta]*\[CapitalNu]^2) + 
+            (Bafter*L + Jafter*R + B*L*\[Eta]*\[CapitalNu]^2 + 
+              J*R*\[Eta]*\[CapitalNu]^2)^2] + 
+         E^((-Bafter/(2*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+             (Jafter*R)/(2*L*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+             (B*\[Eta]*\[CapitalNu]^2)/(2*(Jafter + J*\[Eta]*\[CapitalNu]^
+                  2)) - (J*R*\[Eta]*\[CapitalNu]^2)/(2*L*(Jafter + 
+                J*\[Eta]*\[CapitalNu]^2)) + Sqrt[-4*(Jafter*L + J*L*\[Eta]*
+                   \[CapitalNu]^2)*(Bafter*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + 
+                  B*R*\[Eta]*\[CapitalNu]^2) + (Bafter*L + Jafter*R + 
+                  B*L*\[Eta]*\[CapitalNu]^2 + J*R*\[Eta]*\[CapitalNu]^2)^2]/
+              (2*L*(Jafter + J*\[Eta]*\[CapitalNu]^2)))*\[Tau]$18768)*
+          Sqrt[-4*(Jafter*L + J*L*\[Eta]*\[CapitalNu]^2)*(Bafter*R + 
+              Ke*Kt*\[Eta]*\[CapitalNu]^2 + B*R*\[Eta]*\[CapitalNu]^2) + 
+            (Bafter*L + Jafter*R + B*L*\[Eta]*\[CapitalNu]^2 + 
+              J*R*\[Eta]*\[CapitalNu]^2)^2])/
+        (2*(Bafter*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + B*R*\[Eta]*
+           \[CapitalNu]^2)*Sqrt[-4*(Jafter*L + J*L*\[Eta]*\[CapitalNu]^2)*
+            (Bafter*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + B*R*\[Eta]*
+              \[CapitalNu]^2) + (Bafter*L + Jafter*R + B*L*\[Eta]*
+              \[CapitalNu]^2 + J*R*\[Eta]*\[CapitalNu]^2)^2])), 
+     R/(Bafter*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + B*R*\[Eta]*\[CapitalNu]^2) - 
+      (Bafter*E^((-Bafter/(2*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+            (Jafter*R)/(2*L*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+            (B*\[Eta]*\[CapitalNu]^2)/(2*(Jafter + J*\[Eta]*\[CapitalNu]^
+                 2)) - (J*R*\[Eta]*\[CapitalNu]^2)/(2*L*(Jafter + J*\[Eta]*
+                \[CapitalNu]^2)) - Sqrt[-4*(Jafter*L + J*L*\[Eta]*
+                  \[CapitalNu]^2)*(Bafter*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + 
+                 B*R*\[Eta]*\[CapitalNu]^2) + (Bafter*L + Jafter*R + 
+                 B*L*\[Eta]*\[CapitalNu]^2 + J*R*\[Eta]*\[CapitalNu]^2)^2]/
+             (2*L*(Jafter + J*\[Eta]*\[CapitalNu]^2)))*\[Tau]$18768)*L*R - 
+        Bafter*E^((-Bafter/(2*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+            (Jafter*R)/(2*L*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+            (B*\[Eta]*\[CapitalNu]^2)/(2*(Jafter + J*\[Eta]*\[CapitalNu]^
+                 2)) - (J*R*\[Eta]*\[CapitalNu]^2)/(2*L*(Jafter + J*\[Eta]*
+                \[CapitalNu]^2)) + Sqrt[-4*(Jafter*L + J*L*\[Eta]*
+                  \[CapitalNu]^2)*(Bafter*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + 
+                 B*R*\[Eta]*\[CapitalNu]^2) + (Bafter*L + Jafter*R + 
+                 B*L*\[Eta]*\[CapitalNu]^2 + J*R*\[Eta]*\[CapitalNu]^2)^2]/
+             (2*L*(Jafter + J*\[Eta]*\[CapitalNu]^2)))*\[Tau]$18768)*L*R - 
+        E^((-Bafter/(2*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+            (Jafter*R)/(2*L*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+            (B*\[Eta]*\[CapitalNu]^2)/(2*(Jafter + J*\[Eta]*\[CapitalNu]^
+                 2)) - (J*R*\[Eta]*\[CapitalNu]^2)/(2*L*(Jafter + J*\[Eta]*
+                \[CapitalNu]^2)) - Sqrt[-4*(Jafter*L + J*L*\[Eta]*
+                  \[CapitalNu]^2)*(Bafter*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + 
+                 B*R*\[Eta]*\[CapitalNu]^2) + (Bafter*L + Jafter*R + 
+                 B*L*\[Eta]*\[CapitalNu]^2 + J*R*\[Eta]*\[CapitalNu]^2)^2]/
+             (2*L*(Jafter + J*\[Eta]*\[CapitalNu]^2)))*\[Tau]$18768)*Jafter*
+         R^2 + E^((-Bafter/(2*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+            (Jafter*R)/(2*L*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+            (B*\[Eta]*\[CapitalNu]^2)/(2*(Jafter + J*\[Eta]*\[CapitalNu]^
+                 2)) - (J*R*\[Eta]*\[CapitalNu]^2)/(2*L*(Jafter + J*\[Eta]*
+                \[CapitalNu]^2)) + Sqrt[-4*(Jafter*L + J*L*\[Eta]*
+                  \[CapitalNu]^2)*(Bafter*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + 
+                 B*R*\[Eta]*\[CapitalNu]^2) + (Bafter*L + Jafter*R + 
+                 B*L*\[Eta]*\[CapitalNu]^2 + J*R*\[Eta]*\[CapitalNu]^2)^2]/
+             (2*L*(Jafter + J*\[Eta]*\[CapitalNu]^2)))*\[Tau]$18768)*Jafter*
+         R^2 + 2*E^((-Bafter/(2*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+            (Jafter*R)/(2*L*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+            (B*\[Eta]*\[CapitalNu]^2)/(2*(Jafter + J*\[Eta]*\[CapitalNu]^
+                 2)) - (J*R*\[Eta]*\[CapitalNu]^2)/(2*L*(Jafter + J*\[Eta]*
+                \[CapitalNu]^2)) - Sqrt[-4*(Jafter*L + J*L*\[Eta]*
+                  \[CapitalNu]^2)*(Bafter*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + 
+                 B*R*\[Eta]*\[CapitalNu]^2) + (Bafter*L + Jafter*R + 
+                 B*L*\[Eta]*\[CapitalNu]^2 + J*R*\[Eta]*\[CapitalNu]^2)^2]/
+             (2*L*(Jafter + J*\[Eta]*\[CapitalNu]^2)))*\[Tau]$18768)*Ke*Kt*L*
+         \[Eta]*\[CapitalNu]^2 - 
+        2*E^((-Bafter/(2*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+            (Jafter*R)/(2*L*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+            (B*\[Eta]*\[CapitalNu]^2)/(2*(Jafter + J*\[Eta]*\[CapitalNu]^
+                 2)) - (J*R*\[Eta]*\[CapitalNu]^2)/(2*L*(Jafter + J*\[Eta]*
+                \[CapitalNu]^2)) + Sqrt[-4*(Jafter*L + J*L*\[Eta]*
+                  \[CapitalNu]^2)*(Bafter*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + 
+                 B*R*\[Eta]*\[CapitalNu]^2) + (Bafter*L + Jafter*R + 
+                 B*L*\[Eta]*\[CapitalNu]^2 + J*R*\[Eta]*\[CapitalNu]^2)^2]/
+             (2*L*(Jafter + J*\[Eta]*\[CapitalNu]^2)))*\[Tau]$18768)*Ke*Kt*L*
+         \[Eta]*\[CapitalNu]^2 + 
+        B*E^((-Bafter/(2*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+            (Jafter*R)/(2*L*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+            (B*\[Eta]*\[CapitalNu]^2)/(2*(Jafter + J*\[Eta]*\[CapitalNu]^
+                 2)) - (J*R*\[Eta]*\[CapitalNu]^2)/(2*L*(Jafter + J*\[Eta]*
+                \[CapitalNu]^2)) - Sqrt[-4*(Jafter*L + J*L*\[Eta]*
+                  \[CapitalNu]^2)*(Bafter*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + 
+                 B*R*\[Eta]*\[CapitalNu]^2) + (Bafter*L + Jafter*R + 
+                 B*L*\[Eta]*\[CapitalNu]^2 + J*R*\[Eta]*\[CapitalNu]^2)^2]/
+             (2*L*(Jafter + J*\[Eta]*\[CapitalNu]^2)))*\[Tau]$18768)*L*R*
+         \[Eta]*\[CapitalNu]^2 - 
+        B*E^((-Bafter/(2*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+            (Jafter*R)/(2*L*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+            (B*\[Eta]*\[CapitalNu]^2)/(2*(Jafter + J*\[Eta]*\[CapitalNu]^
+                 2)) - (J*R*\[Eta]*\[CapitalNu]^2)/(2*L*(Jafter + J*\[Eta]*
+                \[CapitalNu]^2)) + Sqrt[-4*(Jafter*L + J*L*\[Eta]*
+                  \[CapitalNu]^2)*(Bafter*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + 
+                 B*R*\[Eta]*\[CapitalNu]^2) + (Bafter*L + Jafter*R + 
+                 B*L*\[Eta]*\[CapitalNu]^2 + J*R*\[Eta]*\[CapitalNu]^2)^2]/
+             (2*L*(Jafter + J*\[Eta]*\[CapitalNu]^2)))*\[Tau]$18768)*L*R*
+         \[Eta]*\[CapitalNu]^2 - 
+        E^((-Bafter/(2*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+            (Jafter*R)/(2*L*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+            (B*\[Eta]*\[CapitalNu]^2)/(2*(Jafter + J*\[Eta]*\[CapitalNu]^
+                 2)) - (J*R*\[Eta]*\[CapitalNu]^2)/(2*L*(Jafter + J*\[Eta]*
+                \[CapitalNu]^2)) - Sqrt[-4*(Jafter*L + J*L*\[Eta]*
+                  \[CapitalNu]^2)*(Bafter*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + 
+                 B*R*\[Eta]*\[CapitalNu]^2) + (Bafter*L + Jafter*R + 
+                 B*L*\[Eta]*\[CapitalNu]^2 + J*R*\[Eta]*\[CapitalNu]^2)^2]/
+             (2*L*(Jafter + J*\[Eta]*\[CapitalNu]^2)))*\[Tau]$18768)*J*R^2*
+         \[Eta]*\[CapitalNu]^2 + 
+        E^((-Bafter/(2*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+            (Jafter*R)/(2*L*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+            (B*\[Eta]*\[CapitalNu]^2)/(2*(Jafter + J*\[Eta]*\[CapitalNu]^
+                 2)) - (J*R*\[Eta]*\[CapitalNu]^2)/(2*L*(Jafter + J*\[Eta]*
+                \[CapitalNu]^2)) + Sqrt[-4*(Jafter*L + J*L*\[Eta]*
+                  \[CapitalNu]^2)*(Bafter*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + 
+                 B*R*\[Eta]*\[CapitalNu]^2) + (Bafter*L + Jafter*R + 
+                 B*L*\[Eta]*\[CapitalNu]^2 + J*R*\[Eta]*\[CapitalNu]^2)^2]/
+             (2*L*(Jafter + J*\[Eta]*\[CapitalNu]^2)))*\[Tau]$18768)*J*R^2*
+         \[Eta]*\[CapitalNu]^2 + 
+        E^((-Bafter/(2*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+            (Jafter*R)/(2*L*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+            (B*\[Eta]*\[CapitalNu]^2)/(2*(Jafter + J*\[Eta]*\[CapitalNu]^
+                 2)) - (J*R*\[Eta]*\[CapitalNu]^2)/(2*L*(Jafter + J*\[Eta]*
+                \[CapitalNu]^2)) - Sqrt[-4*(Jafter*L + J*L*\[Eta]*
+                  \[CapitalNu]^2)*(Bafter*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + 
+                 B*R*\[Eta]*\[CapitalNu]^2) + (Bafter*L + Jafter*R + 
+                 B*L*\[Eta]*\[CapitalNu]^2 + J*R*\[Eta]*\[CapitalNu]^2)^2]/
+             (2*L*(Jafter + J*\[Eta]*\[CapitalNu]^2)))*\[Tau]$18768)*R*
+         Sqrt[-4*(Jafter*L + J*L*\[Eta]*\[CapitalNu]^2)*(Bafter*R + 
+             Ke*Kt*\[Eta]*\[CapitalNu]^2 + B*R*\[Eta]*\[CapitalNu]^2) + 
+           (Bafter*L + Jafter*R + B*L*\[Eta]*\[CapitalNu]^2 + 
+             J*R*\[Eta]*\[CapitalNu]^2)^2] + 
+        E^((-Bafter/(2*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+            (Jafter*R)/(2*L*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+            (B*\[Eta]*\[CapitalNu]^2)/(2*(Jafter + J*\[Eta]*\[CapitalNu]^
+                 2)) - (J*R*\[Eta]*\[CapitalNu]^2)/(2*L*(Jafter + J*\[Eta]*
+                \[CapitalNu]^2)) + Sqrt[-4*(Jafter*L + J*L*\[Eta]*
+                  \[CapitalNu]^2)*(Bafter*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + 
+                 B*R*\[Eta]*\[CapitalNu]^2) + (Bafter*L + Jafter*R + 
+                 B*L*\[Eta]*\[CapitalNu]^2 + J*R*\[Eta]*\[CapitalNu]^2)^2]/
+             (2*L*(Jafter + J*\[Eta]*\[CapitalNu]^2)))*\[Tau]$18768)*R*
+         Sqrt[-4*(Jafter*L + J*L*\[Eta]*\[CapitalNu]^2)*(Bafter*R + 
+             Ke*Kt*\[Eta]*\[CapitalNu]^2 + B*R*\[Eta]*\[CapitalNu]^2) + 
+           (Bafter*L + Jafter*R + B*L*\[Eta]*\[CapitalNu]^2 + 
+             J*R*\[Eta]*\[CapitalNu]^2)^2])/
+       (2*(Bafter*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + 
+         B*R*\[Eta]*\[CapitalNu]^2)*
+        Sqrt[-4*(Jafter*L + J*L*\[Eta]*\[CapitalNu]^2)*(Bafter*R + 
+            Ke*Kt*\[Eta]*\[CapitalNu]^2 + B*R*\[Eta]*\[CapitalNu]^2) + 
+          (Bafter*L + Jafter*R + B*L*\[Eta]*\[CapitalNu]^2 + 
             J*R*\[Eta]*\[CapitalNu]^2)^2])}
  
-Attributes[\[Tau]$11249] = {Temporary}
+Attributes[\[Tau]$18768] = {Temporary}
  
-motorVelocityOutConstVbat = Function[{t$}, Module[{convolutions$}, 
-      convolutions$ = (convolve[modelExpr$11327[[#1]], 
-           {(Vbat & )[#1] & , (0 & )[#1] & }[[#1]][\[Tau]$11327], 
-           \[Tau]$11327, t$] & ) /@ Range[1, Length[{(Vbat & )[#1] & , 
+motorVelocityOutConstvapp = Function[{t$}, Module[{convolutions$}, 
+      convolutions$ = (convolve[modelExpr$18846[[#1]], 
+           {(vbat & )[#1] & , (0 & )[#1] & }[[#1]][\[Tau]$18846], 
+           \[Tau]$18846, t$] & ) /@ Range[1, Length[{(vbat & )[#1] & , 
             (0 & )[#1] & }]]; {Total[convolutions$]}]]
  
-Attributes[modelExpr$11327] = {Temporary}
+Attributes[modelExpr$18846] = {Temporary}
  
-modelExpr$11327 = 
-    {-(((E^((-Bout/(2*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-            (Jout*R)/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-            (B*\[Eta]*\[CapitalNu]^2)/(2*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-            (J*R*\[Eta]*\[CapitalNu]^2)/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^
-                 2)) - Sqrt[-4*(Jout*L + J*L*\[Eta]*\[CapitalNu]^2)*
-                (Bout*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + B*R*\[Eta]*
-                  \[CapitalNu]^2) + (Bout*L + Jout*R + B*L*\[Eta]*
-                  \[CapitalNu]^2 + J*R*\[Eta]*\[CapitalNu]^2)^2]/
-             (2*L*(Jout + J*\[Eta]*\[CapitalNu]^2)))*\[Tau]$11327) - 
-         E^((-Bout/(2*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-            (Jout*R)/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-            (B*\[Eta]*\[CapitalNu]^2)/(2*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-            (J*R*\[Eta]*\[CapitalNu]^2)/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^
-                 2)) + Sqrt[-4*(Jout*L + J*L*\[Eta]*\[CapitalNu]^2)*
-                (Bout*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + B*R*\[Eta]*
-                  \[CapitalNu]^2) + (Bout*L + Jout*R + B*L*\[Eta]*
-                  \[CapitalNu]^2 + J*R*\[Eta]*\[CapitalNu]^2)^2]/
-             (2*L*(Jout + J*\[Eta]*\[CapitalNu]^2)))*\[Tau]$11327))*Kt*\[Eta]*
-        \[CapitalNu])/Sqrt[-4*(Jout*L + J*L*\[Eta]*\[CapitalNu]^2)*
-          (Bout*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + B*R*\[Eta]*
-            \[CapitalNu]^2) + (Bout*L + Jout*R + B*L*\[Eta]*\[CapitalNu]^2 + 
-           J*R*\[Eta]*\[CapitalNu]^2)^2]), 
-     (Bout*E^((-Bout/(2*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-           (Jout*R)/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-           (B*\[Eta]*\[CapitalNu]^2)/(2*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-           (J*R*\[Eta]*\[CapitalNu]^2)/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^
-                2)) - Sqrt[-4*(Jout*L + J*L*\[Eta]*\[CapitalNu]^2)*(Bout*R + 
-                Ke*Kt*\[Eta]*\[CapitalNu]^2 + B*R*\[Eta]*\[CapitalNu]^2) + 
-              (Bout*L + Jout*R + B*L*\[Eta]*\[CapitalNu]^2 + J*R*\[Eta]*
-                 \[CapitalNu]^2)^2]/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^2)))*
-          \[Tau]$11327)*L - 
-       Bout*E^((-Bout/(2*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-           (Jout*R)/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-           (B*\[Eta]*\[CapitalNu]^2)/(2*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-           (J*R*\[Eta]*\[CapitalNu]^2)/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^
-                2)) + Sqrt[-4*(Jout*L + J*L*\[Eta]*\[CapitalNu]^2)*(Bout*R + 
-                Ke*Kt*\[Eta]*\[CapitalNu]^2 + B*R*\[Eta]*\[CapitalNu]^2) + 
-              (Bout*L + Jout*R + B*L*\[Eta]*\[CapitalNu]^2 + J*R*\[Eta]*
-                 \[CapitalNu]^2)^2]/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^2)))*
-          \[Tau]$11327)*L - E^((-Bout/(2*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-           (Jout*R)/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-           (B*\[Eta]*\[CapitalNu]^2)/(2*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-           (J*R*\[Eta]*\[CapitalNu]^2)/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^
-                2)) - Sqrt[-4*(Jout*L + J*L*\[Eta]*\[CapitalNu]^2)*(Bout*R + 
-                Ke*Kt*\[Eta]*\[CapitalNu]^2 + B*R*\[Eta]*\[CapitalNu]^2) + 
-              (Bout*L + Jout*R + B*L*\[Eta]*\[CapitalNu]^2 + J*R*\[Eta]*
-                 \[CapitalNu]^2)^2]/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^2)))*
-          \[Tau]$11327)*Jout*R + 
-       E^((-Bout/(2*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-           (Jout*R)/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-           (B*\[Eta]*\[CapitalNu]^2)/(2*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-           (J*R*\[Eta]*\[CapitalNu]^2)/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^
-                2)) + Sqrt[-4*(Jout*L + J*L*\[Eta]*\[CapitalNu]^2)*(Bout*R + 
-                Ke*Kt*\[Eta]*\[CapitalNu]^2 + B*R*\[Eta]*\[CapitalNu]^2) + 
-              (Bout*L + Jout*R + B*L*\[Eta]*\[CapitalNu]^2 + J*R*\[Eta]*
-                 \[CapitalNu]^2)^2]/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^2)))*
-          \[Tau]$11327)*Jout*R + 
-       B*E^((-Bout/(2*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-           (Jout*R)/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-           (B*\[Eta]*\[CapitalNu]^2)/(2*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-           (J*R*\[Eta]*\[CapitalNu]^2)/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^
-                2)) - Sqrt[-4*(Jout*L + J*L*\[Eta]*\[CapitalNu]^2)*(Bout*R + 
-                Ke*Kt*\[Eta]*\[CapitalNu]^2 + B*R*\[Eta]*\[CapitalNu]^2) + 
-              (Bout*L + Jout*R + B*L*\[Eta]*\[CapitalNu]^2 + J*R*\[Eta]*
-                 \[CapitalNu]^2)^2]/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^2)))*
-          \[Tau]$11327)*L*\[Eta]*\[CapitalNu]^2 - 
-       B*E^((-Bout/(2*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-           (Jout*R)/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-           (B*\[Eta]*\[CapitalNu]^2)/(2*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-           (J*R*\[Eta]*\[CapitalNu]^2)/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^
-                2)) + Sqrt[-4*(Jout*L + J*L*\[Eta]*\[CapitalNu]^2)*(Bout*R + 
-                Ke*Kt*\[Eta]*\[CapitalNu]^2 + B*R*\[Eta]*\[CapitalNu]^2) + 
-              (Bout*L + Jout*R + B*L*\[Eta]*\[CapitalNu]^2 + J*R*\[Eta]*
-                 \[CapitalNu]^2)^2]/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^2)))*
-          \[Tau]$11327)*L*\[Eta]*\[CapitalNu]^2 - 
-       E^((-Bout/(2*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-           (Jout*R)/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-           (B*\[Eta]*\[CapitalNu]^2)/(2*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-           (J*R*\[Eta]*\[CapitalNu]^2)/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^
-                2)) - Sqrt[-4*(Jout*L + J*L*\[Eta]*\[CapitalNu]^2)*(Bout*R + 
-                Ke*Kt*\[Eta]*\[CapitalNu]^2 + B*R*\[Eta]*\[CapitalNu]^2) + 
-              (Bout*L + Jout*R + B*L*\[Eta]*\[CapitalNu]^2 + J*R*\[Eta]*
-                 \[CapitalNu]^2)^2]/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^2)))*
-          \[Tau]$11327)*J*R*\[Eta]*\[CapitalNu]^2 + 
-       E^((-Bout/(2*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-           (Jout*R)/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-           (B*\[Eta]*\[CapitalNu]^2)/(2*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-           (J*R*\[Eta]*\[CapitalNu]^2)/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^
-                2)) + Sqrt[-4*(Jout*L + J*L*\[Eta]*\[CapitalNu]^2)*(Bout*R + 
-                Ke*Kt*\[Eta]*\[CapitalNu]^2 + B*R*\[Eta]*\[CapitalNu]^2) + 
-              (Bout*L + Jout*R + B*L*\[Eta]*\[CapitalNu]^2 + J*R*\[Eta]*
-                 \[CapitalNu]^2)^2]/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^2)))*
-          \[Tau]$11327)*J*R*\[Eta]*\[CapitalNu]^2 + 
-       E^((-Bout/(2*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-           (Jout*R)/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-           (B*\[Eta]*\[CapitalNu]^2)/(2*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-           (J*R*\[Eta]*\[CapitalNu]^2)/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^
-                2)) - Sqrt[-4*(Jout*L + J*L*\[Eta]*\[CapitalNu]^2)*(Bout*R + 
-                Ke*Kt*\[Eta]*\[CapitalNu]^2 + B*R*\[Eta]*\[CapitalNu]^2) + 
-              (Bout*L + Jout*R + B*L*\[Eta]*\[CapitalNu]^2 + J*R*\[Eta]*
-                 \[CapitalNu]^2)^2]/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^2)))*
-          \[Tau]$11327)*Sqrt[-4*(Jout*L + J*L*\[Eta]*\[CapitalNu]^2)*
-           (Bout*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + B*R*\[Eta]*
-             \[CapitalNu]^2) + (Bout*L + Jout*R + B*L*\[Eta]*\[CapitalNu]^2 + 
+modelExpr$18846 = 
+    {-(((E^((-Bafter/(2*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+            (Jafter*R)/(2*L*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+            (B*\[Eta]*\[CapitalNu]^2)/(2*(Jafter + J*\[Eta]*\[CapitalNu]^
+                 2)) - (J*R*\[Eta]*\[CapitalNu]^2)/(2*L*(Jafter + J*\[Eta]*
+                \[CapitalNu]^2)) - Sqrt[-4*(Jafter*L + J*L*\[Eta]*
+                  \[CapitalNu]^2)*(Bafter*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + 
+                 B*R*\[Eta]*\[CapitalNu]^2) + (Bafter*L + Jafter*R + 
+                 B*L*\[Eta]*\[CapitalNu]^2 + J*R*\[Eta]*\[CapitalNu]^2)^2]/
+             (2*L*(Jafter + J*\[Eta]*\[CapitalNu]^2)))*\[Tau]$18846) - 
+         E^((-Bafter/(2*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+            (Jafter*R)/(2*L*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+            (B*\[Eta]*\[CapitalNu]^2)/(2*(Jafter + J*\[Eta]*\[CapitalNu]^
+                 2)) - (J*R*\[Eta]*\[CapitalNu]^2)/(2*L*(Jafter + J*\[Eta]*
+                \[CapitalNu]^2)) + Sqrt[-4*(Jafter*L + J*L*\[Eta]*
+                  \[CapitalNu]^2)*(Bafter*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + 
+                 B*R*\[Eta]*\[CapitalNu]^2) + (Bafter*L + Jafter*R + 
+                 B*L*\[Eta]*\[CapitalNu]^2 + J*R*\[Eta]*\[CapitalNu]^2)^2]/
+             (2*L*(Jafter + J*\[Eta]*\[CapitalNu]^2)))*\[Tau]$18846))*Kt*
+        \[Eta]*\[CapitalNu])/Sqrt[-4*(Jafter*L + J*L*\[Eta]*\[CapitalNu]^2)*
+          (Bafter*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + B*R*\[Eta]*
+            \[CapitalNu]^2) + (Bafter*L + Jafter*R + B*L*\[Eta]*
+            \[CapitalNu]^2 + J*R*\[Eta]*\[CapitalNu]^2)^2]), 
+     (Bafter*E^((-Bafter/(2*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+           (Jafter*R)/(2*L*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+           (B*\[Eta]*\[CapitalNu]^2)/(2*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+           (J*R*\[Eta]*\[CapitalNu]^2)/(2*L*(Jafter + J*\[Eta]*\[CapitalNu]^
+                2)) - Sqrt[-4*(Jafter*L + J*L*\[Eta]*\[CapitalNu]^2)*(
+                Bafter*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + B*R*\[Eta]*
+                 \[CapitalNu]^2) + (Bafter*L + Jafter*R + B*L*\[Eta]*
+                 \[CapitalNu]^2 + J*R*\[Eta]*\[CapitalNu]^2)^2]/
+            (2*L*(Jafter + J*\[Eta]*\[CapitalNu]^2)))*\[Tau]$18846)*L - 
+       Bafter*E^((-Bafter/(2*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+           (Jafter*R)/(2*L*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+           (B*\[Eta]*\[CapitalNu]^2)/(2*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+           (J*R*\[Eta]*\[CapitalNu]^2)/(2*L*(Jafter + J*\[Eta]*\[CapitalNu]^
+                2)) + Sqrt[-4*(Jafter*L + J*L*\[Eta]*\[CapitalNu]^2)*(
+                Bafter*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + B*R*\[Eta]*
+                 \[CapitalNu]^2) + (Bafter*L + Jafter*R + B*L*\[Eta]*
+                 \[CapitalNu]^2 + J*R*\[Eta]*\[CapitalNu]^2)^2]/
+            (2*L*(Jafter + J*\[Eta]*\[CapitalNu]^2)))*\[Tau]$18846)*L - 
+       E^((-Bafter/(2*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+           (Jafter*R)/(2*L*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+           (B*\[Eta]*\[CapitalNu]^2)/(2*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+           (J*R*\[Eta]*\[CapitalNu]^2)/(2*L*(Jafter + J*\[Eta]*\[CapitalNu]^
+                2)) - Sqrt[-4*(Jafter*L + J*L*\[Eta]*\[CapitalNu]^2)*(
+                Bafter*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + B*R*\[Eta]*
+                 \[CapitalNu]^2) + (Bafter*L + Jafter*R + B*L*\[Eta]*
+                 \[CapitalNu]^2 + J*R*\[Eta]*\[CapitalNu]^2)^2]/
+            (2*L*(Jafter + J*\[Eta]*\[CapitalNu]^2)))*\[Tau]$18846)*Jafter*
+        R + E^((-Bafter/(2*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+           (Jafter*R)/(2*L*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+           (B*\[Eta]*\[CapitalNu]^2)/(2*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+           (J*R*\[Eta]*\[CapitalNu]^2)/(2*L*(Jafter + J*\[Eta]*\[CapitalNu]^
+                2)) + Sqrt[-4*(Jafter*L + J*L*\[Eta]*\[CapitalNu]^2)*(
+                Bafter*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + B*R*\[Eta]*
+                 \[CapitalNu]^2) + (Bafter*L + Jafter*R + B*L*\[Eta]*
+                 \[CapitalNu]^2 + J*R*\[Eta]*\[CapitalNu]^2)^2]/
+            (2*L*(Jafter + J*\[Eta]*\[CapitalNu]^2)))*\[Tau]$18846)*Jafter*
+        R + B*E^((-Bafter/(2*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+           (Jafter*R)/(2*L*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+           (B*\[Eta]*\[CapitalNu]^2)/(2*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+           (J*R*\[Eta]*\[CapitalNu]^2)/(2*L*(Jafter + J*\[Eta]*\[CapitalNu]^
+                2)) - Sqrt[-4*(Jafter*L + J*L*\[Eta]*\[CapitalNu]^2)*(
+                Bafter*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + B*R*\[Eta]*
+                 \[CapitalNu]^2) + (Bafter*L + Jafter*R + B*L*\[Eta]*
+                 \[CapitalNu]^2 + J*R*\[Eta]*\[CapitalNu]^2)^2]/
+            (2*L*(Jafter + J*\[Eta]*\[CapitalNu]^2)))*\[Tau]$18846)*L*\[Eta]*
+        \[CapitalNu]^2 - 
+       B*E^((-Bafter/(2*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+           (Jafter*R)/(2*L*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+           (B*\[Eta]*\[CapitalNu]^2)/(2*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+           (J*R*\[Eta]*\[CapitalNu]^2)/(2*L*(Jafter + J*\[Eta]*\[CapitalNu]^
+                2)) + Sqrt[-4*(Jafter*L + J*L*\[Eta]*\[CapitalNu]^2)*(
+                Bafter*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + B*R*\[Eta]*
+                 \[CapitalNu]^2) + (Bafter*L + Jafter*R + B*L*\[Eta]*
+                 \[CapitalNu]^2 + J*R*\[Eta]*\[CapitalNu]^2)^2]/
+            (2*L*(Jafter + J*\[Eta]*\[CapitalNu]^2)))*\[Tau]$18846)*L*\[Eta]*
+        \[CapitalNu]^2 - E^((-Bafter/(2*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+           (Jafter*R)/(2*L*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+           (B*\[Eta]*\[CapitalNu]^2)/(2*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+           (J*R*\[Eta]*\[CapitalNu]^2)/(2*L*(Jafter + J*\[Eta]*\[CapitalNu]^
+                2)) - Sqrt[-4*(Jafter*L + J*L*\[Eta]*\[CapitalNu]^2)*(
+                Bafter*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + B*R*\[Eta]*
+                 \[CapitalNu]^2) + (Bafter*L + Jafter*R + B*L*\[Eta]*
+                 \[CapitalNu]^2 + J*R*\[Eta]*\[CapitalNu]^2)^2]/
+            (2*L*(Jafter + J*\[Eta]*\[CapitalNu]^2)))*\[Tau]$18846)*J*R*
+        \[Eta]*\[CapitalNu]^2 + 
+       E^((-Bafter/(2*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+           (Jafter*R)/(2*L*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+           (B*\[Eta]*\[CapitalNu]^2)/(2*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+           (J*R*\[Eta]*\[CapitalNu]^2)/(2*L*(Jafter + J*\[Eta]*\[CapitalNu]^
+                2)) + Sqrt[-4*(Jafter*L + J*L*\[Eta]*\[CapitalNu]^2)*(
+                Bafter*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + B*R*\[Eta]*
+                 \[CapitalNu]^2) + (Bafter*L + Jafter*R + B*L*\[Eta]*
+                 \[CapitalNu]^2 + J*R*\[Eta]*\[CapitalNu]^2)^2]/
+            (2*L*(Jafter + J*\[Eta]*\[CapitalNu]^2)))*\[Tau]$18846)*J*R*
+        \[Eta]*\[CapitalNu]^2 + 
+       E^((-Bafter/(2*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+           (Jafter*R)/(2*L*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+           (B*\[Eta]*\[CapitalNu]^2)/(2*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+           (J*R*\[Eta]*\[CapitalNu]^2)/(2*L*(Jafter + J*\[Eta]*\[CapitalNu]^
+                2)) - Sqrt[-4*(Jafter*L + J*L*\[Eta]*\[CapitalNu]^2)*(
+                Bafter*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + B*R*\[Eta]*
+                 \[CapitalNu]^2) + (Bafter*L + Jafter*R + B*L*\[Eta]*
+                 \[CapitalNu]^2 + J*R*\[Eta]*\[CapitalNu]^2)^2]/
+            (2*L*(Jafter + J*\[Eta]*\[CapitalNu]^2)))*\[Tau]$18846)*
+        Sqrt[-4*(Jafter*L + J*L*\[Eta]*\[CapitalNu]^2)*(Bafter*R + 
+            Ke*Kt*\[Eta]*\[CapitalNu]^2 + B*R*\[Eta]*\[CapitalNu]^2) + 
+          (Bafter*L + Jafter*R + B*L*\[Eta]*\[CapitalNu]^2 + 
             J*R*\[Eta]*\[CapitalNu]^2)^2] + 
-       E^((-Bout/(2*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-           (Jout*R)/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-           (B*\[Eta]*\[CapitalNu]^2)/(2*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-           (J*R*\[Eta]*\[CapitalNu]^2)/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^
-                2)) + Sqrt[-4*(Jout*L + J*L*\[Eta]*\[CapitalNu]^2)*(Bout*R + 
-                Ke*Kt*\[Eta]*\[CapitalNu]^2 + B*R*\[Eta]*\[CapitalNu]^2) + 
-              (Bout*L + Jout*R + B*L*\[Eta]*\[CapitalNu]^2 + J*R*\[Eta]*
-                 \[CapitalNu]^2)^2]/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^2)))*
-          \[Tau]$11327)*Sqrt[-4*(Jout*L + J*L*\[Eta]*\[CapitalNu]^2)*
-           (Bout*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + B*R*\[Eta]*
-             \[CapitalNu]^2) + (Bout*L + Jout*R + B*L*\[Eta]*\[CapitalNu]^2 + 
+       E^((-Bafter/(2*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+           (Jafter*R)/(2*L*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+           (B*\[Eta]*\[CapitalNu]^2)/(2*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+           (J*R*\[Eta]*\[CapitalNu]^2)/(2*L*(Jafter + J*\[Eta]*\[CapitalNu]^
+                2)) + Sqrt[-4*(Jafter*L + J*L*\[Eta]*\[CapitalNu]^2)*(
+                Bafter*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + B*R*\[Eta]*
+                 \[CapitalNu]^2) + (Bafter*L + Jafter*R + B*L*\[Eta]*
+                 \[CapitalNu]^2 + J*R*\[Eta]*\[CapitalNu]^2)^2]/
+            (2*L*(Jafter + J*\[Eta]*\[CapitalNu]^2)))*\[Tau]$18846)*
+        Sqrt[-4*(Jafter*L + J*L*\[Eta]*\[CapitalNu]^2)*(Bafter*R + 
+            Ke*Kt*\[Eta]*\[CapitalNu]^2 + B*R*\[Eta]*\[CapitalNu]^2) + 
+          (Bafter*L + Jafter*R + B*L*\[Eta]*\[CapitalNu]^2 + 
             J*R*\[Eta]*\[CapitalNu]^2)^2])/
-      (2*(Jout + J*\[Eta]*\[CapitalNu]^2)*
-       Sqrt[-4*(Jout*L + J*L*\[Eta]*\[CapitalNu]^2)*
-          (Bout*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + B*R*\[Eta]*
-            \[CapitalNu]^2) + (Bout*L + Jout*R + B*L*\[Eta]*\[CapitalNu]^2 + 
+      (2*(Jafter + J*\[Eta]*\[CapitalNu]^2)*
+       Sqrt[-4*(Jafter*L + J*L*\[Eta]*\[CapitalNu]^2)*(Bafter*R + 
+           Ke*Kt*\[Eta]*\[CapitalNu]^2 + B*R*\[Eta]*\[CapitalNu]^2) + 
+         (Bafter*L + Jafter*R + B*L*\[Eta]*\[CapitalNu]^2 + 
            J*R*\[Eta]*\[CapitalNu]^2)^2])}
  
-Attributes[\[Tau]$11327] = {Temporary}
+Attributes[\[Tau]$18846] = {Temporary}
  
-motorAccelerationOutConstVbat = Function[{t$}, Module[{convolutions$}, 
-      convolutions$ = (convolve[modelExpr$11397[[#1]], 
-           {(Vbat & )[#1] & , (0 & )[#1] & }[[#1]][\[Tau]$11397], 
-           \[Tau]$11397, t$] & ) /@ Range[1, Length[{(Vbat & )[#1] & , 
+motorAccelerationOutConstvapp = Function[{t$}, Module[{convolutions$}, 
+      convolutions$ = (convolve[modelExpr$18916[[#1]], 
+           {(vbat & )[#1] & , (0 & )[#1] & }[[#1]][\[Tau]$18916], 
+           \[Tau]$18916, t$] & ) /@ Range[1, Length[{(vbat & )[#1] & , 
             (0 & )[#1] & }]]; {Total[convolutions$]}]]
  
-Attributes[modelExpr$11397] = {Temporary}
+Attributes[modelExpr$18916] = {Temporary}
  
-modelExpr$11397 = {(Kt*\[Eta]*\[CapitalNu]*
-       (Bout*E^((-Bout/(2*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-            (Jout*R)/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-            (B*\[Eta]*\[CapitalNu]^2)/(2*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-            (J*R*\[Eta]*\[CapitalNu]^2)/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^
-                 2)) - Sqrt[-4*(Jout*L + J*L*\[Eta]*\[CapitalNu]^2)*
-                (Bout*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + B*R*\[Eta]*
-                  \[CapitalNu]^2) + (Bout*L + Jout*R + B*L*\[Eta]*
-                  \[CapitalNu]^2 + J*R*\[Eta]*\[CapitalNu]^2)^2]/
-             (2*L*(Jout + J*\[Eta]*\[CapitalNu]^2)))*\[Tau]$11397)*L - 
-        Bout*E^((-Bout/(2*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-            (Jout*R)/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-            (B*\[Eta]*\[CapitalNu]^2)/(2*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-            (J*R*\[Eta]*\[CapitalNu]^2)/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^
-                 2)) + Sqrt[-4*(Jout*L + J*L*\[Eta]*\[CapitalNu]^2)*
-                (Bout*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + B*R*\[Eta]*
-                  \[CapitalNu]^2) + (Bout*L + Jout*R + B*L*\[Eta]*
-                  \[CapitalNu]^2 + J*R*\[Eta]*\[CapitalNu]^2)^2]/
-             (2*L*(Jout + J*\[Eta]*\[CapitalNu]^2)))*\[Tau]$11397)*L + 
-        E^((-Bout/(2*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-            (Jout*R)/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-            (B*\[Eta]*\[CapitalNu]^2)/(2*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-            (J*R*\[Eta]*\[CapitalNu]^2)/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^
-                 2)) - Sqrt[-4*(Jout*L + J*L*\[Eta]*\[CapitalNu]^2)*
-                (Bout*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + B*R*\[Eta]*
-                  \[CapitalNu]^2) + (Bout*L + Jout*R + B*L*\[Eta]*
-                  \[CapitalNu]^2 + J*R*\[Eta]*\[CapitalNu]^2)^2]/
-             (2*L*(Jout + J*\[Eta]*\[CapitalNu]^2)))*\[Tau]$11397)*Jout*R - 
-        E^((-Bout/(2*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-            (Jout*R)/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-            (B*\[Eta]*\[CapitalNu]^2)/(2*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-            (J*R*\[Eta]*\[CapitalNu]^2)/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^
-                 2)) + Sqrt[-4*(Jout*L + J*L*\[Eta]*\[CapitalNu]^2)*
-                (Bout*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + B*R*\[Eta]*
-                  \[CapitalNu]^2) + (Bout*L + Jout*R + B*L*\[Eta]*
-                  \[CapitalNu]^2 + J*R*\[Eta]*\[CapitalNu]^2)^2]/
-             (2*L*(Jout + J*\[Eta]*\[CapitalNu]^2)))*\[Tau]$11397)*Jout*R + 
-        B*E^((-Bout/(2*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-            (Jout*R)/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-            (B*\[Eta]*\[CapitalNu]^2)/(2*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-            (J*R*\[Eta]*\[CapitalNu]^2)/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^
-                 2)) - Sqrt[-4*(Jout*L + J*L*\[Eta]*\[CapitalNu]^2)*
-                (Bout*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + B*R*\[Eta]*
-                  \[CapitalNu]^2) + (Bout*L + Jout*R + B*L*\[Eta]*
-                  \[CapitalNu]^2 + J*R*\[Eta]*\[CapitalNu]^2)^2]/
-             (2*L*(Jout + J*\[Eta]*\[CapitalNu]^2)))*\[Tau]$11397)*L*\[Eta]*
-         \[CapitalNu]^2 - B*E^((-Bout/(2*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-            (Jout*R)/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-            (B*\[Eta]*\[CapitalNu]^2)/(2*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-            (J*R*\[Eta]*\[CapitalNu]^2)/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^
-                 2)) + Sqrt[-4*(Jout*L + J*L*\[Eta]*\[CapitalNu]^2)*
-                (Bout*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + B*R*\[Eta]*
-                  \[CapitalNu]^2) + (Bout*L + Jout*R + B*L*\[Eta]*
-                  \[CapitalNu]^2 + J*R*\[Eta]*\[CapitalNu]^2)^2]/
-             (2*L*(Jout + J*\[Eta]*\[CapitalNu]^2)))*\[Tau]$11397)*L*\[Eta]*
-         \[CapitalNu]^2 + E^((-Bout/(2*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-            (Jout*R)/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-            (B*\[Eta]*\[CapitalNu]^2)/(2*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-            (J*R*\[Eta]*\[CapitalNu]^2)/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^
-                 2)) - Sqrt[-4*(Jout*L + J*L*\[Eta]*\[CapitalNu]^2)*
-                (Bout*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + B*R*\[Eta]*
-                  \[CapitalNu]^2) + (Bout*L + Jout*R + B*L*\[Eta]*
-                  \[CapitalNu]^2 + J*R*\[Eta]*\[CapitalNu]^2)^2]/
-             (2*L*(Jout + J*\[Eta]*\[CapitalNu]^2)))*\[Tau]$11397)*J*R*\[Eta]*
-         \[CapitalNu]^2 - E^((-Bout/(2*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-            (Jout*R)/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-            (B*\[Eta]*\[CapitalNu]^2)/(2*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-            (J*R*\[Eta]*\[CapitalNu]^2)/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^
-                 2)) + Sqrt[-4*(Jout*L + J*L*\[Eta]*\[CapitalNu]^2)*
-                (Bout*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + B*R*\[Eta]*
-                  \[CapitalNu]^2) + (Bout*L + Jout*R + B*L*\[Eta]*
-                  \[CapitalNu]^2 + J*R*\[Eta]*\[CapitalNu]^2)^2]/
-             (2*L*(Jout + J*\[Eta]*\[CapitalNu]^2)))*\[Tau]$11397)*J*R*\[Eta]*
-         \[CapitalNu]^2 + E^((-Bout/(2*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-            (Jout*R)/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-            (B*\[Eta]*\[CapitalNu]^2)/(2*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-            (J*R*\[Eta]*\[CapitalNu]^2)/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^
-                 2)) - Sqrt[-4*(Jout*L + J*L*\[Eta]*\[CapitalNu]^2)*
-                (Bout*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + B*R*\[Eta]*
-                  \[CapitalNu]^2) + (Bout*L + Jout*R + B*L*\[Eta]*
-                  \[CapitalNu]^2 + J*R*\[Eta]*\[CapitalNu]^2)^2]/
-             (2*L*(Jout + J*\[Eta]*\[CapitalNu]^2)))*\[Tau]$11397)*
-         Sqrt[-4*(Jout*L + J*L*\[Eta]*\[CapitalNu]^2)*(Bout*R + 
-             Ke*Kt*\[Eta]*\[CapitalNu]^2 + B*R*\[Eta]*\[CapitalNu]^2) + 
-           (Bout*L + Jout*R + B*L*\[Eta]*\[CapitalNu]^2 + 
-             J*R*\[Eta]*\[CapitalNu]^2)^2] + 
-        E^((-Bout/(2*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-            (Jout*R)/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-            (B*\[Eta]*\[CapitalNu]^2)/(2*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-            (J*R*\[Eta]*\[CapitalNu]^2)/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^
-                 2)) + Sqrt[-4*(Jout*L + J*L*\[Eta]*\[CapitalNu]^2)*
-                (Bout*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + B*R*\[Eta]*
-                  \[CapitalNu]^2) + (Bout*L + Jout*R + B*L*\[Eta]*
-                  \[CapitalNu]^2 + J*R*\[Eta]*\[CapitalNu]^2)^2]/
-             (2*L*(Jout + J*\[Eta]*\[CapitalNu]^2)))*\[Tau]$11397)*
-         Sqrt[-4*(Jout*L + J*L*\[Eta]*\[CapitalNu]^2)*(Bout*R + 
-             Ke*Kt*\[Eta]*\[CapitalNu]^2 + B*R*\[Eta]*\[CapitalNu]^2) + 
-           (Bout*L + Jout*R + B*L*\[Eta]*\[CapitalNu]^2 + 
-             J*R*\[Eta]*\[CapitalNu]^2)^2]))/
-      (2*L*(Jout + J*\[Eta]*\[CapitalNu]^2)*
-       Sqrt[-4*(Jout*L + J*L*\[Eta]*\[CapitalNu]^2)*
-          (Bout*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + B*R*\[Eta]*
-            \[CapitalNu]^2) + (Bout*L + Jout*R + B*L*\[Eta]*\[CapitalNu]^2 + 
-           J*R*\[Eta]*\[CapitalNu]^2)^2]), 
-     (-(Bout^2*E^((-Bout/(2*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-             (Jout*R)/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-             (B*\[Eta]*\[CapitalNu]^2)/(2*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-             (J*R*\[Eta]*\[CapitalNu]^2)/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^
-                  2)) - Sqrt[-4*(Jout*L + J*L*\[Eta]*\[CapitalNu]^2)*
-                 (Bout*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + B*R*\[Eta]*
-                   \[CapitalNu]^2) + (Bout*L + Jout*R + B*L*\[Eta]*
-                   \[CapitalNu]^2 + J*R*\[Eta]*\[CapitalNu]^2)^2]/
-              (2*L*(Jout + J*\[Eta]*\[CapitalNu]^2)))*\[Tau]$11397)*L) + 
-        Bout^2*E^((-Bout/(2*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-            (Jout*R)/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-            (B*\[Eta]*\[CapitalNu]^2)/(2*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-            (J*R*\[Eta]*\[CapitalNu]^2)/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^
-                 2)) + Sqrt[-4*(Jout*L + J*L*\[Eta]*\[CapitalNu]^2)*
-                (Bout*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + B*R*\[Eta]*
-                  \[CapitalNu]^2) + (Bout*L + Jout*R + B*L*\[Eta]*
-                  \[CapitalNu]^2 + J*R*\[Eta]*\[CapitalNu]^2)^2]/
-             (2*L*(Jout + J*\[Eta]*\[CapitalNu]^2)))*\[Tau]$11397)*L + 
-        Bout*E^((-Bout/(2*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-            (Jout*R)/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-            (B*\[Eta]*\[CapitalNu]^2)/(2*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-            (J*R*\[Eta]*\[CapitalNu]^2)/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^
-                 2)) - Sqrt[-4*(Jout*L + J*L*\[Eta]*\[CapitalNu]^2)*
-                (Bout*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + B*R*\[Eta]*
-                  \[CapitalNu]^2) + (Bout*L + Jout*R + B*L*\[Eta]*
-                  \[CapitalNu]^2 + J*R*\[Eta]*\[CapitalNu]^2)^2]/
-             (2*L*(Jout + J*\[Eta]*\[CapitalNu]^2)))*\[Tau]$11397)*Jout*R - 
-        Bout*E^((-Bout/(2*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-            (Jout*R)/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-            (B*\[Eta]*\[CapitalNu]^2)/(2*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-            (J*R*\[Eta]*\[CapitalNu]^2)/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^
-                 2)) + Sqrt[-4*(Jout*L + J*L*\[Eta]*\[CapitalNu]^2)*
-                (Bout*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + B*R*\[Eta]*
-                  \[CapitalNu]^2) + (Bout*L + Jout*R + B*L*\[Eta]*
-                  \[CapitalNu]^2 + J*R*\[Eta]*\[CapitalNu]^2)^2]/
-             (2*L*(Jout + J*\[Eta]*\[CapitalNu]^2)))*\[Tau]$11397)*Jout*R + 
-        2*E^((-Bout/(2*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-            (Jout*R)/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-            (B*\[Eta]*\[CapitalNu]^2)/(2*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-            (J*R*\[Eta]*\[CapitalNu]^2)/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^
-                 2)) - Sqrt[-4*(Jout*L + J*L*\[Eta]*\[CapitalNu]^2)*
-                (Bout*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + B*R*\[Eta]*
-                  \[CapitalNu]^2) + (Bout*L + Jout*R + B*L*\[Eta]*
-                  \[CapitalNu]^2 + J*R*\[Eta]*\[CapitalNu]^2)^2]/
-             (2*L*(Jout + J*\[Eta]*\[CapitalNu]^2)))*\[Tau]$11397)*Jout*Ke*Kt*
-         \[Eta]*\[CapitalNu]^2 - 
-        2*E^((-Bout/(2*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-            (Jout*R)/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-            (B*\[Eta]*\[CapitalNu]^2)/(2*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-            (J*R*\[Eta]*\[CapitalNu]^2)/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^
-                 2)) + Sqrt[-4*(Jout*L + J*L*\[Eta]*\[CapitalNu]^2)*
-                (Bout*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + B*R*\[Eta]*
-                  \[CapitalNu]^2) + (Bout*L + Jout*R + B*L*\[Eta]*
-                  \[CapitalNu]^2 + J*R*\[Eta]*\[CapitalNu]^2)^2]/
-             (2*L*(Jout + J*\[Eta]*\[CapitalNu]^2)))*\[Tau]$11397)*Jout*Ke*Kt*
-         \[Eta]*\[CapitalNu]^2 - 2*B*Bout*
-         E^((-Bout/(2*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-            (Jout*R)/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-            (B*\[Eta]*\[CapitalNu]^2)/(2*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-            (J*R*\[Eta]*\[CapitalNu]^2)/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^
-                 2)) - Sqrt[-4*(Jout*L + J*L*\[Eta]*\[CapitalNu]^2)*
-                (Bout*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + B*R*\[Eta]*
-                  \[CapitalNu]^2) + (Bout*L + Jout*R + B*L*\[Eta]*
-                  \[CapitalNu]^2 + J*R*\[Eta]*\[CapitalNu]^2)^2]/
-             (2*L*(Jout + J*\[Eta]*\[CapitalNu]^2)))*\[Tau]$11397)*L*\[Eta]*
-         \[CapitalNu]^2 + 2*B*Bout*
-         E^((-Bout/(2*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-            (Jout*R)/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-            (B*\[Eta]*\[CapitalNu]^2)/(2*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-            (J*R*\[Eta]*\[CapitalNu]^2)/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^
-                 2)) + Sqrt[-4*(Jout*L + J*L*\[Eta]*\[CapitalNu]^2)*
-                (Bout*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + B*R*\[Eta]*
-                  \[CapitalNu]^2) + (Bout*L + Jout*R + B*L*\[Eta]*
-                  \[CapitalNu]^2 + J*R*\[Eta]*\[CapitalNu]^2)^2]/
-             (2*L*(Jout + J*\[Eta]*\[CapitalNu]^2)))*\[Tau]$11397)*L*\[Eta]*
-         \[CapitalNu]^2 + 
-        Bout*E^((-Bout/(2*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-            (Jout*R)/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-            (B*\[Eta]*\[CapitalNu]^2)/(2*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-            (J*R*\[Eta]*\[CapitalNu]^2)/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^
-                 2)) - Sqrt[-4*(Jout*L + J*L*\[Eta]*\[CapitalNu]^2)*
-                (Bout*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + B*R*\[Eta]*
-                  \[CapitalNu]^2) + (Bout*L + Jout*R + B*L*\[Eta]*
-                  \[CapitalNu]^2 + J*R*\[Eta]*\[CapitalNu]^2)^2]/
-             (2*L*(Jout + J*\[Eta]*\[CapitalNu]^2)))*\[Tau]$11397)*J*R*\[Eta]*
+modelExpr$18916 = {(Kt*\[Eta]*\[CapitalNu]*
+       (Bafter*E^((-Bafter/(2*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+            (Jafter*R)/(2*L*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+            (B*\[Eta]*\[CapitalNu]^2)/(2*(Jafter + J*\[Eta]*\[CapitalNu]^
+                 2)) - (J*R*\[Eta]*\[CapitalNu]^2)/(2*L*(Jafter + J*\[Eta]*
+                \[CapitalNu]^2)) - Sqrt[-4*(Jafter*L + J*L*\[Eta]*
+                  \[CapitalNu]^2)*(Bafter*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + 
+                 B*R*\[Eta]*\[CapitalNu]^2) + (Bafter*L + Jafter*R + 
+                 B*L*\[Eta]*\[CapitalNu]^2 + J*R*\[Eta]*\[CapitalNu]^2)^2]/
+             (2*L*(Jafter + J*\[Eta]*\[CapitalNu]^2)))*\[Tau]$18916)*L - 
+        Bafter*E^((-Bafter/(2*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+            (Jafter*R)/(2*L*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+            (B*\[Eta]*\[CapitalNu]^2)/(2*(Jafter + J*\[Eta]*\[CapitalNu]^
+                 2)) - (J*R*\[Eta]*\[CapitalNu]^2)/(2*L*(Jafter + J*\[Eta]*
+                \[CapitalNu]^2)) + Sqrt[-4*(Jafter*L + J*L*\[Eta]*
+                  \[CapitalNu]^2)*(Bafter*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + 
+                 B*R*\[Eta]*\[CapitalNu]^2) + (Bafter*L + Jafter*R + 
+                 B*L*\[Eta]*\[CapitalNu]^2 + J*R*\[Eta]*\[CapitalNu]^2)^2]/
+             (2*L*(Jafter + J*\[Eta]*\[CapitalNu]^2)))*\[Tau]$18916)*L + 
+        E^((-Bafter/(2*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+            (Jafter*R)/(2*L*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+            (B*\[Eta]*\[CapitalNu]^2)/(2*(Jafter + J*\[Eta]*\[CapitalNu]^
+                 2)) - (J*R*\[Eta]*\[CapitalNu]^2)/(2*L*(Jafter + J*\[Eta]*
+                \[CapitalNu]^2)) - Sqrt[-4*(Jafter*L + J*L*\[Eta]*
+                  \[CapitalNu]^2)*(Bafter*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + 
+                 B*R*\[Eta]*\[CapitalNu]^2) + (Bafter*L + Jafter*R + 
+                 B*L*\[Eta]*\[CapitalNu]^2 + J*R*\[Eta]*\[CapitalNu]^2)^2]/
+             (2*L*(Jafter + J*\[Eta]*\[CapitalNu]^2)))*\[Tau]$18916)*Jafter*
+         R - E^((-Bafter/(2*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+            (Jafter*R)/(2*L*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+            (B*\[Eta]*\[CapitalNu]^2)/(2*(Jafter + J*\[Eta]*\[CapitalNu]^
+                 2)) - (J*R*\[Eta]*\[CapitalNu]^2)/(2*L*(Jafter + J*\[Eta]*
+                \[CapitalNu]^2)) + Sqrt[-4*(Jafter*L + J*L*\[Eta]*
+                  \[CapitalNu]^2)*(Bafter*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + 
+                 B*R*\[Eta]*\[CapitalNu]^2) + (Bafter*L + Jafter*R + 
+                 B*L*\[Eta]*\[CapitalNu]^2 + J*R*\[Eta]*\[CapitalNu]^2)^2]/
+             (2*L*(Jafter + J*\[Eta]*\[CapitalNu]^2)))*\[Tau]$18916)*Jafter*
+         R + B*E^((-Bafter/(2*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+            (Jafter*R)/(2*L*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+            (B*\[Eta]*\[CapitalNu]^2)/(2*(Jafter + J*\[Eta]*\[CapitalNu]^
+                 2)) - (J*R*\[Eta]*\[CapitalNu]^2)/(2*L*(Jafter + J*\[Eta]*
+                \[CapitalNu]^2)) - Sqrt[-4*(Jafter*L + J*L*\[Eta]*
+                  \[CapitalNu]^2)*(Bafter*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + 
+                 B*R*\[Eta]*\[CapitalNu]^2) + (Bafter*L + Jafter*R + 
+                 B*L*\[Eta]*\[CapitalNu]^2 + J*R*\[Eta]*\[CapitalNu]^2)^2]/
+             (2*L*(Jafter + J*\[Eta]*\[CapitalNu]^2)))*\[Tau]$18916)*L*\[Eta]*
          \[CapitalNu]^2 - 
-        Bout*E^((-Bout/(2*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-            (Jout*R)/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-            (B*\[Eta]*\[CapitalNu]^2)/(2*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-            (J*R*\[Eta]*\[CapitalNu]^2)/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^
-                 2)) + Sqrt[-4*(Jout*L + J*L*\[Eta]*\[CapitalNu]^2)*
-                (Bout*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + B*R*\[Eta]*
-                  \[CapitalNu]^2) + (Bout*L + Jout*R + B*L*\[Eta]*
-                  \[CapitalNu]^2 + J*R*\[Eta]*\[CapitalNu]^2)^2]/
-             (2*L*(Jout + J*\[Eta]*\[CapitalNu]^2)))*\[Tau]$11397)*J*R*\[Eta]*
-         \[CapitalNu]^2 + B*E^((-Bout/(2*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-            (Jout*R)/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-            (B*\[Eta]*\[CapitalNu]^2)/(2*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-            (J*R*\[Eta]*\[CapitalNu]^2)/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^
-                 2)) - Sqrt[-4*(Jout*L + J*L*\[Eta]*\[CapitalNu]^2)*
-                (Bout*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + B*R*\[Eta]*
-                  \[CapitalNu]^2) + (Bout*L + Jout*R + B*L*\[Eta]*
-                  \[CapitalNu]^2 + J*R*\[Eta]*\[CapitalNu]^2)^2]/
-             (2*L*(Jout + J*\[Eta]*\[CapitalNu]^2)))*\[Tau]$11397)*Jout*R*
+        B*E^((-Bafter/(2*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+            (Jafter*R)/(2*L*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+            (B*\[Eta]*\[CapitalNu]^2)/(2*(Jafter + J*\[Eta]*\[CapitalNu]^
+                 2)) - (J*R*\[Eta]*\[CapitalNu]^2)/(2*L*(Jafter + J*\[Eta]*
+                \[CapitalNu]^2)) + Sqrt[-4*(Jafter*L + J*L*\[Eta]*
+                  \[CapitalNu]^2)*(Bafter*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + 
+                 B*R*\[Eta]*\[CapitalNu]^2) + (Bafter*L + Jafter*R + 
+                 B*L*\[Eta]*\[CapitalNu]^2 + J*R*\[Eta]*\[CapitalNu]^2)^2]/
+             (2*L*(Jafter + J*\[Eta]*\[CapitalNu]^2)))*\[Tau]$18916)*L*\[Eta]*
+         \[CapitalNu]^2 + 
+        E^((-Bafter/(2*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+            (Jafter*R)/(2*L*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+            (B*\[Eta]*\[CapitalNu]^2)/(2*(Jafter + J*\[Eta]*\[CapitalNu]^
+                 2)) - (J*R*\[Eta]*\[CapitalNu]^2)/(2*L*(Jafter + J*\[Eta]*
+                \[CapitalNu]^2)) - Sqrt[-4*(Jafter*L + J*L*\[Eta]*
+                  \[CapitalNu]^2)*(Bafter*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + 
+                 B*R*\[Eta]*\[CapitalNu]^2) + (Bafter*L + Jafter*R + 
+                 B*L*\[Eta]*\[CapitalNu]^2 + J*R*\[Eta]*\[CapitalNu]^2)^2]/
+             (2*L*(Jafter + J*\[Eta]*\[CapitalNu]^2)))*\[Tau]$18916)*J*R*
          \[Eta]*\[CapitalNu]^2 - 
-        B*E^((-Bout/(2*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-            (Jout*R)/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-            (B*\[Eta]*\[CapitalNu]^2)/(2*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-            (J*R*\[Eta]*\[CapitalNu]^2)/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^
-                 2)) + Sqrt[-4*(Jout*L + J*L*\[Eta]*\[CapitalNu]^2)*
-                (Bout*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + B*R*\[Eta]*
-                  \[CapitalNu]^2) + (Bout*L + Jout*R + B*L*\[Eta]*
-                  \[CapitalNu]^2 + J*R*\[Eta]*\[CapitalNu]^2)^2]/
-             (2*L*(Jout + J*\[Eta]*\[CapitalNu]^2)))*\[Tau]$11397)*Jout*R*
+        E^((-Bafter/(2*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+            (Jafter*R)/(2*L*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+            (B*\[Eta]*\[CapitalNu]^2)/(2*(Jafter + J*\[Eta]*\[CapitalNu]^
+                 2)) - (J*R*\[Eta]*\[CapitalNu]^2)/(2*L*(Jafter + J*\[Eta]*
+                \[CapitalNu]^2)) + Sqrt[-4*(Jafter*L + J*L*\[Eta]*
+                  \[CapitalNu]^2)*(Bafter*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + 
+                 B*R*\[Eta]*\[CapitalNu]^2) + (Bafter*L + Jafter*R + 
+                 B*L*\[Eta]*\[CapitalNu]^2 + J*R*\[Eta]*\[CapitalNu]^2)^2]/
+             (2*L*(Jafter + J*\[Eta]*\[CapitalNu]^2)))*\[Tau]$18916)*J*R*
          \[Eta]*\[CapitalNu]^2 + 
-        2*E^((-Bout/(2*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-            (Jout*R)/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-            (B*\[Eta]*\[CapitalNu]^2)/(2*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-            (J*R*\[Eta]*\[CapitalNu]^2)/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^
-                 2)) - Sqrt[-4*(Jout*L + J*L*\[Eta]*\[CapitalNu]^2)*
-                (Bout*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + B*R*\[Eta]*
-                  \[CapitalNu]^2) + (Bout*L + Jout*R + B*L*\[Eta]*
-                  \[CapitalNu]^2 + J*R*\[Eta]*\[CapitalNu]^2)^2]/
-             (2*L*(Jout + J*\[Eta]*\[CapitalNu]^2)))*\[Tau]$11397)*J*Ke*Kt*
-         \[Eta]^2*\[CapitalNu]^4 - 
-        2*E^((-Bout/(2*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-            (Jout*R)/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-            (B*\[Eta]*\[CapitalNu]^2)/(2*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-            (J*R*\[Eta]*\[CapitalNu]^2)/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^
-                 2)) + Sqrt[-4*(Jout*L + J*L*\[Eta]*\[CapitalNu]^2)*
-                (Bout*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + B*R*\[Eta]*
-                  \[CapitalNu]^2) + (Bout*L + Jout*R + B*L*\[Eta]*
-                  \[CapitalNu]^2 + J*R*\[Eta]*\[CapitalNu]^2)^2]/
-             (2*L*(Jout + J*\[Eta]*\[CapitalNu]^2)))*\[Tau]$11397)*J*Ke*Kt*
-         \[Eta]^2*\[CapitalNu]^4 - 
-        B^2*E^((-Bout/(2*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-            (Jout*R)/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-            (B*\[Eta]*\[CapitalNu]^2)/(2*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-            (J*R*\[Eta]*\[CapitalNu]^2)/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^
-                 2)) - Sqrt[-4*(Jout*L + J*L*\[Eta]*\[CapitalNu]^2)*
-                (Bout*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + B*R*\[Eta]*
-                  \[CapitalNu]^2) + (Bout*L + Jout*R + B*L*\[Eta]*
-                  \[CapitalNu]^2 + J*R*\[Eta]*\[CapitalNu]^2)^2]/
-             (2*L*(Jout + J*\[Eta]*\[CapitalNu]^2)))*\[Tau]$11397)*L*\[Eta]^2*
-         \[CapitalNu]^4 + 
-        B^2*E^((-Bout/(2*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-            (Jout*R)/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-            (B*\[Eta]*\[CapitalNu]^2)/(2*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-            (J*R*\[Eta]*\[CapitalNu]^2)/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^
-                 2)) + Sqrt[-4*(Jout*L + J*L*\[Eta]*\[CapitalNu]^2)*
-                (Bout*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + B*R*\[Eta]*
-                  \[CapitalNu]^2) + (Bout*L + Jout*R + B*L*\[Eta]*
-                  \[CapitalNu]^2 + J*R*\[Eta]*\[CapitalNu]^2)^2]/
-             (2*L*(Jout + J*\[Eta]*\[CapitalNu]^2)))*\[Tau]$11397)*L*\[Eta]^2*
-         \[CapitalNu]^4 + B*E^((-Bout/(2*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-            (Jout*R)/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-            (B*\[Eta]*\[CapitalNu]^2)/(2*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-            (J*R*\[Eta]*\[CapitalNu]^2)/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^
-                 2)) - Sqrt[-4*(Jout*L + J*L*\[Eta]*\[CapitalNu]^2)*
-                (Bout*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + B*R*\[Eta]*
-                  \[CapitalNu]^2) + (Bout*L + Jout*R + B*L*\[Eta]*
-                  \[CapitalNu]^2 + J*R*\[Eta]*\[CapitalNu]^2)^2]/
-             (2*L*(Jout + J*\[Eta]*\[CapitalNu]^2)))*\[Tau]$11397)*J*R*
-         \[Eta]^2*\[CapitalNu]^4 - 
-        B*E^((-Bout/(2*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-            (Jout*R)/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-            (B*\[Eta]*\[CapitalNu]^2)/(2*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-            (J*R*\[Eta]*\[CapitalNu]^2)/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^
-                 2)) + Sqrt[-4*(Jout*L + J*L*\[Eta]*\[CapitalNu]^2)*
-                (Bout*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + B*R*\[Eta]*
-                  \[CapitalNu]^2) + (Bout*L + Jout*R + B*L*\[Eta]*
-                  \[CapitalNu]^2 + J*R*\[Eta]*\[CapitalNu]^2)^2]/
-             (2*L*(Jout + J*\[Eta]*\[CapitalNu]^2)))*\[Tau]$11397)*J*R*
-         \[Eta]^2*\[CapitalNu]^4 - 
-        Bout*E^((-Bout/(2*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-            (Jout*R)/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-            (B*\[Eta]*\[CapitalNu]^2)/(2*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-            (J*R*\[Eta]*\[CapitalNu]^2)/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^
-                 2)) - Sqrt[-4*(Jout*L + J*L*\[Eta]*\[CapitalNu]^2)*
-                (Bout*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + B*R*\[Eta]*
-                  \[CapitalNu]^2) + (Bout*L + Jout*R + B*L*\[Eta]*
-                  \[CapitalNu]^2 + J*R*\[Eta]*\[CapitalNu]^2)^2]/
-             (2*L*(Jout + J*\[Eta]*\[CapitalNu]^2)))*\[Tau]$11397)*
-         Sqrt[-4*(Jout*L + J*L*\[Eta]*\[CapitalNu]^2)*(Bout*R + 
+        E^((-Bafter/(2*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+            (Jafter*R)/(2*L*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+            (B*\[Eta]*\[CapitalNu]^2)/(2*(Jafter + J*\[Eta]*\[CapitalNu]^
+                 2)) - (J*R*\[Eta]*\[CapitalNu]^2)/(2*L*(Jafter + J*\[Eta]*
+                \[CapitalNu]^2)) - Sqrt[-4*(Jafter*L + J*L*\[Eta]*
+                  \[CapitalNu]^2)*(Bafter*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + 
+                 B*R*\[Eta]*\[CapitalNu]^2) + (Bafter*L + Jafter*R + 
+                 B*L*\[Eta]*\[CapitalNu]^2 + J*R*\[Eta]*\[CapitalNu]^2)^2]/
+             (2*L*(Jafter + J*\[Eta]*\[CapitalNu]^2)))*\[Tau]$18916)*
+         Sqrt[-4*(Jafter*L + J*L*\[Eta]*\[CapitalNu]^2)*(Bafter*R + 
              Ke*Kt*\[Eta]*\[CapitalNu]^2 + B*R*\[Eta]*\[CapitalNu]^2) + 
-           (Bout*L + Jout*R + B*L*\[Eta]*\[CapitalNu]^2 + 
-             J*R*\[Eta]*\[CapitalNu]^2)^2] - 
-        Bout*E^((-Bout/(2*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-            (Jout*R)/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-            (B*\[Eta]*\[CapitalNu]^2)/(2*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-            (J*R*\[Eta]*\[CapitalNu]^2)/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^
-                 2)) + Sqrt[-4*(Jout*L + J*L*\[Eta]*\[CapitalNu]^2)*
-                (Bout*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + B*R*\[Eta]*
-                  \[CapitalNu]^2) + (Bout*L + Jout*R + B*L*\[Eta]*
-                  \[CapitalNu]^2 + J*R*\[Eta]*\[CapitalNu]^2)^2]/
-             (2*L*(Jout + J*\[Eta]*\[CapitalNu]^2)))*\[Tau]$11397)*
-         Sqrt[-4*(Jout*L + J*L*\[Eta]*\[CapitalNu]^2)*(Bout*R + 
+           (Bafter*L + Jafter*R + B*L*\[Eta]*\[CapitalNu]^2 + 
+             J*R*\[Eta]*\[CapitalNu]^2)^2] + 
+        E^((-Bafter/(2*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+            (Jafter*R)/(2*L*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+            (B*\[Eta]*\[CapitalNu]^2)/(2*(Jafter + J*\[Eta]*\[CapitalNu]^
+                 2)) - (J*R*\[Eta]*\[CapitalNu]^2)/(2*L*(Jafter + J*\[Eta]*
+                \[CapitalNu]^2)) + Sqrt[-4*(Jafter*L + J*L*\[Eta]*
+                  \[CapitalNu]^2)*(Bafter*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + 
+                 B*R*\[Eta]*\[CapitalNu]^2) + (Bafter*L + Jafter*R + 
+                 B*L*\[Eta]*\[CapitalNu]^2 + J*R*\[Eta]*\[CapitalNu]^2)^2]/
+             (2*L*(Jafter + J*\[Eta]*\[CapitalNu]^2)))*\[Tau]$18916)*
+         Sqrt[-4*(Jafter*L + J*L*\[Eta]*\[CapitalNu]^2)*(Bafter*R + 
              Ke*Kt*\[Eta]*\[CapitalNu]^2 + B*R*\[Eta]*\[CapitalNu]^2) + 
-           (Bout*L + Jout*R + B*L*\[Eta]*\[CapitalNu]^2 + 
+           (Bafter*L + Jafter*R + B*L*\[Eta]*\[CapitalNu]^2 + 
+             J*R*\[Eta]*\[CapitalNu]^2)^2]))/
+      (2*L*(Jafter + J*\[Eta]*\[CapitalNu]^2)*
+       Sqrt[-4*(Jafter*L + J*L*\[Eta]*\[CapitalNu]^2)*(Bafter*R + 
+           Ke*Kt*\[Eta]*\[CapitalNu]^2 + B*R*\[Eta]*\[CapitalNu]^2) + 
+         (Bafter*L + Jafter*R + B*L*\[Eta]*\[CapitalNu]^2 + 
+           J*R*\[Eta]*\[CapitalNu]^2)^2]), 
+     (-(Bafter^2*E^((-Bafter/(2*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+             (Jafter*R)/(2*L*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+             (B*\[Eta]*\[CapitalNu]^2)/(2*(Jafter + J*\[Eta]*\[CapitalNu]^
+                  2)) - (J*R*\[Eta]*\[CapitalNu]^2)/(2*L*(Jafter + 
+                J*\[Eta]*\[CapitalNu]^2)) - Sqrt[-4*(Jafter*L + J*L*\[Eta]*
+                   \[CapitalNu]^2)*(Bafter*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + 
+                  B*R*\[Eta]*\[CapitalNu]^2) + (Bafter*L + Jafter*R + 
+                  B*L*\[Eta]*\[CapitalNu]^2 + J*R*\[Eta]*\[CapitalNu]^2)^2]/
+              (2*L*(Jafter + J*\[Eta]*\[CapitalNu]^2)))*\[Tau]$18916)*L) + 
+        Bafter^2*E^((-Bafter/(2*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+            (Jafter*R)/(2*L*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+            (B*\[Eta]*\[CapitalNu]^2)/(2*(Jafter + J*\[Eta]*\[CapitalNu]^
+                 2)) - (J*R*\[Eta]*\[CapitalNu]^2)/(2*L*(Jafter + J*\[Eta]*
+                \[CapitalNu]^2)) + Sqrt[-4*(Jafter*L + J*L*\[Eta]*
+                  \[CapitalNu]^2)*(Bafter*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + 
+                 B*R*\[Eta]*\[CapitalNu]^2) + (Bafter*L + Jafter*R + 
+                 B*L*\[Eta]*\[CapitalNu]^2 + J*R*\[Eta]*\[CapitalNu]^2)^2]/
+             (2*L*(Jafter + J*\[Eta]*\[CapitalNu]^2)))*\[Tau]$18916)*L + 
+        Bafter*E^((-Bafter/(2*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+            (Jafter*R)/(2*L*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+            (B*\[Eta]*\[CapitalNu]^2)/(2*(Jafter + J*\[Eta]*\[CapitalNu]^
+                 2)) - (J*R*\[Eta]*\[CapitalNu]^2)/(2*L*(Jafter + J*\[Eta]*
+                \[CapitalNu]^2)) - Sqrt[-4*(Jafter*L + J*L*\[Eta]*
+                  \[CapitalNu]^2)*(Bafter*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + 
+                 B*R*\[Eta]*\[CapitalNu]^2) + (Bafter*L + Jafter*R + 
+                 B*L*\[Eta]*\[CapitalNu]^2 + J*R*\[Eta]*\[CapitalNu]^2)^2]/
+             (2*L*(Jafter + J*\[Eta]*\[CapitalNu]^2)))*\[Tau]$18916)*Jafter*
+         R - Bafter*E^((-Bafter/(2*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+            (Jafter*R)/(2*L*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+            (B*\[Eta]*\[CapitalNu]^2)/(2*(Jafter + J*\[Eta]*\[CapitalNu]^
+                 2)) - (J*R*\[Eta]*\[CapitalNu]^2)/(2*L*(Jafter + J*\[Eta]*
+                \[CapitalNu]^2)) + Sqrt[-4*(Jafter*L + J*L*\[Eta]*
+                  \[CapitalNu]^2)*(Bafter*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + 
+                 B*R*\[Eta]*\[CapitalNu]^2) + (Bafter*L + Jafter*R + 
+                 B*L*\[Eta]*\[CapitalNu]^2 + J*R*\[Eta]*\[CapitalNu]^2)^2]/
+             (2*L*(Jafter + J*\[Eta]*\[CapitalNu]^2)))*\[Tau]$18916)*Jafter*
+         R + 2*E^((-Bafter/(2*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+            (Jafter*R)/(2*L*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+            (B*\[Eta]*\[CapitalNu]^2)/(2*(Jafter + J*\[Eta]*\[CapitalNu]^
+                 2)) - (J*R*\[Eta]*\[CapitalNu]^2)/(2*L*(Jafter + J*\[Eta]*
+                \[CapitalNu]^2)) - Sqrt[-4*(Jafter*L + J*L*\[Eta]*
+                  \[CapitalNu]^2)*(Bafter*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + 
+                 B*R*\[Eta]*\[CapitalNu]^2) + (Bafter*L + Jafter*R + 
+                 B*L*\[Eta]*\[CapitalNu]^2 + J*R*\[Eta]*\[CapitalNu]^2)^2]/
+             (2*L*(Jafter + J*\[Eta]*\[CapitalNu]^2)))*\[Tau]$18916)*Jafter*
+         Ke*Kt*\[Eta]*\[CapitalNu]^2 - 
+        2*E^((-Bafter/(2*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+            (Jafter*R)/(2*L*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+            (B*\[Eta]*\[CapitalNu]^2)/(2*(Jafter + J*\[Eta]*\[CapitalNu]^
+                 2)) - (J*R*\[Eta]*\[CapitalNu]^2)/(2*L*(Jafter + J*\[Eta]*
+                \[CapitalNu]^2)) + Sqrt[-4*(Jafter*L + J*L*\[Eta]*
+                  \[CapitalNu]^2)*(Bafter*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + 
+                 B*R*\[Eta]*\[CapitalNu]^2) + (Bafter*L + Jafter*R + 
+                 B*L*\[Eta]*\[CapitalNu]^2 + J*R*\[Eta]*\[CapitalNu]^2)^2]/
+             (2*L*(Jafter + J*\[Eta]*\[CapitalNu]^2)))*\[Tau]$18916)*Jafter*
+         Ke*Kt*\[Eta]*\[CapitalNu]^2 - 2*B*Bafter*
+         E^((-Bafter/(2*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+            (Jafter*R)/(2*L*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+            (B*\[Eta]*\[CapitalNu]^2)/(2*(Jafter + J*\[Eta]*\[CapitalNu]^
+                 2)) - (J*R*\[Eta]*\[CapitalNu]^2)/(2*L*(Jafter + J*\[Eta]*
+                \[CapitalNu]^2)) - Sqrt[-4*(Jafter*L + J*L*\[Eta]*
+                  \[CapitalNu]^2)*(Bafter*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + 
+                 B*R*\[Eta]*\[CapitalNu]^2) + (Bafter*L + Jafter*R + 
+                 B*L*\[Eta]*\[CapitalNu]^2 + J*R*\[Eta]*\[CapitalNu]^2)^2]/
+             (2*L*(Jafter + J*\[Eta]*\[CapitalNu]^2)))*\[Tau]$18916)*L*\[Eta]*
+         \[CapitalNu]^2 + 2*B*Bafter*
+         E^((-Bafter/(2*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+            (Jafter*R)/(2*L*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+            (B*\[Eta]*\[CapitalNu]^2)/(2*(Jafter + J*\[Eta]*\[CapitalNu]^
+                 2)) - (J*R*\[Eta]*\[CapitalNu]^2)/(2*L*(Jafter + J*\[Eta]*
+                \[CapitalNu]^2)) + Sqrt[-4*(Jafter*L + J*L*\[Eta]*
+                  \[CapitalNu]^2)*(Bafter*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + 
+                 B*R*\[Eta]*\[CapitalNu]^2) + (Bafter*L + Jafter*R + 
+                 B*L*\[Eta]*\[CapitalNu]^2 + J*R*\[Eta]*\[CapitalNu]^2)^2]/
+             (2*L*(Jafter + J*\[Eta]*\[CapitalNu]^2)))*\[Tau]$18916)*L*\[Eta]*
+         \[CapitalNu]^2 + Bafter*
+         E^((-Bafter/(2*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+            (Jafter*R)/(2*L*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+            (B*\[Eta]*\[CapitalNu]^2)/(2*(Jafter + J*\[Eta]*\[CapitalNu]^
+                 2)) - (J*R*\[Eta]*\[CapitalNu]^2)/(2*L*(Jafter + J*\[Eta]*
+                \[CapitalNu]^2)) - Sqrt[-4*(Jafter*L + J*L*\[Eta]*
+                  \[CapitalNu]^2)*(Bafter*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + 
+                 B*R*\[Eta]*\[CapitalNu]^2) + (Bafter*L + Jafter*R + 
+                 B*L*\[Eta]*\[CapitalNu]^2 + J*R*\[Eta]*\[CapitalNu]^2)^2]/
+             (2*L*(Jafter + J*\[Eta]*\[CapitalNu]^2)))*\[Tau]$18916)*J*R*
+         \[Eta]*\[CapitalNu]^2 - Bafter*
+         E^((-Bafter/(2*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+            (Jafter*R)/(2*L*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+            (B*\[Eta]*\[CapitalNu]^2)/(2*(Jafter + J*\[Eta]*\[CapitalNu]^
+                 2)) - (J*R*\[Eta]*\[CapitalNu]^2)/(2*L*(Jafter + J*\[Eta]*
+                \[CapitalNu]^2)) + Sqrt[-4*(Jafter*L + J*L*\[Eta]*
+                  \[CapitalNu]^2)*(Bafter*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + 
+                 B*R*\[Eta]*\[CapitalNu]^2) + (Bafter*L + Jafter*R + 
+                 B*L*\[Eta]*\[CapitalNu]^2 + J*R*\[Eta]*\[CapitalNu]^2)^2]/
+             (2*L*(Jafter + J*\[Eta]*\[CapitalNu]^2)))*\[Tau]$18916)*J*R*
+         \[Eta]*\[CapitalNu]^2 + 
+        B*E^((-Bafter/(2*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+            (Jafter*R)/(2*L*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+            (B*\[Eta]*\[CapitalNu]^2)/(2*(Jafter + J*\[Eta]*\[CapitalNu]^
+                 2)) - (J*R*\[Eta]*\[CapitalNu]^2)/(2*L*(Jafter + J*\[Eta]*
+                \[CapitalNu]^2)) - Sqrt[-4*(Jafter*L + J*L*\[Eta]*
+                  \[CapitalNu]^2)*(Bafter*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + 
+                 B*R*\[Eta]*\[CapitalNu]^2) + (Bafter*L + Jafter*R + 
+                 B*L*\[Eta]*\[CapitalNu]^2 + J*R*\[Eta]*\[CapitalNu]^2)^2]/
+             (2*L*(Jafter + J*\[Eta]*\[CapitalNu]^2)))*\[Tau]$18916)*Jafter*R*
+         \[Eta]*\[CapitalNu]^2 - 
+        B*E^((-Bafter/(2*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+            (Jafter*R)/(2*L*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+            (B*\[Eta]*\[CapitalNu]^2)/(2*(Jafter + J*\[Eta]*\[CapitalNu]^
+                 2)) - (J*R*\[Eta]*\[CapitalNu]^2)/(2*L*(Jafter + J*\[Eta]*
+                \[CapitalNu]^2)) + Sqrt[-4*(Jafter*L + J*L*\[Eta]*
+                  \[CapitalNu]^2)*(Bafter*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + 
+                 B*R*\[Eta]*\[CapitalNu]^2) + (Bafter*L + Jafter*R + 
+                 B*L*\[Eta]*\[CapitalNu]^2 + J*R*\[Eta]*\[CapitalNu]^2)^2]/
+             (2*L*(Jafter + J*\[Eta]*\[CapitalNu]^2)))*\[Tau]$18916)*Jafter*R*
+         \[Eta]*\[CapitalNu]^2 + 
+        2*E^((-Bafter/(2*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+            (Jafter*R)/(2*L*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+            (B*\[Eta]*\[CapitalNu]^2)/(2*(Jafter + J*\[Eta]*\[CapitalNu]^
+                 2)) - (J*R*\[Eta]*\[CapitalNu]^2)/(2*L*(Jafter + J*\[Eta]*
+                \[CapitalNu]^2)) - Sqrt[-4*(Jafter*L + J*L*\[Eta]*
+                  \[CapitalNu]^2)*(Bafter*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + 
+                 B*R*\[Eta]*\[CapitalNu]^2) + (Bafter*L + Jafter*R + 
+                 B*L*\[Eta]*\[CapitalNu]^2 + J*R*\[Eta]*\[CapitalNu]^2)^2]/
+             (2*L*(Jafter + J*\[Eta]*\[CapitalNu]^2)))*\[Tau]$18916)*J*Ke*Kt*
+         \[Eta]^2*\[CapitalNu]^4 - 
+        2*E^((-Bafter/(2*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+            (Jafter*R)/(2*L*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+            (B*\[Eta]*\[CapitalNu]^2)/(2*(Jafter + J*\[Eta]*\[CapitalNu]^
+                 2)) - (J*R*\[Eta]*\[CapitalNu]^2)/(2*L*(Jafter + J*\[Eta]*
+                \[CapitalNu]^2)) + Sqrt[-4*(Jafter*L + J*L*\[Eta]*
+                  \[CapitalNu]^2)*(Bafter*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + 
+                 B*R*\[Eta]*\[CapitalNu]^2) + (Bafter*L + Jafter*R + 
+                 B*L*\[Eta]*\[CapitalNu]^2 + J*R*\[Eta]*\[CapitalNu]^2)^2]/
+             (2*L*(Jafter + J*\[Eta]*\[CapitalNu]^2)))*\[Tau]$18916)*J*Ke*Kt*
+         \[Eta]^2*\[CapitalNu]^4 - 
+        B^2*E^((-Bafter/(2*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+            (Jafter*R)/(2*L*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+            (B*\[Eta]*\[CapitalNu]^2)/(2*(Jafter + J*\[Eta]*\[CapitalNu]^
+                 2)) - (J*R*\[Eta]*\[CapitalNu]^2)/(2*L*(Jafter + J*\[Eta]*
+                \[CapitalNu]^2)) - Sqrt[-4*(Jafter*L + J*L*\[Eta]*
+                  \[CapitalNu]^2)*(Bafter*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + 
+                 B*R*\[Eta]*\[CapitalNu]^2) + (Bafter*L + Jafter*R + 
+                 B*L*\[Eta]*\[CapitalNu]^2 + J*R*\[Eta]*\[CapitalNu]^2)^2]/
+             (2*L*(Jafter + J*\[Eta]*\[CapitalNu]^2)))*\[Tau]$18916)*L*
+         \[Eta]^2*\[CapitalNu]^4 + 
+        B^2*E^((-Bafter/(2*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+            (Jafter*R)/(2*L*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+            (B*\[Eta]*\[CapitalNu]^2)/(2*(Jafter + J*\[Eta]*\[CapitalNu]^
+                 2)) - (J*R*\[Eta]*\[CapitalNu]^2)/(2*L*(Jafter + J*\[Eta]*
+                \[CapitalNu]^2)) + Sqrt[-4*(Jafter*L + J*L*\[Eta]*
+                  \[CapitalNu]^2)*(Bafter*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + 
+                 B*R*\[Eta]*\[CapitalNu]^2) + (Bafter*L + Jafter*R + 
+                 B*L*\[Eta]*\[CapitalNu]^2 + J*R*\[Eta]*\[CapitalNu]^2)^2]/
+             (2*L*(Jafter + J*\[Eta]*\[CapitalNu]^2)))*\[Tau]$18916)*L*
+         \[Eta]^2*\[CapitalNu]^4 + 
+        B*E^((-Bafter/(2*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+            (Jafter*R)/(2*L*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+            (B*\[Eta]*\[CapitalNu]^2)/(2*(Jafter + J*\[Eta]*\[CapitalNu]^
+                 2)) - (J*R*\[Eta]*\[CapitalNu]^2)/(2*L*(Jafter + J*\[Eta]*
+                \[CapitalNu]^2)) - Sqrt[-4*(Jafter*L + J*L*\[Eta]*
+                  \[CapitalNu]^2)*(Bafter*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + 
+                 B*R*\[Eta]*\[CapitalNu]^2) + (Bafter*L + Jafter*R + 
+                 B*L*\[Eta]*\[CapitalNu]^2 + J*R*\[Eta]*\[CapitalNu]^2)^2]/
+             (2*L*(Jafter + J*\[Eta]*\[CapitalNu]^2)))*\[Tau]$18916)*J*R*
+         \[Eta]^2*\[CapitalNu]^4 - 
+        B*E^((-Bafter/(2*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+            (Jafter*R)/(2*L*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+            (B*\[Eta]*\[CapitalNu]^2)/(2*(Jafter + J*\[Eta]*\[CapitalNu]^
+                 2)) - (J*R*\[Eta]*\[CapitalNu]^2)/(2*L*(Jafter + J*\[Eta]*
+                \[CapitalNu]^2)) + Sqrt[-4*(Jafter*L + J*L*\[Eta]*
+                  \[CapitalNu]^2)*(Bafter*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + 
+                 B*R*\[Eta]*\[CapitalNu]^2) + (Bafter*L + Jafter*R + 
+                 B*L*\[Eta]*\[CapitalNu]^2 + J*R*\[Eta]*\[CapitalNu]^2)^2]/
+             (2*L*(Jafter + J*\[Eta]*\[CapitalNu]^2)))*\[Tau]$18916)*J*R*
+         \[Eta]^2*\[CapitalNu]^4 - Bafter*
+         E^((-Bafter/(2*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+            (Jafter*R)/(2*L*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+            (B*\[Eta]*\[CapitalNu]^2)/(2*(Jafter + J*\[Eta]*\[CapitalNu]^
+                 2)) - (J*R*\[Eta]*\[CapitalNu]^2)/(2*L*(Jafter + J*\[Eta]*
+                \[CapitalNu]^2)) - Sqrt[-4*(Jafter*L + J*L*\[Eta]*
+                  \[CapitalNu]^2)*(Bafter*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + 
+                 B*R*\[Eta]*\[CapitalNu]^2) + (Bafter*L + Jafter*R + 
+                 B*L*\[Eta]*\[CapitalNu]^2 + J*R*\[Eta]*\[CapitalNu]^2)^2]/
+             (2*L*(Jafter + J*\[Eta]*\[CapitalNu]^2)))*\[Tau]$18916)*
+         Sqrt[-4*(Jafter*L + J*L*\[Eta]*\[CapitalNu]^2)*(Bafter*R + 
+             Ke*Kt*\[Eta]*\[CapitalNu]^2 + B*R*\[Eta]*\[CapitalNu]^2) + 
+           (Bafter*L + Jafter*R + B*L*\[Eta]*\[CapitalNu]^2 + 
              J*R*\[Eta]*\[CapitalNu]^2)^2] - 
-        B*E^((-Bout/(2*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-            (Jout*R)/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-            (B*\[Eta]*\[CapitalNu]^2)/(2*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-            (J*R*\[Eta]*\[CapitalNu]^2)/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^
-                 2)) - Sqrt[-4*(Jout*L + J*L*\[Eta]*\[CapitalNu]^2)*
-                (Bout*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + B*R*\[Eta]*
-                  \[CapitalNu]^2) + (Bout*L + Jout*R + B*L*\[Eta]*
-                  \[CapitalNu]^2 + J*R*\[Eta]*\[CapitalNu]^2)^2]/
-             (2*L*(Jout + J*\[Eta]*\[CapitalNu]^2)))*\[Tau]$11397)*\[Eta]*
-         \[CapitalNu]^2*Sqrt[-4*(Jout*L + J*L*\[Eta]*\[CapitalNu]^2)*
-            (Bout*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + B*R*\[Eta]*
-              \[CapitalNu]^2) + (Bout*L + Jout*R + B*L*\[Eta]*
+        Bafter*E^((-Bafter/(2*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+            (Jafter*R)/(2*L*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+            (B*\[Eta]*\[CapitalNu]^2)/(2*(Jafter + J*\[Eta]*\[CapitalNu]^
+                 2)) - (J*R*\[Eta]*\[CapitalNu]^2)/(2*L*(Jafter + J*\[Eta]*
+                \[CapitalNu]^2)) + Sqrt[-4*(Jafter*L + J*L*\[Eta]*
+                  \[CapitalNu]^2)*(Bafter*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + 
+                 B*R*\[Eta]*\[CapitalNu]^2) + (Bafter*L + Jafter*R + 
+                 B*L*\[Eta]*\[CapitalNu]^2 + J*R*\[Eta]*\[CapitalNu]^2)^2]/
+             (2*L*(Jafter + J*\[Eta]*\[CapitalNu]^2)))*\[Tau]$18916)*
+         Sqrt[-4*(Jafter*L + J*L*\[Eta]*\[CapitalNu]^2)*(Bafter*R + 
+             Ke*Kt*\[Eta]*\[CapitalNu]^2 + B*R*\[Eta]*\[CapitalNu]^2) + 
+           (Bafter*L + Jafter*R + B*L*\[Eta]*\[CapitalNu]^2 + 
+             J*R*\[Eta]*\[CapitalNu]^2)^2] - 
+        B*E^((-Bafter/(2*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+            (Jafter*R)/(2*L*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+            (B*\[Eta]*\[CapitalNu]^2)/(2*(Jafter + J*\[Eta]*\[CapitalNu]^
+                 2)) - (J*R*\[Eta]*\[CapitalNu]^2)/(2*L*(Jafter + J*\[Eta]*
+                \[CapitalNu]^2)) - Sqrt[-4*(Jafter*L + J*L*\[Eta]*
+                  \[CapitalNu]^2)*(Bafter*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + 
+                 B*R*\[Eta]*\[CapitalNu]^2) + (Bafter*L + Jafter*R + 
+                 B*L*\[Eta]*\[CapitalNu]^2 + J*R*\[Eta]*\[CapitalNu]^2)^2]/
+             (2*L*(Jafter + J*\[Eta]*\[CapitalNu]^2)))*\[Tau]$18916)*\[Eta]*
+         \[CapitalNu]^2*Sqrt[-4*(Jafter*L + J*L*\[Eta]*\[CapitalNu]^2)*
+            (Bafter*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + B*R*\[Eta]*
+              \[CapitalNu]^2) + (Bafter*L + Jafter*R + B*L*\[Eta]*
               \[CapitalNu]^2 + J*R*\[Eta]*\[CapitalNu]^2)^2] - 
-        B*E^((-Bout/(2*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-            (Jout*R)/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-            (B*\[Eta]*\[CapitalNu]^2)/(2*(Jout + J*\[Eta]*\[CapitalNu]^2)) - 
-            (J*R*\[Eta]*\[CapitalNu]^2)/(2*L*(Jout + J*\[Eta]*\[CapitalNu]^
-                 2)) + Sqrt[-4*(Jout*L + J*L*\[Eta]*\[CapitalNu]^2)*
-                (Bout*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + B*R*\[Eta]*
-                  \[CapitalNu]^2) + (Bout*L + Jout*R + B*L*\[Eta]*
-                  \[CapitalNu]^2 + J*R*\[Eta]*\[CapitalNu]^2)^2]/
-             (2*L*(Jout + J*\[Eta]*\[CapitalNu]^2)))*\[Tau]$11397)*\[Eta]*
-         \[CapitalNu]^2*Sqrt[-4*(Jout*L + J*L*\[Eta]*\[CapitalNu]^2)*
-            (Bout*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + B*R*\[Eta]*
-              \[CapitalNu]^2) + (Bout*L + Jout*R + B*L*\[Eta]*
+        B*E^((-Bafter/(2*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+            (Jafter*R)/(2*L*(Jafter + J*\[Eta]*\[CapitalNu]^2)) - 
+            (B*\[Eta]*\[CapitalNu]^2)/(2*(Jafter + J*\[Eta]*\[CapitalNu]^
+                 2)) - (J*R*\[Eta]*\[CapitalNu]^2)/(2*L*(Jafter + J*\[Eta]*
+                \[CapitalNu]^2)) + Sqrt[-4*(Jafter*L + J*L*\[Eta]*
+                  \[CapitalNu]^2)*(Bafter*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + 
+                 B*R*\[Eta]*\[CapitalNu]^2) + (Bafter*L + Jafter*R + 
+                 B*L*\[Eta]*\[CapitalNu]^2 + J*R*\[Eta]*\[CapitalNu]^2)^2]/
+             (2*L*(Jafter + J*\[Eta]*\[CapitalNu]^2)))*\[Tau]$18916)*\[Eta]*
+         \[CapitalNu]^2*Sqrt[-4*(Jafter*L + J*L*\[Eta]*\[CapitalNu]^2)*
+            (Bafter*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + B*R*\[Eta]*
+              \[CapitalNu]^2) + (Bafter*L + Jafter*R + B*L*\[Eta]*
               \[CapitalNu]^2 + J*R*\[Eta]*\[CapitalNu]^2)^2])/
-       (2*(Jout + J*\[Eta]*\[CapitalNu]^2)^2*
-        Sqrt[-4*(Jout*L + J*L*\[Eta]*\[CapitalNu]^2)*(Bout*R + 
+       (2*(Jafter + J*\[Eta]*\[CapitalNu]^2)^2*
+        Sqrt[-4*(Jafter*L + J*L*\[Eta]*\[CapitalNu]^2)*(Bafter*R + 
             Ke*Kt*\[Eta]*\[CapitalNu]^2 + B*R*\[Eta]*\[CapitalNu]^2) + 
-          (Bout*L + Jout*R + B*L*\[Eta]*\[CapitalNu]^2 + 
-            J*R*\[Eta]*\[CapitalNu]^2)^2]) + DiracDelta[\[Tau]$11397]/
-       (Jout + J*\[Eta]*\[CapitalNu]^2)}
+          (Bafter*L + Jafter*R + B*L*\[Eta]*\[CapitalNu]^2 + 
+            J*R*\[Eta]*\[CapitalNu]^2)^2]) + DiracDelta[\[Tau]$18916]/
+       (Jafter + J*\[Eta]*\[CapitalNu]^2)}
  
-Attributes[\[Tau]$11397] = {Temporary}
- 
-makeMotorTimeDomainFunction[TransferFunctionModel[
-      {{{Kt*\[Eta]*\[CapitalNu], R + L*s}}, Bout*(R + L*s) + 
-        Jout*s*(R + L*s) + (Ke*Kt + (B + J*s)*(R + L*s))*\[Eta]*
-         \[CapitalNu]^2}, s, SystemsModelLabels -> {{"vbat", "\[Tau]auto"}, 
-        "\[Omega]out", Automatic}], makeTimeDomainFunctionConvolve] = 
-    Function[{vbat$, \[Tau]auto$}, Module[{fn$}, 
-      fn$ = makeTimeDomainFunctionConvolve[TransferFunctionModel[
-          {{{Kt*\[Eta]*\[CapitalNu], R + L*s}}, Bout*(R + L*s) + 
-            Jout*s*(R + L*s) + (Ke*Kt + (B + J*s)*(R + L*s))*\[Eta]*
-             \[CapitalNu]^2}, s, SystemsModelLabels -> 
-           {{"vbat", "\[Tau]auto"}, "\[Omega]out", Automatic}], 
-         {vbat$[#1] & , \[Tau]auto$[#1] & }]; fn$]]
+Attributes[\[Tau]$18916] = {Temporary}
  
 makeMotorTimeDomainFunction[TransferFunctionModel[
-      {{{Kt*\[Eta]*\[CapitalNu], R + L*s}}, Ke*Kt*s*\[Eta]*\[CapitalNu]^2 + 
-        s*(R + L*s)*(Bout + Jout*s + (B + J*s)*\[Eta]*\[CapitalNu]^2)}, s, 
-      SystemsModelLabels -> {{"vbat", "\[Tau]auto"}, "\[Theta]out", 
+      {{{Kt*\[Eta]*\[CapitalNu], R + L*s}}, Ke*Kt*\[Eta]*\[CapitalNu]^2 + 
+        (R + L*s)*(Bafter + Jafter*s + (B + J*s)*\[Eta]*\[CapitalNu]^2)}, s, 
+      SystemsModelLabels -> {{"vapp", "\[Tau]appafter"}, "\[Omega]out", 
         Automatic}], makeTimeDomainFunctionConvolve] = 
-    Function[{vbat$, \[Tau]auto$}, Module[{fn$}, 
+    Function[{vapp$, \[Tau]appafter$}, Module[{fn$}, 
+      fn$ = makeTimeDomainFunctionConvolve[TransferFunctionModel[
+          {{{Kt*\[Eta]*\[CapitalNu], R + L*s}}, Ke*Kt*\[Eta]*\[CapitalNu]^2 + 
+            (R + L*s)*(Bafter + Jafter*s + (B + J*s)*\[Eta]*\[CapitalNu]^2)}, 
+          s, SystemsModelLabels -> {{"vapp", "\[Tau]appafter"}, 
+            "\[Omega]out", Automatic}], {vapp$[#1] & , 
+          \[Tau]appafter$[#1] & }]; fn$]]
+ 
+makeMotorTimeDomainFunction[TransferFunctionModel[
+      {{{Kt*\[Eta]*\[CapitalNu], R + L*s}}, s*(Ke*Kt*\[Eta]*\[CapitalNu]^2 + 
+         (R + L*s)*(Bafter + Jafter*s + (B + J*s)*\[Eta]*\[CapitalNu]^2))}, 
+      s, SystemsModelLabels -> {{"vapp", "\[Tau]appafter"}, "\[Theta]after", 
+        Automatic}], makeTimeDomainFunctionConvolve] = 
+    Function[{vapp$, \[Tau]appafter$}, Module[{fn$}, 
       fn$ = makeTimeDomainFunctionConvolve[TransferFunctionModel[
           {{{Kt*\[Eta]*\[CapitalNu], R + L*s}}, 
-           Ke*Kt*s*\[Eta]*\[CapitalNu]^2 + s*(R + L*s)*(Bout + Jout*s + 
-              (B + J*s)*\[Eta]*\[CapitalNu]^2)}, s, SystemsModelLabels -> 
-           {{"vbat", "\[Tau]auto"}, "\[Theta]out", Automatic}], 
-         {vbat$[#1] & , \[Tau]auto$[#1] & }]; fn$]]
+           s*(Ke*Kt*\[Eta]*\[CapitalNu]^2 + (R + L*s)*(Bafter + Jafter*s + 
+               (B + J*s)*\[Eta]*\[CapitalNu]^2))}, s, SystemsModelLabels -> 
+           {{"vapp", "\[Tau]appafter"}, "\[Theta]after", Automatic}], 
+         {vapp$[#1] & , \[Tau]appafter$[#1] & }]; fn$]]
  
 makeMotorTimeDomainFunction[TransferFunctionModel[
-      {{{Kt*s*\[Eta]*\[CapitalNu], s*(R + L*s)}}, Bout*(R + L*s) + 
-        Jout*s*(R + L*s) + (Ke*Kt + (B + J*s)*(R + L*s))*\[Eta]*
-         \[CapitalNu]^2}, s, SystemsModelLabels -> {{"vbat", "\[Tau]auto"}, 
-        "\[Alpha]out", Automatic}], makeTimeDomainFunctionConvolve] = 
-    Function[{vbat$, \[Tau]auto$}, Module[{fn$}, 
-      fn$ = makeTimeDomainFunctionConvolve[TransferFunctionModel[
-          {{{Kt*s*\[Eta]*\[CapitalNu], s*(R + L*s)}}, Bout*(R + L*s) + 
-            Jout*s*(R + L*s) + (Ke*Kt + (B + J*s)*(R + L*s))*\[Eta]*
-             \[CapitalNu]^2}, s, SystemsModelLabels -> 
-           {{"vbat", "\[Tau]auto"}, "\[Alpha]out", Automatic}], 
-         {vbat$[#1] & , \[Tau]auto$[#1] & }]; fn$]]
- 
-makeMotorTimeDomainFunction[TransferFunctionModel[
-      {{{Kt*\[Eta]*\[CapitalNu]^2, (R + L*s)*\[CapitalNu]}}, 
-       Bout*(R + L*s) + Jout*s*(R + L*s) + (Ke*Kt + (B + J*s)*(R + L*s))*
-         \[Eta]*\[CapitalNu]^2}, s, SystemsModelLabels -> 
-       {{"vbat", "\[Tau]auto"}, "\[Omega]", Automatic}], 
-     makeTimeDomainFunctionConvolve] = Function[{vbat$, \[Tau]auto$}, 
-     Module[{fn$}, fn$ = makeTimeDomainFunctionConvolve[TransferFunctionModel[
-          {{{Kt*\[Eta]*\[CapitalNu]^2, (R + L*s)*\[CapitalNu]}}, 
-           Bout*(R + L*s) + Jout*s*(R + L*s) + (Ke*Kt + (B + J*s)*(R + L*s))*
-             \[Eta]*\[CapitalNu]^2}, s, SystemsModelLabels -> 
-           {{"vbat", "\[Tau]auto"}, "\[Omega]", Automatic}], 
-         {vbat$[#1] & , \[Tau]auto$[#1] & }]; fn$]]
- 
-makeMotorTimeDomainFunction[TransferFunctionModel[
-      {{{Kt*\[Eta]*\[CapitalNu]^2, (R + L*s)*\[CapitalNu]}}, 
-       Ke*Kt*s*\[Eta]*\[CapitalNu]^2 + s*(R + L*s)*(Bout + Jout*s + 
+      {{{Kt*s*\[Eta]*\[CapitalNu], s*(R + L*s)}}, 
+       Ke*Kt*\[Eta]*\[CapitalNu]^2 + (R + L*s)*(Bafter + Jafter*s + 
           (B + J*s)*\[Eta]*\[CapitalNu]^2)}, s, SystemsModelLabels -> 
-       {{"vbat", "\[Tau]auto"}, "\[Theta]", Automatic}], 
-     makeTimeDomainFunctionConvolve] = Function[{vbat$, \[Tau]auto$}, 
+       {{"vapp", "\[Tau]appafter"}, "\[Alpha]out", Automatic}], 
+     makeTimeDomainFunctionConvolve] = Function[{vapp$, \[Tau]appafter$}, 
+     Module[{fn$}, fn$ = makeTimeDomainFunctionConvolve[TransferFunctionModel[
+          {{{Kt*s*\[Eta]*\[CapitalNu], s*(R + L*s)}}, 
+           Ke*Kt*\[Eta]*\[CapitalNu]^2 + (R + L*s)*(Bafter + Jafter*s + 
+              (B + J*s)*\[Eta]*\[CapitalNu]^2)}, s, SystemsModelLabels -> 
+           {{"vapp", "\[Tau]appafter"}, "\[Alpha]out", Automatic}], 
+         {vapp$[#1] & , \[Tau]appafter$[#1] & }]; fn$]]
+ 
+makeMotorTimeDomainFunction[TransferFunctionModel[
+      {{{Kt*\[Eta]*\[CapitalNu]^2, (R + L*s)*\[CapitalNu]}}, 
+       Ke*Kt*\[Eta]*\[CapitalNu]^2 + (R + L*s)*(Bafter + Jafter*s + 
+          (B + J*s)*\[Eta]*\[CapitalNu]^2)}, s, SystemsModelLabels -> 
+       {{"vapp", "\[Tau]appafter"}, "\[Omega]", Automatic}], 
+     makeTimeDomainFunctionConvolve] = Function[{vapp$, \[Tau]appafter$}, 
      Module[{fn$}, fn$ = makeTimeDomainFunctionConvolve[TransferFunctionModel[
           {{{Kt*\[Eta]*\[CapitalNu]^2, (R + L*s)*\[CapitalNu]}}, 
-           Ke*Kt*s*\[Eta]*\[CapitalNu]^2 + s*(R + L*s)*(Bout + Jout*s + 
+           Ke*Kt*\[Eta]*\[CapitalNu]^2 + (R + L*s)*(Bafter + Jafter*s + 
               (B + J*s)*\[Eta]*\[CapitalNu]^2)}, s, SystemsModelLabels -> 
-           {{"vbat", "\[Tau]auto"}, "\[Theta]", Automatic}], 
-         {vbat$[#1] & , \[Tau]auto$[#1] & }]; fn$]]
+           {{"vapp", "\[Tau]appafter"}, "\[Omega]", Automatic}], 
+         {vapp$[#1] & , \[Tau]appafter$[#1] & }]; fn$]]
+ 
+makeMotorTimeDomainFunction[TransferFunctionModel[
+      {{{Kt*\[Eta]*\[CapitalNu]^2, (R + L*s)*\[CapitalNu]}}, 
+       s*(Ke*Kt*\[Eta]*\[CapitalNu]^2 + (R + L*s)*(Bafter + Jafter*s + 
+           (B + J*s)*\[Eta]*\[CapitalNu]^2))}, s, SystemsModelLabels -> 
+       {{"vapp", "\[Tau]appafter"}, "\[Theta]", Automatic}], 
+     makeTimeDomainFunctionConvolve] = Function[{vapp$, \[Tau]appafter$}, 
+     Module[{fn$}, fn$ = makeTimeDomainFunctionConvolve[TransferFunctionModel[
+          {{{Kt*\[Eta]*\[CapitalNu]^2, (R + L*s)*\[CapitalNu]}}, 
+           s*(Ke*Kt*\[Eta]*\[CapitalNu]^2 + (R + L*s)*(Bafter + Jafter*s + 
+               (B + J*s)*\[Eta]*\[CapitalNu]^2))}, s, SystemsModelLabels -> 
+           {{"vapp", "\[Tau]appafter"}, "\[Theta]", Automatic}], 
+         {vapp$[#1] & , \[Tau]appafter$[#1] & }]; fn$]]
  
 makeMotorTimeDomainFunction[TransferFunctionModel[
       {{{Ke*Kt*\[Eta]*\[CapitalNu]^2, Ke*(R + L*s)*\[CapitalNu]}}, 
-       Bout*(R + L*s) + Jout*s*(R + L*s) + (Ke*Kt + (B + J*s)*(R + L*s))*
-         \[Eta]*\[CapitalNu]^2}, s, SystemsModelLabels -> 
-       {{"vbat", "\[Tau]auto"}, "vg", Automatic}], 
-     makeTimeDomainFunctionConvolve] = Function[{vbat$, \[Tau]auto$}, 
+       Ke*Kt*\[Eta]*\[CapitalNu]^2 + (R + L*s)*(Bafter + Jafter*s + 
+          (B + J*s)*\[Eta]*\[CapitalNu]^2)}, s, SystemsModelLabels -> 
+       {{"vapp", "\[Tau]appafter"}, "vg", Automatic}], 
+     makeTimeDomainFunctionConvolve] = Function[{vapp$, \[Tau]appafter$}, 
      Module[{fn$}, fn$ = makeTimeDomainFunctionConvolve[TransferFunctionModel[
           {{{Ke*Kt*\[Eta]*\[CapitalNu]^2, Ke*(R + L*s)*\[CapitalNu]}}, 
-           Bout*(R + L*s) + Jout*s*(R + L*s) + (Ke*Kt + (B + J*s)*(R + L*s))*
-             \[Eta]*\[CapitalNu]^2}, s, SystemsModelLabels -> 
-           {{"vbat", "\[Tau]auto"}, "vg", Automatic}], 
-         {vbat$[#1] & , \[Tau]auto$[#1] & }]; fn$]]
+           Ke*Kt*\[Eta]*\[CapitalNu]^2 + (R + L*s)*(Bafter + Jafter*s + 
+              (B + J*s)*\[Eta]*\[CapitalNu]^2)}, s, SystemsModelLabels -> 
+           {{"vapp", "\[Tau]appafter"}, "vg", Automatic}], 
+         {vapp$[#1] & , \[Tau]appafter$[#1] & }]; fn$]]
  
 makeMotorTimeDomainFunction[TransferFunctionModel[
       {{{Kt*s*\[Eta]*\[CapitalNu]^2, s*(R + L*s)*\[CapitalNu]}}, 
-       Bout*(R + L*s) + Jout*s*(R + L*s) + (Ke*Kt + (B + J*s)*(R + L*s))*
-         \[Eta]*\[CapitalNu]^2}, s, SystemsModelLabels -> 
-       {{"vbat", "\[Tau]auto"}, "\[Alpha]", Automatic}], 
-     makeTimeDomainFunctionConvolve] = Function[{vbat$, \[Tau]auto$}, 
+       Ke*Kt*\[Eta]*\[CapitalNu]^2 + (R + L*s)*(Bafter + Jafter*s + 
+          (B + J*s)*\[Eta]*\[CapitalNu]^2)}, s, SystemsModelLabels -> 
+       {{"vapp", "\[Tau]appafter"}, "\[Alpha]", Automatic}], 
+     makeTimeDomainFunctionConvolve] = Function[{vapp$, \[Tau]appafter$}, 
      Module[{fn$}, fn$ = makeTimeDomainFunctionConvolve[TransferFunctionModel[
           {{{Kt*s*\[Eta]*\[CapitalNu]^2, s*(R + L*s)*\[CapitalNu]}}, 
-           Bout*(R + L*s) + Jout*s*(R + L*s) + (Ke*Kt + (B + J*s)*(R + L*s))*
-             \[Eta]*\[CapitalNu]^2}, s, SystemsModelLabels -> 
-           {{"vbat", "\[Tau]auto"}, "\[Alpha]", Automatic}], 
-         {vbat$[#1] & , \[Tau]auto$[#1] & }]; fn$]]
+           Ke*Kt*\[Eta]*\[CapitalNu]^2 + (R + L*s)*(Bafter + Jafter*s + 
+              (B + J*s)*\[Eta]*\[CapitalNu]^2)}, s, SystemsModelLabels -> 
+           {{"vapp", "\[Tau]appafter"}, "\[Alpha]", Automatic}], 
+         {vapp$[#1] & , \[Tau]appafter$[#1] & }]; fn$]]
  
 makeMotorTimeDomainFunction[TransferFunctionModel[
-      {{{Bout + Jout*s + (B + J*s)*\[Eta]*\[CapitalNu]^2, 
+      {{{Bafter + Jafter*s + (B + J*s)*\[Eta]*\[CapitalNu]^2, 
          -(Ke*\[CapitalNu])}}, Ke*Kt*\[Eta]*\[CapitalNu]^2 + 
-        (R + L*s)*(Bout + Jout*s + (B + J*s)*\[Eta]*\[CapitalNu]^2)}, s, 
-      SystemsModelLabels -> {{"vbat", "\[Tau]auto"}, "i", Automatic}], 
-     makeTimeDomainFunctionConvolve] = Function[{vbat$, \[Tau]auto$}, 
+        (R + L*s)*(Bafter + Jafter*s + (B + J*s)*\[Eta]*\[CapitalNu]^2)}, s, 
+      SystemsModelLabels -> {{"vapp", "\[Tau]appafter"}, "i", Automatic}], 
+     makeTimeDomainFunctionConvolve] = Function[{vapp$, \[Tau]appafter$}, 
      Module[{fn$}, fn$ = makeTimeDomainFunctionConvolve[TransferFunctionModel[
-          {{{Bout + Jout*s + (B + J*s)*\[Eta]*\[CapitalNu]^2, 
+          {{{Bafter + Jafter*s + (B + J*s)*\[Eta]*\[CapitalNu]^2, 
              -(Ke*\[CapitalNu])}}, Ke*Kt*\[Eta]*\[CapitalNu]^2 + 
-            (R + L*s)*(Bout + Jout*s + (B + J*s)*\[Eta]*\[CapitalNu]^2)}, s, 
-          SystemsModelLabels -> {{"vbat", "\[Tau]auto"}, "i", Automatic}], 
-         {vbat$[#1] & , \[Tau]auto$[#1] & }]; fn$]]
+            (R + L*s)*(Bafter + Jafter*s + (B + J*s)*\[Eta]*\[CapitalNu]^2)}, 
+          s, SystemsModelLabels -> {{"vapp", "\[Tau]appafter"}, "i", 
+            Automatic}], {vapp$[#1] & , \[Tau]appafter$[#1] & }]; fn$]]
  
 makeMotorTimeDomainFunction[TransferFunctionModel[
-      {{{Kt*(Bout + Jout*s + (B + J*s)*\[Eta]*\[CapitalNu]^2), 
+      {{{Kt*(Bafter + Jafter*s + (B + J*s)*\[Eta]*\[CapitalNu]^2), 
          -(Ke*Kt*\[CapitalNu])}}, Ke*Kt*\[Eta]*\[CapitalNu]^2 + 
-        (R + L*s)*(Bout + Jout*s + (B + J*s)*\[Eta]*\[CapitalNu]^2)}, s, 
-      SystemsModelLabels -> {{"vbat", "\[Tau]auto"}, "\[Tau]", Automatic}], 
-     makeTimeDomainFunctionConvolve] = Function[{vbat$, \[Tau]auto$}, 
-     Module[{fn$}, fn$ = makeTimeDomainFunctionConvolve[TransferFunctionModel[
-          {{{Kt*(Bout + Jout*s + (B + J*s)*\[Eta]*\[CapitalNu]^2), 
+        (R + L*s)*(Bafter + Jafter*s + (B + J*s)*\[Eta]*\[CapitalNu]^2)}, s, 
+      SystemsModelLabels -> {{"vapp", "\[Tau]appafter"}, "\[Tau]", 
+        Automatic}], makeTimeDomainFunctionConvolve] = 
+    Function[{vapp$, \[Tau]appafter$}, Module[{fn$}, 
+      fn$ = makeTimeDomainFunctionConvolve[TransferFunctionModel[
+          {{{Kt*(Bafter + Jafter*s + (B + J*s)*\[Eta]*\[CapitalNu]^2), 
              -(Ke*Kt*\[CapitalNu])}}, Ke*Kt*\[Eta]*\[CapitalNu]^2 + 
-            (R + L*s)*(Bout + Jout*s + (B + J*s)*\[Eta]*\[CapitalNu]^2)}, s, 
-          SystemsModelLabels -> {{"vbat", "\[Tau]auto"}, "\[Tau]", 
-            Automatic}], {vbat$[#1] & , \[Tau]auto$[#1] & }]; fn$]]
+            (R + L*s)*(Bafter + Jafter*s + (B + J*s)*\[Eta]*\[CapitalNu]^2)}, 
+          s, SystemsModelLabels -> {{"vapp", "\[Tau]appafter"}, "\[Tau]", 
+            Automatic}], {vapp$[#1] & , \[Tau]appafter$[#1] & }]; fn$]]
  
 makeMotorTimeDomainFunction[model_] := makeMotorTimeDomainFunction[model, 
      makeTimeDomainFunctionConvolve]
  
 makeMotorTimeDomainFunction[model_, builder_] := 
     makeMotorTimeDomainFunction[model, builder] = 
-     Module[{t}, Function[{vbat, \[Tau]auto}, Module[{fn}, 
-        fn = builder[model, {vbat[#1] & , \[Tau]auto[#1] & }]; fn]]]
+     Module[{t}, Function[{vapp, \[Tau]appafter}, 
+       Module[{fn}, fn = builder[model, {vapp[#1] & , 
+            \[Tau]appafter[#1] & }]; fn]]]

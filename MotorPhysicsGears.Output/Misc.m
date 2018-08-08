@@ -16,9 +16,9 @@ motorParameters[motorData_, motorName_, opts:OptionsPattern[]] :=
        quantify = Function[{name, value}, qty = name /. parameterQuantities; 
           name -> Quantity[value, QuantityUnit[qty]]]; 
        assoc = Association[(quantify @@ #1 & ) /@ paramValues]; 
-       assoc[Jout] = Quantity[0, siAngularInertialUnits]; 
-       assoc[Bout] = Quantity[0, siAngularViscousDragUnits]; 
-       assoc[const\[Tau]auto] = Quantity[0, siTorqueUnits]; 
+       assoc[Jafter] = Quantity[0, siAngularInertialUnits]; 
+       assoc[Bafter] = Quantity[0, siAngularViscousDragUnits]; 
+       assoc[const\[Tau]appafter] = Quantity[0, siTorqueUnits]; 
        If[ !OptionValue[Geared], assoc[\[CapitalNu]] = 1; assoc[\[Eta]] = 1; 
          assoc[Ke] = assoc[KeShaft]; assoc[Kt] = assoc[KtShaft]; ]; 
        assoc[KeShaft] =. ; assoc[KtShaft] =. ; simplifyUnits[siUnits[assoc]]]]
@@ -85,31 +85,32 @@ parameterQuantities = <|R -> Quantity[R, "Ohms"],
      Derivative[1][i][t] -> Quantity[Derivative[1][i][t], 
        "Amperes"/"Seconds"], Derivative[2][i][t] -> 
       Quantity[Derivative[2][i][t], "Amperes"/"Seconds"^2], 
-     vbat[t] -> Quantity[vbat[t], "Volts"], constvbat -> 
-      Quantity[constvbat, "Volts"], vg[t] -> Quantity[vg[t], "Volts"], 
+     vapp[t] -> Quantity[vapp[t], "Volts"], constvapp -> 
+      Quantity[constvapp, "Volts"], vg[t] -> Quantity[vg[t], "Volts"], 
      J -> Quantity[J, ("Meters"*"Newtons"*"Seconds"^2)/"Radians"^2], 
-     Jout -> Quantity[Jout, ("Meters"*"Newtons"*"Seconds"^2)/"Radians"^2], 
-     B -> Quantity[B, ("Meters"*"Newtons"*"Seconds")/"Radians"^2], 
-     Bout -> Quantity[Bout, ("Meters"*"Newtons"*"Seconds")/"Radians"^2], 
+     Jafter -> Quantity[Jafter, ("Meters"*"Newtons"*"Seconds"^2)/
+        "Radians"^2], B -> Quantity[B, ("Meters"*"Newtons"*"Seconds")/
+        "Radians"^2], Bafter -> Quantity[Bafter, 
+       ("Meters"*"Newtons"*"Seconds")/"Radians"^2], 
      Ke -> Quantity[Ke, ("Seconds"*"Volts")/"Radians"], 
      KeShaft -> Quantity[KeShaft, ("Seconds"*"Volts")/"Radians"], 
      Kt -> Quantity[Kt, ("Meters"*"Newtons")/("Amperes"*"Radians")], 
      KtShaft -> Quantity[KtShaft, ("Meters"*"Newtons")/
         ("Amperes"*"Radians")], \[Theta][t] -> Quantity[\[Theta][t], 
-       "Radians"], \[Theta]out[t] -> Quantity[\[Theta]out[t], "Radians"], 
+       "Radians"], \[Theta]after[t] -> Quantity[\[Theta]after[t], "Radians"], 
      Derivative[1][\[Theta]][t] -> Quantity[Derivative[1][\[Theta]][t], 
-       "Radians"/"Seconds"], Derivative[1][\[Theta]out][t] -> 
-      Quantity[Derivative[1][\[Theta]out][t], "Radians"], 
+       "Radians"/"Seconds"], Derivative[1][\[Theta]after][t] -> 
+      Quantity[Derivative[1][\[Theta]after][t], "Radians"], 
      Derivative[2][\[Theta]][t] -> Quantity[Derivative[2][\[Theta]][t], 
-       "Radians"/"Seconds"^2], Derivative[2][\[Theta]out][t] -> 
-      Quantity[Derivative[2][\[Theta]out][t], "Radians"], 
+       "Radians"/"Seconds"^2], Derivative[2][\[Theta]after][t] -> 
+      Quantity[Derivative[2][\[Theta]after][t], "Radians"], 
      \[Omega][t] -> Quantity[\[Omega][t], "Radians"/"Seconds"], 
      \[Alpha][t] -> Quantity[\[Alpha][t], "Radians"/"Seconds"^2], 
      \[Tau][t] -> Quantity[\[Tau][t], ("Meters"*"Newtons")/"Radians"], 
-     \[Tau]auto[t] -> Quantity[\[Tau]auto[t], ("Meters"*"Newtons")/
-        "Radians"], const\[Tau]auto -> Quantity[const\[Tau]auto, 
-       ("Meters"*"Newtons")/"Radians"], \[CapitalNu] -> 
-      Quantity[\[CapitalNu], "DimensionlessUnit"], 
+     \[Tau]appafter[t] -> Quantity[\[Tau]appafter[t], 
+       ("Meters"*"Newtons")/"Radians"], const\[Tau]appafter -> 
+      Quantity[const\[Tau]appafter, ("Meters"*"Newtons")/"Radians"], 
+     \[CapitalNu] -> Quantity[\[CapitalNu], "DimensionlessUnit"], 
      \[Eta] -> Quantity[\[Eta], "DimensionlessUnit"]|>
  
 Attributes[Derivative] = {NHoldAll, ReadProtected}
@@ -129,25 +130,25 @@ mapQuantities[expr_, f_] := expr /. {Quantity[val_, unit_] :>
 siUnits[expr_] := mapQuantities[expr, UnitConvert]
  
 motorLoad[opts:OptionsPattern[]] := Module[{assoc = Association[]}, 
-     assoc[Jout] = OptionValue[J] + OptionValue[Jout]; 
-      assoc[Bout] = OptionValue[B] + OptionValue[Bout]; 
-      assoc[const\[Tau]auto] = OptionValue[const\[Tau]auto]; assoc]
+     assoc[Jafter] = OptionValue[J] + OptionValue[Jafter]; 
+      assoc[Bafter] = OptionValue[B] + OptionValue[Bafter]; 
+      assoc[const\[Tau]appafter] = OptionValue[const\[Tau]appafter]; assoc]
  
 Options[motorLoad] = {J -> Quantity[0, ("Meters"*"Newtons"*"Seconds"^2)/
-        "Radians"^2], Jout -> Quantity[0, ("Meters"*"Newtons"*"Seconds"^2)/
+        "Radians"^2], Jafter -> Quantity[0, ("Meters"*"Newtons"*"Seconds"^2)/
         "Radians"^2], B -> Quantity[0, ("Meters"*"Newtons"*"Seconds")/
-        "Radians"^2], Bout -> Quantity[0, ("Meters"*"Newtons"*"Seconds")/
-        "Radians"^2], const\[Tau]auto -> Quantity[0, ("Meters"*"Newtons")/
-        "Radians"]}
+        "Radians"^2], Bafter -> Quantity[0, ("Meters"*"Newtons"*"Seconds")/
+        "Radians"^2], const\[Tau]appafter -> Quantity[0, 
+       ("Meters"*"Newtons")/"Radians"]}
  
 flywheel[mass_, radius_] := motorLoad[
      J -> mass*(radius^2/2/Quantity[1, "Radians^2"])]
  
 addMotorLoad[motor_, load_] := Module[{assoc}, assoc = Association[motor]; 
-      assoc[Jout] = (Jout /. motor) + (Jout /. load); 
-      assoc[Bout] = (Bout /. motor) + (Bout /. load); 
-      assoc[const\[Tau]auto] = (const\[Tau]auto /. motor) + 
-        (const\[Tau]auto /. load); assoc]
+      assoc[Jafter] = (Jafter /. motor) + (Jafter /. load); 
+      assoc[Bafter] = (Bafter /. motor) + (Bafter /. load); 
+      assoc[const\[Tau]appafter] = (const\[Tau]appafter /. motor) + 
+        (const\[Tau]appafter /. load); assoc]
  
 massOnPulley[mass_, radius_] := Module[{gravityAcceleration, gravityForce, 
       angularAcceleration, tangentialAcceleration, tangentialForce, tension, 
@@ -160,49 +161,52 @@ massOnPulley[mass_, radius_] := Module[{gravityAcceleration, gravityForce,
       tension = gravityForce + tangentialForce; 
       torque = tension*(radius/radians); unit = QuantityUnit[torque]; 
       parts = List @@ Apart[QuantityMagnitude[torque]]; 
-      motorLoad[const\[Tau]auto -> Quantity[parts[[1]], unit], 
-       Jout -> Quantity[parts[[2]], unit]/angularAcceleration]]
+      motorLoad[const\[Tau]appafter -> Quantity[parts[[1]], unit], 
+       Jafter -> Quantity[parts[[2]], unit]/angularAcceleration]]
  
 siAngularAccelerationUnits = "Radians"/"Seconds"^2
  
-applyTimeFunction[Function[{vbat$, \[Tau]auto$}, 
+applyTimeFunction[Function[{vapp$, \[Tau]appafter$}, 
       Module[{fn$}, fn$ = makeTimeDomainFunctionConvolve[
           TransferFunctionModel[{{{Kt*\[Eta]*\[CapitalNu]^2, 
-              (R + L*s)*\[CapitalNu]}}, Bout*(R + L*s) + Jout*s*(R + L*s) + 
-             (Ke*Kt + (B + J*s)*(R + L*s))*\[Eta]*\[CapitalNu]^2}, s, 
-           SystemsModelLabels -> {{"vbat", "\[Tau]auto"}, "\[Omega]", 
-             Automatic}], {vbat$[#1] & , \[Tau]auto$[#1] & }]; fn$]], 
-     <|R -> 3.3, L -> 0.000694, Ke -> 0.017766666666666667, 
-      Kt -> 0.017766666666666667, J -> 0.00001041, B -> 0.033, 
-      \[CapitalNu] -> 60., \[Eta] -> 0.9, Jout -> 0.0096, Bout -> 0., 
-      const\[Tau]auto -> 0.|>, <|t -> t, constvbat -> 12.|>, t] = 
+              (R + L*s)*\[CapitalNu]}}, Ke*Kt*\[Eta]*\[CapitalNu]^2 + 
+             (R + L*s)*(Bafter + Jafter*s + (B + J*s)*\[Eta]*\[CapitalNu]^
+                 2)}, s, SystemsModelLabels -> {{"vapp", "\[Tau]appafter"}, 
+             "\[Omega]", Automatic}], {vapp$[#1] & , 
+           \[Tau]appafter$[#1] & }]; fn$]], <|R -> 3.3, L -> 0.000694, 
+      Ke -> 0.017766666666666667, Kt -> 0.017766666666666667, 
+      J -> 0.00001041, B -> 0.033, \[CapitalNu] -> 60., \[Eta] -> 0.9, 
+      Jafter -> 0.0096, Bafter -> 0., const\[Tau]appafter -> 0.|>, 
+     <|t -> t, constvapp -> 12.|>, t] = 
     {{1.952101107524381 + 2.1468311673524805/E^(4740.076116086594*t) - 
        4.098932274876861/E^(2482.632661195531*t)}, 
      {1.952101107524381 + 2.1468311673524805/E^(4740.076116086594*t) - 
        4.098932274876861/E^(2482.632661195531*t)}}
  
-applyTimeFunction[Function[{vbat$, \[Tau]auto$}, 
+applyTimeFunction[Function[{vapp$, \[Tau]appafter$}, 
       Module[{fn$}, fn$ = makeTimeDomainFunctionConvolve[
           TransferFunctionModel[{{{Kt*\[Eta]*\[CapitalNu]^2, 
-              (R + L*s)*\[CapitalNu]}}, Bout*(R + L*s) + Jout*s*(R + L*s) + 
-             (Ke*Kt + (B + J*s)*(R + L*s))*\[Eta]*\[CapitalNu]^2}, s, 
-           SystemsModelLabels -> {{"vbat", "\[Tau]auto"}, "\[Omega]", 
-             Automatic}], {vbat$[#1] & , \[Tau]auto$[#1] & }]; fn$]], 
-     <|R -> 3.3, L -> 0.000694, Ke -> 1.066, Kt -> 1.066, J -> 0.00001041, 
-      B -> 0.033, \[CapitalNu] -> 1., \[Eta] -> 1., Jout -> 0.0096, 
-      Bout -> 0., const\[Tau]auto -> 0.|>, <|t -> t, constvbat -> 12.|>, t] = 
+              (R + L*s)*\[CapitalNu]}}, Ke*Kt*\[Eta]*\[CapitalNu]^2 + 
+             (R + L*s)*(Bafter + Jafter*s + (B + J*s)*\[Eta]*\[CapitalNu]^
+                 2)}, s, SystemsModelLabels -> {{"vapp", "\[Tau]appafter"}, 
+             "\[Omega]", Automatic}], {vapp$[#1] & , 
+           \[Tau]appafter$[#1] & }]; fn$]], <|R -> 3.3, L -> 0.000694, 
+      Ke -> 1.066, Kt -> 1.066, J -> 0.00001041, B -> 0.033, 
+      \[CapitalNu] -> 1., \[Eta] -> 1., Jafter -> 0.0096, Bafter -> 0., 
+      const\[Tau]appafter -> 0.|>, <|t -> t, constvapp -> 12.|>, t] = 
     {{10.272586520362115 + 0.08685804310541265/E^(4718.9116176050775*t) - 
        10.359444563467529/E^(39.56538655923656*t)}, 
      {10.272586520362115 + 0.08685804310541265/E^(4718.9116176050775*t) - 
        10.359444563467529/E^(39.56538655923656*t)}}
  
-applyTimeFunction[Function[{vbat$, \[Tau]auto$}, 
+applyTimeFunction[Function[{vapp$, \[Tau]appafter$}, 
       Module[{fn$}, fn$ = makeTimeDomainFunctionConvolve[
           TransferFunctionModel[{{{Kt*\[Eta]*\[CapitalNu]^2, 
-              (R + L*s)*\[CapitalNu]}}, Bout*(R + L*s) + Jout*s*(R + L*s) + 
-             (Ke*Kt + (B + J*s)*(R + L*s))*\[Eta]*\[CapitalNu]^2}, s, 
-           SystemsModelLabels -> {{"vbat", "\[Tau]auto"}, "\[Omega]", 
-             Automatic}], {vbat$[#1] & , \[Tau]auto$[#1] & }]; fn$]], 
+              (R + L*s)*\[CapitalNu]}}, Ke*Kt*\[Eta]*\[CapitalNu]^2 + 
+             (R + L*s)*(Bafter + Jafter*s + (B + J*s)*\[Eta]*\[CapitalNu]^
+                 2)}, s, SystemsModelLabels -> {{"vapp", "\[Tau]appafter"}, 
+             "\[Omega]", Automatic}], {vapp$[#1] & , 
+           \[Tau]appafter$[#1] & }]; fn$]], 
      <|R -> Quantity[33/10, "Watts"/"Amperes"^2], 
       L -> Quantity[347/500000, "Henries"], 
       Ke -> Quantity[533/500, ("Kilograms"*"Meters"^2)/("Amperes"*"Radians"*
@@ -211,11 +215,12 @@ applyTimeFunction[Function[{vbat$, \[Tau]auto$},
       J -> Quantity[1041/100000000, ("Kilograms"*"Meters"^2)/"Radians"^2], 
       B -> Quantity[33/1000, ("Kilograms"*"Meters"^2)/
          ("Radians"^2*"Seconds")], \[CapitalNu] -> 1, \[Eta] -> 1, 
-      Jout -> Quantity[1, ("Kilograms"*"Meters"^2)/"Radians"^2], 
-      Bout -> Quantity[0, ("Kilograms"*"Meters"^2)/("Radians"^2*"Seconds")], 
-      const\[Tau]auto -> Quantity[0, ("Meters"*"Newtons")/"Radians"]|>, 
-     <|t -> Quantity[t, "Seconds"], constvbat -> Quantity[12, "Volts"]|>, 
-     t] = {{Quantity[1599000/155657, "Radians"/"Seconds"] + 
+      Jafter -> Quantity[1, ("Kilograms"*"Meters"^2)/"Radians"^2], 
+      Bafter -> Quantity[0, ("Kilograms"*"Meters"^2)/("Radians"^2*
+          "Seconds")], const\[Tau]appafter -> Quantity[0, 
+        ("Meters"*"Newtons")/"Radians"]|>, <|t -> Quantity[t, "Seconds"], 
+      constvapp -> Quantity[12, "Volts"]|>, t] = 
+    {{Quantity[1599000/155657, "Radians"/"Seconds"] + 
        E^Quantity[(5000*(-16500286275 + Sqrt[272173025490913197401])*t)/
            34700361227, (Sqrt["Kilograms"]*"Meters")/("Amperes"*
             Sqrt[("Kilograms"*"Meters"^2)/("Amperes"^2*"Seconds"^2)]*
@@ -229,13 +234,14 @@ applyTimeFunction[Function[{vbat$, \[Tau]auto$},
      {10.272586520362077 + 0.0008153853405064027/E^(4754.698853616825*t) - 
        10.273401905702585/E^(0.37737370535485504*t)}}
  
-applyTimeFunction[Function[{vbat$, \[Tau]auto$}, 
+applyTimeFunction[Function[{vapp$, \[Tau]appafter$}, 
       Module[{fn$}, fn$ = makeTimeDomainFunctionConvolve[
           TransferFunctionModel[{{{Kt*\[Eta]*\[CapitalNu]^2, 
-              (R + L*s)*\[CapitalNu]}}, Ke*Kt*s*\[Eta]*\[CapitalNu]^2 + 
-             s*(R + L*s)*(Bout + Jout*s + (B + J*s)*\[Eta]*\[CapitalNu]^2)}, 
-           s, SystemsModelLabels -> {{"vbat", "\[Tau]auto"}, "\[Theta]", 
-             Automatic}], {vbat$[#1] & , \[Tau]auto$[#1] & }]; fn$]], 
+              (R + L*s)*\[CapitalNu]}}, s*(Ke*Kt*\[Eta]*\[CapitalNu]^2 + 
+              (R + L*s)*(Bafter + Jafter*s + (B + J*s)*\[Eta]*\[CapitalNu]^
+                  2))}, s, SystemsModelLabels -> {{"vapp", "\[Tau]appafter"}, 
+             "\[Theta]", Automatic}], {vapp$[#1] & , 
+           \[Tau]appafter$[#1] & }]; fn$]], 
      <|R -> Quantity[33/10, "Watts"/"Amperes"^2], 
       L -> Quantity[347/500000, "Henries"], 
       Ke -> Quantity[533/500, ("Kilograms"*"Meters"^2)/("Amperes"*"Radians"*
@@ -244,11 +250,12 @@ applyTimeFunction[Function[{vbat$, \[Tau]auto$},
       J -> Quantity[1041/100000000, ("Kilograms"*"Meters"^2)/"Radians"^2], 
       B -> Quantity[33/1000, ("Kilograms"*"Meters"^2)/
          ("Radians"^2*"Seconds")], \[CapitalNu] -> 1, \[Eta] -> 1, 
-      Jout -> Quantity[1, ("Kilograms"*"Meters"^2)/"Radians"^2], 
-      Bout -> Quantity[0, ("Kilograms"*"Meters"^2)/("Radians"^2*"Seconds")], 
-      const\[Tau]auto -> Quantity[0, ("Meters"*"Newtons")/"Radians"]|>, 
-     <|t -> Quantity[t, "Seconds"], constvbat -> Quantity[12, "Volts"]|>, 
-     t] = {{E^Quantity[(-5000*(16500286275 + Sqrt[272173025490913197401])*t)/
+      Jafter -> Quantity[1, ("Kilograms"*"Meters"^2)/"Radians"^2], 
+      Bafter -> Quantity[0, ("Kilograms"*"Meters"^2)/("Radians"^2*
+          "Seconds")], const\[Tau]appafter -> Quantity[0, 
+        ("Meters"*"Newtons")/"Radians"]|>, <|t -> Quantity[t, "Seconds"], 
+      constvapp -> Quantity[12, "Volts"]|>, t] = 
+    {{E^Quantity[(-5000*(16500286275 + Sqrt[272173025490913197401])*t)/
            34700361227, (Sqrt["Kilograms"]*"Meters")/("Amperes"*
             Sqrt[("Kilograms"*"Meters"^2)/("Amperes"^2*"Seconds"^2)]*
             "Seconds")]*Quantity[5276791550745/387665626384 - 
@@ -264,15 +271,14 @@ applyTimeFunction[Function[{vbat$, \[Tau]auto$},
      {-27.223417252465424 - 1.7149042719211138*^-7/E^(4754.698853616825*t) + 
        27.223417423955848/E^(0.37737370535485504*t) + 10.27258652036208*t}}
  
-applyTimeFunction[Function[{vbat$, \[Tau]auto$}, 
+applyTimeFunction[Function[{vapp$, \[Tau]appafter$}, 
       Module[{fn$}, fn$ = makeTimeDomainFunctionConvolve[
           TransferFunctionModel[{{{Ke*Kt*\[Eta]*\[CapitalNu]^2, 
-              Ke*(R + L*s)*\[CapitalNu]}}, Bout*(R + L*s) + 
-             Jout*s*(R + L*s) + (Ke*Kt + (B + J*s)*(R + L*s))*\[Eta]*
-              \[CapitalNu]^2}, s, SystemsModelLabels -> 
-            {{"vbat", "\[Tau]auto"}, "vg", Automatic}], {vbat$[#1] & , 
-           \[Tau]auto$[#1] & }]; fn$]], 
-     <|R -> Quantity[33/10, "Watts"/"Amperes"^2], 
+              Ke*(R + L*s)*\[CapitalNu]}}, Ke*Kt*\[Eta]*\[CapitalNu]^2 + 
+             (R + L*s)*(Bafter + Jafter*s + (B + J*s)*\[Eta]*\[CapitalNu]^
+                 2)}, s, SystemsModelLabels -> {{"vapp", "\[Tau]appafter"}, 
+             "vg", Automatic}], {vapp$[#1] & , \[Tau]appafter$[#1] & }]; 
+        fn$]], <|R -> Quantity[33/10, "Watts"/"Amperes"^2], 
       L -> Quantity[347/500000, "Henries"], 
       Ke -> Quantity[533/500, ("Kilograms"*"Meters"^2)/("Amperes"*"Radians"*
           "Seconds"^2)], Kt -> Quantity[533/500, ("Kilograms"*"Meters"^2)/
@@ -280,11 +286,12 @@ applyTimeFunction[Function[{vbat$, \[Tau]auto$},
       J -> Quantity[1041/100000000, ("Kilograms"*"Meters"^2)/"Radians"^2], 
       B -> Quantity[33/1000, ("Kilograms"*"Meters"^2)/
          ("Radians"^2*"Seconds")], \[CapitalNu] -> 1, \[Eta] -> 1, 
-      Jout -> Quantity[1, ("Kilograms"*"Meters"^2)/"Radians"^2], 
-      Bout -> Quantity[0, ("Kilograms"*"Meters"^2)/("Radians"^2*"Seconds")], 
-      const\[Tau]auto -> Quantity[0, ("Meters"*"Newtons")/"Radians"]|>, 
-     <|t -> Quantity[t, "Seconds"], constvbat -> Quantity[12, "Volts"]|>, 
-     t] = {{Quantity[1704534/155657, ("Kilograms"*"Meters"^2)/
+      Jafter -> Quantity[1, ("Kilograms"*"Meters"^2)/"Radians"^2], 
+      Bafter -> Quantity[0, ("Kilograms"*"Meters"^2)/("Radians"^2*
+          "Seconds")], const\[Tau]appafter -> Quantity[0, 
+        ("Meters"*"Newtons")/"Radians"]|>, <|t -> Quantity[t, "Seconds"], 
+      constvapp -> Quantity[12, "Volts"]|>, t] = 
+    {{Quantity[1704534/155657, ("Kilograms"*"Meters"^2)/
          ("Amperes"*"Seconds"^3)] + 
        E^Quantity[(5000*(-16500286275 + Sqrt[272173025490913197401])*t)/
            34700361227, (Sqrt["Kilograms"]*"Meters")/("Amperes"*
@@ -301,14 +308,14 @@ applyTimeFunction[Function[{vbat$, \[Tau]auto$},
        0.0008692007729775852/E^(4754.698853616825*t) - 
        10.951446431478953/E^(0.37737370535485504*t)}}
  
-applyTimeFunction[Function[{vbat$, \[Tau]auto$}, 
+applyTimeFunction[Function[{vapp$, \[Tau]appafter$}, 
       Module[{fn$}, fn$ = makeTimeDomainFunctionConvolve[
-          TransferFunctionModel[{{{Bout + Jout*s + (B + J*s)*\[Eta]*
+          TransferFunctionModel[{{{Bafter + Jafter*s + (B + J*s)*\[Eta]*
                 \[CapitalNu]^2, -(Ke*\[CapitalNu])}}, 
-            Ke*Kt*\[Eta]*\[CapitalNu]^2 + (R + L*s)*(Bout + Jout*s + 
+            Ke*Kt*\[Eta]*\[CapitalNu]^2 + (R + L*s)*(Bafter + Jafter*s + 
                (B + J*s)*\[Eta]*\[CapitalNu]^2)}, s, SystemsModelLabels -> 
-            {{"vbat", "\[Tau]auto"}, "i", Automatic}], {vbat$[#1] & , 
-           \[Tau]auto$[#1] & }]; fn$]], 
+            {{"vapp", "\[Tau]appafter"}, "i", Automatic}], 
+          {vapp$[#1] & , \[Tau]appafter$[#1] & }]; fn$]], 
      <|R -> Quantity[33/10, "Watts"/"Amperes"^2], 
       L -> Quantity[347/500000, "Henries"], 
       Ke -> Quantity[533/500, ("Kilograms"*"Meters"^2)/("Amperes"*"Radians"*
@@ -317,11 +324,12 @@ applyTimeFunction[Function[{vbat$, \[Tau]auto$},
       J -> Quantity[1041/100000000, ("Kilograms"*"Meters"^2)/"Radians"^2], 
       B -> Quantity[33/1000, ("Kilograms"*"Meters"^2)/
          ("Radians"^2*"Seconds")], \[CapitalNu] -> 1, \[Eta] -> 1, 
-      Jout -> Quantity[1, ("Kilograms"*"Meters"^2)/"Radians"^2], 
-      Bout -> Quantity[0, ("Kilograms"*"Meters"^2)/("Radians"^2*"Seconds")], 
-      const\[Tau]auto -> Quantity[0, ("Meters"*"Newtons")/"Radians"]|>, 
-     <|t -> Quantity[t, "Seconds"], constvbat -> Quantity[12, "Volts"]|>, 
-     t] = {{Quantity[49500/155657, "Amperes"] + 
+      Jafter -> Quantity[1, ("Kilograms"*"Meters"^2)/"Radians"^2], 
+      Bafter -> Quantity[0, ("Kilograms"*"Meters"^2)/("Radians"^2*
+          "Seconds")], const\[Tau]appafter -> Quantity[0, 
+        ("Meters"*"Newtons")/"Radians"]|>, <|t -> Quantity[t, "Seconds"], 
+      constvapp -> Quantity[12, "Volts"]|>, t] = 
+    {{Quantity[49500/155657, "Amperes"] + 
        E^Quantity[(-5000*(16500286275 + Sqrt[272173025490913197401])*t)/
            34700361227, (Sqrt["Kilograms"]*"Meters")/("Amperes"*
             Sqrt[("Kilograms"*"Meters"^2)/("Amperes"^2*"Seconds"^2)]*
@@ -335,14 +343,14 @@ applyTimeFunction[Function[{vbat$, \[Tau]auto$},
      {0.3180068997860681 - 3.636890426538978/E^(4754.698853616825*t) + 
        3.3188835267529098/E^(0.37737370535485504*t)}}
  
-applyTimeFunction[Function[{vbat$, \[Tau]auto$}, 
+applyTimeFunction[Function[{vapp$, \[Tau]appafter$}, 
       Module[{fn$}, fn$ = makeTimeDomainFunctionConvolve[
-          TransferFunctionModel[{{{Kt*(Bout + Jout*s + (B + J*s)*\[Eta]*
+          TransferFunctionModel[{{{Kt*(Bafter + Jafter*s + (B + J*s)*\[Eta]*
                  \[CapitalNu]^2), -(Ke*Kt*\[CapitalNu])}}, 
-            Ke*Kt*\[Eta]*\[CapitalNu]^2 + (R + L*s)*(Bout + Jout*s + 
+            Ke*Kt*\[Eta]*\[CapitalNu]^2 + (R + L*s)*(Bafter + Jafter*s + 
                (B + J*s)*\[Eta]*\[CapitalNu]^2)}, s, SystemsModelLabels -> 
-            {{"vbat", "\[Tau]auto"}, "\[Tau]", Automatic}], 
-          {vbat$[#1] & , \[Tau]auto$[#1] & }]; fn$]], 
+            {{"vapp", "\[Tau]appafter"}, "\[Tau]", Automatic}], 
+          {vapp$[#1] & , \[Tau]appafter$[#1] & }]; fn$]], 
      <|R -> Quantity[33/10, "Watts"/"Amperes"^2], 
       L -> Quantity[347/500000, "Henries"], 
       Ke -> Quantity[533/500, ("Kilograms"*"Meters"^2)/("Amperes"*"Radians"*
@@ -351,11 +359,12 @@ applyTimeFunction[Function[{vbat$, \[Tau]auto$},
       J -> Quantity[1041/100000000, ("Kilograms"*"Meters"^2)/"Radians"^2], 
       B -> Quantity[33/1000, ("Kilograms"*"Meters"^2)/
          ("Radians"^2*"Seconds")], \[CapitalNu] -> 1, \[Eta] -> 1, 
-      Jout -> Quantity[1, ("Kilograms"*"Meters"^2)/"Radians"^2], 
-      Bout -> Quantity[0, ("Kilograms"*"Meters"^2)/("Radians"^2*"Seconds")], 
-      const\[Tau]auto -> Quantity[0, ("Meters"*"Newtons")/"Radians"]|>, 
-     <|t -> Quantity[t, "Seconds"], constvbat -> Quantity[12, "Volts"]|>, 
-     t] = {{Quantity[52767/155657, ("Kilograms"*"Meters"^2)/
+      Jafter -> Quantity[1, ("Kilograms"*"Meters"^2)/"Radians"^2], 
+      Bafter -> Quantity[0, ("Kilograms"*"Meters"^2)/("Radians"^2*
+          "Seconds")], const\[Tau]appafter -> Quantity[0, 
+        ("Meters"*"Newtons")/"Radians"]|>, <|t -> Quantity[t, "Seconds"], 
+      constvapp -> Quantity[12, "Volts"]|>, t] = 
+    {{Quantity[52767/155657, ("Kilograms"*"Meters"^2)/
          ("Radians"*"Seconds"^2)] + 
        E^Quantity[(-5000*(16500286275 + Sqrt[272173025490913197401])*t)/
            34700361227, (Sqrt["Kilograms"]*"Meters")/("Amperes"*
@@ -375,14 +384,14 @@ applyTimeFunction[Function[{vbat$, \[Tau]auto$},
 applyTimeFunction[motorTimeFunction_, motorWithLoad_, input_, t_] := 
     applyTimeFunction[motorTimeFunction, motorWithLoad, input, t] = 
      Module[{generic, withUnits, unitless}, 
-      generic = motorTimeFunction[constvbat & , const\[Tau]auto & ][t]; 
+      generic = motorTimeFunction[constvapp & , const\[Tau]appafter & ][t]; 
        withUnits = FullSimplify[siUnits[generic /. motorWithLoad /. input]]; 
        unitless = FullSimplify[N[clearUnits[withUnits]]]; 
        {withUnits, unitless}]
  
-Attributes[vbat$] = {Temporary}
+Attributes[vapp$] = {Temporary}
  
-Attributes[\[Tau]auto$] = {Temporary}
+Attributes[\[Tau]appafter$] = {Temporary}
  
 Attributes[fn$] = {Temporary}
  
@@ -399,11 +408,11 @@ convolve[fExpr_, gExpr_, exprVar_, t_] := Module[{\[Tau]},
       Integrate[(fExpr /. exprVar -> \[Tau])*(gExpr /. 
          exprVar -> t - \[Tau]), {\[Tau], 0, t}]]]
  
-parameterAssumptions = {Element[Bout, Reals], Element[constvbat, Reals], 
-     Element[const\[Tau]auto, Reals], Element[Jout, Reals], 
-     Element[i[_], Reals], Element[vbat[_], Reals], Element[vg[_], Reals], 
+parameterAssumptions = {Element[Bafter, Reals], Element[constvapp, Reals], 
+     Element[const\[Tau]appafter, Reals], Element[Jafter, Reals], 
+     Element[i[_], Reals], Element[vapp[_], Reals], Element[vg[_], Reals], 
      Element[\[Alpha][_], Reals], Element[\[Theta][_], Reals], 
-     Element[\[Tau][_], Reals], Element[\[Tau]auto[_], Reals], 
+     Element[\[Tau][_], Reals], Element[\[Tau]appafter[_], Reals], 
      Element[\[Omega][_], Reals], Ke > 0, Kt > 0, L > 0, R > 0, \[Eta] > 0, 
      \[CapitalNu] > 0, B >= 0, J >= 0, t >= 0}
  
