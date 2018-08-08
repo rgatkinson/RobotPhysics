@@ -1,0 +1,1366 @@
+Notebook[{
+
+Cell[CellGroupData[{
+Cell["Proportional Braking / Reverse Driving Transition", \
+"Title",ExpressionUUID->"39796d72-87ca-4320-97ff-a98d4bd016ce"],
+
+Cell["\<\
+Robert Atkinson
+7 August 2018\
+\>", "Author",ExpressionUUID->"05aea015-05f3-4e99-899d-20a8cd5792a1"],
+
+Cell["\<\
+We compute where the proportional braking / reverse driving transition should \
+lie\
+\>", "Text",ExpressionUUID->"56cc4ba9-b77c-4512-b3b4-73f00a3c0eee"],
+
+Cell[CellGroupData[{
+
+Cell[TextData[{
+ 
+ CounterBox["Section"],
+ ". Administrivia"
+}], "Section",ExpressionUUID->"16299bc2-b6fe-451f-a825-e22a0f149c0f"],
+
+Cell[CellGroupData[{
+
+Cell[TextData[{
+ 
+ CounterBox["Section"],
+ ".",
+ 
+ CounterBox["Subsection"],
+ ". Load-In"
+}], "Subsection",ExpressionUUID->"cc5d92a3-fd60-45a8-9a40-c0a97fbbaa6e"],
+
+Cell["We load output we previously computed.", \
+"Text",ExpressionUUID->"7ad28d45-c772-4943-a312-e5b632c383c6"],
+
+Cell[BoxData[
+ RowBox[{"Get", "[", 
+  RowBox[{
+   RowBox[{"NotebookDirectory", "[", "]"}], " ", "<>", " ", 
+   "\"\<Utilities.m\>\""}], 
+  "]"}]], "Input",ExpressionUUID->"00da5f52-c4e4-4d20-9d91-5577a43f3731"],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"inputDirectory", " ", "=", " ", 
+  RowBox[{
+   RowBox[{"FileNameJoin", "[", 
+    RowBox[{"{", 
+     RowBox[{
+      RowBox[{"NotebookDirectory", "[", "]"}], ",", 
+      "\"\<MotorPhysicsGears.Output\>\""}], "}"}], "]"}], " ", "<>", " ", 
+   "$PathnameSeparator"}]}]], \
+"Input",ExpressionUUID->"bc300395-a636-4323-80dc-7b4ed98516b6"],
+
+Cell[BoxData["\<\"C:\\\\ftc\\\\RobotPhysics\\\\MotorPhysicsGears.Output\\\\\"\
+\>"], "Output",ExpressionUUID->"84dfc034-e092-4400-b2ef-fdfa000eadcd"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[{
+ RowBox[{
+  RowBox[{"Get", "[", 
+   RowBox[{
+   "inputDirectory", " ", "<>", " ", 
+    "\"\<ParametersUnitsAndAssumptions.m\>\""}], "]"}], 
+  ";"}], "\[IndentingNewLine]", 
+ RowBox[{"$Assumptions", " ", "=", " ", 
+  "parameterAssumptions"}]}], \
+"Input",ExpressionUUID->"e65cb668-c08b-4c8b-8edf-daaab8ef3617"],
+
+Cell[BoxData[
+ RowBox[{"{", 
+  RowBox[{
+   RowBox[{"Bafter", "\[Element]", 
+    TemplateBox[{},
+     "Reals"]}], ",", 
+   RowBox[{"constvapp", "\[Element]", 
+    TemplateBox[{},
+     "Reals"]}], ",", 
+   RowBox[{"const\[Tau]appafter", "\[Element]", 
+    TemplateBox[{},
+     "Reals"]}], ",", 
+   RowBox[{"Jafter", "\[Element]", 
+    TemplateBox[{},
+     "Reals"]}], ",", 
+   RowBox[{
+    RowBox[{"i", "[", "_", "]"}], "\[Element]", 
+    TemplateBox[{},
+     "Reals"]}], ",", 
+   RowBox[{
+    RowBox[{"vapp", "[", "_", "]"}], "\[Element]", 
+    TemplateBox[{},
+     "Reals"]}], ",", 
+   RowBox[{
+    RowBox[{"vg", "[", "_", "]"}], "\[Element]", 
+    TemplateBox[{},
+     "Reals"]}], ",", 
+   RowBox[{
+    RowBox[{"\[Alpha]", "[", "_", "]"}], "\[Element]", 
+    TemplateBox[{},
+     "Reals"]}], ",", 
+   RowBox[{
+    RowBox[{"\[Theta]", "[", "_", "]"}], "\[Element]", 
+    TemplateBox[{},
+     "Reals"]}], ",", 
+   RowBox[{
+    RowBox[{"\[Tau]", "[", "_", "]"}], "\[Element]", 
+    TemplateBox[{},
+     "Reals"]}], ",", 
+   RowBox[{
+    RowBox[{"\[Tau]appafter", "[", "_", "]"}], "\[Element]", 
+    TemplateBox[{},
+     "Reals"]}], ",", 
+   RowBox[{
+    RowBox[{"\[Omega]", "[", "_", "]"}], "\[Element]", 
+    TemplateBox[{},
+     "Reals"]}], ",", 
+   RowBox[{"Ke", ">", "0"}], ",", 
+   RowBox[{"Kt", ">", "0"}], ",", 
+   RowBox[{"L", ">", "0"}], ",", 
+   RowBox[{"R", ">", "0"}], ",", 
+   RowBox[{"\[Eta]", ">", "0"}], ",", 
+   RowBox[{"\[CapitalNu]", ">", "0"}], ",", 
+   RowBox[{"B", "\[GreaterEqual]", "0"}], ",", 
+   RowBox[{"J", "\[GreaterEqual]", "0"}], ",", 
+   RowBox[{"t", "\[GreaterEqual]", "0"}]}], 
+  "}"}]], "Output",ExpressionUUID->"897aed2b-d910-488c-9286-ce6a1f42dc4d"]
+}, Open  ]],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"Get", "[", 
+   RowBox[{"inputDirectory", " ", "<>", " ", "\"\<MotorModels.m\>\""}], "]"}],
+   ";"}]], "Input",ExpressionUUID->"65242d39-7859-466e-a102-b4591a1e8cee"],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"Get", "[", 
+   RowBox[{
+   "inputDirectory", " ", "<>", " ", "\"\<MotorTimeDomainFunctions.m\>\""}], 
+   "]"}], ";"}]], \
+"Input",ExpressionUUID->"65fc077a-78a9-448d-a6f7-d086b6e0436e"],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"Get", "[", 
+   RowBox[{"inputDirectory", " ", "<>", " ", "\"\<SteadyState.m\>\""}], "]"}],
+   ";"}]], "Input",ExpressionUUID->"f2685347-c954-4eaa-8132-0f853188ab06"],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"Get", "[", 
+   RowBox[{"inputDirectory", " ", "<>", " ", "\"\<Misc.m\>\""}], "]"}], 
+  ";"}]], "Input",ExpressionUUID->"eb1653a8-85e2-4f56-b13c-a92151303453"]
+}, Open  ]]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[TextData[{
+ 
+ CounterBox["Section"],
+ ". Locating the Transition Point"
+}], "Section",ExpressionUUID->"52cfff78-8400-4704-8a86-6eca51e4c222"],
+
+Cell[CellGroupData[{
+
+Cell[TextData[{
+ 
+ CounterBox["Section"],
+ ".",
+ 
+ CounterBox["Subsection"],
+ ". General"
+}], "Subsection",ExpressionUUID->"c00fa4ce-1e84-4fba-a8cb-c23c7dcc92db"],
+
+Cell["\<\
+In the steady state (no acceleration), the back EMF is proportional to the \
+steady state velocity \[CapitalOmega] (in radians per second).\
+\>", "Text",ExpressionUUID->"321ee6b7-16fb-4b03-a306-08ccfb2e3d49"],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"backEmfEqns", " ", "=", " ", 
+  RowBox[{"{", 
+   RowBox[{"ssEmf", " ", "\[Equal]", " ", 
+    RowBox[{"Ke", " ", "\[CapitalOmega]"}]}], 
+   "}"}]}]], "Input",ExpressionUUID->"d6bedc95-2668-4c91-89ad-db1d92052ca3"],
+
+Cell[BoxData[
+ RowBox[{"{", 
+  RowBox[{"ssEmf", "\[Equal]", 
+   RowBox[{"Ke", " ", "\[CapitalOmega]"}]}], 
+  "}"}]], "Output",ExpressionUUID->"5cb2ee84-ce7d-4d81-ac7f-ca25bb52ef44"]
+}, Open  ]]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[TextData[{
+ 
+ CounterBox["Section"],
+ ".",
+ 
+ CounterBox["Subsection"],
+ ". Proportional Braking"
+}], "Subsection",ExpressionUUID->"83d82174-33fb-43c0-9f27-cdb9fc667606"],
+
+Cell["\<\
+We need to know the beginning and endpoints of the proportional braking \
+curve, but here need not assume it is linear.\
+\>", "Text",ExpressionUUID->"7830a6c9-f0d7-4693-87f3-0c69b60ed5d2"],
+
+Cell["\<\
+0% proportional braking is 100% H-bridge state 0. In that state, there is \
+zero torque, as we have an open circuit. In order to determine the transition \
+between proportional braking and reverse driving, rather than dealing with \
+open circuits we will determine for each situation of relevance an equivalent \
+instantaneous DC applied voltage for an H-bridge-less variant of the motor. \
+For the zero-torque situation, we need to examine our voltage differential \
+equation.\
+\>", "Text",ExpressionUUID->"31ba116f-0fef-4cae-937f-f0527d275279"],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"diffEqns", "[", 
+  RowBox[{"[", "3", "]"}], 
+  "]"}]], "Input",ExpressionUUID->"faabf45f-2fb9-4cd0-93b3-bff702295809"],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{
+   RowBox[{"R", " ", 
+    RowBox[{"i", "[", "t", "]"}]}], "+", 
+   RowBox[{"vg", "[", "t", "]"}], "+", 
+   RowBox[{"L", " ", 
+    RowBox[{
+     SuperscriptBox["i", "\[Prime]",
+      MultilineFunction->None], "[", "t", "]"}]}]}], "\[Equal]", 
+  RowBox[{
+  "vapp", "[", "t", 
+   "]"}]}]], "Output",ExpressionUUID->"f788d89b-d4c4-4afb-90e9-d3facc092839"]
+}, Open  ]],
+
+Cell["\<\
+If we\[CloseCurlyQuote]re in steady state at velocity \[CapitalOmega], and we \
+instantaneously drop the voltage, to what level should we drop it so that the \
+torque (and thus the current) as averaged over our PID loop execution \
+interval (50ms) is zero? We haven\[CloseCurlyQuote]t yet completed that \
+analysis, so for now we\[CloseCurlyQuote]ll use an approximation. If there is \
+zero torque, there is zero current. Which means that drop across the resistor \
+is zero. After a couple of time constants, the drop across the inductor will \
+also be zero, and we\[CloseCurlyQuote]re left with:\
+\>", "Text",ExpressionUUID->"4a5b2086-a5a4-440d-9f1b-c746d08e8a94"],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"diffEqns", "[", 
+   RowBox[{"[", "3", "]"}], "]"}], " ", "/.", " ", 
+  RowBox[{"{", 
+   RowBox[{
+    RowBox[{
+     RowBox[{"i", "[", "t", "]"}], " ", "\[Rule]", " ", "0"}], ",", " ", 
+    RowBox[{
+     RowBox[{
+      RowBox[{"i", "'"}], "[", "t", "]"}], " ", "\[Rule]", " ", "0"}]}], 
+   "}"}]}]], "Input",ExpressionUUID->"cff8f887-f0ba-400b-9c33-d99519bcdc95"],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"vg", "[", "t", "]"}], "\[Equal]", 
+  RowBox[{
+  "vapp", "[", "t", 
+   "]"}]}]], "Output",ExpressionUUID->"054e56f2-9bf1-4a48-b163-8c17d35e2aa9"]
+}, Open  ]],
+
+Cell["\<\
+That is, the voltage we should drop our applied voltage vappt[t] to is \
+(approximately) the current back EMF. This is only approximate, as it doesn\
+\[CloseCurlyQuote]t account for the exponential ramp down of the current, nor \
+does it consider the deceleration of the motor (and consequent drop in the \
+back EMF) that will happen over the PID loop interval, but it\
+\[CloseCurlyQuote]s the best we have on hand for now.\
+\>", "Text",ExpressionUUID->"039c47b6-5ffc-4fd8-9d76-80f75713ed9d"],
+
+Cell["\<\
+We recall that this is happening at 0% proportional braking, which we wish to \
+be coincident to the origin.\
+\>", "Text",ExpressionUUID->"3d5203c4-ceff-4838-b5f3-9540ed5df380"],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"prop0Eqns", " ", "=", " ", 
+  RowBox[{"{", " ", 
+   RowBox[{
+    RowBox[{"controlProp0", " ", "\[Equal]", " ", "0"}], ",", " ", 
+    RowBox[{"voltProp0", " ", "\[Equal]", " ", "ssEmf"}]}], " ", 
+   "}"}]}]], "Input",ExpressionUUID->"28850454-84ef-4296-a008-b4c61db1fba2"],
+
+Cell[BoxData[
+ RowBox[{"{", 
+  RowBox[{
+   RowBox[{"controlProp0", "\[Equal]", "0"}], ",", 
+   RowBox[{"voltProp0", "\[Equal]", "ssEmf"}]}], 
+  "}"}]], "Output",ExpressionUUID->"ceb0a7db-dab9-4d84-b2f4-8e73fcaed822"]
+}, Open  ]],
+
+Cell["\<\
+At 100% proportional braking, we have shorted across the motor terminals; the \
+instantaneous applied voltage is zero.\
+\>", "Text",ExpressionUUID->"d7abd1eb-2f8b-4335-a925-210edbd4ce1d"],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"prop100Eqns", " ", "=", " ", 
+  RowBox[{"{", 
+   RowBox[{"voltProp100", " ", "\[Equal]", " ", "0"}], 
+   "}"}]}]], "Input",ExpressionUUID->"91b52ab2-48b8-4269-b077-32563c15ab0a"],
+
+Cell[BoxData[
+ RowBox[{"{", 
+  RowBox[{"voltProp100", "\[Equal]", "0"}], 
+  "}"}]], "Output",ExpressionUUID->"ef6dd64c-2513-4a7d-955d-b673b20ccdec"]
+}, Open  ]],
+
+Cell["\<\
+We define a linear curve for proportional braking, though in the below we \
+only use it for plotting, not in the determination of the transition point.\
+\>", "Text",ExpressionUUID->"333a28af-9cd1-48f2-88ce-028cbbe443b9"],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[{
+ RowBox[{
+  RowBox[{"voltProp", "[", "control_", "]"}], "  ", ":=", " ", 
+  RowBox[{"voltProp0", " ", "+", " ", 
+   RowBox[{
+    RowBox[{
+     RowBox[{"(", 
+      RowBox[{"voltProp100", " ", "-", " ", "voltProp0"}], ")"}], " ", "/", 
+     " ", 
+     RowBox[{"(", 
+      RowBox[{"controlProp100", " ", "-", " ", "controlProp0"}], ")"}]}], " ",
+     "*", " ", 
+    RowBox[{"(", 
+     RowBox[{"control", " ", "-", " ", "controlProp0"}], 
+     ")"}]}]}]}], "\[IndentingNewLine]", 
+ RowBox[{"voltProp", "[", "controlProp100", "]"}], "\[IndentingNewLine]", 
+ RowBox[{"voltProp", "[", "controlProp0", 
+  "]"}]}], "Input",ExpressionUUID->"fa88c94f-0dda-4ad4-b173-f7dc08ff9794"],
+
+Cell[BoxData["voltProp100"], \
+"Output",ExpressionUUID->"cb4ba724-07aa-4398-a4c9-1e5a8980d0d0"],
+
+Cell[BoxData["voltProp0"], \
+"Output",ExpressionUUID->"93055f42-c68a-4fef-8102-6a699ce44a4a"]
+}, Open  ]]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[TextData[{
+ 
+ CounterBox["Section"],
+ ".",
+ 
+ CounterBox["Subsection"],
+ ". Reverse Driving"
+}], "Subsection",ExpressionUUID->"0de74517-9def-4c84-b883-d50f88e7f685"],
+
+Cell["\<\
+0% reverse driving is almost the same as 100% proportional braking except \
+that there\[CloseCurlyQuote]s a diode eating some of the voltage alongside \
+the resistor and the inductor. Thus, going back to our differential equation \
+above, the instantaneous equivalent applied voltage needs to be adjusted \
+slightly positive to balance. \
+\>", "Text",ExpressionUUID->"c8541890-e8fe-48cd-939c-d38880abd5c0"],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"reverse0Eqns", " ", "=", " ", 
+  RowBox[{"{", " ", 
+   RowBox[{"voltReverse0", " ", "\[Equal]", " ", 
+    RowBox[{"-", 
+     RowBox[{"(", 
+      RowBox[{"0", " ", "-", " ", "diodeDrop"}], ")"}]}]}], " ", 
+   "}"}]}]], "Input",ExpressionUUID->"cb317d2c-1bea-4a53-a6f4-73bf50339604"],
+
+Cell[BoxData[
+ RowBox[{"{", 
+  RowBox[{"voltReverse0", "\[Equal]", "diodeDrop"}], 
+  "}"}]], "Output",ExpressionUUID->"d80674c0-18ed-4125-bddc-b8558c28c125"]
+}, Open  ]],
+
+Cell["\<\
+100% reverse driving applies the full negative battery voltage:\
+\>", "Text",ExpressionUUID->"bc320ab7-f3e4-47f9-9ff6-6bb1f38744f3"],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"reverse100Eqns", " ", "=", " ", 
+  RowBox[{"{", " ", 
+   RowBox[{
+    RowBox[{"controlReverse100", " ", "\[Equal]", " ", 
+     RowBox[{"-", "controlMax"}]}], ",", " ", 
+    RowBox[{"voltReverse100", " ", "\[Equal]", " ", 
+     RowBox[{"-", "batteryVoltage"}]}]}], " ", 
+   "}"}]}]], "Input",ExpressionUUID->"f6e882ad-38d6-46a6-9a42-4a8c6ef0beac"],
+
+Cell[BoxData[
+ RowBox[{"{", 
+  RowBox[{
+   RowBox[{"controlReverse100", "\[Equal]", 
+    RowBox[{"-", "controlMax"}]}], ",", 
+   RowBox[{"voltReverse100", "\[Equal]", 
+    RowBox[{"-", "batteryVoltage"}]}]}], 
+  "}"}]], "Output",ExpressionUUID->"7d1fa642-0bcc-44d1-9753-7915ca96a982"]
+}, Open  ]]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[TextData[{
+ 
+ CounterBox["Section"],
+ ".",
+ 
+ CounterBox["Subsection"],
+ ". Continuity"
+}], "Subsection",ExpressionUUID->"9a002c89-725d-49e8-9075-4ce3762f96a0"],
+
+Cell["\<\
+We will assume linearity of reverse driving in order to set up our continuity \
+of voltage (we only use that fact in the initial duty cycle range of reverse \
+driving).\
+\>", "Text",ExpressionUUID->"15090d70-5363-4659-9aae-c650fd302093"],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[{
+ RowBox[{
+  RowBox[{"voltReverse", "[", "control_", "]"}], "  ", ":=", " ", 
+  RowBox[{"voltReverse0", " ", "+", " ", 
+   RowBox[{
+    RowBox[{
+     RowBox[{"(", 
+      RowBox[{"voltReverse100", " ", "-", " ", "voltReverse0"}], ")"}], " ", 
+     "/", " ", 
+     RowBox[{"(", 
+      RowBox[{"controlReverse100", " ", "-", " ", "controlReverse0"}], 
+      ")"}]}], " ", "*", " ", 
+    RowBox[{"(", 
+     RowBox[{"control", " ", "-", " ", "controlReverse0"}], 
+     ")"}]}]}]}], "\[IndentingNewLine]", 
+ RowBox[{"voltReverse", "[", "controlReverse100", 
+  "]"}], "\[IndentingNewLine]", 
+ RowBox[{"voltReverse", "[", "controlReverse0", "]"}]}], "Input",
+ CellChangeTimes->{{3.7418727964861317`*^9, 3.74187280417984*^9}, {
+  3.7418728554857635`*^9, 3.741872913132579*^9}, {3.7419784245695705`*^9, 
+  3.7419784405897093`*^9}, {3.741981178518552*^9, 
+  3.7419811855587163`*^9}},ExpressionUUID->"c7e9b259-2571-48a0-b4dc-\
+017e44d0cd64"],
+
+Cell[BoxData["voltReverse100"], \
+"Output",ExpressionUUID->"3f2a7b21-9716-4e98-9104-181db0b48bdd"],
+
+Cell[BoxData["voltReverse0"], \
+"Output",ExpressionUUID->"ed785885-c2b9-4e32-b5c7-a6e69eb6ff41"]
+}, Open  ]],
+
+Cell[TextData[{
+ "Because of the diode voltage drop, when we stitch proportional braking \
+beside reverse driving so as to have a continuous overall voltage curve, \
+there is necessarily a small overlap in the two curves: as we proceed from \
+small to large control signal ",
+ StyleBox["magnitude",
+  FontSlant->"Italic"],
+ " (remember that proportional braking and reverse driving are placed in the \
+negative control signal range), the reverse driving curve begins before the \
+proportional braking curve ends. That is, Abs[controlReverse0] <= \
+Abs[controlProp100]."
+}], "Text",ExpressionUUID->"f01e962a-57f9-4eca-91e2-a8993e1e9042"],
+
+Cell["\<\
+Here, we choose to use braking in the overlap. Thus, here our transition \
+point is controlProp100.\
+\>", "Text",ExpressionUUID->"e1239284-57c4-43b6-9f1a-66ff3c5a66f1"],
+
+Cell[BoxData[{
+ RowBox[{
+  RowBox[{"controlTransition", " ", "=", " ", "controlProp100"}], 
+  ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"controlOther", " ", "=", " ", "controlReverse0"}], ";"}]}], "Input",
+ CellChangeTimes->{{3.7419553207894573`*^9, 3.741955321531108*^9}, {
+  3.7419608590677457`*^9, 
+  3.741960873349608*^9}},ExpressionUUID->"f03a0b3a-6b37-4eaf-b3da-\
+e44a69fe1ed0"],
+
+Cell["\<\
+Our continuity requirement is that at the transition, the two curves must \
+coincide.\
+\>", "Text",
+ CellChangeTimes->{{3.741866864158252*^9, 3.7418668921186624`*^9}, {
+  3.741866952795929*^9, 3.74186697297461*^9}, {3.7418670328769064`*^9, 
+  3.7418671052645936`*^9}, {3.7418740412792234`*^9, 3.7418740660168886`*^9}, {
+  3.74195524858578*^9, 
+  3.7419552501197786`*^9}},ExpressionUUID->"f312e50a-97c7-4a81-985a-\
+bd1873e7fff2"],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"ctyEqns", " ", "=", " ", 
+  RowBox[{"{", " ", 
+   RowBox[{
+    RowBox[{"voltProp", "[", "controlTransition", "]"}], " ", "\[Equal]", " ", 
+    RowBox[{"voltReverse", "[", "controlTransition", "]"}]}], " ", 
+   "}"}]}]], "Input",ExpressionUUID->"8c225054-56c2-48ad-94b6-bb3b4049c973"],
+
+Cell[BoxData[
+ RowBox[{"{", 
+  RowBox[{"voltProp100", "\[Equal]", 
+   RowBox[{"voltReverse0", "+", 
+    FractionBox[
+     RowBox[{
+      RowBox[{"(", 
+       RowBox[{"controlProp100", "-", "controlReverse0"}], ")"}], " ", 
+      RowBox[{"(", 
+       RowBox[{
+        RowBox[{"-", "voltReverse0"}], "+", "voltReverse100"}], ")"}]}], 
+     RowBox[{
+      RowBox[{"-", "controlReverse0"}], "+", "controlReverse100"}]]}]}], 
+  "}"}]], "Output",ExpressionUUID->"ac9eae2b-8a88-457f-86ed-9fc6b253cad3"]
+}, Open  ]]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[TextData[{
+ 
+ CounterBox["Section"],
+ ".",
+ 
+ CounterBox["Subsection"],
+ ". Linearity"
+}], "Subsection",ExpressionUUID->"ae9b490a-f791-448c-a788-6b4684a5ed2d"],
+
+Cell["\<\
+All other things being equal, what we want is that the overall voltage vs \
+control signal in the negative control range be as linear as possible. The \
+shapes of the two curves, and the voltages at their endpoints is fixed; all \
+we have to control is the transition threshold. We assume that the duty cycle \
+response curves of both modes is linear. (While they\[CloseCurlyQuote]re not \
+entirely so, they\[CloseCurlyQuote]re close, and we need to start somewhere. \
+If we actually knew the curves we\[CloseCurlyQuote]d do a least squares fit.) \
+Then, the overall concatenation can best be fit as  linear by matching the \
+slopes of the proportional braking as a whole and the reverse driving as a \
+whole.\
+\>", "Text",ExpressionUUID->"4c7da862-912b-4263-85f6-219224b7aa18"],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"slopeEqns", " ", "=", " ", 
+  RowBox[{"{", " ", "\[IndentingNewLine]", 
+   RowBox[{
+    RowBox[{"slope", " ", "\[Equal]", " ", 
+     RowBox[{
+      RowBox[{"(", 
+       RowBox[{"voltProp100", " ", "-", " ", "voltProp0"}], ")"}], " ", "/", 
+      " ", 
+      RowBox[{"(", 
+       RowBox[{"controlProp100", " ", "-", " ", "controlProp0"}], ")"}]}]}], 
+    ",", "\[IndentingNewLine]", 
+    RowBox[{"slope", " ", "\[Equal]", " ", 
+     RowBox[{
+      RowBox[{"(", 
+       RowBox[{"voltReverse100", " ", "-", " ", "voltReverse0"}], ")"}], " ", 
+      "/", " ", 
+      RowBox[{"(", 
+       RowBox[{"controlReverse100", " ", "-", " ", "controlReverse0"}], 
+       ")"}]}]}]}], "\[IndentingNewLine]", 
+   "}"}]}]], "Input",ExpressionUUID->"d3886e9e-90d1-4f78-8d8e-ec10125f9b56"],
+
+Cell[BoxData[
+ RowBox[{"{", 
+  RowBox[{
+   RowBox[{"slope", "\[Equal]", 
+    FractionBox[
+     RowBox[{
+      RowBox[{"-", "voltProp0"}], "+", "voltProp100"}], 
+     RowBox[{
+      RowBox[{"-", "controlProp0"}], "+", "controlProp100"}]]}], ",", 
+   RowBox[{"slope", "\[Equal]", 
+    FractionBox[
+     RowBox[{
+      RowBox[{"-", "voltReverse0"}], "+", "voltReverse100"}], 
+     RowBox[{
+      RowBox[{"-", "controlReverse0"}], "+", "controlReverse100"}]]}]}], 
+  "}"}]], "Output",ExpressionUUID->"e3869228-4822-461e-a652-b54b8e1245d3"]
+}, Open  ]]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[TextData[{
+ 
+ CounterBox["Section"],
+ ".",
+ 
+ CounterBox["Subsection"],
+ ". Summary"
+}], "Subsection",ExpressionUUID->"db7ed2ae-eef3-42d4-b4b0-161df1e7cb82"],
+
+Cell["We put all our equations together.", \
+"Text",ExpressionUUID->"67960be9-cb70-489d-bc16-208899dee703"],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"(", 
+   RowBox[{"eqns", " ", "=", " ", 
+    RowBox[{"Join", "[", 
+     RowBox[{
+     "backEmfEqns", ",", " ", "prop0Eqns", ",", " ", "prop100Eqns", ",", " ", 
+      "reverse0Eqns", ",", " ", "reverse100Eqns", ",", " ", "ctyEqns", ",", 
+      " ", "slopeEqns"}], "]"}]}], ")"}], " ", "//", " ", 
+  "prettyPrint"}]], \
+"Input",ExpressionUUID->"56750233-9bd5-4ebc-ad1a-6afce8aaad75"],
+
+Cell[BoxData[
+ InterpretationBox[Cell[BoxData[
+   FormBox[
+    StyleBox[
+     TagBox[
+      FormBox[
+       InterpretationBox[GridBox[{
+          {
+           RowBox[{"ssEmf", "\[LongEqual]", 
+            RowBox[{"Ke", " ", "\[CapitalOmega]"}]}]},
+          {
+           RowBox[{"controlProp0", "\[LongEqual]", "0"}]},
+          {
+           RowBox[{"voltProp0", "\[LongEqual]", "ssEmf"}]},
+          {
+           RowBox[{"voltProp100", "\[LongEqual]", "0"}]},
+          {
+           RowBox[{"voltReverse0", "\[LongEqual]", "diodeDrop"}]},
+          {
+           RowBox[{"controlReverse100", "\[LongEqual]", 
+            RowBox[{"-", "controlMax"}]}]},
+          {
+           RowBox[{"voltReverse100", "\[LongEqual]", 
+            RowBox[{"-", "batteryVoltage"}]}]},
+          {
+           RowBox[{"voltProp100", "\[LongEqual]", 
+            RowBox[{"voltReverse0", "+", 
+             FractionBox[
+              RowBox[{
+               RowBox[{"(", 
+                RowBox[{"controlProp100", "-", "controlReverse0"}], ")"}], 
+               " ", 
+               RowBox[{"(", 
+                RowBox[{"voltReverse100", "-", "voltReverse0"}], ")"}]}], 
+              RowBox[{"controlReverse100", "-", "controlReverse0"}]]}]}]},
+          {
+           RowBox[{"slope", "\[LongEqual]", 
+            FractionBox[
+             RowBox[{"voltProp100", "-", "voltProp0"}], 
+             RowBox[{"controlProp100", "-", "controlProp0"}]]}]},
+          {
+           RowBox[{"slope", "\[LongEqual]", 
+            FractionBox[
+             RowBox[{"voltReverse100", "-", "voltReverse0"}], 
+             RowBox[{"controlReverse100", "-", "controlReverse0"}]]}]}
+         },
+         BaselinePosition->{Baseline, {1, 1}},
+         GridBoxAlignment->{
+          "Columns" -> {{Left}}, "ColumnsIndexed" -> {}, 
+           "Rows" -> {{Baseline}}, "RowsIndexed" -> {}}],
+        ColumnForm[{$CellContext`ssEmf == $CellContext`Ke $CellContext`\
+\[CapitalOmega], $CellContext`controlProp0 == 
+          0, $CellContext`voltProp0 == $CellContext`ssEmf, \
+$CellContext`voltProp100 == 
+          0, $CellContext`voltReverse0 == $CellContext`diodeDrop, \
+$CellContext`controlReverse100 == -$CellContext`controlMax, \
+$CellContext`voltReverse100 == -$CellContext`batteryVoltage, \
+$CellContext`voltProp100 == $CellContext`voltReverse0 + \
+($CellContext`controlProp100 - $CellContext`controlReverse0) \
+(-$CellContext`controlReverse0 + $CellContext`controlReverse100)^(-1) \
+(-$CellContext`voltReverse0 + $CellContext`voltReverse100), \
+$CellContext`slope == (-$CellContext`controlProp0 + \
+$CellContext`controlProp100)^(-1) (-$CellContext`voltProp0 + \
+$CellContext`voltProp100), $CellContext`slope == \
+(-$CellContext`controlReverse0 + $CellContext`controlReverse100)^(-1) \
+(-$CellContext`voltReverse0 + $CellContext`voltReverse100)}],
+        Editable->False],
+       TraditionalForm],
+      TraditionalForm,
+      Editable->True],
+     StripOnInput->False,
+     FontSize->15], TextForm]], "InlineText",ExpressionUUID->
+   "239a54b6-bf7c-43b2-9617-f988c0f4887b"],
+  Text[
+   Style[
+    TraditionalForm[
+     ColumnForm[{$CellContext`ssEmf == $CellContext`Ke $CellContext`\
+\[CapitalOmega], $CellContext`controlProp0 == 
+       0, $CellContext`voltProp0 == $CellContext`ssEmf, \
+$CellContext`voltProp100 == 
+       0, $CellContext`voltReverse0 == $CellContext`diodeDrop, \
+$CellContext`controlReverse100 == -$CellContext`controlMax, \
+$CellContext`voltReverse100 == -$CellContext`batteryVoltage, \
+$CellContext`voltProp100 == $CellContext`voltReverse0 + \
+($CellContext`controlProp100 - $CellContext`controlReverse0) \
+(-$CellContext`controlReverse0 + $CellContext`controlReverse100)^(-1) \
+(-$CellContext`voltReverse0 + $CellContext`voltReverse100), \
+$CellContext`slope == (-$CellContext`controlProp0 + \
+$CellContext`controlProp100)^(-1) (-$CellContext`voltProp0 + \
+$CellContext`voltProp100), $CellContext`slope == \
+(-$CellContext`controlReverse0 + $CellContext`controlReverse100)^(-1) \
+(-$CellContext`voltReverse0 + $CellContext`voltReverse100)}]], FontSize -> 
+    15]]]], "Output",ExpressionUUID->"7ae74d66-e150-4cc8-8ab1-33b0d73d8976"]
+}, Open  ]]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[TextData[{
+ 
+ CounterBox["Section"],
+ ".",
+ 
+ CounterBox["Subsection"],
+ ". Solving"
+}], "Subsection",ExpressionUUID->"c870bcec-b498-44fd-b14a-16fb74feafbb"],
+
+Cell["We solve these equations.", \
+"Text",ExpressionUUID->"81adedcf-add4-48b2-a77d-284a2449b41d"],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[{
+ RowBox[{
+  RowBox[{"solveFor", " ", "=", " ", 
+   RowBox[{"{", 
+    RowBox[{
+    "controlTransition", ",", " ", "controlOther", ",", " ", "slope", ",", 
+     " ", "voltProp0", ",", " ", "voltProp100", ",", " ", "voltReverse0", ",",
+      "voltReverse100", ",", " ", "controlProp0", ",", " ", 
+     "controlReverse100", ",", " ", "ssEmf"}], "}"}]}], 
+  ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"soln", " ", "=", " ", 
+   RowBox[{"uniqueSolve", "[", 
+    RowBox[{"eqns", ",", " ", "solveFor"}], "]"}]}], 
+  ";"}], "\[IndentingNewLine]", 
+ RowBox[{"soln", " ", "//", " ", 
+  "prettyPrint"}]}], \
+"Input",ExpressionUUID->"4f0a2ca6-23a0-437a-bf5f-fd76a3b360ee"],
+
+Cell[BoxData[
+ InterpretationBox[Cell[BoxData[
+   FormBox[
+    StyleBox[
+     TagBox[
+      FormBox[
+       InterpretationBox[GridBox[{
+          {
+           RowBox[{"controlProp100", "\[Rule]", 
+            RowBox[{"-", 
+             FractionBox[
+              RowBox[{"controlMax", " ", "Ke", " ", "\[CapitalOmega]"}], 
+              RowBox[{"batteryVoltage", "+", 
+               RowBox[{"Ke", " ", "\[CapitalOmega]"}]}]]}]}]},
+          {
+           RowBox[{"controlReverse0", "\[Rule]", 
+            FractionBox[
+             RowBox[{
+              RowBox[{"controlMax", " ", "diodeDrop"}], "-", 
+              RowBox[{"controlMax", " ", "Ke", " ", "\[CapitalOmega]"}]}], 
+             RowBox[{"batteryVoltage", "+", 
+              RowBox[{"Ke", " ", "\[CapitalOmega]"}]}]]}]},
+          {
+           RowBox[{"slope", "\[Rule]", 
+            FractionBox[
+             RowBox[{"batteryVoltage", "+", 
+              RowBox[{"Ke", " ", "\[CapitalOmega]"}]}], "controlMax"]}]},
+          {
+           RowBox[{"voltProp0", "\[Rule]", 
+            RowBox[{"Ke", " ", "\[CapitalOmega]"}]}]},
+          {
+           RowBox[{"voltProp100", "\[Rule]", "0"}]},
+          {
+           RowBox[{"voltReverse0", "\[Rule]", "diodeDrop"}]},
+          {
+           RowBox[{"voltReverse100", "\[Rule]", 
+            RowBox[{"-", "batteryVoltage"}]}]},
+          {
+           RowBox[{"controlProp0", "\[Rule]", "0"}]},
+          {
+           RowBox[{"controlReverse100", "\[Rule]", 
+            RowBox[{"-", "controlMax"}]}]},
+          {
+           RowBox[{"ssEmf", "\[Rule]", 
+            RowBox[{"Ke", " ", "\[CapitalOmega]"}]}]}
+         },
+         BaselinePosition->{Baseline, {1, 1}},
+         GridBoxAlignment->{
+          "Columns" -> {{Left}}, "ColumnsIndexed" -> {}, 
+           "Rows" -> {{Baseline}}, "RowsIndexed" -> {}}],
+        ColumnForm[{$CellContext`controlProp100 -> -$CellContext`controlMax \
+$CellContext`Ke $CellContext`\[CapitalOmega]/($CellContext`batteryVoltage + \
+$CellContext`Ke $CellContext`\[CapitalOmega]), $CellContext`controlReverse0 -> \
+($CellContext`batteryVoltage + $CellContext`Ke \
+$CellContext`\[CapitalOmega])^(-1) ($CellContext`controlMax \
+$CellContext`diodeDrop - $CellContext`controlMax $CellContext`Ke \
+$CellContext`\[CapitalOmega]), $CellContext`slope -> \
+$CellContext`controlMax^(-1) ($CellContext`batteryVoltage + $CellContext`Ke \
+$CellContext`\[CapitalOmega]), $CellContext`voltProp0 -> $CellContext`Ke \
+$CellContext`\[CapitalOmega], $CellContext`voltProp100 -> 
+          0, $CellContext`voltReverse0 -> $CellContext`diodeDrop, \
+$CellContext`voltReverse100 -> -$CellContext`batteryVoltage, \
+$CellContext`controlProp0 -> 
+          0, $CellContext`controlReverse100 -> -$CellContext`controlMax, \
+$CellContext`ssEmf -> $CellContext`Ke $CellContext`\[CapitalOmega]}],
+        Editable->False],
+       TraditionalForm],
+      TraditionalForm,
+      Editable->True],
+     StripOnInput->False,
+     FontSize->15], TextForm]], "InlineText",ExpressionUUID->
+   "6f1f1149-3a39-4086-9a41-414564fa4872"],
+  Text[
+   Style[
+    TraditionalForm[
+     ColumnForm[{$CellContext`controlProp100 -> -$CellContext`controlMax \
+$CellContext`Ke $CellContext`\[CapitalOmega]/($CellContext`batteryVoltage + \
+$CellContext`Ke $CellContext`\[CapitalOmega]), $CellContext`controlReverse0 -> \
+($CellContext`batteryVoltage + $CellContext`Ke \
+$CellContext`\[CapitalOmega])^(-1) ($CellContext`controlMax \
+$CellContext`diodeDrop - $CellContext`controlMax $CellContext`Ke \
+$CellContext`\[CapitalOmega]), $CellContext`slope -> \
+$CellContext`controlMax^(-1) ($CellContext`batteryVoltage + $CellContext`Ke \
+$CellContext`\[CapitalOmega]), $CellContext`voltProp0 -> $CellContext`Ke \
+$CellContext`\[CapitalOmega], $CellContext`voltProp100 -> 
+       0, $CellContext`voltReverse0 -> $CellContext`diodeDrop, \
+$CellContext`voltReverse100 -> -$CellContext`batteryVoltage, \
+$CellContext`controlProp0 -> 
+       0, $CellContext`controlReverse100 -> -$CellContext`controlMax, \
+$CellContext`ssEmf -> $CellContext`Ke $CellContext`\[CapitalOmega]}]], 
+    FontSize -> 
+    15]]]], "Output",ExpressionUUID->"fb6af68f-d776-4180-8e12-6e1da53d1957"]
+}, Open  ]],
+
+Cell["The control transition point we seek is the following:", \
+"Text",ExpressionUUID->"a5ff93ce-9991-46a4-a904-7199d4351c7b"],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"controlTransition", " ", "/.", " ", "soln"}]], "Input",
+ CellFrameColor->GrayLevel[
+  0],ExpressionUUID->"c8ecf1d5-b1cd-4c60-a778-c793b6d0d67b"],
+
+Cell[BoxData[
+ RowBox[{"-", 
+  FractionBox[
+   RowBox[{"controlMax", " ", "Ke", " ", "\[CapitalOmega]"}], 
+   RowBox[{"batteryVoltage", "+", 
+    RowBox[{"Ke", " ", "\[CapitalOmega]"}]}]]}]], "Output",
+ CellFrameColor->GrayLevel[
+  0],ExpressionUUID->"e9f68014-0de8-4177-a8a2-5af5508e4f57"]
+}, Open  ]]
+}, Open  ]]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[TextData[{
+ 
+ CounterBox["Section"],
+ ". Verification"
+}], "Section",ExpressionUUID->"cee426e7-5a4b-4090-9007-904e611cb9aa"],
+
+Cell[CellGroupData[{
+
+Cell[TextData[{
+ 
+ CounterBox["Section"],
+ ".",
+ 
+ CounterBox["Subsection"],
+ ". Check"
+}], "Subsection",ExpressionUUID->"ad9d8be5-fc14-4b27-a8c7-cd7f6d20d25d"],
+
+Cell["\<\
+Let us verify that at the control transition point, the two curves coincide.\
+\>", "Text",ExpressionUUID->"2acfdb88-dd03-451a-a121-405c1a89dfe6"],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[{
+ RowBox[{
+  RowBox[{"voltProp", "[", "controlTransition", "]"}], " ", "-", " ", 
+  RowBox[{
+  "voltReverse", "[", "controlTransition", "]"}]}], "\[IndentingNewLine]", 
+ RowBox[{"%", " ", "/.", " ", "soln"}], "\[IndentingNewLine]", 
+ RowBox[{"%", " ", "//", " ", 
+  "FullSimplify"}]}], \
+"Input",ExpressionUUID->"3d56f91b-6351-4dde-81bd-0d217bf526b6"],
+
+Cell[BoxData[
+ RowBox[{"voltProp100", "-", "voltReverse0", "-", 
+  FractionBox[
+   RowBox[{
+    RowBox[{"(", 
+     RowBox[{"controlProp100", "-", "controlReverse0"}], ")"}], " ", 
+    RowBox[{"(", 
+     RowBox[{
+      RowBox[{"-", "voltReverse0"}], "+", "voltReverse100"}], ")"}]}], 
+   RowBox[{
+    RowBox[{"-", "controlReverse0"}], "+", 
+    "controlReverse100"}]]}]], \
+"Output",ExpressionUUID->"19fe4559-331d-45a2-a1fa-2c3e3de06b4d"],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"-", "diodeDrop"}], "-", 
+  FractionBox[
+   RowBox[{
+    RowBox[{"(", 
+     RowBox[{
+      RowBox[{"-", "batteryVoltage"}], "-", "diodeDrop"}], ")"}], " ", 
+    RowBox[{"(", 
+     RowBox[{
+      RowBox[{"-", 
+       FractionBox[
+        RowBox[{"controlMax", " ", "Ke", " ", "\[CapitalOmega]"}], 
+        RowBox[{"batteryVoltage", "+", 
+         RowBox[{"Ke", " ", "\[CapitalOmega]"}]}]]}], "-", 
+      FractionBox[
+       RowBox[{
+        RowBox[{"controlMax", " ", "diodeDrop"}], "-", 
+        RowBox[{"controlMax", " ", "Ke", " ", "\[CapitalOmega]"}]}], 
+       RowBox[{"batteryVoltage", "+", 
+        RowBox[{"Ke", " ", "\[CapitalOmega]"}]}]]}], ")"}]}], 
+   RowBox[{
+    RowBox[{"-", "controlMax"}], "-", 
+    FractionBox[
+     RowBox[{
+      RowBox[{"controlMax", " ", "diodeDrop"}], "-", 
+      RowBox[{"controlMax", " ", "Ke", " ", "\[CapitalOmega]"}]}], 
+     RowBox[{"batteryVoltage", "+", 
+      RowBox[{
+      "Ke", " ", 
+       "\[CapitalOmega]"}]}]]}]]}]], \
+"Output",ExpressionUUID->"c6dca60d-f9df-4309-94e6-50809a60c066"],
+
+Cell[BoxData["0"], \
+"Output",ExpressionUUID->"7ec72475-9456-43ee-b831-6bc45b5f9fb1"]
+}, Open  ]]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[TextData[{
+ 
+ CounterBox["Section"],
+ ".",
+ 
+ CounterBox["Subsection"],
+ ". In Real Life"
+}], "Subsection",ExpressionUUID->"4fb0ffd9-a02e-4715-88a1-8110ebaaa583"],
+
+Cell["\<\
+We examine what this looks like for an actual motor. We choose a NeveRest 60. \
+We ignore the gearing since we want the Ke relative to the pre-gearbox \
+armature velocity, not the post-gearbox shaft velocity.\
+\>", "Text",ExpressionUUID->"fde9c27a-7e62-47b0-a128-6ec3c6eeb6f9"],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[{
+ RowBox[{"aMotor", " ", "=", " ", 
+  RowBox[{
+   RowBox[{
+    RowBox[{"motorParameters", "[", 
+     RowBox[{"\"\<AM 60 A\>\"", ",", " ", 
+      RowBox[{"Geared", " ", "\[Rule]", " ", "False"}]}], "]"}], " ", "//", 
+    " ", "siUnits"}], " ", "//", " ", "clearUnits"}]}], "\[IndentingNewLine]", 
+ RowBox[{"constants", " ", "=", " ", 
+  RowBox[{"{", 
+   RowBox[{
+    RowBox[{"diodeDrop", " ", "\[Rule]", " ", 
+     RowBox[{"7", "/", "10"}]}], ",", " ", 
+    RowBox[{"Ke", " ", "\[Rule]", " ", 
+     RowBox[{"(", 
+      RowBox[{"Ke", " ", "/.", " ", "aMotor"}], ")"}]}], ",", " ", 
+    RowBox[{"batteryVoltage", " ", "\[Rule]", " ", "12"}], ",", " ", 
+    RowBox[{"controlMax", " ", "\[Rule]", " ", "32767"}]}], 
+   "}"}]}]}], "Input",ExpressionUUID->"16443520-b262-43dc-87c6-55d6e0f089b1"],
+
+Cell[BoxData[
+ RowBox[{"\[LeftAssociation]", 
+  RowBox[{
+   RowBox[{"R", "\[Rule]", 
+    FractionBox["33", "10"]}], ",", 
+   RowBox[{"L", "\[Rule]", 
+    FractionBox["347", "500000"]}], ",", 
+   RowBox[{"Ke", "\[Rule]", 
+    FractionBox["533", "500"]}], ",", 
+   RowBox[{"Kt", "\[Rule]", 
+    FractionBox["533", "500"]}], ",", 
+   RowBox[{"J", "\[Rule]", 
+    FractionBox["1041", "100000000"]}], ",", 
+   RowBox[{"B", "\[Rule]", 
+    FractionBox["33", "1000"]}], ",", 
+   RowBox[{"\[CapitalNu]", "\[Rule]", "1"}], ",", 
+   RowBox[{"\[Eta]", "\[Rule]", "1"}], ",", 
+   RowBox[{"Jafter", "\[Rule]", "0"}], ",", 
+   RowBox[{"Bafter", "\[Rule]", "0"}], ",", 
+   RowBox[{"const\[Tau]appafter", "\[Rule]", "0"}]}], 
+  "\[RightAssociation]"}]], \
+"Output",ExpressionUUID->"a6047dc3-d3a9-4355-b72b-2c1051da8cf9"],
+
+Cell[BoxData[
+ RowBox[{"{", 
+  RowBox[{
+   RowBox[{"diodeDrop", "\[Rule]", 
+    FractionBox["7", "10"]}], ",", 
+   RowBox[{"Ke", "\[Rule]", 
+    FractionBox["533", "500"]}], ",", 
+   RowBox[{"batteryVoltage", "\[Rule]", "12"}], ",", 
+   RowBox[{"controlMax", "\[Rule]", "32767"}]}], 
+  "}"}]], "Output",ExpressionUUID->"ce625831-5e92-4b22-b921-87a8d86cd611"]
+}, Open  ]],
+
+Cell["There are three points of relevance to us.", \
+"Text",ExpressionUUID->"2890d4bc-25e8-45db-ba0a-7ac880f19846"],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"points", " ", "=", " ", 
+  RowBox[{"{", "\[IndentingNewLine]", 
+   RowBox[{
+    RowBox[{"Z", " ", "\[Rule]", " ", 
+     RowBox[{"{", 
+      RowBox[{"controlProp0", ",", " ", "voltProp0"}], "}"}]}], ",", 
+    "\[IndentingNewLine]", 
+    RowBox[{"T", " ", "\[Rule]", " ", 
+     RowBox[{"{", 
+      RowBox[{"controlProp100", ",", " ", "voltProp100"}], "}"}]}], ",", 
+    "\[IndentingNewLine]", 
+    RowBox[{"R", " ", "\[Rule]", " ", 
+     RowBox[{"{", 
+      RowBox[{"controlReverse100", ",", " ", "voltReverse100"}], "}"}]}]}], 
+   "\[IndentingNewLine]", 
+   "}"}]}]], "Input",ExpressionUUID->"9f3b69f8-f067-487b-9a7f-e7fa5a582eb4"],
+
+Cell[BoxData[
+ RowBox[{"{", 
+  RowBox[{
+   RowBox[{"Z", "\[Rule]", 
+    RowBox[{"{", 
+     RowBox[{"controlProp0", ",", "voltProp0"}], "}"}]}], ",", 
+   RowBox[{"T", "\[Rule]", 
+    RowBox[{"{", 
+     RowBox[{"controlProp100", ",", "voltProp100"}], "}"}]}], ",", 
+   RowBox[{"R", "\[Rule]", 
+    RowBox[{"{", 
+     RowBox[{"controlReverse100", ",", "voltReverse100"}], "}"}]}]}], 
+  "}"}]], "Output",ExpressionUUID->"d481f3b0-976f-42b4-9f04-f1728b66692e"]
+}, Open  ]],
+
+Cell["\<\
+The maximum velocity of this motor is just over 10 radians / second.\
+\>", "Text",ExpressionUUID->"f0c94e26-3d18-48c2-9a85-aea2684f222e"],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{
+   RowBox[{
+    RowBox[{
+     RowBox[{"ssVel", " ", "/.", " ", "ss"}], " ", "/.", " ", "aMotor"}], " ",
+     "/.", " ", 
+    RowBox[{"constvapp", " ", "\[Rule]", " ", "batteryVoltage"}]}], " ", "/.",
+    " ", "constants"}], " ", "//", " ", 
+  "N"}]], "Input",ExpressionUUID->"5dbf16ec-edaa-490e-b22a-4740c8e94339"],
+
+Cell[BoxData["10.272586520362077`"], \
+"Output",ExpressionUUID->"531effd8-af12-4220-bf52-e1470706c133"]
+}, Open  ]],
+
+Cell["\<\
+At that velocity, what part of the negative control range is devoted to \
+proportional braking?\
+\>", "Text",ExpressionUUID->"e61be56c-6d46-43b4-a810-3e7848f194b6"],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[{
+ RowBox[{"speed", " ", "=", " ", 
+  RowBox[{"{", 
+   RowBox[{"\[CapitalOmega]", " ", "\[Rule]", " ", "10.27"}], 
+   "}"}]}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"all", " ", "=", " ", 
+   RowBox[{"Join", "[", 
+    RowBox[{"soln", ",", " ", "constants", ",", " ", "speed"}], "]"}]}], 
+  ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"p1", " ", "=", " ", 
+   RowBox[{"Plot", "[", 
+    RowBox[{
+     RowBox[{"Evaluate", "[", 
+      RowBox[{
+       RowBox[{"voltReverse", "[", "control", "]"}], " ", "//.", " ", "all"}],
+       "]"}], ",", " ", 
+     RowBox[{
+      RowBox[{"{", 
+       RowBox[{
+       "control", ",", " ", "controlReverse100", ",", " ", 
+        "controlReverse0"}], "}"}], " ", "//.", " ", "all"}], ",", " ", 
+     RowBox[{"PlotStyle", "\[Rule]", "Red"}], ",", " ", 
+     RowBox[{"AxesOrigin", "\[Rule]", 
+      RowBox[{"{", 
+       RowBox[{"0", ",", "0"}], "}"}]}], ",", " ", 
+     RowBox[{"PlotRange", "\[Rule]", 
+      RowBox[{"Evaluate", "[", 
+       RowBox[{
+        RowBox[{"{", 
+         RowBox[{
+          RowBox[{
+           RowBox[{"-", "batteryVoltage"}], "-", "1"}], ",", " ", 
+          RowBox[{"batteryVoltage", "+", "1"}]}], "}"}], " ", "//.", " ", 
+        "all"}], "]"}]}], ",", " ", "\[IndentingNewLine]", 
+     RowBox[{"AxesLabel", "\[Rule]", 
+      RowBox[{"{", 
+       RowBox[{
+        RowBox[{"HoldForm", "[", 
+         RowBox[{"Control", " ", "Signal"}], "]"}], ",", " ", 
+        RowBox[{"HoldForm", "[", 
+         RowBox[{
+         "Instantaneous", " ", "Equivalent", " ", "Applied", " ", "Voltage"}],
+          "]"}]}], "}"}]}], ",", "\[IndentingNewLine]", 
+     RowBox[{"ImageSize", "\[Rule]", "Large"}]}], "]"}]}], 
+  ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"p2", " ", "=", " ", 
+   RowBox[{"Plot", "[", 
+    RowBox[{
+     RowBox[{"Evaluate", "[", 
+      RowBox[{
+       RowBox[{"voltProp", "[", "control", "]"}], " ", "//.", " ", "all"}], 
+      "]"}], ",", " ", 
+     RowBox[{
+      RowBox[{"{", 
+       RowBox[{
+       "control", ",", " ", "controlProp100", ",", " ", "controlProp0"}], 
+       "}"}], " ", "//.", " ", "all"}], ",", " ", 
+     RowBox[{"PlotStyle", "\[Rule]", "Blue"}]}], "]"}]}], 
+  ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"p3", " ", "=", " ", 
+   RowBox[{"ListPlot", "[", 
+    RowBox[{
+     RowBox[{
+      RowBox[{"{", 
+       RowBox[{"Z", ",", " ", "T", ",", " ", "R"}], "}"}], "/.", " ", 
+      RowBox[{"(", 
+       RowBox[{"points", " ", "//.", " ", "all"}], ")"}]}], ",", " ", 
+     RowBox[{"AxesOrigin", "\[Rule]", " ", 
+      RowBox[{"{", 
+       RowBox[{"0", ",", "0"}], "}"}]}], ",", " ", 
+     RowBox[{"PlotStyle", "\[Rule]", "Black"}]}], "]"}]}], 
+  ";"}], "\[IndentingNewLine]", 
+ RowBox[{"Show", "[", 
+  RowBox[{"p1", ",", "p2", ",", "p3"}], 
+  "]"}]}], "Input",ExpressionUUID->"e95caa1f-f660-497a-bd0c-4a84d01e5376"],
+
+Cell[BoxData[
+ RowBox[{"{", 
+  RowBox[{"\[CapitalOmega]", "\[Rule]", "10.27`"}], 
+  "}"}]], "Output",ExpressionUUID->"da69d373-8730-4005-ad9e-a2c076e97fd1"],
+
+Cell[BoxData[
+ GraphicsBox[{{{{}, {}, 
+     TagBox[
+      {RGBColor[1, 0, 0], AbsoluteThickness[1.6], Opacity[1.], 
+       LineBox[CompressedData["
+1:eJwVx3k41HkAx3FSWbmPRI7c07hKq7QefKUeKrUkKiOKYtvMkgpFpGNiPdmK
+lt1ORlEKeWzJJvOxjqTfuDLj9rMYUaIyMSOx7R/v5/28jEMifUIXyMjIbP/W
+/5dWTkh58zS0c7ZPz88zcGO8ZPHeORphhW0RsnMMuBge15TM0igrDxheMMvA
++QSJ9eoZGntbfxYskjCg4iS7P1tMgyt3oVTxAwNm5Rp1SaM01oRVRi7rZ8C7
+dG36htc0dlitGrEFA3n58ZbVeTQuPlbrDExigK78fuVWdxrFntp75z9b4CRr
+vG7tWB824qwbddwCtqUqEGX0IVC8Zcp4yhyRjgEXdO37YFyw0/MZ2xwa7gXv
+S7p6wXKpkUsaM8OGJHOTxpO9cPKNDUwJNkNq7OKSouW9yGVyzut2mmLt5Gj/
+ZFUPTvdKVYT+pmDflPZWBPdATrPEUdhkgoWU4qm38j2YtWh6KetlgrKyc8d7
+irsRN+Nh8aTZGFMtDEcf725wveTMijyMkXWkMdt6ugsu58w5LS+MUOOc05aa
+2YXz61OT1zsbQam+M6TQoQu3WRlF3odX4LFQK92e7oSBbL9WMtsQbzVP/UZO
+d2KioOT5Jn8DJAlEVsXmnchT32Hjv0cfubXxmdyaDpTGR9PiDXroPxobwArt
+QMNBL2vu6uU4fSe6Kkbpm5dMkzw7XRQszBZrP2yH/l+mmXYGOlg3StXr+bTD
+b7lhqabeMvSm7psekgpxY55/WN5QG2oBhpN214SwH1kQelZxKe4U05cGXYUo
+TVtk4auohdo1fKlOvwDJ69KYhZ81IHPMqFLjjAChQQ0vlonUcdMhxjRqpQDW
+GwXWncNqqLOU+O2sb8PFXQ33Nuapwpt7inkt4puzOZyzucr4LAzbfVe7DfdG
+HmQNFSjCwjHBx77sNQ459Nj6JSvgqXHmOCPoNcTz+TuPpcij3aF79+2vrbBs
+Svh6O2gRdreahMTntsJWZ8I+zl8On5jNdXqerdi271VObJAsdB/dl5B3LTBg
+HWDIR83xcv7mvKq/0gLn0TCLuIgZ3pPJtHDB6hYUcxJXLdGe4olGv4TmtTTD
+05Cd29/ykRd9kC3bc6IZC/2MQ82K3vHSlRUO/67TDJ2U9KwqpUGeUYz3m7CE
+JtRsGpSxnBXwvD1ZxVb8RnzIF03f5z3l/ZlQoS5RbsTKWNfyqje15O5T0ydp
+AXxwNYIayKcu8sl3RilqDx+qt1Rm7v/QTVw+Nh/w9eMjncljap3pJh3MRHU9
+Lz7CXY1+HVHtIYrXO9j33PiwjxjwuGLTS6IS0kyrmXy8eBlWO3CIJs5u05cl
+0xRi4ND/z8S/JLWP/6ZbTMF6sZokVnOACOPuuPA+Uhj3HFG1cRggR0p3jHHe
+UQho/4NkJQ6QXLOHHpo0BTIuvRWuPEgU5IPnbOooKOhXBGpZDZFduQ5+6tUU
+eMFXo1/+OES4ROWhmEfhTD47LfHoEHE68cz/WTmF92sMno+UD5HI0aWPNxdS
+aN2SqP98s4hUcMYUrQsopFzaZX+ULSLfmVSHqOZT2Cqw3ca4LCJc1hE1YTaF
+sv10/JV2EZmYcv+p/CaFX/LKMty/iIhThkHljWsUTMcuPfhiOExSVom1krIo
+iOwOVT9yGyaCVw3hB65SuB7r2h0aNkz+AyMmmwg=
+        "]]},
+      Annotation[#, "Charting`Private`Tag$803823#1"]& ]}, {}, {}}, {{{}, {}, 
+     TagBox[
+      {RGBColor[0, 0, 1], AbsoluteThickness[1.6], Opacity[1.], 
+       LineBox[CompressedData["
+1:eJwVzXk41AkcBvCRGtLmHNtIxjh+yNFTlrYnx++rA+WoqG1LRdKxYkyYSXpy
+K5uiRLMhdmoyjdkYlQ3l8XWOe0PlWMcIUVFUjjbszv7xPu/7+es18A/xOr6E
+QqF4yPN/8wvMgkySWlE+17fPX3Xsl4nKMVFu9eqeJXGnydVaFmo+8XIjY7Au
+9jyZftbqYWqU3Nfch+/HJpNJYD03Fy43d2jkVmwWyWq3S2g6Kvd4wYm0WDFp
+P+OZzbaTO48mTIl9SnY6cJrLPrQgJd5FeiW2iYwsTU886dqCMZytjUWiXvLg
+gPSNzoNmfJ52w/LVzhGyd/VX8y5aM/qZ8170642TzVsWpAUhTShToNpdqJoi
+52jaK5NfNqIkuO1l68ZpMq3j3/zodY3Ijtw3sXZ6jmwVjlnEXG7AsROGxSp3
+5kkXk5G9F6fqcdPamLudShRYd/3xK4FbPUaENOUXDCnAnjwepUEiRbDV543m
+KsKqtoiVX+lSlAXyfI55L4OdY5ZhTuF1SJk63T9koQRloi8xqT21KJhxda4b
+Vgbe/tTR6R9qsd49LuhBlQqs0jXbcOpaDVZpygI7ed9BR9ILQ9lsNbr+7Ox5
+zEMVFl57B7O9qtH47NK5r1rqEDD6xpdaUoVvFQLtwqbUYVOXu/ixehW+f7zQ
+xxrUgMJ+STcrqBJ7cu+Or2jRBP9UM8m6DsSUxpaJ7vtaEG8ZNkC1QozWM/E0
+59GgcvROcINRBdpKlvDFHG2o5Pu8zv5cjl2RU76tu76HbJsyZb7oGZYGq0aF
+2a+CSV2IlnCe4pHfC1N26NBBv/e0cNK0DJ2+RS3ylXXghvRGhqusBDVS/Hqy
+PutAjNJQh7jgCeb51d2va10NrsyuavLYnxjhc/BV2DNduHz1i+KAVTGq3gyd
+2ZO5BtRNVqrcXHyEacq349rC9CCU11R5ofgh7r07HdzhywCPw0UN7Lgi7L7Q
+7ka11wfFefv4dFsJeiKr5rA2EwL6B3QuLTzAtKMbe58nMMFN17GUli3GFoZS
+Pu0TE94uH3uqqCRC00mW8NYpAzjHlx1ZnpOH/oN0xo+dBoDvjI+zFQRY/uZA
+jfYuQ7h2+egs9QwfVZUFzNoaQ7iX1+19SicHnXasn7libQS8rEvRiW9/w/Qc
+728ZIiNgvW5//5dGOtZrlZ57QjeGwj/0ZJ8EKfhZYFogSjSGwz41nKb9Ceiw
+00qz75sx5Pu46SxwOPiLGuejWSABvs5Mc4LJQU9rYGkHEUDbML3ZozEcbfat
+mFBgERBFzT10mxGOi5n8dz1nCPAu+pTrIA3FdJPWkSvnCJinZppE0dlY4WDa
+O5lEQFZA28lFznGkBXXXlwgJoG4+/6tnYwD+kyJwuScigK1GiHMYAThQFFJ3
+XUzAtrKID45Sf8yfXVYTWEjAhBqTE033QzLeumLNE/k/t2+pAncfBmYmF8fU
+EeBlsMGVz9iLu8t/sgmuJ8C0OSHZSeqFtjKDRwcaCXhuYKkZR9+NFJMSiXUr
+AVszpx2p3O2YUTQsHn5JwPjH7Fpn6RY8/6LQvK2TgIzt29wv0QH9ZiNF5d0E
+tAwSj9S5tmjhoCG82UeA/tVwvE5fj+p+vUT8AAGD7ItZBJfA6TihIGSQAJVU
+l6BdXG38+16o0aEhApj7aal+YzYVWO9wx3WEgP8ApsFlPw==
+        "]]},
+      Annotation[#, "Charting`Private`Tag$803868#1"]& ]}, {}, {}}, {{}, {{}, 
+     {GrayLevel[0], PointSize[0.012833333333333334`], AbsoluteThickness[1.6], 
+      PointBox[{{0., 10.94782}, {-15632.300494774669`, 
+       0.}, {-32767., -12.}}]}, {}}, {}, {}, {}, {}}},
+  AspectRatio->NCache[GoldenRatio^(-1), 0.6180339887498948],
+  Axes->{True, True},
+  AxesLabel->{
+    FormBox[
+     TagBox[
+      RowBox[{"Control", " ", "Signal"}], HoldForm], TraditionalForm], 
+    FormBox[
+     TagBox[
+      RowBox[{
+       "Instantaneous", " ", "Equivalent", " ", "Applied", " ", "Voltage"}], 
+      HoldForm], TraditionalForm]},
+  AxesOrigin->{0., 0.},
+  DisplayFunction->Identity,
+  Frame->{{False, False}, {False, False}},
+  FrameLabel->{{None, None}, {None, None}},
+  FrameTicks->{{Automatic, 
+     Charting`ScaledFrameTicks[{Identity, Identity}]}, {Automatic, 
+     Charting`ScaledFrameTicks[{Identity, Identity}]}},
+  GridLines->{None, None},
+  GridLinesStyle->Directive[
+    GrayLevel[0.5, 0.4]],
+  ImagePadding->All,
+  ImageSize->Large,
+  Method->{
+   "DefaultBoundaryStyle" -> Automatic, "DefaultMeshStyle" -> 
+    AbsolutePointSize[6], "ScalingFunctions" -> None, 
+    "CoordinatesToolOptions" -> {"DisplayFunction" -> ({
+        (Identity[#]& )[
+         Part[#, 1]], 
+        (Identity[#]& )[
+         Part[#, 2]]}& ), "CopiedValueFunction" -> ({
+        (Identity[#]& )[
+         Part[#, 1]], 
+        (Identity[#]& )[
+         Part[#, 2]]}& )}},
+  PlotRange->{{-32766.999629913804`, 0.}, {-13, 13}},
+  PlotRangeClipping->True,
+  PlotRangePadding->{{
+     Scaled[0.02], 
+     Scaled[0.02]}, {0, 0}},
+  Ticks->{
+   Automatic, 
+    Automatic}]], \
+"Output",ExpressionUUID->"2cbea09f-1e0f-4187-97ad-189bd2b1ff78"]
+}, Open  ]],
+
+Cell["\<\
+Answer: about half of it. Good. It will be less for lesser velocities, but \
+still a good chunk.\
+\>", "Text",ExpressionUUID->"8f7b28f7-b0dc-40dc-8f25-97954c21fdba"]
+}, Open  ]]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[TextData[{
+ 
+ CounterBox["Section"],
+ ". Revision History"
+}], "Section",ExpressionUUID->"276978c4-a71c-4a3f-acf0-32b83569abc0"],
+
+Cell["2018.08.07 Initial version.", \
+"Item",ExpressionUUID->"c7e98618-4fda-46a1-9c3b-e7a69012bc31"]
+}, Open  ]]
+}, Open  ]]
+},
+WindowSize->{1197, 1459},
+WindowMargins->{{Automatic, 958}, {Automatic, 19}},
+PrintingCopies->1,
+PrintingPageRange->{32000, 32000},
+PrintingOptions->{"Magnification"->1.,
+"PaperOrientation"->"Portrait",
+"PaperSize"->{612, 792}},
+PrivateNotebookOptions->{"FileOutlineCache"->False},
+CellContext->Notebook,
+CellLabelAutoDelete->True,
+TrackCellChangeTimes->False,
+Magnification:>0.9 Inherited,
+FrontEndVersion->"11.3 for Microsoft Windows (64-bit) (March 6, 2018)",
+StyleDefinitions->Notebook[{
+   Cell[
+    StyleData[
+    StyleDefinitions -> 
+     FrontEnd`FileName[{"Report"}, "StandardReport.nb", CharacterEncoding -> 
+       "UTF-8"]]], 
+   Cell[
+    StyleData[All, "Printout"], Magnification -> 0.5]}, Visible -> False, 
+  FrontEndVersion -> "11.3 for Microsoft Windows (64-bit) (March 6, 2018)", 
+  StyleDefinitions -> "PrivateStylesheetFormatting.nb"]
+]
+
