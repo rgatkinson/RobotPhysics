@@ -1287,8 +1287,8 @@ Cell[BoxData[{
       RowBox[{"{", 
        RowBox[{
        "Jafter", ",", " ", "Bafter", ",", " ", ",", " ", "vapp0", ",", " ", 
-        "\[Tau]app0", ",", " ", "\[CapitalDelta]vapp0", ",", " ", 
-        "\[CapitalDelta]\[Tau]app0"}], "}"}]}]}], "]"}]}], 
+        "\[Tau]app0", ",", " ", "\[CapitalDelta]vappConst", ",", " ", 
+        "\[CapitalDelta]\[Tau]appConst"}], "}"}]}]}], "]"}]}], 
   ";"}], "\[IndentingNewLine]", 
  RowBox[{"parameterAssumptions", " ", "=", " ", 
   RowBox[{"Union", "[", 
@@ -1421,7 +1421,7 @@ Cell[BoxData[{
   "\[IndentingNewLine]"}], "\[IndentingNewLine]", 
  RowBox[{
   RowBox[{"reflectTorque", "[", 
-   RowBox[{"\[CapitalDelta]\[Tau]app0", " ", "+", 
+   RowBox[{"\[CapitalDelta]\[Tau]appConst", " ", "+", 
     RowBox[{"Jafter", " ", 
      RowBox[{
       RowBox[{"\[Theta]after", "''"}], "[", "t", "]"}]}], " ", "+", " ", 
@@ -1988,7 +1988,7 @@ Cell[BoxData[{
       RowBox[{"vapp", "[", "t", "]"}], " ", "\[Rule]", " ", 
       RowBox[{"parseUnit", "[", "\"\<Volts\>\"", "]"}]}], ",", 
      "\[IndentingNewLine]", 
-     RowBox[{"\[CapitalDelta]vapp0", " ", "\[Rule]", " ", 
+     RowBox[{"\[CapitalDelta]vappConst", " ", "\[Rule]", " ", 
       RowBox[{"parseUnit", "[", "\"\<Volts\>\"", "]"}]}], ",", 
      "\[IndentingNewLine]", 
      RowBox[{
@@ -2065,8 +2065,8 @@ Cell[BoxData[{
       RowBox[{"\[Tau]app", "[", "t", "]"}], " ", "\[Rule]", " ", 
       "siTorqueUnits"}], ",", "\[IndentingNewLine]", 
      RowBox[{
-     "\[CapitalDelta]\[Tau]app0", " ", "\[Rule]", " ", "siTorqueUnits"}], ",",
-      "\[IndentingNewLine]", 
+     "\[CapitalDelta]\[Tau]appConst", " ", "\[Rule]", " ", "siTorqueUnits"}], 
+     ",", "\[IndentingNewLine]", 
      RowBox[{"\[Tau]app0", " ", "\[Rule]", " ", "siTorqueUnits"}], ",", 
      "\[IndentingNewLine]", 
      RowBox[{"\[Tau]app0", " ", "\[Rule]", " ", "siTorqueUnits"}], ",", 
@@ -2532,8 +2532,8 @@ Cell[BoxData[{
           RowBox[{"0", ",", " ", "siAngularViscousDragUnits"}], "]"}]}], ";", 
         "\[IndentingNewLine]", 
         RowBox[{
-         RowBox[{"assoc", "[", "\[CapitalDelta]\[Tau]app0", "]"}], " ", "=", 
-         " ", 
+         RowBox[{"assoc", "[", "\[CapitalDelta]\[Tau]appConst", "]"}], " ", 
+         "=", " ", 
          RowBox[{"Quantity", "[", 
           RowBox[{"0", ",", " ", "siTorqueUnits"}], "]"}]}], ";", 
         "\[IndentingNewLine]", 
@@ -2621,7 +2621,7 @@ Cell[BoxData[{
       RowBox[{"Quantity", "[", 
        RowBox[{"0", ",", " ", "siAngularViscousDragUnits"}], "]"}]}], ",", 
      "\[IndentingNewLine]", 
-     RowBox[{"\[CapitalDelta]\[Tau]app0", " ", "\[Rule]", " ", 
+     RowBox[{"\[CapitalDelta]\[Tau]appConst", " ", "\[Rule]", " ", 
       RowBox[{"Quantity", "[", 
        RowBox[{"0", ",", " ", "siTorqueUnits"}], "]"}]}]}], 
     "\[IndentingNewLine]", "}"}]}], ";"}], "\[IndentingNewLine]", 
@@ -2648,9 +2648,10 @@ Cell[BoxData[{
        RowBox[{"OptionValue", "[", "Bafter", "]"}]}]}], ";", 
      "\[IndentingNewLine]", 
      RowBox[{
-      RowBox[{"assoc", "[", "\[CapitalDelta]\[Tau]app0", "]"}], " ", "=", " ", 
-      RowBox[{"OptionValue", "[", "\[CapitalDelta]\[Tau]app0", "]"}]}], ";", 
-     "\[IndentingNewLine]", "assoc"}]}], "\[IndentingNewLine]", 
+      RowBox[{"assoc", "[", "\[CapitalDelta]\[Tau]appConst", "]"}], " ", "=", 
+      " ", 
+      RowBox[{"OptionValue", "[", "\[CapitalDelta]\[Tau]appConst", "]"}]}], 
+     ";", "\[IndentingNewLine]", "assoc"}]}], "\[IndentingNewLine]", 
    "]"}]}]}], "Input",ExpressionUUID->"347baa8a-8b7c-43e7-bf37-2fabb294a187"],
 
 Cell["\<\
@@ -2714,13 +2715,14 @@ Cell[BoxData[{
         RowBox[{"Bafter", " ", "/.", " ", "load"}], ")"}]}]}], ";", 
      "\[IndentingNewLine]", 
      RowBox[{
-      RowBox[{"assoc", "[", "\[CapitalDelta]\[Tau]app0", "]"}], " ", "=", " ", 
+      RowBox[{"assoc", "[", "\[CapitalDelta]\[Tau]appConst", "]"}], " ", "=", 
+      " ", 
       RowBox[{
        RowBox[{"(", 
-        RowBox[{"\[CapitalDelta]\[Tau]app0", " ", "/.", " ", "motor"}], ")"}],
-        " ", "+", " ", 
+        RowBox[{"\[CapitalDelta]\[Tau]appConst", " ", "/.", " ", "motor"}], 
+        ")"}], " ", "+", " ", 
        RowBox[{"(", 
-        RowBox[{"\[CapitalDelta]\[Tau]app0", " ", "/.", " ", "load"}], 
+        RowBox[{"\[CapitalDelta]\[Tau]appConst", " ", "/.", " ", "load"}], 
         ")"}]}]}], ";", "\[IndentingNewLine]", "assoc"}]}], 
    "\[IndentingNewLine]", "]"}]}], "\[IndentingNewLine]", 
  RowBox[{"addMotorLoad", "[", 
@@ -2855,7 +2857,7 @@ Cell[BoxData[{
          "Apart"}], ")"}]}]}], ";", "\[IndentingNewLine]", 
      RowBox[{"motorLoad", "[", 
       RowBox[{
-       RowBox[{"\[CapitalDelta]\[Tau]app0", " ", "\[Rule]", " ", 
+       RowBox[{"\[CapitalDelta]\[Tau]appConst", " ", "\[Rule]", " ", 
         RowBox[{"Quantity", "[", 
          RowBox[{
           RowBox[{"parts", "[", 
@@ -2964,7 +2966,7 @@ Cell[BoxData[{
     "]"}]}]}]}], \
 "Input",ExpressionUUID->"4fd5c58e-a4d2-45d0-bd28-8f0bc5271d17"]
 }, Closed]]
-}, Closed]],
+}, Open  ]],
 
 Cell[CellGroupData[{
 
@@ -3832,7 +3834,7 @@ Cell[BoxData[
     RowBox[{"\[Tau]app0", " ", "\[Rule]", " ", 
      RowBox[{"Quantity", "[", 
       RowBox[{"0", ",", " ", "siTorqueUnits"}], "]"}]}], ",", " ", 
-    RowBox[{"\[CapitalDelta]vapp0", " ", "\[Rule]", " ", 
+    RowBox[{"\[CapitalDelta]vappConst", " ", "\[Rule]", " ", 
      RowBox[{"Quantity", "[", 
       RowBox[{"12", ",", " ", "\"\<Volts\>\""}], "]"}]}]}], 
    "]"}]}]], "Input",ExpressionUUID->"05bfb66e-ec46-4118-8bc0-ae21e3b5a217"],
@@ -3850,7 +3852,7 @@ Cell[BoxData[
     RowBox[{"\[Tau]app0", " ", "\[Rule]", " ", 
      RowBox[{"Quantity", "[", 
       RowBox[{"0", ",", " ", "siTorqueUnits"}], "]"}]}], ",", " ", 
-    RowBox[{"\[CapitalDelta]vapp0", " ", "\[Rule]", " ", 
+    RowBox[{"\[CapitalDelta]vappConst", " ", "\[Rule]", " ", 
      RowBox[{"Quantity", "[", 
       RowBox[{"0", ",", " ", "\"\<Volts\>\""}], "]"}]}]}], 
    "]"}]}]], "Input",ExpressionUUID->"0703fb02-33e9-4ce4-bed6-27d37acf85d7"],
@@ -3869,7 +3871,7 @@ Cell[BoxData[
      RowBox[{"\[Tau]app0", " ", "\[Rule]", " ", 
       RowBox[{"Quantity", "[", 
        RowBox[{"0", ",", " ", "siTorqueUnits"}], "]"}]}], ",", " ", 
-     RowBox[{"\[CapitalDelta]vapp0", " ", "\[Rule]", " ", 
+     RowBox[{"\[CapitalDelta]vappConst", " ", "\[Rule]", " ", 
       RowBox[{"Quantity", "[", 
        RowBox[{
         RowBox[{"-", "12"}], ",", " ", "\"\<Volts\>\""}], "]"}]}]}], 
@@ -3908,8 +3910,8 @@ Cell[BoxData[{
       RowBox[{
        RowBox[{"motorTimeFunction", "[", 
         RowBox[{
-         RowBox[{"\[CapitalDelta]vapp0", " ", "&"}], ",", " ", 
-         RowBox[{"\[CapitalDelta]\[Tau]app0", "&"}]}], "]"}], "[", "t", 
+         RowBox[{"\[CapitalDelta]vappConst", " ", "&"}], ",", " ", 
+         RowBox[{"\[CapitalDelta]\[Tau]appConst", "&"}]}], "]"}], "[", "t", 
        "]"}]}], "]"}]}]}], "\[IndentingNewLine]"}], "\[IndentingNewLine]", 
  RowBox[{
   RowBox[{"applyTimeFunction", "[", 
@@ -4110,8 +4112,9 @@ Cell[BoxData[{
   RowBox[{
    RowBox[{"{", 
     RowBox[{"emf", ",", " ", 
-     RowBox[{"\[CapitalDelta]vapp0", " ", "/.", " ", "twelveVoltInput"}]}], 
-    "}"}], ",", " ", 
+     RowBox[{
+     "\[CapitalDelta]vappConst", " ", "/.", " ", "twelveVoltInput"}]}], "}"}],
+    ",", " ", 
    RowBox[{"{", 
     RowBox[{"t", ",", " ", "0", ",", " ", "20"}], "}"}], ",", " ", 
    RowBox[{"AxesLabel", "\[Rule]", 
@@ -4378,55 +4381,55 @@ Cell[BoxData[{
          RowBox[{"motorPositionModel", ",", " ", 
           RowBox[{"{", 
            RowBox[{
-            RowBox[{"\[CapitalDelta]vapp0", "&"}], ",", " ", 
-            RowBox[{"\[CapitalDelta]\[Tau]app0", "&"}]}], "}"}]}], "]"}]}], 
-       " ", "//", " ", "Factor"}], ",", "\[IndentingNewLine]", 
+            RowBox[{"\[CapitalDelta]vappConst", "&"}], ",", " ", 
+            RowBox[{"\[CapitalDelta]\[Tau]appConst", "&"}]}], "}"}]}], 
+         "]"}]}], " ", "//", " ", "Factor"}], ",", "\[IndentingNewLine]", 
       RowBox[{
        RowBox[{"ssVel", " ", "\[Rule]", " ", 
         RowBox[{"ssFinalValueTheorem", "[", 
          RowBox[{"motorVelocityModel", ",", " ", 
           RowBox[{"{", 
            RowBox[{
-            RowBox[{"\[CapitalDelta]vapp0", "&"}], ",", " ", 
-            RowBox[{"\[CapitalDelta]\[Tau]app0", "&"}]}], "}"}]}], "]"}]}], 
-       " ", "//", " ", "Factor"}], ",", "\[IndentingNewLine]", 
+            RowBox[{"\[CapitalDelta]vappConst", "&"}], ",", " ", 
+            RowBox[{"\[CapitalDelta]\[Tau]appConst", "&"}]}], "}"}]}], 
+         "]"}]}], " ", "//", " ", "Factor"}], ",", "\[IndentingNewLine]", 
       RowBox[{
        RowBox[{"ssAcc", " ", "\[Rule]", " ", 
         RowBox[{"ssFinalValueTheorem", "[", 
          RowBox[{"motorAccelerationModel", ",", " ", 
           RowBox[{"{", 
            RowBox[{
-            RowBox[{"\[CapitalDelta]vapp0", "&"}], ",", " ", 
-            RowBox[{"\[CapitalDelta]\[Tau]app0", "&"}]}], "}"}]}], "]"}]}], 
-       " ", "//", " ", "Factor"}], ",", "\[IndentingNewLine]", 
+            RowBox[{"\[CapitalDelta]vappConst", "&"}], ",", " ", 
+            RowBox[{"\[CapitalDelta]\[Tau]appConst", "&"}]}], "}"}]}], 
+         "]"}]}], " ", "//", " ", "Factor"}], ",", "\[IndentingNewLine]", 
       RowBox[{
        RowBox[{"ssEmf", " ", "\[Rule]", " ", 
         RowBox[{"ssFinalValueTheorem", "[", 
          RowBox[{"motorEMFModel", ",", " ", 
           RowBox[{"{", 
            RowBox[{
-            RowBox[{"\[CapitalDelta]vapp0", "&"}], ",", " ", 
-            RowBox[{"\[CapitalDelta]\[Tau]app0", "&"}]}], "}"}]}], "]"}]}], 
-       " ", "//", " ", "Factor"}], ",", "\[IndentingNewLine]", 
+            RowBox[{"\[CapitalDelta]vappConst", "&"}], ",", " ", 
+            RowBox[{"\[CapitalDelta]\[Tau]appConst", "&"}]}], "}"}]}], 
+         "]"}]}], " ", "//", " ", "Factor"}], ",", "\[IndentingNewLine]", 
       RowBox[{
        RowBox[{"ssCur", " ", "\[Rule]", " ", 
         RowBox[{"ssFinalValueTheorem", "[", 
          RowBox[{"motorCurrentModel", ",", " ", 
           RowBox[{"{", 
            RowBox[{
-            RowBox[{"\[CapitalDelta]vapp0", "&"}], ",", " ", 
-            RowBox[{"\[CapitalDelta]\[Tau]app0", "&"}]}], "}"}]}], "]"}]}], 
-       " ", "//", " ", "Factor"}], ",", "\[IndentingNewLine]", 
+            RowBox[{"\[CapitalDelta]vappConst", "&"}], ",", " ", 
+            RowBox[{"\[CapitalDelta]\[Tau]appConst", "&"}]}], "}"}]}], 
+         "]"}]}], " ", "//", " ", "Factor"}], ",", "\[IndentingNewLine]", 
       RowBox[{
        RowBox[{"ssTor", " ", "\[Rule]", " ", 
         RowBox[{"ssFinalValueTheorem", "[", 
          RowBox[{"motorTorqueModel", ",", " ", 
           RowBox[{"{", 
            RowBox[{
-            RowBox[{"\[CapitalDelta]vapp0", "&"}], ",", " ", 
-            RowBox[{"\[CapitalDelta]\[Tau]app0", "&"}]}], "}"}]}], "]"}]}], 
-       " ", "//", " ", "Factor"}]}], "\[IndentingNewLine]", "}"}]}], ")"}], 
-  " ", "//", " ", "prettyPrint"}], "\[IndentingNewLine]", 
+            RowBox[{"\[CapitalDelta]vappConst", "&"}], ",", " ", 
+            RowBox[{"\[CapitalDelta]\[Tau]appConst", "&"}]}], "}"}]}], 
+         "]"}]}], " ", "//", " ", "Factor"}]}], "\[IndentingNewLine]", 
+     "}"}]}], ")"}], " ", "//", " ", "prettyPrint"}], "\[IndentingNewLine]", 
  RowBox[{
   RowBox[{
    RowBox[{"ss", " ", "/.", " ", 
@@ -4434,8 +4437,8 @@ Cell[BoxData[{
      RowBox[{
       RowBox[{"\[CapitalNu]", " ", "\[Rule]", " ", "1"}], ",", " ", 
       RowBox[{"\[Eta]", "\[Rule]", " ", "1"}], ",", " ", 
-      RowBox[{"\[CapitalDelta]\[Tau]app0", "\[Rule]", " ", "0"}]}], "}"}]}], 
-   " ", "//", " ", "FullSimplify"}], " ", "//", 
+      RowBox[{"\[CapitalDelta]\[Tau]appConst", "\[Rule]", " ", "0"}]}], 
+     "}"}]}], " ", "//", " ", "FullSimplify"}], " ", "//", 
   "prettyPrint"}]}], \
 "Input",ExpressionUUID->"a25c713e-9ba3-4635-b13e-e69c6cdae2ad"],
 
