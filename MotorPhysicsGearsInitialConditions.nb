@@ -6,7 +6,7 @@ Cell["Motor Physics, with Gears & Initial Conditions", \
 
 Cell["\<\
 Robert Atkinson, Maddy Nguyen, Samantha Hordyk, Cole Welch, and John Fraser
-11 August 2018\
+12 August 2018\
 \>", "Author",ExpressionUUID->"05aea015-05f3-4e99-899d-20a8cd5792a1"],
 
 Cell["\<\
@@ -1303,7 +1303,8 @@ Cell[BoxData[{
       RowBox[{
       "\[CapitalDelta]vapp", ",", " ", "i", ",", " ", "vg", ",", " ", 
        "\[Theta]", ",", " ", "\[Omega]", ",", " ", "\[Alpha]", ",", " ", 
-       "\[Tau]", ",", "\[CapitalDelta]\[Tau]app"}], "}"}]}]}], 
+       "\[Tau]", ",", "\[Tau]after", ",", " ", "\[CapitalDelta]\[Tau]app"}], 
+      "}"}]}]}], 
    "]"}]}]}], "Input",ExpressionUUID->"e040b396-c8fb-46d1-84d2-b04509a22dd7"]
 }, Open  ]],
 
@@ -1381,8 +1382,10 @@ side.\
 
 Cell[BoxData[{
  RowBox[{"Clear", "[", 
-  RowBox[{"reflectAngle", ",", " ", "reflectTorque"}], 
-  "]"}], "\[IndentingNewLine]", 
+  RowBox[{
+  "reflectAngle", ",", " ", "reflectTorque", ",", " ", 
+   "reflectAngleCoefficient", ",", " ", "reflectDrag", ",", " ", 
+   "reflectInertia"}], "]"}], "\[IndentingNewLine]", 
  RowBox[{
   RowBox[{"reflectAngle", "[", 
    RowBox[{"expr_", ",", " ", "out_", ",", " ", "in_", ",", " ", "t_"}], 
@@ -1413,25 +1416,40 @@ Cell[BoxData[{
    "expr", ",", " ", "\[Theta]after", ",", " ", "\[Theta]", ",", " ", "t"}], 
    "]"}]}], "\[IndentingNewLine]", 
  RowBox[{
-  RowBox[{
-   RowBox[{"reflectTorque", "[", "\[Tau]out_", "]"}], " ", ":=", " ", 
-   RowBox[{"\[Tau]out", " ", "/", " ", 
-    RowBox[{"(", 
-     RowBox[{"\[CapitalNu]", " ", "\[Eta]"}], ")"}]}]}], 
-  "\[IndentingNewLine]"}], "\[IndentingNewLine]", 
+  RowBox[{"reflectTorque", "[", "\[Tau]out_", "]"}], " ", ":=", " ", 
+  RowBox[{"\[Tau]out", " ", "/", " ", 
+   RowBox[{"(", 
+    RowBox[{"\[CapitalNu]", " ", "\[Eta]"}], ")"}]}]}], "\[IndentingNewLine]", 
  RowBox[{
-  RowBox[{"reflectTorque", "[", 
-   RowBox[{"\[CapitalDelta]\[Tau]appConst", " ", "+", 
-    RowBox[{"Jafter", " ", 
-     RowBox[{
-      RowBox[{"\[Theta]after", "''"}], "[", "t", "]"}]}], " ", "+", " ", 
-    RowBox[{"Bafter", " ", 
-     RowBox[{
-      RowBox[{"\[Theta]after", "'"}], "[", "t", "]"}]}]}], "]"}], "//", " ", 
-  "Expand"}], "\[IndentingNewLine]", 
- RowBox[{"%", " ", "//", " ", 
-  "reflectAngle"}]}], \
-"Input",ExpressionUUID->"a5a8f738-65fc-4220-bb32-7573ac12c913"]
+  RowBox[{"reflectAngleCoefficient", "[", "coeff_", "]"}], " ", ":=", " ", 
+  RowBox[{"coeff", " ", "/", " ", "\[CapitalNu]"}]}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"reflectDrag", "[", "b_", "]"}], " ", ":=", " ", 
+  RowBox[{
+   RowBox[{"b", " ", "//", " ", "reflectAngleCoefficient"}], " ", "//", " ", 
+   "reflectTorque"}]}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{
+   RowBox[{"reflectInertia", "[", "j_", "]"}], " ", ":=", " ", 
+   RowBox[{
+    RowBox[{"j", " ", "//", " ", "reflectAngleCoefficient"}], " ", "//", " ", 
+    "reflectTorque"}]}], "\[IndentingNewLine]"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{
+   RowBox[{"reflectTorque", "[", 
+    RowBox[{"\[CapitalDelta]\[Tau]appConst", " ", "+", 
+     RowBox[{"Jafter", " ", 
+      RowBox[{
+       RowBox[{"\[Theta]after", "''"}], "[", "t", "]"}]}], " ", "+", " ", 
+     RowBox[{"Bafter", " ", 
+      RowBox[{
+       RowBox[{"\[Theta]after", "'"}], "[", "t", "]"}]}]}], "]"}], " ", "//", 
+   " ", "reflectAngle"}], " ", "//", " ", "Expand"}], "\[IndentingNewLine]", 
+ RowBox[{"{", 
+  RowBox[{
+   RowBox[{"reflectDrag", "[", "Bafter", "]"}], ",", " ", 
+   RowBox[{"reflectInertia", "[", "Jafter", "]"}]}], 
+  "}"}]}], "Input",ExpressionUUID->"a5a8f738-65fc-4220-bb32-7573ac12c913"]
 }, Open  ]],
 
 Cell[CellGroupData[{
@@ -1557,17 +1575,26 @@ Cell[BoxData[{
        RowBox[{"\[Tau]AfterExpr", " ", "//", " ", "reflectTorque"}], " ", "//",
         " ", "reflectAngle"}], ")"}]}], " ", "\[Equal]", " ", "0"}]}], 
   ";"}], "\[IndentingNewLine]", 
- RowBox[{"\[Tau]Eqn", " ", "=", 
-  RowBox[{"Collect", "[", 
+ RowBox[{
+  RowBox[{"\[Tau]Eqn", " ", "=", 
+   RowBox[{"Collect", "[", 
+    RowBox[{"\[Tau]Eqn", ",", " ", 
+     RowBox[{"{", 
+      RowBox[{
+       RowBox[{"\[Theta]", "[", "t", "]"}], ",", " ", 
+       RowBox[{
+        RowBox[{"\[Theta]", "'"}], "[", "t", "]"}], ",", " ", 
+       RowBox[{
+        RowBox[{"\[Theta]", "''"}], "[", "t", "]"}]}], "}"}]}], "]"}]}], 
+  ";"}], "\[IndentingNewLine]", 
+ RowBox[{"\[Tau]Eqns", " ", "=", " ", 
+  RowBox[{"{", 
    RowBox[{"\[Tau]Eqn", ",", " ", 
-    RowBox[{"{", 
-     RowBox[{
-      RowBox[{"\[Theta]", "[", "t", "]"}], ",", " ", 
-      RowBox[{
-       RowBox[{"\[Theta]", "'"}], "[", "t", "]"}], ",", " ", 
-      RowBox[{
-       RowBox[{"\[Theta]", "''"}], "[", "t", "]"}]}], "}"}]}], 
-   "]"}]}]}], "Input",ExpressionUUID->"1f3475d9-c3d0-455f-8863-c1c8e7c34f77"],
+    RowBox[{
+     RowBox[{"reflectTorque", "[", 
+      RowBox[{"\[Tau]after", "[", "t", "]"}], "]"}], " ", "\[Equal]", "  ", 
+     RowBox[{"\[Tau]", "[", "t", "]"}]}]}], " ", 
+   "}"}]}]}], "Input",ExpressionUUID->"1f3475d9-c3d0-455f-8863-c1c8e7c34f77"],
 
 Cell["\<\
 The voltage drop across the resistance, induction and back EMF must equal the \
@@ -1598,10 +1625,9 @@ Cell[BoxData[{
    RowBox[{
     RowBox[{
      RowBox[{"{", 
-      RowBox[{
-      "ktEqn", ",", " ", "backEmfEqn", ",", " ", "voltageEqn", ",", " ", 
-       "\[Tau]Eqn"}], "}"}], " ", "~", "Join", "~", " ", 
-     "\[Theta]afterEqns"}], " ", "//", " ", "FullSimplify"}]}], 
+      RowBox[{"ktEqn", ",", " ", "backEmfEqn", ",", " ", "voltageEqn"}], 
+      "}"}], " ", "~", "Join", "~", "  ", "\[Tau]Eqns", " ", "~", "Join", "~",
+      " ", "\[Theta]afterEqns"}], " ", "//", " ", "FullSimplify"}]}], 
   ";"}], "\[IndentingNewLine]", 
  RowBox[{"diffEqns", " ", "//", " ", 
   "prettyPrint"}]}], \
@@ -1970,118 +1996,122 @@ Cell[BoxData[{
    RowBox[{"siAngularInertialUnits", " ", "=", " ", 
     RowBox[{"siTorqueUnits", " ", "/", " ", "siAngularAccelerationUnits"}]}], 
    ";"}], "\[IndentingNewLine]"}], "\[IndentingNewLine]", 
- RowBox[{"parameterUnits", " ", "=", " ", 
-  RowBox[{
-   RowBox[{"{", "\[IndentingNewLine]", 
-    RowBox[{
-     RowBox[{"R", " ", "\[Rule]", " ", 
-      RowBox[{"parseUnit", "[", "\"\<Ohms\>\"", "]"}]}], ",", 
-     "\[IndentingNewLine]", 
-     RowBox[{"L", " ", "\[Rule]", " ", 
-      RowBox[{"parseUnit", "[", "\"\<Henrys\>\"", "]"}]}], ",", 
-     "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"parameterUnits", " ", "=", " ", 
+   RowBox[{
+    RowBox[{"{", "\[IndentingNewLine]", 
      RowBox[{
-      RowBox[{"i", "[", "t", "]"}], " ", "\[Rule]", " ", 
-      RowBox[{"parseUnit", "[", "\"\<Amperes\>\"", "]"}]}], ",", 
-     "\[IndentingNewLine]", 
-     RowBox[{
+      RowBox[{"R", " ", "\[Rule]", " ", 
+       RowBox[{"parseUnit", "[", "\"\<Ohms\>\"", "]"}]}], ",", 
+      "\[IndentingNewLine]", 
+      RowBox[{"L", " ", "\[Rule]", " ", 
+       RowBox[{"parseUnit", "[", "\"\<Henrys\>\"", "]"}]}], ",", 
+      "\[IndentingNewLine]", 
       RowBox[{
-       RowBox[{"i", "'"}], "[", "t", "]"}], " ", "\[Rule]", " ", 
+       RowBox[{"i", "[", "t", "]"}], " ", "\[Rule]", " ", 
+       RowBox[{"parseUnit", "[", "\"\<Amperes\>\"", "]"}]}], ",", 
+      "\[IndentingNewLine]", 
       RowBox[{
-       RowBox[{"parseUnit", "[", "\"\<Amperes\>\"", "]"}], " ", "/", " ", 
-       "secondsUnits"}]}], ",", "\[IndentingNewLine]", 
-     RowBox[{
-      RowBox[{
-       RowBox[{"i", "''"}], "[", "t", "]"}], " ", "\[Rule]", " ", 
-      RowBox[{
+       RowBox[{
+        RowBox[{"i", "'"}], "[", "t", "]"}], " ", "\[Rule]", " ", 
        RowBox[{
         RowBox[{"parseUnit", "[", "\"\<Amperes\>\"", "]"}], " ", "/", " ", 
-        "secondsUnits"}], " ", "/", " ", "secondsUnits"}]}], ",", 
-     "\[IndentingNewLine]", 
-     RowBox[{
-      RowBox[{"\[CapitalDelta]vapp", "[", "t", "]"}], " ", "\[Rule]", " ", 
-      RowBox[{"parseUnit", "[", "\"\<Volts\>\"", "]"}]}], ",", 
-     "\[IndentingNewLine]", 
-     RowBox[{"\[CapitalDelta]vappConst", " ", "\[Rule]", " ", 
-      RowBox[{"parseUnit", "[", "\"\<Volts\>\"", "]"}]}], ",", 
-     "\[IndentingNewLine]", 
-     RowBox[{
-      RowBox[{"vg", "[", "t", "]"}], " ", "\[Rule]", " ", 
-      RowBox[{"parseUnit", "[", "\"\<Volts\>\"", "]"}]}], ",", 
-     "\[IndentingNewLine]", 
-     RowBox[{"vapp0", " ", "\[Rule]", " ", 
-      RowBox[{"parseUnit", "[", "\"\<Volts\>\"", "]"}]}], ",", 
-     "\[IndentingNewLine]", 
-     RowBox[{"vapp0", " ", "\[Rule]", " ", 
-      RowBox[{"parseUnit", "[", "\"\<Volts\>\"", "]"}]}], ",", 
-     "\[IndentingNewLine]", "\[IndentingNewLine]", 
-     RowBox[{"J", " ", "\[Rule]", " ", "siAngularInertialUnits"}], ",", 
-     "\[IndentingNewLine]", 
-     RowBox[{"Jafter", " ", "\[Rule]", " ", "siAngularInertialUnits"}], ",", 
-     "\[IndentingNewLine]", 
-     RowBox[{"B", " ", "\[Rule]", " ", "siAngularViscousDragUnits"}], ",", 
-     "\[IndentingNewLine]", 
-     RowBox[{"Bafter", " ", "\[Rule]", " ", "siAngularViscousDragUnits"}], 
-     ",", "\[IndentingNewLine]", "\[IndentingNewLine]", 
-     RowBox[{"Ke", " ", "\[Rule]", " ", 
-      RowBox[{"parseUnit", "[", "\"\<Seconds Volts / Radians\>\"", "]"}]}], 
-     ",", " ", "\[IndentingNewLine]", 
-     RowBox[{"Kt", " ", "\[Rule]", " ", 
+        "secondsUnits"}]}], ",", "\[IndentingNewLine]", 
       RowBox[{
        RowBox[{
-        RowBox[{"parseUnit", "[", "\"\<Newtons Meters\>\"", "]"}], " ", "/", 
-        " ", 
-        RowBox[{"parseUnit", "[", "\"\<Amperes\>\"", "]"}]}], " ", "/", " ", 
-       "radiansUnits"}]}], ",", "\[IndentingNewLine]", "\[IndentingNewLine]", 
-     RowBox[{
-      RowBox[{"\[Theta]", "[", "t", "]"}], "\[Rule]", " ", 
-      "siAngularPositionUnits"}], ",", 
-     RowBox[{
-      RowBox[{"\[Theta]after", "[", "t", "]"}], " ", "\[Rule]", " ", 
-      "siAngularPositionUnits"}], ",", "\[IndentingNewLine]", 
-     RowBox[{
+        RowBox[{"i", "''"}], "[", "t", "]"}], " ", "\[Rule]", " ", 
+       RowBox[{
+        RowBox[{
+         RowBox[{"parseUnit", "[", "\"\<Amperes\>\"", "]"}], " ", "/", " ", 
+         "secondsUnits"}], " ", "/", " ", "secondsUnits"}]}], ",", 
+      "\[IndentingNewLine]", 
       RowBox[{
-       RowBox[{"\[Theta]", "'"}], "[", "t", "]"}], "\[Rule]", " ", 
-      "siAngularVelocityUnits"}], ",", 
-     RowBox[{
+       RowBox[{"\[CapitalDelta]vapp", "[", "t", "]"}], " ", "\[Rule]", " ", 
+       RowBox[{"parseUnit", "[", "\"\<Volts\>\"", "]"}]}], ",", 
+      "\[IndentingNewLine]", 
+      RowBox[{"\[CapitalDelta]vappConst", " ", "\[Rule]", " ", 
+       RowBox[{"parseUnit", "[", "\"\<Volts\>\"", "]"}]}], ",", 
+      "\[IndentingNewLine]", 
       RowBox[{
-       RowBox[{"\[Theta]after", "'"}], "[", "t", "]"}], " ", "\[Rule]", " ", 
-      "siAngularPositionUnits"}], ",", "\[IndentingNewLine]", 
-     RowBox[{
+       RowBox[{"vg", "[", "t", "]"}], " ", "\[Rule]", " ", 
+       RowBox[{"parseUnit", "[", "\"\<Volts\>\"", "]"}]}], ",", 
+      "\[IndentingNewLine]", 
+      RowBox[{"vapp0", " ", "\[Rule]", " ", 
+       RowBox[{"parseUnit", "[", "\"\<Volts\>\"", "]"}]}], ",", 
+      "\[IndentingNewLine]", 
+      RowBox[{"vapp0", " ", "\[Rule]", " ", 
+       RowBox[{"parseUnit", "[", "\"\<Volts\>\"", "]"}]}], ",", 
+      "\[IndentingNewLine]", "\[IndentingNewLine]", 
+      RowBox[{"J", " ", "\[Rule]", " ", "siAngularInertialUnits"}], ",", 
+      "\[IndentingNewLine]", 
+      RowBox[{"Jafter", " ", "\[Rule]", " ", "siAngularInertialUnits"}], ",", 
+      "\[IndentingNewLine]", 
+      RowBox[{"B", " ", "\[Rule]", " ", "siAngularViscousDragUnits"}], ",", 
+      "\[IndentingNewLine]", 
+      RowBox[{"Bafter", " ", "\[Rule]", " ", "siAngularViscousDragUnits"}], 
+      ",", "\[IndentingNewLine]", "\[IndentingNewLine]", 
+      RowBox[{"Ke", " ", "\[Rule]", " ", 
+       RowBox[{"parseUnit", "[", "\"\<Seconds Volts / Radians\>\"", "]"}]}], 
+      ",", " ", "\[IndentingNewLine]", 
+      RowBox[{"Kt", " ", "\[Rule]", " ", 
+       RowBox[{
+        RowBox[{
+         RowBox[{"parseUnit", "[", "\"\<Newtons Meters\>\"", "]"}], " ", "/", 
+         " ", 
+         RowBox[{"parseUnit", "[", "\"\<Amperes\>\"", "]"}]}], " ", "/", " ", 
+        "radiansUnits"}]}], ",", "\[IndentingNewLine]", "\[IndentingNewLine]", 
       RowBox[{
-       RowBox[{"\[Theta]", "''"}], "[", "t", "]"}], "\[Rule]", " ", 
-      "siAngularAccelerationUnits"}], ",", 
-     RowBox[{
+       RowBox[{"\[Theta]", "[", "t", "]"}], "\[Rule]", " ", 
+       "siAngularPositionUnits"}], ",", 
       RowBox[{
-       RowBox[{"\[Theta]after", "''"}], "[", "t", "]"}], " ", "\[Rule]", " ", 
-      "siAngularPositionUnits"}], ",", "\[IndentingNewLine]", 
-     RowBox[{
-      RowBox[{"\[Omega]", "[", "t", "]"}], "\[Rule]", " ", 
-      "siAngularVelocityUnits"}], ",", "\[IndentingNewLine]", 
-     RowBox[{
-      RowBox[{"\[Alpha]", "[", "t", "]"}], "\[Rule]", " ", 
-      "siAngularAccelerationUnits"}], ",", "\[IndentingNewLine]", 
-     "\[IndentingNewLine]", 
-     RowBox[{
-      RowBox[{"\[Tau]", "[", "t", "]"}], " ", "\[Rule]", " ", 
-      "siTorqueUnits"}], ",", "\[IndentingNewLine]", 
-     RowBox[{
-      RowBox[{"\[CapitalDelta]\[Tau]app", "[", "t", "]"}], " ", "\[Rule]", 
-      " ", "siTorqueUnits"}], ",", "\[IndentingNewLine]", 
-     RowBox[{
-     "\[CapitalDelta]\[Tau]appConst", " ", "\[Rule]", " ", "siTorqueUnits"}], 
-     ",", "\[IndentingNewLine]", 
-     RowBox[{"\[Tau]app0", " ", "\[Rule]", " ", "siTorqueUnits"}], ",", 
-     "\[IndentingNewLine]", 
-     RowBox[{"\[Tau]app0", " ", "\[Rule]", " ", "siTorqueUnits"}], ",", 
-     "\[IndentingNewLine]", "\[IndentingNewLine]", 
-     RowBox[{"\[CapitalNu]", " ", "\[Rule]", " ", 
-      RowBox[{"parseUnit", "[", "\"\<DimensionlessUnit\>\"", "]"}]}], ",", 
-     "\[IndentingNewLine]", 
-     RowBox[{"\[Eta]", " ", "\[Rule]", " ", 
-      RowBox[{"parseUnit", "[", "\"\<DimensionlessUnit\>\"", "]"}]}]}], 
-    "\[IndentingNewLine]", "}"}], " ", "//", " ", 
-   "Association"}]}], "\[IndentingNewLine]", 
+       RowBox[{"\[Theta]after", "[", "t", "]"}], " ", "\[Rule]", " ", 
+       "siAngularPositionUnits"}], ",", "\[IndentingNewLine]", 
+      RowBox[{
+       RowBox[{
+        RowBox[{"\[Theta]", "'"}], "[", "t", "]"}], "\[Rule]", " ", 
+       "siAngularVelocityUnits"}], ",", 
+      RowBox[{
+       RowBox[{
+        RowBox[{"\[Theta]after", "'"}], "[", "t", "]"}], " ", "\[Rule]", " ", 
+       "siAngularPositionUnits"}], ",", "\[IndentingNewLine]", 
+      RowBox[{
+       RowBox[{
+        RowBox[{"\[Theta]", "''"}], "[", "t", "]"}], "\[Rule]", " ", 
+       "siAngularAccelerationUnits"}], ",", 
+      RowBox[{
+       RowBox[{
+        RowBox[{"\[Theta]after", "''"}], "[", "t", "]"}], " ", "\[Rule]", " ",
+        "siAngularPositionUnits"}], ",", "\[IndentingNewLine]", 
+      RowBox[{
+       RowBox[{"\[Omega]", "[", "t", "]"}], "\[Rule]", " ", 
+       "siAngularVelocityUnits"}], ",", "\[IndentingNewLine]", 
+      RowBox[{
+       RowBox[{"\[Alpha]", "[", "t", "]"}], "\[Rule]", " ", 
+       "siAngularAccelerationUnits"}], ",", "\[IndentingNewLine]", 
+      "\[IndentingNewLine]", 
+      RowBox[{
+       RowBox[{"\[Tau]", "[", "t", "]"}], " ", "\[Rule]", " ", 
+       "siTorqueUnits"}], ",", "\[IndentingNewLine]", 
+      RowBox[{
+       RowBox[{"\[Tau]after", "[", "t", "]"}], " ", "\[Rule]", " ", 
+       "siTorqueUnits"}], ",", "\[IndentingNewLine]", 
+      RowBox[{
+       RowBox[{"\[CapitalDelta]\[Tau]app", "[", "t", "]"}], " ", "\[Rule]", 
+       " ", "siTorqueUnits"}], ",", "\[IndentingNewLine]", 
+      RowBox[{
+      "\[CapitalDelta]\[Tau]appConst", " ", "\[Rule]", " ", "siTorqueUnits"}],
+       ",", "\[IndentingNewLine]", 
+      RowBox[{"\[Tau]app0", " ", "\[Rule]", " ", "siTorqueUnits"}], ",", 
+      "\[IndentingNewLine]", 
+      RowBox[{"\[Tau]app0", " ", "\[Rule]", " ", "siTorqueUnits"}], ",", 
+      "\[IndentingNewLine]", "\[IndentingNewLine]", 
+      RowBox[{"\[CapitalNu]", " ", "\[Rule]", " ", 
+       RowBox[{"parseUnit", "[", "\"\<DimensionlessUnit\>\"", "]"}]}], ",", 
+      "\[IndentingNewLine]", 
+      RowBox[{"\[Eta]", " ", "\[Rule]", " ", 
+       RowBox[{"parseUnit", "[", "\"\<DimensionlessUnit\>\"", "]"}]}]}], 
+     "\[IndentingNewLine]", "}"}], " ", "//", " ", "Association"}]}], 
+  ";"}], "\[IndentingNewLine]", 
  RowBox[{
   RowBox[{"unitsToQuantities", "[", "units_", "]"}], " ", ":=", " ", 
   RowBox[{"Module", "[", 
@@ -2348,16 +2378,14 @@ Cell[TextData[{
  ". Experimental Motor Data"
 }], "Subsection",ExpressionUUID->"9e6870c9-aee7-4738-96e2-774bd074b689"],
 
-Cell["\<\
-We have experimental data from several motors (Nguyen, Hordyk, & Fraser, \
-2017). We load in same.\
-\>", "Text",
- CellChangeTimes->{{3.740856539407364*^9, 3.740856555001663*^9}, {
-   3.740942864580701*^9, 3.740942871358576*^9}, 3.7409430493625937`*^9, {
-   3.7409450476588774`*^9, 3.7409450916502385`*^9}, {3.741007586094574*^9, 
-   3.7410075864396534`*^9}, {3.741007619656824*^9, 
-   3.741007645170597*^9}},ExpressionUUID->"e50ff016-8b75-4ff3-b244-\
-4be20694b4c8"],
+Cell[TextData[{
+ "We have experimental data from several motors (Nguyen, Hordyk, & Fraser, \
+2017). We load in same. Note that the motor parameters herein have all been \
+measured ",
+ StyleBox["after ",
+  FontSlant->"Italic"],
+ "the attached gearbox."
+}], "Text",ExpressionUUID->"e50ff016-8b75-4ff3-b244-4be20694b4c8"],
 
 Cell[BoxData[{
  RowBox[{"Clear", "[", 
@@ -2367,7 +2395,7 @@ Cell[BoxData[{
   RowBox[{
    RowBox[{"importMotorData", "[", "]"}], " ", ":=", " ", 
    RowBox[{
-   "importMotorData", "[", "\"\<Characterized Motors (Gears).xlsx\>\"", 
+   "importMotorData", "[", "\"\<Characterized Motors (Gears)v2.xlsx\>\"", 
     "]"}]}], ";"}], "\[IndentingNewLine]", 
  RowBox[{
   RowBox[{"importMotorData", "[", "file_", "]"}], " ", ":=", " ", 
@@ -2452,9 +2480,9 @@ Cell[BoxData[{
       RowBox[{
        RowBox[{"{", 
         RowBox[{
-        "row", ",", " ", "paramValues", ",", " ", "keQuants", ",", " ", 
-         "ktQuants", ",", " ", "quantify", ",", " ", "qty", ",", " ", 
-         "assoc"}], "}"}], ",", "\[IndentingNewLine]", 
+        "row", ",", " ", "paramValues", ",", " ", "quantify", ",", " ", "qty",
+          ",", " ", "quantifiedRow", ",", " ", "result", ",", " ", 
+         "gearbox"}], "}"}], ",", "\[IndentingNewLine]", 
        RowBox[{
         RowBox[{"row", " ", "=", " ", 
          RowBox[{
@@ -2485,55 +2513,23 @@ Cell[BoxData[{
             RowBox[{"{", 
              RowBox[{"L", ",", " ", "4"}], "}"}], ",", " ", 
             RowBox[{"{", 
-             RowBox[{"KeWithGearbox", ",", " ", "5"}], "}"}], ",", " ", 
+             RowBox[{"Ke", ",", " ", "5"}], "}"}], ",", " ", 
             RowBox[{"{", 
-             RowBox[{"KtWithGearbox", ",", " ", "6"}], "}"}], ",", " ", 
+             RowBox[{"Kt", ",", " ", "6"}], "}"}], ",", " ", 
             RowBox[{"{", 
-             RowBox[{"KeNoGearbox", ",", " ", "7"}], "}"}], ",", " ", 
+             RowBox[{"J", ",", " ", "7"}], "}"}], ",", " ", 
             RowBox[{"{", 
-             RowBox[{"KtNoGearbox", ",", " ", "8"}], "}"}], ",", "  ", 
+             RowBox[{"B", ",", " ", "8"}], "}"}], ",", "\[IndentingNewLine]", 
             RowBox[{"{", 
-             RowBox[{"J", ",", " ", "9"}], "}"}], ",", " ", 
-            RowBox[{"{", 
-             RowBox[{"B", ",", " ", "10"}], "}"}], ",", "\[IndentingNewLine]", 
-            RowBox[{"{", 
-             RowBox[{"\[CapitalNu]", ",", " ", "11"}], "}"}], ",", " ", 
+             RowBox[{"\[CapitalNu]", ",", " ", "9"}], "}"}], ",", " ", 
             RowBox[{"{", 
              RowBox[{"\[Eta]", ",", " ", 
               RowBox[{"If", "[", 
                RowBox[{
                 RowBox[{
                  RowBox[{"OptionValue", "[", "Efficiency", "]"}], "\[Equal]", 
-                 " ", "\"\<Forward\>\""}], ",", " ", "12", ",", " ", "13"}], 
+                 " ", "\"\<Forward\>\""}], ",", " ", "10", ",", " ", "11"}], 
                "]"}]}], "}"}]}], " ", "}"}]}]}], ";", "\[IndentingNewLine]", 
-        RowBox[{"keQuants", " ", "=", " ", 
-         RowBox[{
-          RowBox[{
-           RowBox[{"#", " ", "\[Rule]", " ", 
-            RowBox[{"Quantity", "[", 
-             RowBox[{"#", ",", " ", 
-              RowBox[{
-               RowBox[{"(", 
-                RowBox[{"Ke", " ", "/.", " ", "parameterQuantities"}], ")"}], 
-               " ", "//", " ", "QuantityUnit"}]}], "]"}]}], " ", "&"}], " ", "/@",
-           " ", 
-          RowBox[{"{", 
-           RowBox[{"KeWithGearbox", ",", " ", "KeNoGearbox"}], "}"}]}]}], ";",
-         "\[IndentingNewLine]", 
-        RowBox[{"ktQuants", " ", "=", " ", 
-         RowBox[{
-          RowBox[{
-           RowBox[{"#", " ", "\[Rule]", " ", 
-            RowBox[{"Quantity", "[", 
-             RowBox[{"#", ",", " ", 
-              RowBox[{
-               RowBox[{"(", 
-                RowBox[{"Kt", " ", "/.", " ", "parameterQuantities"}], ")"}], 
-               " ", "//", " ", "QuantityUnit"}]}], "]"}]}], " ", "&"}], " ", "/@",
-           " ", 
-          RowBox[{"{", 
-           RowBox[{"KtWithGearbox", ",", " ", "KtNoGearbox"}], "}"}]}]}], ";",
-         "\[IndentingNewLine]", 
         RowBox[{"quantify", " ", "=", " ", 
          RowBox[{"Function", "[", 
           RowBox[{
@@ -2543,17 +2539,14 @@ Cell[BoxData[{
            RowBox[{
             RowBox[{"qty", " ", "=", " ", 
              RowBox[{"(", 
-              RowBox[{
-               RowBox[{
-                RowBox[{"name", " ", "/.", " ", "parameterQuantities"}], " ", 
-                "/.", " ", "keQuants"}], " ", "/.", " ", "ktQuants"}], 
+              RowBox[{"name", " ", "/.", " ", "parameterQuantities"}], 
               ")"}]}], ";", "\[IndentingNewLine]", 
             RowBox[{"name", " ", "\[Rule]", 
              RowBox[{"Quantity", "[", 
               RowBox[{"value", ",", " ", 
                RowBox[{"QuantityUnit", "[", "qty", "]"}]}], "]"}]}]}]}], 
           "\[IndentingNewLine]", "]"}]}], " ", ";", "\[IndentingNewLine]", 
-        RowBox[{"assoc", " ", "=", " ", 
+        RowBox[{"quantifiedRow", " ", "=", " ", 
          RowBox[{
           RowBox[{
            RowBox[{
@@ -2561,81 +2554,121 @@ Cell[BoxData[{
            "paramValues"}], " ", "//", " ", "Association"}]}], ";", 
         "\[IndentingNewLine]", "\[IndentingNewLine]", 
         RowBox[{"(*", " ", 
-         RowBox[{
-         "add", " ", "in", " ", "defaults", " ", "that", " ", "we", " ", 
-          "can", " ", "later", " ", "override"}], " ", "*)"}], 
+         RowBox[{"An", " ", "empty", " ", "container", " ", "that", " ", 
+          RowBox[{"we", "'"}], "ll", " ", "add", " ", "to"}], " ", "*)"}], 
+        "\[IndentingNewLine]", 
+        RowBox[{"result", " ", "=", " ", 
+         RowBox[{"Association", "[", "]"}]}], ";", "\[IndentingNewLine]", 
+        RowBox[{
+         RowBox[{"result", "[", "R", "]"}], " ", "=", " ", 
+         RowBox[{"quantifiedRow", "[", "R", "]"}]}], ";", 
         "\[IndentingNewLine]", 
         RowBox[{
-         RowBox[{"assoc", "[", "Jafter", "]"}], " ", "=", " ", 
-         RowBox[{"Quantity", "[", 
-          RowBox[{"0", ",", " ", "siAngularInertialUnits"}], "]"}]}], ";", 
-        "\[IndentingNewLine]", 
-        RowBox[{
-         RowBox[{"assoc", "[", "Bafter", "]"}], " ", "=", " ", 
-         RowBox[{"Quantity", "[", 
-          RowBox[{"0", ",", " ", "siAngularViscousDragUnits"}], "]"}]}], ";", 
-        "\[IndentingNewLine]", 
-        RowBox[{
-         RowBox[{"assoc", "[", "\[CapitalDelta]\[Tau]appConst", "]"}], " ", 
-         "=", " ", 
-         RowBox[{"Quantity", "[", 
-          RowBox[{"0", ",", " ", "siTorqueUnits"}], "]"}]}], ";", 
-        "\[IndentingNewLine]", 
-        RowBox[{"(*", 
-         RowBox[{
-          RowBox[{
-           RowBox[{"assoc", "[", "\[CapitalDelta]vappConst", "]"}], " ", "=", 
-           " ", 
-           RowBox[{"Quantity", "[", 
-            RowBox[{"0", ",", " ", "\"\<Volts\>\""}], "]"}]}], ";"}], "*)"}], 
+         RowBox[{"result", "[", "L", "]"}], " ", "=", " ", 
+         RowBox[{"quantifiedRow", "[", "L", "]"}]}], ";", 
         "\[IndentingNewLine]", "\[IndentingNewLine]", 
+        RowBox[{"(*", " ", 
+         RowBox[{"Figure", " ", "out", " ", "the", " ", "gearing"}], " ", 
+         "*)"}], "\[IndentingNewLine]", 
         RowBox[{"If", "[", 
          RowBox[{
           RowBox[{"OptionValue", "[", "WithGearbox", "]"}], ",", 
           "\[IndentingNewLine]", 
           RowBox[{
            RowBox[{
-            RowBox[{"assoc", "[", "Ke", "]"}], " ", "=", " ", 
-            RowBox[{"assoc", "[", "KeNoGearbox", "]"}]}], ";", 
+            RowBox[{"result", "[", "\[CapitalNu]", "]"}], "=", " ", 
+            RowBox[{"quantifiedRow", "[", "\[CapitalNu]", "]"}]}], ";", " ", 
            "\[IndentingNewLine]", 
            RowBox[{
-            RowBox[{"assoc", "[", "Kt", "]"}], " ", "=", " ", 
-            RowBox[{"assoc", "[", "KtNoGearbox", "]"}]}], ";"}], 
+            RowBox[{"result", "[", "\[Eta]", "]"}], "=", " ", 
+            RowBox[{"quantifiedRow", "[", "\[Eta]", "]"}]}], ";"}], 
           "\[IndentingNewLine]", ",", "\[IndentingNewLine]", 
           RowBox[{
            RowBox[{
-            RowBox[{"assoc", "[", "\[CapitalNu]", "]"}], " ", "=", " ", "1"}],
-            ";", " ", "\[IndentingNewLine]", 
+            RowBox[{"result", "[", "\[CapitalNu]", "]"}], "=", "1"}], ";", 
+           " ", "\[IndentingNewLine]", 
            RowBox[{
-            RowBox[{"assoc", "[", "\[Eta]", "]"}], " ", "=", " ", "1"}], ";", 
-           "\[IndentingNewLine]", 
-           RowBox[{
-            RowBox[{"assoc", "[", "Ke", "]"}], " ", "=", " ", 
-            RowBox[{"assoc", "[", "KeWithGearbox", "]"}]}], ";", 
-           "\[IndentingNewLine]", 
-           RowBox[{
-            RowBox[{"assoc", "[", "Kt", "]"}], " ", "=", " ", 
-            RowBox[{"assoc", "[", "KtWithGearbox", "]"}]}], ";"}]}], 
+            RowBox[{"result", "[", "\[Eta]", "]"}], "=", "1"}], ";"}]}], 
          "\[IndentingNewLine]", "]"}], ";", "\[IndentingNewLine]", 
+        RowBox[{"(*", " ", 
+         RowBox[{
+         "WithGearbox", " ", "being", " ", "false", " ", "means", " ", "what",
+           " ", "it", " ", 
+          RowBox[{"says", ":", " ", 
+           RowBox[{
+           "the", " ", "load", " ", "is", " ", "directly", " ", "on", " ", 
+            "the", " ", 
+            RowBox[{"armature", "."}]}]}]}], " ", "*)"}], 
         "\[IndentingNewLine]", 
         RowBox[{"(*", " ", 
          RowBox[{
-         "remove", " ", "the", " ", "shaft", " ", "values", " ", "to", " ", 
-          "avoid", " ", "confusion"}], " ", "*)"}], "\[IndentingNewLine]", 
+          RowBox[{
+          "We", " ", "still", " ", "have", " ", "to", " ", "reflect", " ", 
+           "the", " ", "experimental", " ", "parameters"}], ",", " ", 
+          RowBox[{"either", " ", 
+           RowBox[{"way", "."}]}]}], " ", "*)"}], "\[IndentingNewLine]", 
+        RowBox[{"gearbox", " ", "=", " ", 
+         RowBox[{"{", 
+          RowBox[{
+           RowBox[{"\[CapitalNu]", " ", "\[Rule]", " ", 
+            RowBox[{"quantifiedRow", "[", "\[CapitalNu]", "]"}]}], ",", " ", 
+           RowBox[{"\[Eta]", " ", "\[Rule]", " ", 
+            RowBox[{"quantifiedRow", "[", "\[Eta]", "]"}]}]}], "}"}]}], ";", 
+        "\[IndentingNewLine]", "\[IndentingNewLine]", 
+        RowBox[{"(*", " ", 
+         RowBox[{
+          RowBox[{"In", " ", "the", " ", "result"}], ",", " ", 
+          RowBox[{
+          "we", " ", "need", " ", "to", " ", "reflect", " ", "measured", " ", 
+           "values", " ", "back", " ", "before", " ", "the", " ", 
+           "gearbox"}]}], " ", "*)"}], "\[IndentingNewLine]", 
         RowBox[{
-         RowBox[{"assoc", "[", "KeWithGearbox", "]"}], " ", "=."}], ";", 
+         RowBox[{"result", "[", "Ke", "]"}], " ", "=", " ", 
+         RowBox[{
+          RowBox[{"reflectAngleCoefficient", "[", 
+           RowBox[{"quantifiedRow", "[", "Ke", "]"}], "]"}], " ", "/.", " ", 
+          "gearbox"}]}], ";", "\[IndentingNewLine]", 
+        RowBox[{
+         RowBox[{"result", "[", "Kt", "]"}], " ", "=", " ", 
+         RowBox[{
+          RowBox[{"reflectAngleCoefficient", "[", 
+           RowBox[{"quantifiedRow", "[", "Kt", "]"}], "]"}], " ", "/.", " ", 
+          "gearbox"}]}], ";", "\[IndentingNewLine]", 
+        RowBox[{
+         RowBox[{"result", "[", "B", "]"}], " ", "=", " ", 
+         RowBox[{
+          RowBox[{"reflectDrag", "[", 
+           RowBox[{"quantifiedRow", "[", "B", "]"}], "]"}], " ", "/.", " ", 
+          "gearbox"}]}], ";", "\[IndentingNewLine]", 
+        RowBox[{
+         RowBox[{"result", "[", "J", "]"}], " ", "=", " ", 
+         RowBox[{
+          RowBox[{"reflectInertia", "[", 
+           RowBox[{"quantifiedRow", "[", "J", "]"}], "]"}], " ", "/.", " ", 
+          "gearbox"}]}], ";", "\[IndentingNewLine]", "\[IndentingNewLine]", 
+        RowBox[{"(*", " ", 
+         RowBox[{
+         "add", " ", "in", " ", "defaults", " ", "that", " ", "we", " ", 
+          "can", " ", "later", " ", "add", " ", "thereto"}], " ", "*)"}], 
         "\[IndentingNewLine]", 
         RowBox[{
-         RowBox[{"assoc", "[", "KtWithGearbox", "]"}], " ", "=."}], ";", 
+         RowBox[{"result", "[", "Jafter", "]"}], " ", "=", " ", 
+         RowBox[{"Quantity", "[", 
+          RowBox[{"0", ",", " ", "siAngularInertialUnits"}], "]"}]}], ";", 
         "\[IndentingNewLine]", 
         RowBox[{
-         RowBox[{"assoc", "[", "KeNoGearbox", "]"}], " ", "=."}], ";", 
+         RowBox[{"result", "[", "Bafter", "]"}], " ", "=", " ", 
+         RowBox[{"Quantity", "[", 
+          RowBox[{"0", ",", " ", "siAngularViscousDragUnits"}], "]"}]}], ";", 
         "\[IndentingNewLine]", 
         RowBox[{
-         RowBox[{"assoc", "[", "KtNoGearbox", "]"}], " ", "=."}], ";", 
-        "\[IndentingNewLine]", 
+         RowBox[{"result", "[", "\[CapitalDelta]\[Tau]appConst", "]"}], " ", 
+         "=", " ", 
+         RowBox[{"Quantity", "[", 
+          RowBox[{"0", ",", " ", "siTorqueUnits"}], "]"}]}], ";", 
+        "\[IndentingNewLine]", "\[IndentingNewLine]", 
         RowBox[{
-         RowBox[{"assoc", " ", "//", " ", "siUnits"}], " ", "//", " ", 
+         RowBox[{"result", " ", "//", " ", "siUnits"}], " ", "//", " ", 
          "simplifyUnits"}]}]}], "\[IndentingNewLine]", "]"}]}]}], ";"}], 
   "\[IndentingNewLine]"}], "\[IndentingNewLine]", 
  RowBox[{"motorParameters", "[", 
@@ -2964,38 +2997,19 @@ Cell[TextData[{
 }], "Subsection",ExpressionUUID->"a213b300-2f42-42f5-aa79-12f3a082bf95"],
 
 Cell["\<\
-We define a motor and loads that we\[CloseCurlyQuote]ll use to illustrate \
-examples. We also define a generic, abstract motor that can help explore \
-things symbolically.\
+We define motors and loads that we\[CloseCurlyQuote]ll use to illustrate \
+examples.\
 \>", "Text",ExpressionUUID->"225713a5-64c4-4a91-8104-5b171bbb248d"],
 
-Cell["\<\
-\[OpenCurlyQuote]aMotorClassic\[CloseCurlyQuote] is the configuration we \
-explored in our previous work. Ref: \
-https://github.com/rgatkinson/RobotPhysics/blob/master/MotorPhysics.pdf\
-\>", "Text",ExpressionUUID->"07f7d0f4-7f90-4dd1-b12f-99e4b3f54b34"],
-
 Cell[BoxData[{
- RowBox[{"aMotorClassic", " ", "=", " ", 
-  RowBox[{"addMotorLoad", "[", 
-   RowBox[{
-    RowBox[{"motorParameters", "[", 
-     RowBox[{"\"\<AM 60 A\>\"", ",", " ", 
-      RowBox[{"WithGearbox", " ", "\[Rule]", " ", "False"}]}], "]"}], " ", 
-    ",", " ", 
-    RowBox[{"motorLoad", "[", 
-     RowBox[{"J", " ", "\[Rule]", " ", 
-      RowBox[{"Quantity", "[", 
-       RowBox[{"1", ",", " ", "siAngularInertialUnits"}], "]"}]}], "]"}]}], 
-   "]"}]}], "\[IndentingNewLine]", 
  RowBox[{"aFlywheel", " ", "=", " ", 
   RowBox[{
    RowBox[{"flywheel", "[", 
     RowBox[{
      RowBox[{"Quantity", "[", 
-      RowBox[{"1", ",", " ", "\"\<kg\>\""}], "]"}], ",", " ", 
+      RowBox[{"10", ",", " ", "\"\<kg\>\""}], "]"}], ",", " ", 
      RowBox[{"Quantity", "[", 
-      RowBox[{"5", ",", " ", "\"\<cm\>\""}], "]"}]}], "]"}], " ", "//", " ", 
+      RowBox[{"10", ",", "\"\<cm\>\""}], "]"}]}], "]"}], " ", "//", " ", 
    "siUnits"}]}], "\[IndentingNewLine]", 
  RowBox[{"aPulley", " ", "=", " ", 
   RowBox[{
@@ -3006,7 +3020,35 @@ Cell[BoxData[{
      RowBox[{"Quantity", "[", 
       RowBox[{"2", ",", " ", "\"\<Inches\>\""}], "]"}]}], "]"}], " ", "//", 
    " ", "siUnits"}]}]}], \
-"Input",ExpressionUUID->"048fbe0f-ef04-48f1-a0b6-d274888f6c2b"]
+"Input",ExpressionUUID->"048fbe0f-ef04-48f1-a0b6-d274888f6c2b"],
+
+Cell[BoxData[{
+ RowBox[{
+  RowBox[{"aMotorWithFlywheel", " ", "=", " ", 
+   RowBox[{
+    RowBox[{"addMotorLoad", "[", 
+     RowBox[{
+      RowBox[{"motorParameters", "[", "\"\<AM 60 A\>\"", "]"}], ",", " ", 
+      "aFlywheel"}], "]"}], " ", "//", " ", "siUnits"}]}], 
+  ";"}], "\[IndentingNewLine]", 
+ RowBox[{"aUnitlessMotorWithFlywheel", "  ", "=", " ", 
+  RowBox[{
+   RowBox[{"aMotorWithFlywheel", " ", "//", " ", "clearUnits"}], " ", "//", 
+   " ", "N"}]}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"aMotorWithFlywheelNoGear", " ", "=", " ", 
+   RowBox[{"addMotorLoad", "[", 
+    RowBox[{
+     RowBox[{"motorParameters", "[", 
+      RowBox[{"\"\<AM 60 A\>\"", ",", " ", 
+       RowBox[{"WithGearbox", "\[Rule]", " ", "False"}]}], "]"}], ",", " ", 
+     "aFlywheel"}], "]"}]}], ";"}], "\[IndentingNewLine]", 
+ RowBox[{"aUnitlessMotorWithFlywheelNoGear", " ", "=", " ", 
+  RowBox[{
+   RowBox[{
+    RowBox[{"aMotorWithFlywheelNoGear", " ", "//", " ", "siUnits"}], " ", "//",
+     " ", "clearUnits"}], " ", "//", " ", 
+   "N"}]}]}], "Input",ExpressionUUID->"5e5c884b-d30f-44aa-8f36-7ebc2e51861f"]
 }, Open  ]]
 }, Open  ]],
 
@@ -3348,18 +3390,23 @@ Cell[BoxData[{
 
 Cell[BoxData[{
  RowBox[{
-  RowBox[{"motorPositionOutModel", " ", "=", " ", 
+  RowBox[{"motorPositionAfterModel", " ", "=", " ", 
    RowBox[{"makeModel", "[", "\[Theta]after", "]"}]}], 
   " "}], "\[IndentingNewLine]", 
  RowBox[{
-  RowBox[{"motorVelocityOutModel", " ", "=", " ", 
+  RowBox[{"motorVelocityAfterModel", " ", "=", " ", 
    RowBox[{"makeModel", "[", 
-    RowBox[{"\[Theta]after", ",", " ", "\"\<\[Omega]out\>\"", ",", " ", "s"}],
-     "]"}]}], " "}], "\[IndentingNewLine]", 
- RowBox[{"motorAccelerationOutModel", " ", "=", " ", 
-  RowBox[{"makeModel", "[", 
-   RowBox[{"\[Theta]after", ",", " ", "\"\<\[Alpha]out\>\"", ",", " ", 
-    RowBox[{"s", " ", "*", " ", "s"}]}], "]"}], 
+    RowBox[{
+    "\[Theta]after", ",", " ", "\"\<\[Omega]after\>\"", ",", " ", "s"}], 
+    "]"}]}], " "}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"motorAccelerationAfterModel", " ", "=", " ", 
+   RowBox[{"makeModel", "[", 
+    RowBox[{"\[Theta]after", ",", " ", "\"\<\[Alpha]after\>\"", ",", " ", 
+     RowBox[{"s", " ", "*", " ", "s"}]}], "]"}]}], 
+  " "}], "\[IndentingNewLine]", 
+ RowBox[{"motorTorqueAfterModel", " ", "=", " ", 
+  RowBox[{"makeModel", "[", "\[Tau]after", "]"}], 
   " "}]}], "Input",ExpressionUUID->"004ddc12-315a-4559-b9f7-65dfa8b70386"],
 
 Cell["Save the models to a file for later use.", \
@@ -3377,10 +3424,10 @@ Cell[BoxData[
      "motorPositionModel", ",", " ", "motorVelocityModel", ",", " ", 
      "motorAccelerationModel", ",", " ", "motorCurrentModel", ",", " ", 
      "motorEMFModel", ",", " ", "motorTorqueModel", ",", " ", 
-     "\[IndentingNewLine]", "motorPositionOutModel", ",", " ", 
-     "motorVelocityOutModel", ",", " ", "motorAccelerationOutModel"}], 
-    "}"}]}], "]"}]], \
-"Input",ExpressionUUID->"00cd8804-05c2-4509-8ea5-65639d114397"]
+     "\[IndentingNewLine]", "motorPositionAfterModel", ",", " ", 
+     "motorVelocityAfterModel", ",", " ", "motorAccelerationAfterModel", ",", 
+     " ", "motorTorqueAfterModel"}], "}"}]}], 
+  "]"}]], "Input",ExpressionUUID->"00cd8804-05c2-4509-8ea5-65639d114397"]
 }, Open  ]],
 
 Cell[CellGroupData[{
@@ -3393,6 +3440,13 @@ Cell[TextData[{
  CounterBox["Subsection"],
  ". Units Verification"
 }], "Subsection",ExpressionUUID->"25ccc5a6-0cdb-4b61-a567-b63385de92e9"],
+
+Cell["\<\
+We do a quick check on one of the transforms to see if units are internally \
+consistent. Mathematica would complain if there were not (and has done so in \
+the past, during development; indeed, that\[CloseCurlyQuote]s why this check \
+is here).\
+\>", "Text",ExpressionUUID->"e1a5104e-1823-4a30-87b1-2827f1f95458"],
 
 Cell[BoxData[{
  RowBox[{
@@ -3630,17 +3684,27 @@ Cell[BoxData[{
          RowBox[{"{", "fn", "}"}], ",", "\[IndentingNewLine]", 
          RowBox[{
           RowBox[{"fn", " ", "=", " ", 
-           RowBox[{"builder", "[", 
-            RowBox[{"model", ",", " ", 
-             RowBox[{"{", 
+           RowBox[{"Function", "[", 
+            RowBox[{
+             RowBox[{"{", "aTime", "}"}], ",", " ", 
+             RowBox[{
               RowBox[{
-               RowBox[{"1", "&"}], ",", " ", 
-               RowBox[{
-                RowBox[{"vappfn", "[", "#", "]"}], "&"}], ",", " ", 
-               RowBox[{
-                RowBox[{"\[Tau]appfn", "[", "#", "]"}], "&"}]}], "}"}]}], 
-            "]"}]}], ";", "\[IndentingNewLine]", "fn"}]}], 
-        "\[IndentingNewLine]", "]"}]}], "]"}]}], 
+               RowBox[{"builder", "[", 
+                RowBox[{"model", ",", " ", 
+                 RowBox[{"{", 
+                  RowBox[{
+                   RowBox[{"1", "&"}], ",", " ", 
+                   RowBox[{
+                    RowBox[{"vappfn", "[", "#", "]"}], "&"}], ",", " ", 
+                   RowBox[{
+                    RowBox[{"\[Tau]appfn", "[", "#", "]"}], "&"}]}], "}"}]}], 
+                "]"}], "  ", "[", "aTime", "]"}], " ", "[", 
+              RowBox[{"[", "1", "]"}], "]"}]}], " ", 
+            RowBox[{"(*", 
+             RowBox[{
+             "unwrap", " ", "output", " ", "structure", " ", "mentioned", " ",
+               "above"}], "*)"}], "]"}]}], ";", "\[IndentingNewLine]", 
+          "fn"}]}], "\[IndentingNewLine]", "]"}]}], "]"}]}], 
     "]"}]}]}]}], \
 "Input",ExpressionUUID->"9f2df7a2-e59b-4441-96bd-3f3a470153e8"]
 }, Open  ]],
@@ -3717,30 +3781,37 @@ Cell[TextData[{
 Cell[BoxData[
  RowBox[{"Clear", "[", 
   RowBox[{
-  "motorPositionOut", ",", " ", "motorVelocityOut", ",", " ", 
-   "motorAccelerationOut"}], 
+  "motorPositionAfter", ",", " ", "motorVelocityAfter", ",", " ", 
+   "motorAccelerationAfter", ",", " ", "motorTorqueAfter"}], 
   "]"}]], "Input",ExpressionUUID->"1364d912-9aeb-461d-8517-d9a01bc42eff"],
 
 Cell[BoxData[
  RowBox[{
-  RowBox[{"motorPositionOut", " ", "=", " ", 
+  RowBox[{"motorPositionAfter", " ", "=", " ", 
    RowBox[{
-   "makeMotorTimeDomainFunction", "[", "motorPositionOutModel", "]"}]}], 
+   "makeMotorTimeDomainFunction", "[", "motorPositionAfterModel", "]"}]}], 
   ";"}]], "Input",ExpressionUUID->"0695a59a-43d3-4ec6-b3ad-0b28bb129ed0"],
 
 Cell[BoxData[
  RowBox[{
-  RowBox[{"motorVelocityOut", " ", "=", " ", 
+  RowBox[{"motorVelocityAfter", " ", "=", " ", 
    RowBox[{
-   "makeMotorTimeDomainFunction", "[", "motorVelocityOutModel", "]"}]}], 
+   "makeMotorTimeDomainFunction", "[", "motorVelocityAfterModel", "]"}]}], 
   ";"}]], "Input",ExpressionUUID->"39ef8f3f-830b-4538-927e-8e8d00fdbcc6"],
 
 Cell[BoxData[
  RowBox[{
-  RowBox[{"motorAccelerationOut", " ", "=", " ", 
+  RowBox[{"motorAccelerationAfter", " ", "=", " ", 
    RowBox[{
-   "makeMotorTimeDomainFunction", "[", "motorAccelerationOutModel", "]"}]}], 
-  ";"}]], "Input",ExpressionUUID->"8b875939-8531-4116-8bc1-73d3fdf4e243"],
+   "makeMotorTimeDomainFunction", "[", "motorAccelerationAfterModel", "]"}]}],
+   ";"}]], "Input",ExpressionUUID->"8b875939-8531-4116-8bc1-73d3fdf4e243"],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"motorTorqueAfter", " ", "=", " ", 
+   RowBox[{
+   "makeMotorTimeDomainFunction", "[", "motorTorqueAfterModel", "]"}]}], 
+  ";"}]], "Input",ExpressionUUID->"cc5d9da6-fd4b-4216-8fd9-ca17eb3d2be1"],
 
 Cell["\<\
 Save these time domain functions so we can load them in later without having \
@@ -3757,8 +3828,8 @@ Cell[BoxData[
     RowBox[{
     "motorPosition", ",", " ", "motorVelocity", ",", " ", "motorAcceleration",
       ",", " ", "motorCurrent", ",", " ", "motorEMF", ",", "motorTorque", ",",
-      " ", "\[IndentingNewLine]", "motorPositionOut", ",", " ", 
-     "motorVelocityOut", ",", " ", "motorAccelerationOut", ",", " ", 
+      " ", "\[IndentingNewLine]", "motorPositionAfter", ",", " ", 
+     "motorVelocityAfter", ",", " ", "motorAccelerationAfter", ",", " ", 
      "\[IndentingNewLine]", "makeMotorTimeDomainFunction", ",", " ", 
      "makeTimeDomainFunctionConvolve"}], "\[IndentingNewLine]", "}"}]}], 
   "]"}]], "Input",ExpressionUUID->"3e2387ff-b9ba-4668-9be7-e51fa5aa9e1b"]
@@ -3911,17 +3982,16 @@ Cell[BoxData[{
       RowBox[{"withUnits", " ", "=", " ", 
        RowBox[{
         RowBox[{
-         RowBox[{"generic", " ", "/.", " ", 
-          RowBox[{"{", " ", 
-           RowBox[{"input", "  ", "~", "Join", "~", " ", "motorWithLoad"}], 
-           " ", "}"}]}], " ", "//", " ", "siUnits"}], " ", "//", " ", 
-        "FullSimplify"}]}], ";", "\[IndentingNewLine]", 
+         RowBox[{
+          RowBox[{"generic", " ", "/.", " ", 
+           RowBox[{"(", 
+            RowBox[{"input", "  ", "~", "Join", "~", " ", "motorWithLoad"}], 
+            ")"}]}], " ", "//", " ", "siUnits"}], " ", "//", " ", "N"}], " ", 
+        "//", " ", "FullSimplify"}]}], ";", "\[IndentingNewLine]", 
       RowBox[{"unitless", " ", "=", " ", 
        RowBox[{
-        RowBox[{
-         RowBox[{"withUnits", " ", "//", " ", "clearUnits"}], " ", "//", " ", 
-         "N"}], " ", "//", " ", "FullSimplify"}]}], ";", 
-      "\[IndentingNewLine]", 
+        RowBox[{"withUnits", " ", "//", " ", "clearUnits"}], " ", "//", " ", 
+        "FullSimplify"}]}], ";", "\[IndentingNewLine]", 
       RowBox[{"{", 
        RowBox[{"withUnits", ",", " ", "unitless"}], "}"}]}]}], 
     "]"}]}]}]}], \
@@ -3938,24 +4008,24 @@ Cell[TextData[{
  ".",
  
  CounterBox["Subsubsection"],
- ". Examples without gears or external torque, using \[OpenCurlyQuote]classic\
-\[CloseCurlyQuote] load"
-}], "Subsubsection",ExpressionUUID->"fbe5849a-e6db-4ef3-83d6-dd273014542a"],
+ ". Velocity, after gearbox"
+}], "Subsubsection",ExpressionUUID->"8b0dffb4-d6bd-489a-a21b-105e34a1a3b2"],
 
 Cell[BoxData[{
  RowBox[{
   RowBox[{
    RowBox[{"{", 
-    RowBox[{"velUnits", ",", " ", "vel"}], "}"}], " ", "=", " ", 
+    RowBox[{"velAfterUnits", ",", " ", "velAfter"}], "}"}], " ", "=", " ", 
    RowBox[{"applyTimeFunction", "[", 
     RowBox[{
-    "motorVelocity", ",", " ", "aMotorClassic", ",", " ", "applyTwelveVolts", 
-     ",", " ", "t"}], "]"}]}], ";"}], "\[IndentingNewLine]", 
- RowBox[{"velUnits", " ", "//", " ", "N"}], "\[IndentingNewLine]", 
+    "motorVelocityAfter", ",", " ", "aMotorWithFlywheel", ",", " ", 
+     "applyTwelveVolts", ",", " ", "t"}], "]"}]}], 
+  ";"}], "\[IndentingNewLine]", 
+ RowBox[{"velAfterUnits", " ", "//", " ", "N"}], "\[IndentingNewLine]", 
  RowBox[{"Plot", "[", 
-  RowBox[{"vel", ",", " ", 
+  RowBox[{"velAfter", ",", " ", 
    RowBox[{"{", 
-    RowBox[{"t", ",", " ", "0", ",", " ", "20"}], "}"}], ",", " ", 
+    RowBox[{"t", ",", " ", "0", ",", " ", "1.0"}], "}"}], ",", " ", 
    RowBox[{"AxesLabel", "\[Rule]", 
     RowBox[{"{", 
      RowBox[{"\"\<Seconds\>\"", ",", " ", 
@@ -3966,22 +4036,24 @@ Cell[BoxData[{
    RowBox[{"AxesOrigin", "\[Rule]", 
     RowBox[{"{", 
      RowBox[{"0", ",", "0"}], "}"}]}]}], 
-  "]"}]}], "Input",ExpressionUUID->"ef0ca04a-8475-43f1-8f6a-345ce878489c"],
+  "]"}]}], "Input",ExpressionUUID->"e61d19ae-b2a4-412f-bd12-28ef8e3da608"],
 
 Cell[BoxData[{
  RowBox[{
   RowBox[{
    RowBox[{"{", 
-    RowBox[{"steadyVelUnits", ",", " ", "steadyVel"}], "}"}], " ", "=", " ", 
+    RowBox[{"steadyVelAfterUnits", ",", " ", "steadyVelAfter"}], "}"}], " ", 
+   "=", " ", 
    RowBox[{"applyTimeFunction", "[", 
     RowBox[{
-    "motorVelocity", ",", " ", "aMotorClassic", ",", " ", "steadyTwelveVolts",
-      ",", " ", "t"}], "]"}]}], ";"}], "\[IndentingNewLine]", 
- RowBox[{"steadyVelUnits", " ", "//", " ", "N"}], "\[IndentingNewLine]", 
+    "motorVelocityAfter", ",", " ", "aMotorWithFlywheel", ",", " ", 
+     "steadyTwelveVolts", ",", " ", "t"}], "]"}]}], 
+  ";"}], "\[IndentingNewLine]", 
+ RowBox[{"steadyVelAfterUnits", " ", "//", " ", "N"}], "\[IndentingNewLine]", 
  RowBox[{"Plot", "[", 
-  RowBox[{"steadyVel", ",", " ", 
+  RowBox[{"steadyVelAfter", ",", " ", 
    RowBox[{"{", 
-    RowBox[{"t", ",", " ", "0", ",", " ", "20"}], "}"}], ",", " ", 
+    RowBox[{"t", ",", " ", "0", ",", " ", "1.0"}], "}"}], ",", " ", 
    RowBox[{"AxesLabel", "\[Rule]", 
     RowBox[{"{", 
      RowBox[{"\"\<Seconds\>\"", ",", " ", 
@@ -3998,17 +4070,18 @@ Cell[BoxData[{
  RowBox[{
   RowBox[{
    RowBox[{"{", 
-    RowBox[{"brakeVelUnits", ",", " ", "brakeVel"}], "}"}], " ", "=", " ", 
+    RowBox[{"brakeVelAfterUnits", ",", " ", "brakeVelAfter"}], "}"}], " ", 
+   "=", " ", 
    RowBox[{"applyTimeFunction", "[", 
     RowBox[{
-    "motorVelocity", ",", " ", "aMotorClassic", ",", " ", 
+    "motorVelocityAfter", ",", " ", "aMotorWithFlywheel", ",", " ", 
      "brakeFromTwelveVolts", ",", " ", "t"}], "]"}]}], 
   ";"}], "\[IndentingNewLine]", 
- RowBox[{"brakeVelUnits", " ", "//", " ", "N"}], "\[IndentingNewLine]", 
+ RowBox[{"brakeVelAfterUnits", " ", "//", " ", "N"}], "\[IndentingNewLine]", 
  RowBox[{"Plot", "[", 
-  RowBox[{"brakeVel", ",", " ", 
+  RowBox[{"brakeVelAfter", ",", " ", 
    RowBox[{"{", 
-    RowBox[{"t", ",", " ", "0", ",", " ", "20"}], "}"}], ",", " ", 
+    RowBox[{"t", ",", " ", "0", ",", " ", ".01"}], "}"}], ",", " ", 
    RowBox[{"AxesLabel", "\[Rule]", 
     RowBox[{"{", 
      RowBox[{"\"\<Seconds\>\"", ",", " ", 
@@ -4019,112 +4092,7 @@ Cell[BoxData[{
    RowBox[{"AxesOrigin", "\[Rule]", 
     RowBox[{"{", 
      RowBox[{"0", ",", "0"}], "}"}]}]}], 
-  "]"}]}], "Input",ExpressionUUID->"7e45557e-7da4-45e3-b495-2d3c2165ec44"],
-
-Cell[BoxData[{
- RowBox[{
-  RowBox[{
-   RowBox[{"{", 
-    RowBox[{"torUnits", ",", " ", "tor"}], "}"}], " ", "=", " ", 
-   RowBox[{"applyTimeFunction", "[", 
-    RowBox[{
-    "motorTorque", ",", " ", "aMotorClassic", ",", " ", "applyTwelveVolts", 
-     ",", " ", "t"}], "]"}]}], ";"}], "\[IndentingNewLine]", 
- RowBox[{"torUnits", " ", "//", " ", "N"}], "\[IndentingNewLine]", 
- RowBox[{"Plot", "[", 
-  RowBox[{"tor", ",", " ", 
-   RowBox[{"{", 
-    RowBox[{"t", ",", " ", "0", ",", " ", "20"}], "}"}], ",", " ", 
-   RowBox[{"AxesLabel", "\[Rule]", 
-    RowBox[{"{", 
-     RowBox[{"\"\<Seconds\>\"", ",", " ", 
-      RowBox[{"HoldForm", "[", 
-       RowBox[{"Netwon", " ", 
-        RowBox[{"Meters", "/", " ", "Radian"}]}], "]"}]}], "}"}]}], ",", " ", 
-   RowBox[{"PlotRange", "\[Rule]", "All"}], ",", " ", 
-   RowBox[{"AxesOrigin", "\[Rule]", 
-    RowBox[{"{", 
-     RowBox[{"0", ",", "0"}], "}"}]}]}], 
-  "]"}]}], "Input",ExpressionUUID->"00515254-5262-4236-a1ff-7db2715a0c5b"],
-
-Cell[BoxData[{
- RowBox[{
-  RowBox[{
-   RowBox[{"{", 
-    RowBox[{"curUnits", ",", " ", "cur"}], "}"}], " ", "=", " ", 
-   RowBox[{"applyTimeFunction", "[", 
-    RowBox[{
-    "motorCurrent", ",", " ", "aMotorClassic", ",", " ", "applyTwelveVolts", 
-     ",", " ", "t"}], "]"}]}], ";"}], "\[IndentingNewLine]", 
- RowBox[{"curUnits", " ", "//", " ", "N"}], "\[IndentingNewLine]", 
- RowBox[{"Plot", "[", 
-  RowBox[{"cur", ",", " ", 
-   RowBox[{"{", 
-    RowBox[{"t", ",", " ", "0", ",", " ", "20"}], "}"}], ",", " ", 
-   RowBox[{"AxesLabel", "\[Rule]", 
-    RowBox[{"{", 
-     RowBox[{"\"\<Seconds\>\"", ",", " ", 
-      RowBox[{"HoldForm", "[", "Amps", "]"}]}], "}"}]}], ",", " ", 
-   RowBox[{"PlotRange", "\[Rule]", "All"}], ",", " ", 
-   RowBox[{"AxesOrigin", "\[Rule]", 
-    RowBox[{"{", 
-     RowBox[{"0", ",", "0"}], "}"}]}]}], 
-  "]"}]}], "Input",ExpressionUUID->"ae2f46e9-b02a-4ca2-9d6b-d433cffa5b36"],
-
-Cell[BoxData[{
- RowBox[{
-  RowBox[{
-   RowBox[{"{", 
-    RowBox[{"emfUnits", ",", " ", "emf"}], "}"}], " ", "=", " ", 
-   RowBox[{"applyTimeFunction", "[", 
-    RowBox[{
-    "motorEMF", ",", " ", "aMotorClassic", ",", " ", "applyTwelveVolts", ",", 
-     " ", "t"}], "]"}]}], ";"}], "\[IndentingNewLine]", 
- RowBox[{
-  RowBox[{"emfUnits", " ", "//", " ", "N"}], " ", "//", " ", 
-  "simplifyUnits"}], "\[IndentingNewLine]", 
- RowBox[{"Plot", "[", 
-  RowBox[{
-   RowBox[{"{", 
-    RowBox[{"emf", ",", " ", 
-     RowBox[{
-     "\[CapitalDelta]vappConst", " ", "/.", " ", "applyTwelveVolts"}]}], 
-    "}"}], ",", " ", 
-   RowBox[{"{", 
-    RowBox[{"t", ",", " ", "0", ",", " ", "20"}], "}"}], ",", " ", 
-   RowBox[{"AxesLabel", "\[Rule]", 
-    RowBox[{"{", 
-     RowBox[{"\"\<Seconds\>\"", ",", " ", 
-      RowBox[{"HoldForm", "[", "Volts", "]"}]}], "}"}]}], ",", " ", 
-   RowBox[{"PlotRange", "\[Rule]", "All"}], ",", " ", 
-   RowBox[{"AxesOrigin", "\[Rule]", 
-    RowBox[{"{", 
-     RowBox[{"0", ",", "0"}], "}"}]}]}], 
-  "]"}]}], "Input",ExpressionUUID->"62e3029c-ffc3-4c83-8975-c1f278ab15e8"],
-
-Cell[BoxData[{
- RowBox[{
-  RowBox[{
-   RowBox[{"{", 
-    RowBox[{"posUnits", ",", " ", "pos"}], "}"}], " ", "=", " ", 
-   RowBox[{"applyTimeFunction", "[", 
-    RowBox[{
-    "motorPosition", ",", " ", "aMotorClassic", ",", " ", "applyTwelveVolts", 
-     ",", " ", "t"}], "]"}]}], ";"}], "\[IndentingNewLine]", 
- RowBox[{"posUnits", " ", "//", " ", "N"}], "\[IndentingNewLine]", 
- RowBox[{"Plot", "[", 
-  RowBox[{"pos", ",", " ", 
-   RowBox[{"{", 
-    RowBox[{"t", ",", " ", "0", ",", " ", "20"}], "}"}], ",", " ", 
-   RowBox[{"AxesLabel", "\[Rule]", 
-    RowBox[{"{", 
-     RowBox[{"\"\<Seconds\>\"", ",", " ", 
-      RowBox[{"HoldForm", "[", "Radians", "]"}]}], "}"}]}], ",", " ", 
-   RowBox[{"PlotRange", "\[Rule]", "All"}], ",", " ", 
-   RowBox[{"AxesOrigin", "\[Rule]", 
-    RowBox[{"{", 
-     RowBox[{"0", ",", "0"}], "}"}]}]}], 
-  "]"}]}], "Input",ExpressionUUID->"69aca58d-7ebd-4141-8c83-327154314827"]
+  "]"}]}], "Input",ExpressionUUID->"7e45557e-7da4-45e3-b495-2d3c2165ec44"]
 }, Open  ]],
 
 Cell[CellGroupData[{
@@ -4138,25 +4106,239 @@ Cell[TextData[{
  ".",
  
  CounterBox["Subsubsection"],
- ". Examples with gear, using flywheel load"
+ ". Velocity, before gearbox"
+}], "Subsubsection",ExpressionUUID->"d83676f0-0d54-48ce-b319-84bc32bc7d3e"],
+
+Cell[BoxData[{
+ RowBox[{
+  RowBox[{
+   RowBox[{"{", 
+    RowBox[{"velUnits", ",", " ", "vel"}], "}"}], " ", "=", " ", 
+   RowBox[{"applyTimeFunction", "[", 
+    RowBox[{
+    "motorVelocity", ",", " ", "aMotorWithFlywheel", ",", " ", 
+     "applyTwelveVolts", ",", " ", "t"}], "]"}]}], 
+  ";"}], "\[IndentingNewLine]", 
+ RowBox[{"velUnits", " ", "//", " ", "N"}], "\[IndentingNewLine]", 
+ RowBox[{"Plot", "[", 
+  RowBox[{"vel", ",", " ", 
+   RowBox[{"{", 
+    RowBox[{"t", ",", " ", "0", ",", " ", "1.0"}], "}"}], ",", " ", 
+   RowBox[{"AxesLabel", "\[Rule]", 
+    RowBox[{"{", 
+     RowBox[{"\"\<Seconds\>\"", ",", " ", 
+      RowBox[{"HoldForm", "[", 
+       RowBox[{"Radians", " ", "/", " ", "Second"}], "]"}]}], "}"}]}], ",", 
+   " ", 
+   RowBox[{"PlotRange", "\[Rule]", "All"}], ",", " ", 
+   RowBox[{"AxesOrigin", "\[Rule]", 
+    RowBox[{"{", 
+     RowBox[{"0", ",", "0"}], "}"}]}]}], 
+  "]"}]}], "Input",ExpressionUUID->"ef0ca04a-8475-43f1-8f6a-345ce878489c"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[TextData[{
+ 
+ CounterBox["Section"],
+ ".",
+ 
+ CounterBox["Subsection"],
+ ".",
+ 
+ CounterBox["Subsubsection"],
+ ". Torque, before gearbox"
+}], "Subsubsection",ExpressionUUID->"f2b80ce2-ebe0-44b8-afb5-796295fa29af"],
+
+Cell[BoxData[{
+ RowBox[{
+  RowBox[{
+   RowBox[{"{", 
+    RowBox[{"torUnits", ",", " ", "tor"}], "}"}], " ", "=", " ", 
+   RowBox[{"applyTimeFunction", "[", 
+    RowBox[{
+    "motorTorque", ",", " ", "aMotorWithFlywheel", ",", " ", 
+     "applyTwelveVolts", ",", " ", "t"}], "]"}]}], 
+  ";"}], "\[IndentingNewLine]", 
+ RowBox[{"torUnits", " ", "//", " ", "N"}], "\[IndentingNewLine]", 
+ RowBox[{"Plot", "[", 
+  RowBox[{"tor", ",", " ", 
+   RowBox[{"{", 
+    RowBox[{"t", ",", " ", "0", ",", " ", ".002"}], "}"}], ",", " ", 
+   RowBox[{"AxesLabel", "\[Rule]", 
+    RowBox[{"{", 
+     RowBox[{"\"\<Seconds\>\"", ",", " ", 
+      RowBox[{"HoldForm", "[", 
+       RowBox[{"Netwon", " ", 
+        RowBox[{"Meters", "/", " ", "Radian"}]}], "]"}]}], "}"}]}], ",", " ", 
+   RowBox[{"PlotRange", "\[Rule]", "All"}], ",", " ", 
+   RowBox[{"AxesOrigin", "\[Rule]", 
+    RowBox[{"{", 
+     RowBox[{"0", ",", "0"}], "}"}]}]}], 
+  "]"}]}], "Input",ExpressionUUID->"00515254-5262-4236-a1ff-7db2715a0c5b"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[TextData[{
+ 
+ CounterBox["Section"],
+ ".",
+ 
+ CounterBox["Subsection"],
+ ".",
+ 
+ CounterBox["Subsubsection"],
+ ". Current"
+}], "Subsubsection",ExpressionUUID->"07612339-c72a-4faa-93a7-0270b2ddcb80"],
+
+Cell[BoxData[{
+ RowBox[{
+  RowBox[{
+   RowBox[{"{", 
+    RowBox[{"curUnits", ",", " ", "cur"}], "}"}], " ", "=", " ", 
+   RowBox[{"applyTimeFunction", "[", 
+    RowBox[{
+    "motorCurrent", ",", " ", "aMotorWithFlywheel", ",", " ", 
+     "applyTwelveVolts", ",", " ", "t"}], "]"}]}], 
+  ";"}], "\[IndentingNewLine]", 
+ RowBox[{"curUnits", " ", "//", " ", "N"}], "\[IndentingNewLine]", 
+ RowBox[{"Plot", "[", 
+  RowBox[{"cur", ",", " ", 
+   RowBox[{"{", 
+    RowBox[{"t", ",", " ", "0", ",", " ", ".002"}], "}"}], ",", " ", 
+   RowBox[{"AxesLabel", "\[Rule]", 
+    RowBox[{"{", 
+     RowBox[{"\"\<Seconds\>\"", ",", " ", 
+      RowBox[{"HoldForm", "[", "Amps", "]"}]}], "}"}]}], ",", " ", 
+   RowBox[{"PlotRange", "\[Rule]", "All"}], ",", " ", 
+   RowBox[{"AxesOrigin", "\[Rule]", 
+    RowBox[{"{", 
+     RowBox[{"0", ",", "0"}], "}"}]}]}], 
+  "]"}]}], "Input",ExpressionUUID->"ae2f46e9-b02a-4ca2-9d6b-d433cffa5b36"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[TextData[{
+ 
+ CounterBox["Section"],
+ ".",
+ 
+ CounterBox["Subsection"],
+ ".",
+ 
+ CounterBox["Subsubsection"],
+ ". Back EMF"
+}], "Subsubsection",ExpressionUUID->"cbfd41e2-c0b1-4920-b91e-b027e2b795eb"],
+
+Cell[BoxData[{
+ RowBox[{
+  RowBox[{
+   RowBox[{"{", 
+    RowBox[{"emfUnits", ",", " ", "emf"}], "}"}], " ", "=", " ", 
+   RowBox[{"applyTimeFunction", "[", 
+    RowBox[{
+    "motorEMF", ",", " ", "aMotorWithFlywheel", ",", " ", "applyTwelveVolts", 
+     ",", " ", "t"}], "]"}]}], ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"emfUnits", " ", "//", " ", "N"}], " ", "//", " ", 
+  "simplifyUnits"}], "\[IndentingNewLine]", 
+ RowBox[{"Plot", "[", 
+  RowBox[{
+   RowBox[{"{", "emf", 
+    RowBox[{"(*", 
+     RowBox[{",", " ", 
+      RowBox[{
+      "\[CapitalDelta]vappConst", " ", "/.", " ", "applyTwelveVolts"}]}], 
+     "*)"}], "}"}], ",", " ", 
+   RowBox[{"{", 
+    RowBox[{"t", ",", " ", "0", ",", " ", "200"}], "}"}], ",", " ", 
+   RowBox[{"AxesLabel", "\[Rule]", 
+    RowBox[{"{", 
+     RowBox[{"\"\<Seconds\>\"", ",", " ", 
+      RowBox[{"HoldForm", "[", "Volts", "]"}]}], "}"}]}], ",", " ", 
+   RowBox[{"PlotRange", "\[Rule]", "All"}], ",", " ", 
+   RowBox[{"AxesOrigin", "\[Rule]", 
+    RowBox[{"{", 
+     RowBox[{"0", ",", "0"}], "}"}]}]}], 
+  "]"}]}], "Input",ExpressionUUID->"62e3029c-ffc3-4c83-8975-c1f278ab15e8"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[TextData[{
+ 
+ CounterBox["Section"],
+ ".",
+ 
+ CounterBox["Subsection"],
+ ".",
+ 
+ CounterBox["Subsubsection"],
+ ". Position, before gearbox"
+}], "Subsubsection",ExpressionUUID->"b91ac1c0-97e6-4cc4-b5ff-e8c71d7c5945"],
+
+Cell[BoxData[{
+ RowBox[{
+  RowBox[{
+   RowBox[{"{", 
+    RowBox[{"posUnits", ",", " ", "pos"}], "}"}], " ", "=", " ", 
+   RowBox[{"applyTimeFunction", "[", 
+    RowBox[{
+    "motorPosition", ",", " ", "aMotorWithFlywheel", ",", " ", 
+     "applyTwelveVolts", ",", " ", "t"}], "]"}]}], 
+  ";"}], "\[IndentingNewLine]", 
+ RowBox[{"posUnits", " ", "//", " ", "N"}], "\[IndentingNewLine]", 
+ RowBox[{"Plot", "[", 
+  RowBox[{"pos", ",", " ", 
+   RowBox[{"{", 
+    RowBox[{"t", ",", " ", "0", ",", " ", "200"}], "}"}], ",", " ", 
+   RowBox[{"AxesLabel", "\[Rule]", 
+    RowBox[{"{", 
+     RowBox[{"\"\<Seconds\>\"", ",", " ", 
+      RowBox[{"HoldForm", "[", "Radians", "]"}]}], "}"}]}], ",", " ", 
+   RowBox[{"PlotRange", "\[Rule]", "All"}], ",", " ", 
+   RowBox[{"AxesOrigin", "\[Rule]", 
+    RowBox[{"{", 
+     RowBox[{"0", ",", "0"}], "}"}]}]}], 
+  "]"}]}], "Input",ExpressionUUID->"69aca58d-7ebd-4141-8c83-327154314827"]
+}, Open  ]]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[TextData[{
+ 
+ CounterBox["Section"],
+ ".",
+ 
+ CounterBox["Subsection"],
+ ".",
+ 
+ CounterBox["Subsubsection"],
+ ". Examples with ",
+ StyleBox["unitless",
+  IgnoreSpellCheck->True],
+ " loads"
+}], "Subsection",ExpressionUUID->"33832545-bf44-476d-852f-0485e603b7d0"],
+
+Cell[CellGroupData[{
+
+Cell[TextData[{
+ 
+ CounterBox["Section"],
+ ".",
+ 
+ CounterBox["Subsection"],
+ ".",
+ 
+ CounterBox["Subsubsection"],
+ ". With gear, using flywheel load"
 }], "Subsubsection",ExpressionUUID->"e0269345-f206-49e0-8beb-7ef9ec225087"],
 
 Cell[BoxData[{
- RowBox[{"unitlessMotorWithFlywheel", "  ", "=", " ", 
-  RowBox[{
-   RowBox[{
-    RowBox[{
-     RowBox[{"addMotorLoad", "[", 
-      RowBox[{
-       RowBox[{"motorParameters", "[", "\"\<AM 60 A\>\"", "]"}], ",", " ", 
-       RowBox[{"flywheel", "[", 
-        RowBox[{
-         RowBox[{"Quantity", "[", 
-          RowBox[{"3", ",", " ", "\"\<kg\>\""}], "]"}], ",", " ", 
-         RowBox[{"Quantity", "[", 
-          RowBox[{"8", ",", "\"\<cm\>\""}], "]"}]}], "]"}]}], "]"}], " ", "//",
-      " ", "siUnits"}], " ", "//", " ", "clearUnits"}], " ", "//", " ", 
-   "N"}]}], "\[IndentingNewLine]", 
  RowBox[{
   RowBox[{
    RowBox[{"applyTwelveVolts", " ", "//", " ", "siUnits"}], " ", "//", " ", 
@@ -4200,27 +4382,10 @@ Cell[TextData[{
  ".",
  
  CounterBox["Subsubsection"],
- ". Examples without gear, using flywheel load"
+ ". Without gear, using flywheel load"
 }], "Subsubsection",ExpressionUUID->"a668f9a5-bc6e-4876-a40d-d4b0024db721"],
 
 Cell[BoxData[{
- RowBox[{"unitlessMotorWithFlywheelNoGear", "  ", "=", " ", 
-  RowBox[{
-   RowBox[{
-    RowBox[{
-     RowBox[{"addMotorLoad", "[", 
-      RowBox[{
-       RowBox[{"motorParameters", "[", 
-        RowBox[{"\"\<AM 60 A\>\"", ",", " ", 
-         RowBox[{"WithGearbox", "\[Rule]", " ", "False"}]}], "]"}], ",", " ", 
-       RowBox[{"flywheel", "[", 
-        RowBox[{
-         RowBox[{"Quantity", "[", 
-          RowBox[{"3", ",", " ", "\"\<kg\>\""}], "]"}], ",", " ", 
-         RowBox[{"Quantity", "[", 
-          RowBox[{"8", ",", "\"\<cm\>\""}], "]"}]}], "]"}]}], "]"}], " ", "//",
-      " ", "siUnits"}], " ", "//", " ", "clearUnits"}], " ", "//", " ", 
-   "N"}]}], "\[IndentingNewLine]", 
  RowBox[{
   RowBox[{
    RowBox[{"{", 
@@ -4236,7 +4401,7 @@ Cell[BoxData[{
  RowBox[{"Plot", "[", 
   RowBox[{"vel3", ",", " ", 
    RowBox[{"{", 
-    RowBox[{"t", ",", " ", "0", ",", " ", "0.25"}], "}"}], ",", " ", 
+    RowBox[{"t", ",", " ", "0", ",", " ", "3"}], "}"}], ",", " ", 
    RowBox[{"AxesLabel", "\[Rule]", 
     RowBox[{"{", 
      RowBox[{"\"\<Seconds\>\"", ",", " ", 
@@ -4270,6 +4435,20 @@ Cell[TextData[{
  CounterBox["Subsection"],
  ". Calculating Steady State Values : The Final Value Theorem"
 }], "Subsection",ExpressionUUID->"caf76008-1094-4dab-89d2-46ed4cc1fba0"],
+
+Cell[CellGroupData[{
+
+Cell[TextData[{
+ 
+ CounterBox["Section"],
+ ".",
+ 
+ CounterBox["Subsection"],
+ ".",
+ 
+ CounterBox["Subsubsection"],
+ ". The general case"
+}], "Subsubsection",ExpressionUUID->"21a3775c-6c7d-4844-8a96-185e7a4c20cf"],
 
 Cell["\<\
 We explore the steady state behavior, the limit of the time domain functions \
@@ -4413,22 +4592,22 @@ Cell[BoxData[{
           "]"}]}], " ", "//", " ", "Factor"}]}], "\[IndentingNewLine]", "}"}],
       " ", "//", " ", "FullSimplify"}]}], ")"}], " ", "//", " ", 
   "prettyPrint"}], "\[IndentingNewLine]", 
- RowBox[{"simpleSs", " ", "=", " ", 
-  RowBox[{
-   RowBox[{
-    RowBox[{"ss", " ", "/.", " ", 
-     RowBox[{"{", 
-      RowBox[{
-       RowBox[{"\[CapitalNu]", " ", "\[Rule]", " ", "1"}], ",", " ", 
-       RowBox[{"\[Eta]", "\[Rule]", " ", "1"}], ",", " ", 
-       RowBox[{"Bafter", " ", "\[Rule]", " ", "0"}], ",", " ", 
-       RowBox[{"\[CapitalDelta]\[Tau]appConst", "\[Rule]", " ", "0"}], ",", 
-       " ", 
-       RowBox[{"\[Tau]app0", " ", "\[Rule]", " ", "0"}], ",", " ", 
-       RowBox[{"vapp0", " ", "\[Rule]", " ", "0"}], ",", " ", 
-       RowBox[{"\[CapitalDelta]vappConst", " ", "\[Rule]", " ", "vbat"}]}], 
-      "}"}]}], " ", "//", " ", "FullSimplify"}], " ", "//", 
-   "prettyPrint"}]}]}], \
+ RowBox[{
+  RowBox[{"(", 
+   RowBox[{"simpleSs", " ", "=", " ", 
+    RowBox[{
+     RowBox[{"ss", " ", "/.", " ", 
+      RowBox[{"{", 
+       RowBox[{
+        RowBox[{"\[CapitalNu]", " ", "\[Rule]", " ", "1"}], ",", " ", 
+        RowBox[{"\[Eta]", "\[Rule]", " ", "1"}], ",", " ", 
+        RowBox[{"Bafter", " ", "\[Rule]", " ", "0"}], ",", " ", 
+        RowBox[{"\[CapitalDelta]\[Tau]appConst", "\[Rule]", " ", "0"}], ",", 
+        " ", 
+        RowBox[{"\[Tau]app0", " ", "\[Rule]", " ", "0"}], ",", " ", 
+        RowBox[{"vapp0", " ", "\[Rule]", " ", "0"}]}], "}"}]}], " ", "//", 
+     " ", "FullSimplify"}]}], ")"}], " ", "//", 
+  "prettyPrint"}]}], \
 "Input",ExpressionUUID->"a25c713e-9ba3-4635-b13e-e69c6cdae2ad"],
 
 Cell["\<\
@@ -4445,6 +4624,53 @@ Cell[BoxData[
    RowBox[{"{", 
     RowBox[{"ss", ",", " ", "simpleSs"}], "}"}]}], 
   "]"}]], "Input",ExpressionUUID->"5aed011e-a7a9-4c2c-9a08-6ef2d65f763c"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[TextData[{
+ 
+ CounterBox["Section"],
+ ".",
+ 
+ CounterBox["Subsection"],
+ ".",
+ 
+ CounterBox["Subsubsection"],
+ ". With specific examples"
+}], "Subsubsection",ExpressionUUID->"40f6ccf3-6263-4142-a6e9-7465990ffcd0"],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{
+   RowBox[{
+    RowBox[{
+     RowBox[{"ss", " ", "/.", " ", "aMotorClassic"}], " ", "/.", " ", 
+     "applyTwelveVolts"}], " ", "//", " ", "siUnits"}], "//", " ", 
+   "simplifyUnits"}], " ", "//", " ", 
+  "N"}]], "Input",ExpressionUUID->"dd0b8bd3-493f-4c2e-9d03-a92026dbfa4b"],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{
+   RowBox[{
+    RowBox[{"ss", " ", "/.", " ", "unitlessMotorWithFlywheel"}], "/.", " ", 
+    "applyTwelveVolts"}], " ", "//", " ", "siUnits"}], "//", " ", 
+  "clearUnits"}]], \
+"Input",ExpressionUUID->"e0775372-602a-43ad-8f13-e3bbe52775d4"],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{
+   RowBox[{
+    RowBox[{"ss", " ", "/.", " ", "unitlessMotorWithFlywheelNoGear"}], "/.", 
+    " ", "applyTwelveVolts"}], " ", "//", " ", "siUnits"}], "//", " ", 
+  "clearUnits"}]], \
+"Input",ExpressionUUID->"c04f4761-79f7-4e0b-bfbc-3bd9afc0df88"],
+
+Cell[BoxData["aMotorWithFlywheel"], \
+"Input",ExpressionUUID->"d1ddd173-dd07-435f-9a3d-ce1a95e64971"]
+}, Open  ]]
 }, Open  ]],
 
 Cell[CellGroupData[{
@@ -4581,8 +4807,8 @@ Cell["2018.08.11 Added initial conditions support", \
 }, Open  ]]
 }, Open  ]]
 },
-WindowSize->{1265, 1480},
-WindowMargins->{{Automatic, 1189}, {Automatic, 26}},
+WindowSize->{1270, 1480},
+WindowMargins->{{Automatic, 1118}, {9, Automatic}},
 PrintingCopies->1,
 PrintingPageRange->{32000, 32000},
 PrintingOptions->{"Magnification"->1.,
