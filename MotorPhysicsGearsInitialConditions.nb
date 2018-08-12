@@ -1641,7 +1641,7 @@ torque. In steady state, the derivative of current and velocity are zero. \
 \>", "Text",ExpressionUUID->"947e7cdb-d4e7-442b-872e-7622f5b0791f"],
 
 Cell[BoxData[
- RowBox[{"ss0Conditions", " ", "=", " ", 
+ RowBox[{"someInitialConditions", " ", "=", " ", 
   RowBox[{"{", "\[IndentingNewLine]", 
    RowBox[{
     RowBox[{
@@ -1696,7 +1696,7 @@ Cell[BoxData[{
     RowBox[{
      RowBox[{"diffEqFunctionsOfTime", " ", "/.", " ", 
       RowBox[{"t", " ", "\[Rule]", " ", "ss0"}]}], ",", " ", 
-     RowBox[{"ss0Conditions", "[", 
+     RowBox[{"someInitialConditions", "[", 
       RowBox[{"[", 
        RowBox[{"All", ",", "1"}], "]"}], "]"}]}], "]"}]}], " ", 
   ";"}], "\[IndentingNewLine]", 
@@ -1706,7 +1706,7 @@ Cell[BoxData[{
     RowBox[{"diffEqns", " ", "/.", " ", 
      RowBox[{"t", " ", "\[Rule]", " ", "ss0"}]}], " ", "/.", " ", 
     RowBox[{"(", 
-     RowBox[{"ss0Conditions", " ", "/.", " ", 
+     RowBox[{"someInitialConditions", " ", "/.", " ", 
       RowBox[{"Equal", " ", "\[Rule]", " ", "Rule"}]}], ")"}]}]}], 
   ";"}], "\[IndentingNewLine]", 
  RowBox[{
@@ -1720,8 +1720,9 @@ Cell[BoxData[{
   ";"}], "\[IndentingNewLine]", 
  RowBox[{
   RowBox[{"(", 
-   RowBox[{"allSs0", " ", "=", " ", 
-    RowBox[{"solvedSs0", " ", "~", "Join", "~", " ", "ss0Conditions"}]}], 
+   RowBox[{"initialConditions", " ", "=", " ", 
+    RowBox[{
+    "solvedSs0", " ", "~", "Join", "~", " ", "someInitialConditions"}]}], 
    ")"}], " ", "//", " ", 
   "prettyPrint"}]}], \
 "Input",ExpressionUUID->"b25084b0-89bc-4ca3-bd1e-19f02b9afa95"]
@@ -1744,15 +1745,9 @@ Cell[TextData[{
 Cell["Recall our differential equations.", \
 "Text",ExpressionUUID->"b4217ae7-ad0c-48e6-95a6-f997d6425ff2"],
 
-Cell[BoxData[{
- RowBox[{
-  RowBox[{"If", " ", "[", 
-   RowBox[{
-    RowBox[{"unboundQ", "[", "diffEqnsSs0", "]"}], ",", " ", 
-    RowBox[{"diffEqnsSs0", " ", "=", " ", "diffEqns"}]}], "]"}], 
-  ";"}], "\[IndentingNewLine]", 
- RowBox[{"diffEqnsSs0", " ", "//", " ", 
-  "prettyPrint"}]}], \
+Cell[BoxData[
+ RowBox[{"diffEqns", " ", "//", " ", 
+  "prettyPrint"}]], \
 "Input",ExpressionUUID->"b2ef47c7-e313-4566-9960-eb37d322c628"],
 
 Cell["\<\
@@ -1764,8 +1759,8 @@ both inputs.\
 Cell[BoxData[
  RowBox[{
   RowBox[{"(", 
-   RowBox[{"diffEqns", "  ", "=", " ", 
-    RowBox[{"diffEqnsSs0", " ", "/.", " ", 
+   RowBox[{"\[CapitalDelta]diffEqns", " ", "=", " ", 
+    RowBox[{"diffEqns", " ", "/.", " ", 
      RowBox[{"{", 
       RowBox[{
        RowBox[{
@@ -1785,11 +1780,11 @@ Cell["We now set up the initial conditions applicable for t >= 0.", \
 
 Cell[BoxData[{
  RowBox[{
-  RowBox[{"allSs0Rules", " ", "=", " ", 
-   RowBox[{"allSs0", " ", "/.", " ", 
+  RowBox[{"initialConditionsRules", " ", "=", " ", 
+   RowBox[{"initialConditions", " ", "/.", " ", 
     RowBox[{"Equal", " ", "\[Rule]", " ", "Rule"}]}]}], 
   ";"}], "\[IndentingNewLine]", 
- RowBox[{"initialConditions", " ", "=", " ", 
+ RowBox[{"\[CapitalDelta]someInitialConditions", " ", "=", " ", 
   RowBox[{"{", "\[IndentingNewLine]", 
    RowBox[{
     RowBox[{
@@ -1805,8 +1800,8 @@ Cell[BoxData[{
      RowBox[{
       RowBox[{
        RowBox[{"i", "[", "0", "]"}], " ", "\[Equal]", " ", 
-       RowBox[{"i", "[", "ss0", "]"}]}], " ", "/.", " ", "allSs0Rules"}], " ",
-      "/.", " ", 
+       RowBox[{"i", "[", "ss0", "]"}]}], " ", "/.", " ", 
+      "initialConditionsRules"}], " ", "/.", " ", 
      RowBox[{"ss0", " ", "\[Rule]", " ", "0"}]}], ",", "\[IndentingNewLine]", 
     RowBox[{
      RowBox[{
@@ -1815,12 +1810,12 @@ Cell[BoxData[{
         RowBox[{"\[Theta]", "'"}], "[", "0", "]"}], " ", "\[Equal]", " ", 
        RowBox[{
         RowBox[{"\[Theta]", "'"}], "[", "ss0", "]"}]}], " ", "/.", " ", 
-      "allSs0Rules"}], " ", "/.", " ", 
+      "initialConditionsRules"}], " ", "/.", " ", 
      RowBox[{"ss0", " ", "\[Rule]", " ", "0"}]}]}], "\[IndentingNewLine]", 
    "}"}]}]}], "Input",ExpressionUUID->"3b344acb-4cf1-4c64-930f-f3d4b6e77117"],
 
 Cell[BoxData[{
- RowBox[{"diffEqFunctionsOfTime", " ", "=", " ", 
+ RowBox[{"\[CapitalDelta]DiffEqFunctionsOfTime", " ", "=", " ", 
   RowBox[{
    RowBox[{
     RowBox[{"Reap", "[", 
@@ -1833,49 +1828,50 @@ Cell[BoxData[{
            RowBox[{"#", ",", " ", 
             RowBox[{"_", "[", "t", "]"}]}], "]"}], ",", " ", 
           RowBox[{"Sow", " ", "[", "#", "]"}]}], "]"}], "&"}], ",", " ", 
-       "diffEqns", ",", " ", "Infinity"}], "]"}], "]"}], "[", 
+       "\[CapitalDelta]diffEqns", ",", " ", "Infinity"}], "]"}], "]"}], "[", 
     RowBox[{"[", 
      RowBox[{"2", ",", "1"}], "]"}], "]"}], " ", "//", " ", 
    "Union"}]}], "\[IndentingNewLine]", 
  RowBox[{
-  RowBox[{"others", " ", "=", " ", 
+  RowBox[{"\[CapitalDelta]others", " ", "=", " ", 
    RowBox[{"Complement", "[", 
     RowBox[{
-     RowBox[{"diffEqFunctionsOfTime", " ", "/.", " ", 
+     RowBox[{"\[CapitalDelta]DiffEqFunctionsOfTime", " ", "/.", " ", 
       RowBox[{"t", " ", "\[Rule]", " ", "0"}]}], ",", " ", 
-     RowBox[{"initialConditions", "[", 
+     RowBox[{"\[CapitalDelta]someInitialConditions", "[", 
       RowBox[{"[", 
        RowBox[{"All", ",", "1"}], "]"}], "]"}]}], "]"}]}], 
   " "}], "\[IndentingNewLine]", 
  RowBox[{
-  RowBox[{"eqnsSubsKnownInitial", " ", "=", " ", 
+  RowBox[{"\[CapitalDelta]eqnsSubsKnownInitial", " ", "=", " ", 
    RowBox[{
-    RowBox[{"diffEqns", " ", "/.", " ", 
+    RowBox[{"\[CapitalDelta]diffEqns", " ", "/.", " ", 
      RowBox[{"t", " ", "\[Rule]", " ", "0"}]}], " ", "/.", " ", 
     RowBox[{"(", 
-     RowBox[{"initialConditions", " ", "/.", " ", 
+     RowBox[{"\[CapitalDelta]someInitialConditions", " ", "/.", " ", 
       RowBox[{"Equal", " ", "\[Rule]", " ", "Rule"}]}], ")"}]}]}], 
   ";"}], "\[IndentingNewLine]", 
  RowBox[{
-  RowBox[{"solvedInitialConditions", " ", "=", 
+  RowBox[{"\[CapitalDelta]solvedInitialConditions", " ", "=", 
    RowBox[{"(", 
     RowBox[{
      RowBox[{"uniqueSolve", "[", 
-      RowBox[{"eqnsSubsKnownInitial", ",", " ", "others"}], "]"}], " ", "/.", 
-     " ", 
+      RowBox[{
+      "\[CapitalDelta]eqnsSubsKnownInitial", ",", " ", 
+       "\[CapitalDelta]others"}], "]"}], " ", "/.", " ", 
      RowBox[{"Rule", " ", "\[Rule]", " ", "Equal"}]}], ")"}]}], 
   ";"}], "\[IndentingNewLine]", 
  RowBox[{
   RowBox[{"(", 
-   RowBox[{"allInitialConditions", " ", "=", " ", 
+   RowBox[{"\[CapitalDelta]initialConditions", " ", "=", " ", 
     RowBox[{
-    "solvedInitialConditions", " ", "~", "Join", "~", " ", 
-     "initialConditions"}]}], ")"}], " ", "//", " ", 
+    "\[CapitalDelta]solvedInitialConditions", " ", "~", "Join", "~", " ", 
+     "\[CapitalDelta]someInitialConditions"}]}], ")"}], " ", "//", " ", 
   "prettyPrint"}]}], \
 "Input",ExpressionUUID->"086b1ec2-b8fd-49c6-a266-91b8536a05ec"]
 }, Open  ]]
 }, Open  ]]
-}, Closed]],
+}, Open  ]],
 
 Cell[CellGroupData[{
 
@@ -2124,8 +2120,9 @@ Cell["Let\[CloseCurlyQuote]s look and see if our units are consistent:", \
 
 Cell[BoxData[
  RowBox[{
-  RowBox[{"diffEqns", " ", "/.", " ", "parameterQuantities"}], " ", "//", " ",
-   "ColumnForm"}]], \
+  RowBox[{"\[CapitalDelta]diffEqns", " ", "/.", " ", "parameterQuantities"}], 
+  " ", "//", " ", 
+  "ColumnForm"}]], \
 "Input",ExpressionUUID->"bd477aa7-e6c3-4ff3-af7a-88821be91010"],
 
 Cell["\<\
@@ -2137,15 +2134,17 @@ Cell[BoxData[{
  RowBox[{
   RowBox[{
    RowBox[{
-    RowBox[{"allSs0", " ", "/.", " ", "parameterQuantities"}], " ", "//", " ",
-     "siUnits"}], " ", "//", " ", "simplifyUnits"}], "//", " ", 
+    RowBox[{"initialConditions", " ", "/.", " ", "parameterQuantities"}], " ",
+     "//", " ", "siUnits"}], " ", "//", " ", "simplifyUnits"}], "//", " ", 
   "ColumnForm"}], "\[IndentingNewLine]", 
  RowBox[{
   RowBox[{
    RowBox[{
-    RowBox[{"allInitialConditions", " ", "/.", " ", "parameterQuantities"}], 
-    " ", "//", " ", "siUnits"}], " ", "//", " ", "simplifyUnits"}], "//", " ",
-   "ColumnForm"}]}], \
+    RowBox[{
+    "\[CapitalDelta]initialConditions", " ", "/.", " ", 
+     "parameterQuantities"}], " ", "//", " ", "siUnits"}], " ", "//", " ", 
+   "simplifyUnits"}], "//", " ", 
+  "ColumnForm"}]}], \
 "Input",ExpressionUUID->"69a74ad9-5c06-4f2e-8165-139e5cb29716"],
 
 Cell["\<\
@@ -2208,7 +2207,7 @@ Cell[BoxData[{
  RowBox[{
   RowBox[{"(", 
    RowBox[{"ssEqns", " ", "=", " ", 
-    RowBox[{"diffEqnsSs0", " ", "/.", " ", 
+    RowBox[{"diffEqns", " ", "/.", " ", 
      RowBox[{"{", 
       RowBox[{
        RowBox[{
@@ -3072,7 +3071,7 @@ Cell[BoxData[{
     RowBox[{
      RowBox[{"LaplaceTransform", "[", 
       RowBox[{"#", ",", " ", "t", ",", " ", "s"}], "]"}], " ", "&"}], "/@", 
-    " ", "diffEqns"}]}], ";"}], "\[IndentingNewLine]", 
+    " ", "\[CapitalDelta]diffEqns"}]}], ";"}], "\[IndentingNewLine]", 
  RowBox[{"leqns", " ", "//", " ", 
   "prettyPrint"}]}], \
 "Input",ExpressionUUID->"a9a20bb6-32af-4293-8a1c-3bf2886ef783"],
@@ -3145,7 +3144,7 @@ Cell[BoxData[
    RowBox[{"leqnsToSolve", " ", "=", " ", 
     RowBox[{"leqns", " ", "/.", " ", 
      RowBox[{"(", 
-      RowBox[{"allInitialConditions", " ", "/.", " ", 
+      RowBox[{"\[CapitalDelta]initialConditions", " ", "/.", " ", 
        RowBox[{"Equal", "\[Rule]", " ", "Rule"}]}], ")"}]}]}], ")"}], " ", "//",
    " ", "ColumnForm"}]], \
 "Input",ExpressionUUID->"47811830-e8e7-48e6-a4d9-a6ff93b80d0c"],
@@ -3396,14 +3395,15 @@ Cell[BoxData[
    "\[IndentingNewLine]", 
    RowBox[{"{", 
     RowBox[{
-    "diffEqnsSs0", ",", " ", "diffEqns", ",", "allSs0", ",", " ", 
-     "allInitialConditions", ",", " ", "motorPositionModel", ",", " ", 
-     "motorVelocityModel", ",", " ", "motorAccelerationModel", ",", " ", 
-     "motorCurrentModel", ",", " ", "motorEMFModel", ",", " ", 
-     "motorTorqueModel", ",", " ", "\[IndentingNewLine]", 
-     "motorPositionOutModel", ",", " ", "motorVelocityOutModel", ",", " ", 
-     "motorAccelerationOutModel"}], "}"}]}], 
-  "]"}]], "Input",ExpressionUUID->"00cd8804-05c2-4509-8ea5-65639d114397"]
+    "diffEqns", ",", " ", "\[CapitalDelta]diffEqns", ",", "initialConditions",
+      ",", " ", "\[CapitalDelta]initialConditions", ",", " ", 
+     "motorPositionModel", ",", " ", "motorVelocityModel", ",", " ", 
+     "motorAccelerationModel", ",", " ", "motorCurrentModel", ",", " ", 
+     "motorEMFModel", ",", " ", "motorTorqueModel", ",", " ", 
+     "\[IndentingNewLine]", "motorPositionOutModel", ",", " ", 
+     "motorVelocityOutModel", ",", " ", "motorAccelerationOutModel"}], 
+    "}"}]}], "]"}]], \
+"Input",ExpressionUUID->"00cd8804-05c2-4509-8ea5-65639d114397"]
 }, Open  ]],
 
 Cell[CellGroupData[{
