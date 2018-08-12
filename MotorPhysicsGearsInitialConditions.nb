@@ -1820,6 +1820,23 @@ Cell[BoxData[{
    "}"}]}]}], "Input",ExpressionUUID->"3b344acb-4cf1-4c64-930f-f3d4b6e77117"],
 
 Cell[BoxData[{
+ RowBox[{"diffEqFunctionsOfTime", " ", "=", " ", 
+  RowBox[{
+   RowBox[{
+    RowBox[{"Reap", "[", 
+     RowBox[{"Scan", "[", 
+      RowBox[{
+       RowBox[{
+        RowBox[{"If", "[", 
+         RowBox[{
+          RowBox[{"MatchQ", "[", 
+           RowBox[{"#", ",", " ", 
+            RowBox[{"_", "[", "t", "]"}]}], "]"}], ",", " ", 
+          RowBox[{"Sow", " ", "[", "#", "]"}]}], "]"}], "&"}], ",", " ", 
+       "diffEqns", ",", " ", "Infinity"}], "]"}], "]"}], "[", 
+    RowBox[{"[", 
+     RowBox[{"2", ",", "1"}], "]"}], "]"}], " ", "//", " ", 
+   "Union"}]}], "\[IndentingNewLine]", 
  RowBox[{
   RowBox[{"others", " ", "=", " ", 
    RowBox[{"Complement", "[", 
