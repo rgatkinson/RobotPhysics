@@ -15,6 +15,7 @@ parameterUnits = <|R -> "Ohms", L -> "Henries", i[t] -> "Amperes",
      Derivative[2][\[Theta]after][t] -> "Radians", 
      \[Omega][t] -> "Radians"/"Seconds", \[Alpha][t] -> 
       "Radians"/"Seconds"^2, \[Tau][t] -> ("Meters"*"Newtons")/"Radians", 
+     \[Tau]after[t] -> ("Meters"*"Newtons")/"Radians", 
      \[CapitalDelta]\[Tau]app[t] -> ("Meters"*"Newtons")/"Radians", 
      \[CapitalDelta]\[Tau]appConst -> ("Meters"*"Newtons")/"Radians", 
      \[Tau]app0 -> ("Meters"*"Newtons")/"Radians", 
@@ -48,12 +49,13 @@ parameterQuantities = <|R -> Quantity[R, "Ohms"],
      \[Omega][t] -> Quantity[\[Omega][t], "Radians"/"Seconds"], 
      \[Alpha][t] -> Quantity[\[Alpha][t], "Radians"/"Seconds"^2], 
      \[Tau][t] -> Quantity[\[Tau][t], ("Meters"*"Newtons")/"Radians"], 
-     \[CapitalDelta]\[Tau]app[t] -> Quantity[\[CapitalDelta]\[Tau]app[t], 
-       ("Meters"*"Newtons")/"Radians"], \[CapitalDelta]\[Tau]appConst -> 
-      Quantity[\[CapitalDelta]\[Tau]appConst, ("Meters"*"Newtons")/
-        "Radians"], \[Tau]app0 -> Quantity[\[Tau]app0, 
-       ("Meters"*"Newtons")/"Radians"], \[CapitalNu] -> 
-      Quantity[\[CapitalNu], "DimensionlessUnit"], 
+     \[Tau]after[t] -> Quantity[\[Tau]after[t], ("Meters"*"Newtons")/
+        "Radians"], \[CapitalDelta]\[Tau]app[t] -> 
+      Quantity[\[CapitalDelta]\[Tau]app[t], ("Meters"*"Newtons")/"Radians"], 
+     \[CapitalDelta]\[Tau]appConst -> Quantity[\[CapitalDelta]\[Tau]appConst, 
+       ("Meters"*"Newtons")/"Radians"], \[Tau]app0 -> 
+      Quantity[\[Tau]app0, ("Meters"*"Newtons")/"Radians"], 
+     \[CapitalNu] -> Quantity[\[CapitalNu], "DimensionlessUnit"], 
      \[Eta] -> Quantity[\[Eta], "DimensionlessUnit"]|>
  
 parameterAssumptions = {Element[Bafter, Reals], Element[Jafter, Reals], 
@@ -63,9 +65,9 @@ parameterAssumptions = {Element[Bafter, Reals], Element[Jafter, Reals],
      Element[\[Tau]app0, Reals], Element[i[_], Reals], Element[vg[_], Reals], 
      Element[\[Alpha][_], Reals], Element[\[CapitalDelta]vapp[_], Reals], 
      Element[\[CapitalDelta]\[Tau]app[_], Reals], Element[\[Theta][_], 
-      Reals], Element[\[Tau][_], Reals], Element[\[Omega][_], Reals], Ke > 0, 
-     Kt > 0, L > 0, R > 0, \[Eta] > 0, \[CapitalNu] > 0, B >= 0, J >= 0, 
-     t >= 0}
+      Reals], Element[\[Tau][_], Reals], Element[\[Tau]after[_], Reals], 
+     Element[\[Omega][_], Reals], Ke > 0, Kt > 0, L > 0, R > 0, \[Eta] > 0, 
+     \[CapitalNu] > 0, B >= 0, J >= 0, t >= 0}
  
 radiansUnits = "Radians"
  

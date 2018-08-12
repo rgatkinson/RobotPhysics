@@ -4501,7 +4501,8 @@ Cell[BoxData[{
  RowBox[{
   RowBox[{
    RowBox[{"{", 
-    RowBox[{"velUnits2", ",", " ", "vel2"}], "}"}], " ", "=", " ", 
+    RowBox[{"velUnits2Generic", ",", " ", "velUnits2", ",", " ", "vel2"}], 
+    "}"}], " ", "=", " ", 
    RowBox[{"applyTimeFunction", "[", 
     RowBox[{"motorVelocity", ",", " ", "aUnitlessMotorWithFlywheel", ",", " ", 
      RowBox[{
@@ -4547,7 +4548,8 @@ Cell[BoxData[{
  RowBox[{
   RowBox[{
    RowBox[{"{", 
-    RowBox[{"velUnits3", ",", " ", "vel3"}], "}"}], " ", "=", " ", 
+    RowBox[{"velUnits3Generic", ",", " ", "velUnits3", ",", " ", "vel3"}], 
+    "}"}], " ", "=", " ", 
    RowBox[{"applyTimeFunction", "[", 
     RowBox[{
     "motorVelocity", ",", " ", "aUnitlessMotorWithFlywheelNoGear", ",", " ", 
@@ -4996,7 +4998,7 @@ Cell["2018.08.12 Bug fixes, miscellaneous polish", \
 }, Open  ]]
 },
 WindowSize->{1237, 1480},
-WindowMargins->{{Automatic, 218}, {Automatic, 22}},
+WindowMargins->{{Automatic, 949}, {Automatic, 26}},
 PrintingCopies->1,
 PrintingPageRange->{32000, 32000},
 PrintingOptions->{"Magnification"->1.,

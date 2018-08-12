@@ -3,11 +3,11 @@ diffEqns = {Kt*i[t] == \[Tau][t], vg[t] == Ke*Derivative[1][\[Theta]][t],
      (\[Eta]*\[CapitalNu]^2*\[Tau][t] + \[CapitalNu]*\[Tau]app[t] - 
         (Bafter + B*\[Eta]*\[CapitalNu]^2)*Derivative[1][\[Theta]][t] - 
         (Jafter + J*\[Eta]*\[CapitalNu]^2)*Derivative[2][\[Theta]][t])/
-       (\[Eta]*\[CapitalNu]) == 0, \[Theta]after[t] == 
-      \[Theta][t]/\[CapitalNu], Derivative[1][\[Theta]after][t] == 
-      Derivative[1][\[Theta]][t]/\[CapitalNu], 
-     Derivative[2][\[Theta]after][t] == Derivative[2][\[Theta]][t]/
-       \[CapitalNu]}
+       (\[Eta]*\[CapitalNu]) == 0, \[Tau][t] == \[Tau]after[t]/
+       (\[Eta]*\[CapitalNu]), \[Theta]after[t] == \[Theta][t]/\[CapitalNu], 
+     Derivative[1][\[Theta]after][t] == Derivative[1][\[Theta]][t]/
+       \[CapitalNu], Derivative[2][\[Theta]after][t] == 
+      Derivative[2][\[Theta]][t]/\[CapitalNu]}
  
 Attributes[Derivative] = {NHoldAll, ReadProtected}
  
@@ -19,6 +19,7 @@ Attributes[Derivative] = {NHoldAll, ReadProtected}
         \[Eta]*\[CapitalNu]^2*\[Tau][t] - (Bafter + B*\[Eta]*\[CapitalNu]^2)*
          Derivative[1][\[Theta]][t] - (Jafter + J*\[Eta]*\[CapitalNu]^2)*
          Derivative[2][\[Theta]][t])/(\[Eta]*\[CapitalNu]) == 0, 
+     \[Tau][t] == \[Tau]after[t]/(\[Eta]*\[CapitalNu]), 
      \[Theta]after[t] == \[Theta][t]/\[CapitalNu], 
      Derivative[1][\[Theta]after][t] == Derivative[1][\[Theta]][t]/
        \[CapitalNu], Derivative[2][\[Theta]after][t] == 
@@ -28,16 +29,20 @@ initialConditions =
     {i[ss0] == -((-(Bafter*vapp0) - B*vapp0*\[Eta]*\[CapitalNu]^2 + 
          Ke*\[CapitalNu]*\[Tau]app0)/(Bafter*R + Ke*Kt*\[Eta]*
           \[CapitalNu]^2 + B*R*\[Eta]*\[CapitalNu]^2)), 
-     vg[ss0] == (Ke*\[CapitalNu]*(Kt*vapp0*\[Eta]*\[CapitalNu] + 
-         R*\[Tau]app0))/(Bafter*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + 
-        B*R*\[Eta]*\[CapitalNu]^2), \[Theta]after[ss0] == 0, 
-     \[Tau][ss0] == (Kt*(Bafter*vapp0 + B*vapp0*\[Eta]*\[CapitalNu]^2 - 
+     vg[ss0] == -((-(Ke*Kt*vapp0*\[Eta]*\[CapitalNu]^2) - 
+         Ke*R*\[CapitalNu]*\[Tau]app0)/(Bafter*R + Ke*Kt*\[Eta]*
+          \[CapitalNu]^2 + B*R*\[Eta]*\[CapitalNu]^2)), 
+     \[Theta]after[ss0] == 0, \[Tau][ss0] == 
+      (Kt*(Bafter*vapp0 + B*vapp0*\[Eta]*\[CapitalNu]^2 - 
          Ke*\[CapitalNu]*\[Tau]app0))/(Bafter*R + Ke*Kt*\[Eta]*
          \[CapitalNu]^2 + B*R*\[Eta]*\[CapitalNu]^2), 
-     Derivative[1][\[Theta]][ss0] == 
-      (\[CapitalNu]*(Kt*vapp0*\[Eta]*\[CapitalNu] + R*\[Tau]app0))/
+     \[Tau]after[ss0] == (Kt*\[Eta]*\[CapitalNu]*(Bafter*vapp0 + 
+         B*vapp0*\[Eta]*\[CapitalNu]^2 - Ke*\[CapitalNu]*\[Tau]app0))/
        (Bafter*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + B*R*\[Eta]*\[CapitalNu]^2), 
-     Derivative[1][\[Theta]after][ss0] == 
+     Derivative[1][\[Theta]][ss0] == 
+      -((-(Kt*vapp0*\[Eta]*\[CapitalNu]^2) - R*\[CapitalNu]*\[Tau]app0)/
+        (Bafter*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + B*R*\[Eta]*
+          \[CapitalNu]^2)), Derivative[1][\[Theta]after][ss0] == 
       -((-(Kt*vapp0*\[Eta]*\[CapitalNu]) - R*\[Tau]app0)/
         (Bafter*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + B*R*\[Eta]*
           \[CapitalNu]^2)), Derivative[2][\[Theta]after][ss0] == 0, 
@@ -45,12 +50,15 @@ initialConditions =
      Derivative[2][\[Theta]][ss0] == 0, Derivative[1][i][ss0] == 0}
  
 \[CapitalDelta]initialConditions = 
-    {vg[0] == (Ke*\[CapitalNu]*(Kt*vapp0*\[Eta]*\[CapitalNu] + R*\[Tau]app0))/
-       (Bafter*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + B*R*\[Eta]*\[CapitalNu]^2), 
-     \[Theta]after[0] == 0, \[Tau][0] == 
-      -((-(Bafter*Kt*vapp0) - B*Kt*vapp0*\[Eta]*\[CapitalNu]^2 + 
+    {vg[0] == (Ke*(Kt*vapp0*\[Eta]*\[CapitalNu]^2 + R*\[CapitalNu]*
+          \[Tau]app0))/(Bafter*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + 
+        B*R*\[Eta]*\[CapitalNu]^2), \[Theta]after[0] == 0, 
+     \[Tau][0] == -((-(Bafter*Kt*vapp0) - B*Kt*vapp0*\[Eta]*\[CapitalNu]^2 + 
          Ke*Kt*\[CapitalNu]*\[Tau]app0)/(Bafter*R + Ke*Kt*\[Eta]*
           \[CapitalNu]^2 + B*R*\[Eta]*\[CapitalNu]^2)), 
+     \[Tau]after[0] == (\[Eta]*\[CapitalNu]*(Bafter*Kt*vapp0 + 
+         B*Kt*vapp0*\[Eta]*\[CapitalNu]^2 - Ke*Kt*\[CapitalNu]*\[Tau]app0))/
+       (Bafter*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + B*R*\[Eta]*\[CapitalNu]^2), 
      Derivative[1][i][0] == \[CapitalDelta]vappConst/L, 
      Derivative[1][\[Theta]after][0] == 
       -((-(Kt*vapp0*\[Eta]*\[CapitalNu]) - R*\[Tau]app0)/
@@ -65,9 +73,9 @@ initialConditions =
       -((-(Bafter*vapp0) - B*vapp0*\[Eta]*\[CapitalNu]^2 + 
          Ke*\[CapitalNu]*\[Tau]app0)/(Bafter*R + Ke*Kt*\[Eta]*
           \[CapitalNu]^2 + B*R*\[Eta]*\[CapitalNu]^2)), 
-     Derivative[1][\[Theta]][0] == 
-      (\[CapitalNu]*(Kt*vapp0*\[Eta]*\[CapitalNu] + R*\[Tau]app0))/
-       (Bafter*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + B*R*\[Eta]*\[CapitalNu]^2)}
+     Derivative[1][\[Theta]][0] == -((-(Kt*vapp0*\[Eta]*\[CapitalNu]^2) - 
+         R*\[CapitalNu]*\[Tau]app0)/(Bafter*R + Ke*Kt*\[Eta]*\[CapitalNu]^2 + 
+         B*R*\[Eta]*\[CapitalNu]^2))}
  
 motorPositionModel = TransferFunctionModel[
      {{{\[CapitalNu]*(Kt*vapp0*\[Eta]*\[CapitalNu] + R*\[Tau]app0), 
@@ -130,7 +138,7 @@ motorTorqueModel = TransferFunctionModel[
      s, SystemsModelLabels -> {{"1", "vapp", "\[Tau]app"}, "\[Tau]", 
        Automatic}]
  
-motorPositionOutModel = TransferFunctionModel[
+motorPositionAfterModel = TransferFunctionModel[
      {{{Kt*vapp0*\[Eta]*\[CapitalNu] + R*\[Tau]app0, Kt*\[Eta]*\[CapitalNu], 
         R + L*s}}, {{s*(Bafter*R + (Ke*Kt + B*R)*\[Eta]*\[CapitalNu]^2), 
         s*(Ke*Kt*\[Eta]*\[CapitalNu]^2 + (R + L*s)*(Bafter + Jafter*s + 
@@ -140,21 +148,33 @@ motorPositionOutModel = TransferFunctionModel[
      SystemsModelLabels -> {{"1", "vapp", "\[Tau]app"}, "\[Theta]after", 
        Automatic}]
  
-motorVelocityOutModel = TransferFunctionModel[
+motorVelocityAfterModel = TransferFunctionModel[
      {{{Kt*vapp0*\[Eta]*\[CapitalNu] + R*\[Tau]app0, Kt*\[Eta]*\[CapitalNu], 
         R + L*s}}, {{Bafter*R + (Ke*Kt + B*R)*\[Eta]*\[CapitalNu]^2, 
         Ke*Kt*\[Eta]*\[CapitalNu]^2 + (R + L*s)*(Bafter + Jafter*s + 
            (B + J*s)*\[Eta]*\[CapitalNu]^2), Ke*Kt*\[Eta]*\[CapitalNu]^2 + 
          (R + L*s)*(Bafter + Jafter*s + (B + J*s)*\[Eta]*\[CapitalNu]^2)}}}, 
-     s, SystemsModelLabels -> {{"1", "vapp", "\[Tau]app"}, "\[Omega]out", 
+     s, SystemsModelLabels -> {{"1", "vapp", "\[Tau]app"}, "\[Omega]after", 
        Automatic}]
  
-motorAccelerationOutModel = TransferFunctionModel[
+motorAccelerationAfterModel = TransferFunctionModel[
      {{{s*(Kt*vapp0*\[Eta]*\[CapitalNu] + R*\[Tau]app0), 
         Kt*s*\[Eta]*\[CapitalNu], s*(R + L*s)}}, 
       {{Bafter*R + (Ke*Kt + B*R)*\[Eta]*\[CapitalNu]^2, 
         Ke*Kt*\[Eta]*\[CapitalNu]^2 + (R + L*s)*(Bafter + Jafter*s + 
            (B + J*s)*\[Eta]*\[CapitalNu]^2), Ke*Kt*\[Eta]*\[CapitalNu]^2 + 
          (R + L*s)*(Bafter + Jafter*s + (B + J*s)*\[Eta]*\[CapitalNu]^2)}}}, 
-     s, SystemsModelLabels -> {{"1", "vapp", "\[Tau]app"}, "\[Alpha]out", 
+     s, SystemsModelLabels -> {{"1", "vapp", "\[Tau]app"}, "\[Alpha]after", 
+       Automatic}]
+ 
+motorTorqueAfterModel = TransferFunctionModel[
+     {{{Kt*\[Eta]*\[CapitalNu]*(Bafter*vapp0 + \[CapitalNu]*
+           (B*vapp0*\[Eta]*\[CapitalNu] - Ke*\[Tau]app0)), 
+        Kt*\[Eta]*\[CapitalNu]*(Bafter + Jafter*s + (B + J*s)*\[Eta]*
+           \[CapitalNu]^2), -(Ke*Kt*\[Eta]*\[CapitalNu]^2)}}, 
+      {{Bafter*R + (Ke*Kt + B*R)*\[Eta]*\[CapitalNu]^2, 
+        Ke*Kt*\[Eta]*\[CapitalNu]^2 + (R + L*s)*(Bafter + Jafter*s + 
+           (B + J*s)*\[Eta]*\[CapitalNu]^2), Ke*Kt*\[Eta]*\[CapitalNu]^2 + 
+         (R + L*s)*(Bafter + Jafter*s + (B + J*s)*\[Eta]*\[CapitalNu]^2)}}}, 
+     s, SystemsModelLabels -> {{"1", "vapp", "\[Tau]app"}, "\[Tau]after", 
        Automatic}]
