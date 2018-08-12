@@ -17,12 +17,12 @@ those, the (frequency domain) transfer functions of each of the model\
 \[CloseCurlyQuote]s variables is developed from first principles. Next, \
 mathematical infrastructure for converting the response of general frequency \
 domain functions input signals is developed, then applied to the transfer \
-functions as a function of the applied-voltage and external-applied-torque \
-inputs. This yields time domain functions for each of the model\
-\[CloseCurlyQuote]s variables in terms of the (symbolic) value of the model\
-\[CloseCurlyQuote]s variables. With those time domain symbolic functions in \
-hand, the steady-state response of the motor as a function of each of the \
-model\[CloseCurlyQuote]s parameters is explored.\
+functions as a function of initial conditions, and the applied-voltage and \
+external-applied-torque inputs. This yields time domain functions for each of \
+the model\[CloseCurlyQuote]s variables in terms of the (symbolic) value of \
+the model\[CloseCurlyQuote]s variables. With those time domain symbolic \
+functions in hand, the steady-state response of the motor as a function of \
+each of the model\[CloseCurlyQuote]s parameters is explored.\
 \>", "Text",ExpressionUUID->"56cc4ba9-b77c-4512-b3b4-73f00a3c0eee"],
 
 Cell[CellGroupData[{
@@ -57,7 +57,7 @@ Cell[BoxData[{
    RowBox[{"CreateDirectory", "[", "outputDirectory", "]"}], " ", "//", " ", 
    "Quiet"}], 
   ";"}]}], "Input",ExpressionUUID->"eb1653a8-85e2-4f56-b13c-a92151303453"]
-}, Closed]],
+}, Open  ]],
 
 Cell[CellGroupData[{
 
@@ -1305,7 +1305,7 @@ Cell[BoxData[{
        "\[Theta]", ",", " ", "\[Omega]", ",", " ", "\[Alpha]", ",", " ", 
        "\[Tau]", ",", "\[CapitalDelta]\[Tau]app"}], "}"}]}]}], 
    "]"}]}]}], "Input",ExpressionUUID->"e040b396-c8fb-46d1-84d2-b04509a22dd7"]
-}, Closed]],
+}, Open  ]],
 
 Cell[CellGroupData[{
 
@@ -2166,7 +2166,7 @@ Cell[BoxData[
      " ", "siTorqueUnits", ",", " ", "siAngularViscousDragUnits", ",", " ", 
      "siAngularInertialUnits"}], "}"}]}], 
   "]"}]], "Input",ExpressionUUID->"b26614f6-32fd-4b9a-a331-126e52d94862"]
-}, Closed]],
+}, Open  ]],
 
 Cell[CellGroupData[{
 
@@ -2335,7 +2335,7 @@ We can conclude that if other power losses are zero, then Ke must equal Kt.\
   3.7410055814434257`*^9, 3.741005582900565*^9}, {3.74104636045607*^9, 
   3.741046362223342*^9}},ExpressionUUID->"49066f9c-e89d-4bd8-a3c7-\
 e80d679efe16"]
-}, Closed]],
+}, Open  ]],
 
 Cell[CellGroupData[{
 
@@ -2647,7 +2647,7 @@ Cell[BoxData[{
    RowBox[{"WithGearbox", " ", "\[Rule]", " ", "True"}], ",", " ", 
    RowBox[{"Efficiency", " ", "\[Rule]", " ", "\"\<Reverse\>\""}]}], 
   "]"}]}], "Input",ExpressionUUID->"c045c038-2447-4cd5-9514-e523fcb88088"]
-}, Closed]],
+}, Open  ]],
 
 Cell[CellGroupData[{
 
@@ -2802,7 +2802,7 @@ Cell[BoxData[{
      RowBox[{"Quantity", "[", 
       RowBox[{"5", ",", " ", "\"\<cm\>\""}], "]"}]}], "]"}]}], 
   "]"}]}], "Input",ExpressionUUID->"81f4ff66-1413-488f-a7c5-9606c07eb3be"]
-}, Closed]],
+}, Open  ]],
 
 Cell[CellGroupData[{
 
@@ -2950,7 +2950,7 @@ Cell[BoxData[{
    RowBox[{"%", " ", "//", " ", "siUnits"}], " ", "//", " ", "clearUnits"}], 
   " ", "//", " ", 
   "N"}]}], "Input",ExpressionUUID->"c611b885-1c4e-47ce-9850-9d32c796521a"]
-}, Closed]],
+}, Open  ]],
 
 Cell[CellGroupData[{
 
@@ -3417,7 +3417,7 @@ Cell[BoxData[{
  RowBox[{"modelTest", ".", 
   "inputs"}]}], "Input",ExpressionUUID->"340f7484-75b8-4e98-b634-e6924497d94b"]
 }, Open  ]]
-}, Closed]],
+}, Open  ]],
 
 Cell[CellGroupData[{
 
@@ -3575,7 +3575,7 @@ Cell[BoxData[{
           "structure"}], " ", "*)"}], "\[IndentingNewLine]", "]"}]}], 
       "\[IndentingNewLine]", "]"}]}]}], "\[IndentingNewLine]", 
    "]"}]}]}], "Input",ExpressionUUID->"05912473-8033-42df-934b-87130f855530"]
-}, Closed]],
+}, Open  ]],
 
 Cell[CellGroupData[{
 
@@ -3643,7 +3643,7 @@ Cell[BoxData[{
         "\[IndentingNewLine]", "]"}]}], "]"}]}], 
     "]"}]}]}]}], \
 "Input",ExpressionUUID->"9f2df7a2-e59b-4441-96bd-3f3a470153e8"]
-}, Closed]],
+}, Open  ]],
 
 Cell[CellGroupData[{
 
@@ -3762,8 +3762,8 @@ Cell[BoxData[
      "\[IndentingNewLine]", "makeMotorTimeDomainFunction", ",", " ", 
      "makeTimeDomainFunctionConvolve"}], "\[IndentingNewLine]", "}"}]}], 
   "]"}]], "Input",ExpressionUUID->"3e2387ff-b9ba-4668-9be7-e51fa5aa9e1b"]
-}, Closed]]
-}, Closed]],
+}, Open  ]]
+}, Open  ]],
 
 Cell[CellGroupData[{
 
@@ -4582,7 +4582,7 @@ Cell["2018.08.11 Added initial conditions support", \
 }, Open  ]]
 },
 WindowSize->{1265, 1480},
-WindowMargins->{{1016, Automatic}, {Automatic, 20}},
+WindowMargins->{{Automatic, 1189}, {Automatic, 26}},
 PrintingCopies->1,
 PrintingPageRange->{32000, 32000},
 PrintingOptions->{"Magnification"->1.,
