@@ -1301,9 +1301,9 @@ Cell[BoxData[{
         "Reals"]}], " ", "&"}], " ", "/@", " ", 
      RowBox[{"{", 
       RowBox[{
-      "vapp", ",", " ", "i", ",", " ", "vg", ",", " ", "\[Theta]", ",", " ", 
-       "\[Omega]", ",", " ", "\[Alpha]", ",", " ", "\[Tau]", ",", 
-       "\[Tau]app"}], "}"}]}]}], 
+      "\[CapitalDelta]vapp", ",", " ", "i", ",", " ", "vg", ",", " ", 
+       "\[Theta]", ",", " ", "\[Omega]", ",", " ", "\[Alpha]", ",", " ", 
+       "\[Tau]", ",", "\[CapitalDelta]\[Tau]app"}], "}"}]}]}], 
    "]"}]}]}], "Input",ExpressionUUID->"e040b396-c8fb-46d1-84d2-b04509a22dd7"]
 }, Open  ]],
 
@@ -1771,12 +1771,13 @@ Cell[BoxData[
        RowBox[{
         RowBox[{"vapp", "[", "t", "]"}], " ", "\[Rule]", " ", 
         RowBox[{"vapp0", " ", "+", " ", 
-         RowBox[{"vapp", "[", "t", "]"}]}]}], ",", " ", 
+         RowBox[{"\[CapitalDelta]vapp", "[", "t", "]"}]}]}], ",", " ", 
        RowBox[{
         RowBox[{"\[Tau]app", "[", "t", "]"}], " ", "\[Rule]", " ", 
         RowBox[{"\[Tau]app0", " ", "+", " ", 
-         RowBox[{"\[Tau]app", "[", "t", "]"}]}]}]}], "}"}]}]}], ")"}], " ", "//",
-   " ", "prettyPrint"}]], \
+         RowBox[{"\[CapitalDelta]\[Tau]app", "[", "t", "]"}]}]}]}], "}"}]}]}],
+    ")"}], " ", "//", " ", 
+  "prettyPrint"}]], \
 "Input",ExpressionUUID->"6424f139-3dce-4e74-93e5-bc35d0e64143"],
 
 Cell["We now set up the initial conditions applicable for t >= 0.", \
@@ -1792,11 +1793,11 @@ Cell[BoxData[{
   RowBox[{"{", "\[IndentingNewLine]", 
    RowBox[{
     RowBox[{
-     RowBox[{"vapp", "[", "0", "]"}], " ", "\[Equal]", " ", "vapp0"}], ",", 
-    "\[IndentingNewLine]", 
+     RowBox[{"\[CapitalDelta]vapp", "[", "0", "]"}], " ", "\[Equal]", " ", 
+     "\[CapitalDelta]vappConst"}], ",", "\[IndentingNewLine]", 
     RowBox[{
-     RowBox[{"\[Tau]app", "[", "0", "]"}], " ", "\[Equal]", " ", 
-     "\[Tau]app0"}], ",", "\[IndentingNewLine]", 
+     RowBox[{"\[CapitalDelta]\[Tau]app", "[", "0", "]"}], " ", "\[Equal]", 
+     " ", "\[CapitalDelta]\[Tau]appConst"}], ",", "\[IndentingNewLine]", 
     RowBox[{
      RowBox[{"\[Theta]", "[", "0", "]"}], "\[Equal]", "0"}], ",", 
     "\[IndentingNewLine]", 
@@ -1985,7 +1986,7 @@ Cell[BoxData[{
         "secondsUnits"}], " ", "/", " ", "secondsUnits"}]}], ",", 
      "\[IndentingNewLine]", 
      RowBox[{
-      RowBox[{"vapp", "[", "t", "]"}], " ", "\[Rule]", " ", 
+      RowBox[{"\[CapitalDelta]vapp", "[", "t", "]"}], " ", "\[Rule]", " ", 
       RowBox[{"parseUnit", "[", "\"\<Volts\>\"", "]"}]}], ",", 
      "\[IndentingNewLine]", 
      RowBox[{"\[CapitalDelta]vappConst", " ", "\[Rule]", " ", 
@@ -2062,8 +2063,8 @@ Cell[BoxData[{
       RowBox[{"\[Tau]", "[", "t", "]"}], " ", "\[Rule]", " ", 
       "siTorqueUnits"}], ",", "\[IndentingNewLine]", 
      RowBox[{
-      RowBox[{"\[Tau]app", "[", "t", "]"}], " ", "\[Rule]", " ", 
-      "siTorqueUnits"}], ",", "\[IndentingNewLine]", 
+      RowBox[{"\[CapitalDelta]\[Tau]app", "[", "t", "]"}], " ", "\[Rule]", 
+      " ", "siTorqueUnits"}], ",", "\[IndentingNewLine]", 
      RowBox[{
      "\[CapitalDelta]\[Tau]appConst", " ", "\[Rule]", " ", "siTorqueUnits"}], 
      ",", "\[IndentingNewLine]", 
@@ -2225,8 +2226,8 @@ Cell[BoxData[{
          RowBox[{"\[Theta]after", "'"}], "[", "t", "]"}], ",", " ", 
         RowBox[{
          RowBox[{"\[Theta]after", "''"}], "[", "t", "]"}], ",", 
-        RowBox[{"\[Tau]app", "[", "t", "]"}]}], "}"}]}], "]"}]}], ")"}], " ", 
-  "//", " ", "ColumnForm"}], "\[IndentingNewLine]", 
+        RowBox[{"\[CapitalDelta]\[Tau]app", "[", "t", "]"}]}], "}"}]}], 
+     "]"}]}], ")"}], " ", "//", " ", "ColumnForm"}], "\[IndentingNewLine]", 
  RowBox[{
   RowBox[{"(", 
    RowBox[{"ssEqns", "  ", "=", " ", 
@@ -2261,7 +2262,7 @@ Cell[BoxData[{
      RowBox[{
       RowBox[{"pwrIn", " ", "==", " ", 
        RowBox[{
-        RowBox[{"vapp", "[", "t", "]"}], " ", 
+        RowBox[{"\[CapitalDelta]vapp", "[", "t", "]"}], " ", 
         RowBox[{"i", "[", "t", "]"}]}]}], ",", "\[IndentingNewLine]", 
       RowBox[{"pwrOut", " ", "==", " ", 
        RowBox[{
@@ -2306,7 +2307,7 @@ Cell[BoxData[{
        RowBox[{"\[Tau]", "[", "t", "]"}], ",", " ", 
        RowBox[{
         RowBox[{"\[Theta]", "'"}], "[", "t", "]"}], ",", " ", 
-       RowBox[{"vapp", "[", "t", "]"}]}], "}"}]}], "]"}]}], 
+       RowBox[{"\[CapitalDelta]vapp", "[", "t", "]"}]}], "}"}]}], "]"}]}], 
   ";"}], "\[IndentingNewLine]", 
  RowBox[{"kBalanceEqns", " ", "//", " ", 
   "prettyPrint"}], "\[IndentingNewLine]", 
@@ -2328,7 +2329,7 @@ We can conclude that if other power losses are zero, then Ke must equal Kt.\
   3.7410055814434257`*^9, 3.741005582900565*^9}, {3.74104636045607*^9, 
   3.741046362223342*^9}},ExpressionUUID->"49066f9c-e89d-4bd8-a3c7-\
 e80d679efe16"]
-}, Closed]],
+}, Open  ]],
 
 Cell[CellGroupData[{
 
@@ -3044,20 +3045,21 @@ what we know about initial conditions, and simplify as much as we can.\
 
 Cell[BoxData[{
  RowBox[{
-  RowBox[{"voltageXform", " ", "=", " ", 
+  RowBox[{"\[CapitalDelta]vappXform", " ", "=", " ", 
    RowBox[{"LaplaceTransform", "[", 
     RowBox[{
-     RowBox[{"vapp", "[", "t", "]"}], ",", "t", ",", "s"}], "]"}]}], 
-  ";"}], "\[IndentingNewLine]", 
+     RowBox[{"\[CapitalDelta]vapp", "[", "t", "]"}], ",", "t", ",", "s"}], 
+    "]"}]}], ";"}], "\[IndentingNewLine]", 
  RowBox[{
-  RowBox[{"\[Tau]appXform", " ", "=", " ", 
+  RowBox[{"\[CapitalDelta]\[Tau]appXform", " ", "=", " ", 
    RowBox[{"LaplaceTransform", "[", 
     RowBox[{
-     RowBox[{"\[Tau]app", "[", "t", "]"}], ",", "t", ",", "s"}], "]"}]}], 
-  ";"}], "\[IndentingNewLine]", 
+     RowBox[{"\[CapitalDelta]\[Tau]app", "[", "t", "]"}], ",", "t", ",", 
+     "s"}], "]"}]}], ";"}], "\[IndentingNewLine]", 
  RowBox[{"inputXforms", " ", "=", " ", 
   RowBox[{"{", 
-   RowBox[{"voltageXform", ",", " ", "\[Tau]appXform"}], 
+   RowBox[{
+   "\[CapitalDelta]vappXform", ",", " ", "\[CapitalDelta]\[Tau]appXform"}], 
    "}"}]}], "\[IndentingNewLine]", 
  RowBox[{"inputLabels", " ", "=", " ", 
   RowBox[{"{", 
@@ -3593,10 +3595,11 @@ Cell[BoxData[{
               RowBox[{
                RowBox[{"1", "&"}], ",", " ", 
                RowBox[{
-                RowBox[{"vapp", "[", "#", "]"}], "&"}], ",", " ", 
+                RowBox[{"\[CapitalDelta]vapp", "[", "#", "]"}], "&"}], ",", 
+               " ", 
                RowBox[{
-                RowBox[{"\[Tau]app", "[", "#", "]"}], "&"}]}], "}"}]}], 
-            "]"}]}], ";", "\[IndentingNewLine]", "fn"}]}], 
+                RowBox[{"\[CapitalDelta]\[Tau]app", "[", "#", "]"}], "&"}]}], 
+              "}"}]}], "]"}]}], ";", "\[IndentingNewLine]", "fn"}]}], 
         "\[IndentingNewLine]", "]"}]}], "]"}]}], 
     "]"}]}]}]}], \
 "Input",ExpressionUUID->"9f2df7a2-e59b-4441-96bd-3f3a470153e8"]
