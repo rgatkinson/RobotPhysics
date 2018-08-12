@@ -6,7 +6,7 @@ Cell["Motor Physics, with Gears & Initial Conditions", \
 
 Cell["\<\
 Robert Atkinson, Maddy Nguyen, Samantha Hordyk, Cole Welch, and John Fraser
-10 August 2018\
+11 August 2018\
 \>", "Author",ExpressionUUID->"05aea015-05f3-4e99-899d-20a8cd5792a1"],
 
 Cell["\<\
@@ -1305,7 +1305,7 @@ Cell[BoxData[{
        "\[Theta]", ",", " ", "\[Omega]", ",", " ", "\[Alpha]", ",", " ", 
        "\[Tau]", ",", "\[CapitalDelta]\[Tau]app"}], "}"}]}]}], 
    "]"}]}]}], "Input",ExpressionUUID->"e040b396-c8fb-46d1-84d2-b04509a22dd7"]
-}, Open  ]],
+}, Closed]],
 
 Cell[CellGroupData[{
 
@@ -1875,7 +1875,7 @@ Cell[BoxData[{
 "Input",ExpressionUUID->"086b1ec2-b8fd-49c6-a266-91b8536a05ec"]
 }, Open  ]]
 }, Open  ]]
-}, Open  ]],
+}, Closed]],
 
 Cell[CellGroupData[{
 
@@ -2030,17 +2030,7 @@ Cell[BoxData[{
      RowBox[{"Ke", " ", "\[Rule]", " ", 
       RowBox[{"parseUnit", "[", "\"\<Seconds Volts / Radians\>\"", "]"}]}], 
      ",", " ", "\[IndentingNewLine]", 
-     RowBox[{"KeShaft", " ", "\[Rule]", " ", 
-      RowBox[{"parseUnit", "[", "\"\<Seconds Volts / Radians\>\"", "]"}]}], 
-     ",", " ", "\[IndentingNewLine]", "\[IndentingNewLine]", 
      RowBox[{"Kt", " ", "\[Rule]", " ", 
-      RowBox[{
-       RowBox[{
-        RowBox[{"parseUnit", "[", "\"\<Newtons Meters\>\"", "]"}], " ", "/", 
-        " ", 
-        RowBox[{"parseUnit", "[", "\"\<Amperes\>\"", "]"}]}], " ", "/", " ", 
-       "radiansUnits"}]}], ",", "\[IndentingNewLine]", 
-     RowBox[{"KtShaft", " ", "\[Rule]", " ", 
       RowBox[{
        RowBox[{
         RowBox[{"parseUnit", "[", "\"\<Newtons Meters\>\"", "]"}], " ", "/", 
@@ -2218,7 +2208,7 @@ Cell[BoxData[{
  RowBox[{
   RowBox[{"(", 
    RowBox[{"ssEqns", " ", "=", " ", 
-    RowBox[{"diffEqns", " ", "/.", " ", 
+    RowBox[{"diffEqnsSs0", " ", "/.", " ", 
      RowBox[{"{", 
       RowBox[{
        RowBox[{
@@ -2243,8 +2233,8 @@ Cell[BoxData[{
          RowBox[{"\[Theta]after", "'"}], "[", "t", "]"}], ",", " ", 
         RowBox[{
          RowBox[{"\[Theta]after", "''"}], "[", "t", "]"}], ",", 
-        RowBox[{"\[CapitalDelta]\[Tau]app", "[", "t", "]"}]}], "}"}]}], 
-     "]"}]}], ")"}], " ", "//", " ", "ColumnForm"}], "\[IndentingNewLine]", 
+        RowBox[{"\[Tau]app", "[", "t", "]"}]}], "}"}]}], "]"}]}], ")"}], " ", 
+  "//", " ", "ColumnForm"}], "\[IndentingNewLine]", 
  RowBox[{
   RowBox[{"(", 
    RowBox[{"ssEqns", "  ", "=", " ", 
@@ -2279,7 +2269,7 @@ Cell[BoxData[{
      RowBox[{
       RowBox[{"pwrIn", " ", "==", " ", 
        RowBox[{
-        RowBox[{"\[CapitalDelta]vapp", "[", "t", "]"}], " ", 
+        RowBox[{"vapp", "[", "t", "]"}], " ", 
         RowBox[{"i", "[", "t", "]"}]}]}], ",", "\[IndentingNewLine]", 
       RowBox[{"pwrOut", " ", "==", " ", 
        RowBox[{
@@ -2324,7 +2314,7 @@ Cell[BoxData[{
        RowBox[{"\[Tau]", "[", "t", "]"}], ",", " ", 
        RowBox[{
         RowBox[{"\[Theta]", "'"}], "[", "t", "]"}], ",", " ", 
-       RowBox[{"\[CapitalDelta]vapp", "[", "t", "]"}]}], "}"}]}], "]"}]}], 
+       RowBox[{"vapp", "[", "t", "]"}]}], "}"}]}], "]"}]}], 
   ";"}], "\[IndentingNewLine]", 
  RowBox[{"kBalanceEqns", " ", "//", " ", 
   "prettyPrint"}], "\[IndentingNewLine]", 
@@ -2463,8 +2453,9 @@ Cell[BoxData[{
       RowBox[{
        RowBox[{"{", 
         RowBox[{
-        "row", ",", " ", "paramValues", ",", " ", "quantify", ",", " ", "qty",
-          ",", " ", "assoc"}], "}"}], ",", "\[IndentingNewLine]", 
+        "row", ",", " ", "paramValues", ",", " ", "keQuants", ",", " ", 
+         "ktQuants", ",", " ", "quantify", ",", " ", "qty", ",", " ", 
+         "assoc"}], "}"}], ",", "\[IndentingNewLine]", 
        RowBox[{
         RowBox[{"row", " ", "=", " ", 
          RowBox[{
@@ -2495,13 +2486,13 @@ Cell[BoxData[{
             RowBox[{"{", 
              RowBox[{"L", ",", " ", "4"}], "}"}], ",", " ", 
             RowBox[{"{", 
-             RowBox[{"KeShaft", ",", " ", "5"}], "}"}], ",", " ", 
+             RowBox[{"KeGeared", ",", " ", "5"}], "}"}], ",", " ", 
             RowBox[{"{", 
-             RowBox[{"KtShaft", ",", " ", "6"}], "}"}], ",", " ", 
+             RowBox[{"KtGeared", ",", " ", "6"}], "}"}], ",", " ", 
             RowBox[{"{", 
-             RowBox[{"Ke", ",", " ", "7"}], "}"}], ",", " ", 
+             RowBox[{"KeNotGeared", ",", " ", "7"}], "}"}], ",", " ", 
             RowBox[{"{", 
-             RowBox[{"Kt", ",", " ", "8"}], "}"}], ",", "  ", 
+             RowBox[{"KtNotGeared", ",", " ", "8"}], "}"}], ",", "  ", 
             RowBox[{"{", 
              RowBox[{"J", ",", " ", "9"}], "}"}], ",", " ", 
             RowBox[{"{", 
@@ -2516,6 +2507,34 @@ Cell[BoxData[{
                  RowBox[{"OptionValue", "[", "Efficiency", "]"}], "\[Equal]", 
                  " ", "\"\<Forward\>\""}], ",", " ", "12", ",", " ", "13"}], 
                "]"}]}], "}"}]}], " ", "}"}]}]}], ";", "\[IndentingNewLine]", 
+        RowBox[{"keQuants", " ", "=", " ", 
+         RowBox[{
+          RowBox[{
+           RowBox[{"#", " ", "\[Rule]", " ", 
+            RowBox[{"Quantity", "[", 
+             RowBox[{"#", ",", " ", 
+              RowBox[{
+               RowBox[{"(", 
+                RowBox[{"Ke", " ", "/.", " ", "parameterQuantities"}], ")"}], 
+               " ", "//", " ", "QuantityUnit"}]}], "]"}]}], " ", "&"}], " ", "/@",
+           " ", 
+          RowBox[{"{", 
+           RowBox[{"KeGeared", ",", " ", "KeNotGeared"}], "}"}]}]}], ";", 
+        "\[IndentingNewLine]", 
+        RowBox[{"ktQuants", " ", "=", " ", 
+         RowBox[{
+          RowBox[{
+           RowBox[{"#", " ", "\[Rule]", " ", 
+            RowBox[{"Quantity", "[", 
+             RowBox[{"#", ",", " ", 
+              RowBox[{
+               RowBox[{"(", 
+                RowBox[{"Kt", " ", "/.", " ", "parameterQuantities"}], ")"}], 
+               " ", "//", " ", "QuantityUnit"}]}], "]"}]}], " ", "&"}], " ", "/@",
+           " ", 
+          RowBox[{"{", 
+           RowBox[{"KtGeared", ",", " ", "KtNotGeared"}], "}"}]}]}], ";", 
+        "\[IndentingNewLine]", 
         RowBox[{"quantify", " ", "=", " ", 
          RowBox[{"Function", "[", 
           RowBox[{
@@ -2525,7 +2544,10 @@ Cell[BoxData[{
            RowBox[{
             RowBox[{"qty", " ", "=", " ", 
              RowBox[{"(", 
-              RowBox[{"name", " ", "/.", " ", "parameterQuantities"}], 
+              RowBox[{
+               RowBox[{
+                RowBox[{"name", " ", "/.", " ", "parameterQuantities"}], " ", 
+                "/.", " ", "keQuants"}], " ", "/.", " ", "ktQuants"}], 
               ")"}]}], ";", "\[IndentingNewLine]", 
             RowBox[{"name", " ", "\[Rule]", 
              RowBox[{"Quantity", "[", 
@@ -2538,6 +2560,11 @@ Cell[BoxData[{
            RowBox[{
             RowBox[{"quantify", " ", "@@", " ", "#"}], "&"}], "/@", " ", 
            "paramValues"}], " ", "//", " ", "Association"}]}], ";", 
+        "\[IndentingNewLine]", "\[IndentingNewLine]", 
+        RowBox[{"(*", " ", 
+         RowBox[{
+         "add", " ", "in", " ", "defaults", " ", "that", " ", "we", " ", 
+          "can", " ", "later", " ", "override"}], " ", "*)"}], 
         "\[IndentingNewLine]", 
         RowBox[{
          RowBox[{"assoc", "[", "Jafter", "]"}], " ", "=", " ", 
@@ -2555,11 +2582,25 @@ Cell[BoxData[{
          RowBox[{"Quantity", "[", 
           RowBox[{"0", ",", " ", "siTorqueUnits"}], "]"}]}], ";", 
         "\[IndentingNewLine]", 
+        RowBox[{
+         RowBox[{"assoc", "[", "\[CapitalDelta]vappConst", "]"}], " ", "=", 
+         " ", 
+         RowBox[{"Quantity", "[", 
+          RowBox[{"0", ",", " ", "\"\<Volts\>\""}], "]"}]}], ";", 
+        "\[IndentingNewLine]", "\[IndentingNewLine]", 
         RowBox[{"If", "[", 
          RowBox[{
-          RowBox[{"!", 
-           RowBox[{"OptionValue", "[", "Geared", "]"}]}], ",", 
+          RowBox[{"OptionValue", "[", "Geared", "]"}], ",", 
           "\[IndentingNewLine]", 
+          RowBox[{
+           RowBox[{
+            RowBox[{"assoc", "[", "Ke", "]"}], " ", "=", " ", 
+            RowBox[{"assoc", "[", "KeGeared", "]"}]}], ";", 
+           "\[IndentingNewLine]", 
+           RowBox[{
+            RowBox[{"assoc", "[", "Kt", "]"}], " ", "=", " ", 
+            RowBox[{"assoc", "[", "KtGeared", "]"}]}], ";"}], 
+          "\[IndentingNewLine]", ",", "\[IndentingNewLine]", 
           RowBox[{
            RowBox[{
             RowBox[{"assoc", "[", "\[CapitalNu]", "]"}], " ", "=", " ", "1"}],
@@ -2569,21 +2610,28 @@ Cell[BoxData[{
            "\[IndentingNewLine]", 
            RowBox[{
             RowBox[{"assoc", "[", "Ke", "]"}], " ", "=", " ", 
-            RowBox[{"assoc", "[", "KeShaft", "]"}]}], ";", 
+            RowBox[{"assoc", "[", "KeNotGeared", "]"}]}], ";", 
            "\[IndentingNewLine]", 
            RowBox[{
             RowBox[{"assoc", "[", "Kt", "]"}], " ", "=", " ", 
-            RowBox[{"assoc", "[", "KtShaft", "]"}]}], ";"}]}], 
+            RowBox[{"assoc", "[", "KtNotGeared", "]"}]}], ";"}]}], 
          "\[IndentingNewLine]", "]"}], ";", "\[IndentingNewLine]", 
+        "\[IndentingNewLine]", 
         RowBox[{"(*", " ", 
          RowBox[{
          "remove", " ", "the", " ", "shaft", " ", "values", " ", "to", " ", 
           "avoid", " ", "confusion"}], " ", "*)"}], "\[IndentingNewLine]", 
         RowBox[{
-         RowBox[{"assoc", "[", "KeShaft", "]"}], " ", "=."}], ";", 
+         RowBox[{"assoc", "[", "KeGeared", "]"}], " ", "=."}], ";", 
         "\[IndentingNewLine]", 
         RowBox[{
-         RowBox[{"assoc", "[", "KtShaft", "]"}], " ", "=."}], ";", 
+         RowBox[{"assoc", "[", "KtGeared", "]"}], " ", "=."}], ";", 
+        "\[IndentingNewLine]", 
+        RowBox[{
+         RowBox[{"assoc", "[", "KeNotGeared", "]"}], " ", "=."}], ";", 
+        "\[IndentingNewLine]", 
+        RowBox[{
+         RowBox[{"assoc", "[", "KtNotGeared", "]"}], " ", "=."}], ";", 
         "\[IndentingNewLine]", 
         RowBox[{
          RowBox[{"assoc", " ", "//", " ", "siUnits"}], " ", "//", " ", 
@@ -4637,7 +4685,7 @@ things down)\
 }, Open  ]]
 },
 WindowSize->{1362, 1434},
-WindowMargins->{{1152, Automatic}, {40, Automatic}},
+WindowMargins->{{1163, Automatic}, {Automatic, 20}},
 PrintingCopies->1,
 PrintingPageRange->{32000, 32000},
 PrintingOptions->{"Magnification"->1.,
