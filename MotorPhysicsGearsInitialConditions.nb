@@ -5002,7 +5002,7 @@ terminology", "Item",ExpressionUUID->"db2cc83b-b3a6-4444-9bc6-ee81cea05ec1"]
 }, Open  ]]
 },
 WindowSize->{1261, 1480},
-WindowMargins->{{Automatic, 1099}, {Automatic, 23}},
+WindowMargins->{{Automatic, 1137}, {Automatic, 24}},
 PrintingCopies->1,
 PrintingPageRange->{32000, 32000},
 PrintingOptions->{"Magnification"->1.,
@@ -5021,7 +5021,8 @@ StyleDefinitions->Notebook[{
      FrontEnd`FileName[{"Report"}, "StandardReport.nb", CharacterEncoding -> 
        "UTF-8"]]], 
    Cell[
-    StyleData[All, "Printout"], Magnification -> 0.5]}, Visible -> False, 
+    StyleData[All, "Printout"], Magnification -> 0.5]}, 
+  WindowMargins -> {{1490, Automatic}, {Automatic, 334}}, Visible -> False, 
   FrontEndVersion -> "11.3 for Microsoft Windows (64-bit) (March 6, 2018)", 
   StyleDefinitions -> "PrivateStylesheetFormatting.nb"]
 ]
