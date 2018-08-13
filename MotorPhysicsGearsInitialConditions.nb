@@ -6,7 +6,7 @@ Cell["Motor Physics, with Gears & Initial Conditions", \
 
 Cell["\<\
 Robert Atkinson, Maddy Nguyen, Samantha Hordyk, Cole Welch, and John Fraser
-12 August 2018\
+13 August 2018\
 \>", "Author",ExpressionUUID->"05aea015-05f3-4e99-899d-20a8cd5792a1"],
 
 Cell["\<\
@@ -3167,7 +3167,7 @@ Cell[BoxData[
      RowBox[{"(", 
       RowBox[{"\[CapitalDelta]initialConditions", " ", "/.", " ", 
        RowBox[{"Equal", "\[Rule]", " ", "Rule"}]}], ")"}]}]}], ")"}], " ", "//",
-   " ", "ColumnForm"}]], \
+   " ", "prettyPrint"}]], \
 "Input",ExpressionUUID->"47811830-e8e7-48e6-a4d9-a6ff93b80d0c"],
 
 Cell[BoxData[
@@ -3178,7 +3178,7 @@ Cell[BoxData[
      RowBox[{"uniqueSolve", "[", 
       RowBox[{"leqnsToSolve", ",", " ", "outputXorms"}], "]"}], " ", "//", 
      " ", "Simplify"}]}], ")"}], " ", "//", " ", 
-  "ColumnForm"}]], \
+  "prettyPrint"}]], \
 "Input",ExpressionUUID->"15be3557-6259-48cb-972d-5c51c5c7bcb0"],
 
 Cell["\<\
@@ -3274,7 +3274,7 @@ Cell[BoxData[{
         RowBox[{"[", "2", "]"}], "]"}], "]"}]}], " ", "&"}], " ", "/@", " ", 
     "rawSolvedXforms"}]}], ";"}], "\[IndentingNewLine]", 
  RowBox[{"%", " ", "//", " ", 
-  "ColumnForm"}]}], \
+  "prettyPrint"}]}], \
 "Input",ExpressionUUID->"793cb62c-f831-44a0-84c6-f201fff3c88a"]
 }, Open  ]],
 
@@ -3408,8 +3408,9 @@ Cell[BoxData[{
      RowBox[{"s", " ", "*", " ", "s"}]}], "]"}]}], 
   " "}], "\[IndentingNewLine]", 
  RowBox[{"motorTorqueAfterModel", " ", "=", " ", 
-  RowBox[{"makeModel", "[", "\[Tau]after", "]"}], 
-  " "}]}], "Input",ExpressionUUID->"004ddc12-315a-4559-b9f7-65dfa8b70386"],
+  RowBox[{
+  "makeModel", "[", "\[Tau]after", 
+   "]"}]}]}], "Input",ExpressionUUID->"004ddc12-315a-4559-b9f7-65dfa8b70386"],
 
 Cell["Save the models to a file for later use.", \
 "Text",ExpressionUUID->"eda6ff67-3c4e-40a5-b46c-11ea39dc3a02"],
@@ -3945,14 +3946,14 @@ axes in the plots here vary in scale.\
 
 Cell[BoxData[{
  RowBox[{"Clear", "[", 
-  RowBox[{"applyTimeFunction", ",", " ", "applyTimeFunctionGeneric"}], 
-  "]"}], "\[IndentingNewLine]", 
+  RowBox[{"stepMotorTimeFunction", ",", " ", "stepMotorTimeFunctionGeneric"}],
+   "]"}], "\[IndentingNewLine]", 
  RowBox[{
   RowBox[{
-   RowBox[{"applyTimeFunctionGeneric", "[", 
+   RowBox[{"stepMotorTimeFunctionGeneric", "[", 
     RowBox[{"motorTimeFunction_", ",", "t_"}], "]"}], " ", ":=", " ", 
    RowBox[{
-    RowBox[{"applyTimeFunctionGeneric", "[", 
+    RowBox[{"stepMotorTimeFunctionGeneric", "[", 
      RowBox[{"motorTimeFunction", ",", "t"}], "]"}], " ", "=", " ", 
     RowBox[{"Module", "[", 
      RowBox[{
@@ -3964,12 +3965,12 @@ Cell[BoxData[{
          RowBox[{"\[CapitalDelta]\[Tau]appConst", "&"}]}], "]"}], "[", "t", 
        "]"}]}], "]"}]}]}], "\[IndentingNewLine]"}], "\[IndentingNewLine]", 
  RowBox[{
-  RowBox[{"applyTimeFunction", "[", 
+  RowBox[{"stepMotorTimeFunction", "[", 
    RowBox[{
    "motorTimeFunction_", ",", " ", "motorWithLoad_", ",", " ", "input_", ",", 
     " ", "t_"}], "]"}], " ", ":=", " ", 
   RowBox[{
-   RowBox[{"applyTimeFunction", "[", 
+   RowBox[{"stepMotorTimeFunction", "[", 
     RowBox[{
     "motorTimeFunction", ",", " ", "motorWithLoad", ",", " ", "input", ",", 
      " ", "t"}], "]"}], " ", "=", " ", 
@@ -3980,7 +3981,7 @@ Cell[BoxData[{
       ",", "\[IndentingNewLine]", 
      RowBox[{
       RowBox[{"generic", " ", "=", " ", 
-       RowBox[{"applyTimeFunctionGeneric", "[", 
+       RowBox[{"stepMotorTimeFunctionGeneric", "[", 
         RowBox[{"motorTimeFunction", ",", " ", "t"}], "]"}]}], ";", 
       "\[IndentingNewLine]", 
       RowBox[{"withUnits", " ", "=", " ", 
@@ -4021,9 +4022,9 @@ Cell[BoxData[{
   RowBox[{
    RowBox[{"{", 
     RowBox[{
-    "velAfterGeneric", ",", " ", "velAfterUnits", ",", " ", "velAfter"}], 
+    "velAfterStepGeneric", ",", " ", "velAfterUnits", ",", " ", "velAfter"}], 
     "}"}], " ", "=", " ", 
-   RowBox[{"applyTimeFunction", "[", 
+   RowBox[{"stepMotorTimeFunction", "[", 
     RowBox[{
     "motorVelocityAfter", ",", " ", "aMotorWithFlywheel", ",", " ", 
      "applyTwelveVolts", ",", " ", "t"}], "]"}]}], 
@@ -4050,9 +4051,9 @@ Cell[BoxData[{
   RowBox[{
    RowBox[{"{", 
     RowBox[{
-    "steadyVelAfterGeneric", ",", " ", "steadyVelAfterUnits", ",", " ", 
+    "steadyVelAfterStepGeneric", ",", " ", "steadyVelAfterUnits", ",", " ", 
      "steadyVelAfter"}], "}"}], " ", "=", " ", 
-   RowBox[{"applyTimeFunction", "[", 
+   RowBox[{"stepMotorTimeFunction", "[", 
     RowBox[{
     "motorVelocityAfter", ",", " ", "aMotorWithFlywheel", ",", " ", 
      "steadyTwelveVolts", ",", " ", "t"}], "]"}]}], 
@@ -4079,9 +4080,9 @@ Cell[BoxData[{
   RowBox[{
    RowBox[{"{", 
     RowBox[{
-    "brakeVelAfterGeneric", ",", " ", "brakeVelAfterUnits", ",", " ", 
+    "brakeVelAfterStepGeneric", ",", " ", "brakeVelAfterUnits", ",", " ", 
      "brakeVelAfter"}], "}"}], " ", "=", " ", 
-   RowBox[{"applyTimeFunction", "[", 
+   RowBox[{"stepMotorTimeFunction", "[", 
     RowBox[{
     "motorVelocityAfter", ",", " ", "aMotorWithFlywheel", ",", " ", 
      "brakeFromTwelveVolts", ",", " ", "t"}], "]"}]}], 
@@ -4122,9 +4123,9 @@ Cell[BoxData[{
  RowBox[{
   RowBox[{
    RowBox[{"{", 
-    RowBox[{"velGeneric", ",", " ", "velUnits", ",", " ", "vel"}], "}"}], " ",
-    "=", " ", 
-   RowBox[{"applyTimeFunction", "[", 
+    RowBox[{"velStepGeneric", ",", " ", "velUnits", ",", " ", "vel"}], "}"}], 
+   " ", "=", " ", 
+   RowBox[{"stepMotorTimeFunction", "[", 
     RowBox[{
     "motorVelocity", ",", " ", "aMotorWithFlywheel", ",", " ", 
      "applyTwelveVolts", ",", " ", "t"}], "]"}]}], 
@@ -4168,9 +4169,9 @@ Cell[BoxData[{
  RowBox[{
   RowBox[{
    RowBox[{"{", 
-    RowBox[{"torGeneric", ",", " ", "torUnits", ",", " ", "tor"}], "}"}], " ",
-    "=", " ", 
-   RowBox[{"applyTimeFunction", "[", 
+    RowBox[{"torStepGeneric", ",", " ", "torUnits", ",", " ", "tor"}], "}"}], 
+   " ", "=", " ", 
+   RowBox[{"stepMotorTimeFunction", "[", 
     RowBox[{
     "motorTorque", ",", " ", "aMotorWithFlywheel", ",", " ", 
      "applyTwelveVolts", ",", " ", "t"}], "]"}]}], 
@@ -4229,9 +4230,9 @@ Cell[BoxData[{
   RowBox[{
    RowBox[{"{", 
     RowBox[{
-    "torAfterGeneric", ",", " ", "torAfterUnits", ",", " ", "torAfter"}], 
+    "torAfterStepGeneric", ",", " ", "torAfterUnits", ",", " ", "torAfter"}], 
     "}"}], " ", "=", " ", 
-   RowBox[{"applyTimeFunction", "[", 
+   RowBox[{"stepMotorTimeFunction", "[", 
     RowBox[{
     "motorTorqueAfter", ",", " ", "aMotorWithFlywheel", ",", " ", 
      "applyTwelveVolts", ",", " ", "t"}], "]"}]}], 
@@ -4289,9 +4290,9 @@ Cell[BoxData[{
  RowBox[{
   RowBox[{
    RowBox[{"{", 
-    RowBox[{"curGeneric", ",", " ", "curUnits", ",", " ", "cur"}], "}"}], " ",
-    "=", " ", 
-   RowBox[{"applyTimeFunction", "[", 
+    RowBox[{"curStepGeneric", ",", " ", "curUnits", ",", " ", "cur"}], "}"}], 
+   " ", "=", " ", 
+   RowBox[{"stepMotorTimeFunction", "[", 
     RowBox[{
     "motorCurrent", ",", " ", "aMotorWithFlywheel", ",", " ", 
      "applyTwelveVolts", ",", " ", "t"}], "]"}]}], 
@@ -4342,9 +4343,9 @@ Cell[BoxData[{
  RowBox[{
   RowBox[{
    RowBox[{"{", 
-    RowBox[{"emfGeneric", ",", " ", "emfUnits", ",", " ", "emf"}], "}"}], " ",
-    "=", " ", 
-   RowBox[{"applyTimeFunction", "[", 
+    RowBox[{"emfStepGeneric", ",", " ", "emfUnits", ",", " ", "emf"}], "}"}], 
+   " ", "=", " ", 
+   RowBox[{"stepMotorTimeFunction", "[", 
     RowBox[{
     "motorEMF", ",", " ", "aMotorWithFlywheel", ",", " ", "applyTwelveVolts", 
      ",", " ", "t"}], "]"}]}], ";"}], "\[IndentingNewLine]", 
@@ -4389,9 +4390,9 @@ Cell[BoxData[{
  RowBox[{
   RowBox[{
    RowBox[{"{", 
-    RowBox[{"posGeneric", ",", " ", "posUnits", ",", " ", "pos"}], "}"}], " ",
-    "=", " ", 
-   RowBox[{"applyTimeFunction", "[", 
+    RowBox[{"posStepGeneric", ",", " ", "posUnits", ",", " ", "pos"}], "}"}], 
+   " ", "=", " ", 
+   RowBox[{"stepMotorTimeFunction", "[", 
     RowBox[{
     "motorPosition", ",", " ", "aMotorWithFlywheel", ",", " ", 
      "applyTwelveVolts", ",", " ", "t"}], "]"}]}], 
@@ -4431,9 +4432,9 @@ Cell[BoxData[{
   RowBox[{
    RowBox[{"{", 
     RowBox[{
-    "posAfterGeneric", ",", " ", "posAfterUnits", ",", " ", "posAfter"}], 
+    "posAfterStepGeneric", ",", " ", "posAfterUnits", ",", " ", "posAfter"}], 
     "}"}], " ", "=", " ", 
-   RowBox[{"applyTimeFunction", "[", 
+   RowBox[{"stepMotorTimeFunction", "[", 
     RowBox[{
     "motorPositionAfter", ",", " ", "aMotorWithFlywheel", ",", " ", 
      "applyTwelveVolts", ",", " ", "t"}], "]"}]}], 
@@ -4501,9 +4502,9 @@ Cell[BoxData[{
  RowBox[{
   RowBox[{
    RowBox[{"{", 
-    RowBox[{"velUnits2Generic", ",", " ", "velUnits2", ",", " ", "vel2"}], 
-    "}"}], " ", "=", " ", 
-   RowBox[{"applyTimeFunction", "[", 
+    RowBox[{"velUnits2StepGeneric", ",", " ", "velUnits2", ",", " ", "vel2"}],
+     "}"}], " ", "=", " ", 
+   RowBox[{"stepMotorTimeFunction", "[", 
     RowBox[{"motorVelocity", ",", " ", "aUnitlessMotorWithFlywheel", ",", " ", 
      RowBox[{
       RowBox[{
@@ -4548,9 +4549,9 @@ Cell[BoxData[{
  RowBox[{
   RowBox[{
    RowBox[{"{", 
-    RowBox[{"velUnits3Generic", ",", " ", "velUnits3", ",", " ", "vel3"}], 
-    "}"}], " ", "=", " ", 
-   RowBox[{"applyTimeFunction", "[", 
+    RowBox[{"velUnits3StepGeneric", ",", " ", "velUnits3", ",", " ", "vel3"}],
+     "}"}], " ", "=", " ", 
+   RowBox[{"stepMotorTimeFunction", "[", 
     RowBox[{
     "motorVelocity", ",", " ", "aUnitlessMotorWithFlywheelNoGear", ",", " ", 
      RowBox[{
@@ -4950,12 +4951,12 @@ Cell[BoxData[
     RowBox[{
     "importMotorData", ",", " ", "motorParameters", ",", " ", "motorLoad", 
      ",", " ", "flywheel", ",", " ", "addMotorLoad", ",", " ", "massOnPulley",
-      ",", " ", "applyTimeFunction", ",", " ", "ss", ",", " ", "simpleSs", 
-     ",", "\[IndentingNewLine]", "velAfterGeneric", ",", " ", 
-     "steadyVelAfterGeneric", ",", " ", "brakeVelAfterGeneric", ",", " ", 
-     "velGeneric", ",", " ", "torAfterGeneric", ",", " ", "torGeneric", ",", 
-     " ", "curGeneric", ",", " ", "emfGeneric", ",", " ", "posGeneric", ",", 
-     " ", "posAfterGeneric"}], "\[IndentingNewLine]", "}"}]}], 
+      ",", " ", "\[IndentingNewLine]", "stepMotorTimeFunctionGeneric", ",", 
+     " ", "stepMotorTimeFunction", ",", " ", "ss", ",", " ", "simpleSs", ",", 
+     "\[IndentingNewLine]", "velAfterStepGeneric", ",", " ", "velStepGeneric",
+      ",", " ", "torAfterStepGeneric", ",", " ", "torStepGeneric", ",", " ", 
+     "curStepGeneric", ",", " ", "emfStepGeneric", ",", " ", "posStepGeneric",
+      ",", " ", "posAfterStepGeneric"}], "\[IndentingNewLine]", "}"}]}], 
   "]"}]], "Input",ExpressionUUID->"c45ebd44-b3b2-4cff-b948-c9753ddbb17e"]
 }, Open  ]],
 
@@ -4992,13 +4993,16 @@ Cell["2018.08.11 Added initial conditions support", \
 "Item",ExpressionUUID->"e8edbb54-2307-492e-8746-3ece9716143d"],
 
 Cell["2018.08.12 Bug fixes, miscellaneous polish", \
-"Item",ExpressionUUID->"3cf0b96c-0b7e-44f3-ac0e-8f34b90bf6e7"]
+"Item",ExpressionUUID->"3cf0b96c-0b7e-44f3-ac0e-8f34b90bf6e7"],
+
+Cell["2018.08.13 Introduced \[OpenCurlyQuote]step\[CloseCurlyQuote] \
+terminology", "Item",ExpressionUUID->"db2cc83b-b3a6-4444-9bc6-ee81cea05ec1"]
 }, Open  ]]
 }, Open  ]]
 }, Open  ]]
 },
-WindowSize->{1237, 1480},
-WindowMargins->{{Automatic, 949}, {Automatic, 26}},
+WindowSize->{1261, 1480},
+WindowMargins->{{Automatic, 1099}, {Automatic, 23}},
 PrintingCopies->1,
 PrintingPageRange->{32000, 32000},
 PrintingOptions->{"Magnification"->1.,
