@@ -44,6 +44,7 @@ plotLaplaceTransform[fn_, {rmin_, rmax_}, {imin_, imax_}, opts : OptionsPattern[
 
 prettyPrint[list_List] := Text[TraditionalForm[ColumnForm[list]], BaseStyle -> {FontSize -> 15}]
 prettyPrint[list_And] := Text[TraditionalForm[ColumnForm[list]], BaseStyle -> {FontSize -> 15}]
+prettyPrint[other_] := Text[TraditionalForm[other], BaseStyle -> {FontSize -> 15}]
 
 (*-----------------------------------------------------------------------------------------------*) 
 
