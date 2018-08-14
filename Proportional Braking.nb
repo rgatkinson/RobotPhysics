@@ -20881,7 +20881,7 @@ Cell["2018.08.13. Significant rewrite.", \
 }, Open  ]]
 },
 WindowSize->{1071, 1503},
-WindowMargins->{{Automatic, 1180}, {-26, Automatic}},
+WindowMargins->{{Automatic, 716}, {0, Automatic}},
 PrintingCopies->1,
 PrintingPageRange->{32000, 32000},
 PrintingOptions->{"Magnification"->1.,
