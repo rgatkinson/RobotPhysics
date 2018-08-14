@@ -19910,10 +19910,10 @@ Cell[BoxData[{
 "Input",ExpressionUUID->"9b1f9a6e-277b-4d65-a85e-6860b04ed6ab"],
 
 Cell["\<\
-We want to explore the current as a function of the steady state velocity \
-\[CapitalOmega]. To do that, we first construct a function that gives us the \
-applied voltage that must be in effect to achieve the steady state velocity \
-\[CapitalOmega].\
+We want to explore the current as a function of the steady state pre-gearbox \
+velocity \[CapitalOmega]. To do that, we first construct a function that \
+gives us the applied voltage that must be in effect to achieve the steady \
+state velocity \[CapitalOmega].\
 \>", "Text",ExpressionUUID->"8541b302-d3af-4459-b7fb-e4023478067d"],
 
 Cell[BoxData[{
@@ -19931,7 +19931,7 @@ Cell[BoxData[{
          RowBox[{
           RowBox[{
            RowBox[{
-            RowBox[{"\[Theta]after", "'"}], "[", "ss0", "]"}], " ", "/.", " ", 
+            RowBox[{"\[Theta]", "'"}], "[", "ss0", "]"}], " ", "/.", " ", 
            RowBox[{"(", 
             RowBox[{"initialConditions", " ", "/.", " ", 
              RowBox[{"Equal", " ", "\[Rule]", " ", "Rule"}]}], ")"}]}], "/.", 
@@ -19987,7 +19987,7 @@ Cell[BoxData[{
 
 Cell["\<\
 This should, of course, come out as Ke \[CapitalOmega], and, gladly, it does \
-(remembering we\[CloseCurlyQuote]re dealing here with post-gearbox Ke and \
+(remembering we\[CloseCurlyQuote]re dealing here with pre-gearbox Ke and \
 \[CapitalOmega]). With these in hand, we can define a function that pairs up \
 the two voltages in question as an input to our general current result.\
 \>", "Text",ExpressionUUID->"cb84a4c6-78aa-4305-be11-95cd10802d6c"],
@@ -20390,17 +20390,17 @@ Cell[TextData[{
  "Recall from the modelling paper that Ke is the ",
  StyleBox["before",
   FontSlant->"Italic"],
- "-gearbox electrical coupling constant; Ke \[CapitalNu] is simply the \
-corresponding after-gearbox value. Thus, the abscissa of Z is a \
-multiplication of the motor velocity (in radians / second) by a constant and \
-a division by the battery voltage."
+ "-gearbox electrical coupling constant. Thus, the abscissa of Z is a \
+multiplication of the motor velocity (in radians / second) by a motor \
+constant and the control range magnitude and a division by the battery \
+voltage."
 }], "Text",ExpressionUUID->"52e41114-c8a7-437d-b754-196af598d495"],
 
 Cell["\<\
 Let\[CloseCurlyQuote]s explore a little how the location of Z varies with \
 velocity \[CapitalOmega]. The maximum velocity of the motor and load example \
-we\[CloseCurlyQuote]ve been working with is about 10.2 radians / second when \
-on a 12 volt battery:\
+we\[CloseCurlyQuote]ve been working with is about 610.4 radians / second \
+(before the 60:1 gearbox) when on a 12 volt battery:\
 \>", "Text",ExpressionUUID->"5721a574-3bb2-4cf9-b14d-a3c6e27093b5"],
 
 Cell[BoxData[{
@@ -20417,7 +20417,7 @@ Cell[BoxData[{
   RowBox[{
    RowBox[{
     RowBox[{
-     RowBox[{"ssVelAfter", " ", "/.", " ", "ssSimple"}], " ", "/.", " ", 
+     RowBox[{"ssVel", " ", "/.", " ", "ssSimple"}], " ", "/.", " ", 
      "unitlessMotorWithFlywheel"}], " ", "/.", " ", 
     RowBox[{"\[CapitalDelta]vappConst", " ", "\[Rule]", " ", "12"}]}], " ", "//",
     " ", "N"}]}]}], \
@@ -20743,8 +20743,8 @@ Cell[BoxData[{
 Cell["\<\
 Note that this result is only dependent on the instantaneous velocity and \
 battery voltage, the control range, and the motor\[CloseCurlyQuote]s \
-post-gearbox electrical coupling constant: conveniently, the uses of the \
-motor\[CloseCurlyQuote]s resistive constant R values have all cancelled out.\
+pre-gearbox electrical coupling constant: conveniently, the uses of the motor\
+\[CloseCurlyQuote]s resistive constant R values have all cancelled out.\
 \>", "Text",ExpressionUUID->"31e2151c-fbe2-4266-b655-e1e6400b7559"]
 }, Open  ]],
 
@@ -20880,8 +20880,8 @@ Cell["2018.08.13. Significant rewrite.", \
 }, Open  ]]
 }, Open  ]]
 },
-WindowSize->{1071, 1503},
-WindowMargins->{{Automatic, 716}, {0, Automatic}},
+WindowSize->{1116, 1519},
+WindowMargins->{{Automatic, 1197}, {Automatic, 11}},
 PrintingCopies->1,
 PrintingPageRange->{32000, 32000},
 PrintingOptions->{"Magnification"->1.,
