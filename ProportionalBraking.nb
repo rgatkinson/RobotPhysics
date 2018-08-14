@@ -20025,7 +20025,7 @@ Cell["\<\
 Because of this complexity, in order to explore the effect on current of the \
 drop of applied voltage to the back EMF we choose (initially, at least) to do \
 so in the context of a concrete motor and particular loads. Here, we use an \
-Andy Mark NeveRest 60 motor with either a 10kg or a 1kg flywheel attached:\
+Andy Mark NeveRest 60 motor with a 10kg flywheel attached:\
 \>", "Text",ExpressionUUID->"14b51b71-3f92-4ef4-aabf-14b10e8fc6dd"],
 
 Cell[BoxData[{
