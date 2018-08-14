@@ -6,7 +6,7 @@ Cell["On Proportional Braking in H Bridges", \
 
 Cell["\<\
 Robert Atkinson
-13 August 2018\
+14 August 2018\
 \>", "Author",ExpressionUUID->"05aea015-05f3-4e99-899d-20a8cd5792a1"],
 
 Cell["\<\
@@ -17,11 +17,12 @@ http://www.modularcircuits.com/blog/articles/h-bridge-secrets). However, the \
 STMicroelectronics VNH5050E H bridge, used in FTC motor controllers for \
 nearly a  decade, employs neither of these modalities, instead using what can \
 be called an \[OpenCurlyQuote]asynchronous sign-magnitude\[CloseCurlyQuote] \
-switching modality. In addition to it\[CloseCurlyQuote]s driving modes, this \
-modality admits a mode wherein dynamic-braking is applied in proportional to \
-the PWM duty cycle, which we term \[OpenCurlyQuote]proportional braking\
-\[CloseCurlyQuote]. Here, we explore why using proportional braking might be \
-advantageous, and the details of doing so.\
+switching modality. In addition to it\[CloseCurlyQuote]s driving modes, as \
+was observed by Eric & Douglas Chin, this modality admits a mode wherein \
+dynamic-braking is applied in proportional to the PWM duty cycle, which we \
+term \[OpenCurlyQuote]proportional braking\[CloseCurlyQuote]. Here, we \
+explore why using proportional braking might be advantageous, and the details \
+of doing so.\
 \>", "Text",ExpressionUUID->"56cc4ba9-b77c-4512-b3b4-73f00a3c0eee"],
 
 Cell[CellGroupData[{
@@ -11927,9 +11928,9 @@ p1P4//z+ATil3yU=
       "]}], 
     FilledCurveBox[{{{1, 4, 3}, {1, 3, 3}, {1, 3, 3}, {1, 3, 3}, {1, 3, 3}, {
       1, 3, 3}, {1, 3, 3}, {1, 3, 3}, {1, 3, 3}, {1, 3, 3}, {1, 3, 3}, {1, 3, 
-      3}, {1, 3, 3}, {1, 3, 3}, {1, 3, 3}, {1, 3, 3}}, {{1, 4, 3}, {1, 3, 
-      3}, {1, 3, 3}, {1, 3, 3}, {1, 3, 3}, {1, 3, 3}, {1, 3, 3}, {1, 3, 3}, {
-      1, 3, 3}, {1, 3, 3}, {1, 3, 3}, {1, 3, 3}, {1, 3, 3}, {1, 3, 3}, {1, 3, 
+      3}, {1, 3, 3}, {1, 3, 3}, {1, 3, 3}, {1, 3, 3}}, {{1, 4, 3}, {1, 3, 3},
+       {1, 3, 3}, {1, 3, 3}, {1, 3, 3}, {1, 3, 3}, {1, 3, 3}, {1, 3, 3}, {1, 
+      3, 3}, {1, 3, 3}, {1, 3, 3}, {1, 3, 3}, {1, 3, 3}, {1, 3, 3}, {1, 3, 
       3}, {1, 3, 3}, {1, 3, 3}, {1, 3, 3}, {1, 3, 3}, {1, 3, 
       3}}}, {CompressedData["
 1:eJxFkgssFVAcxl15ZJXklbWIqKxIVqam5ctsIRGVqZ2TUtZGXkmo1Ll5lXmU
@@ -12673,9 +12674,9 @@ Fffjgj9Io3+bdfcuOd3D+rvUMUqd3/up//8HGCAB2w==
       1, 3, 3}, {1, 3, 3}, {1, 3, 3}, {0, 1, 0}, {1, 3, 3}, {1, 3, 3}, {1, 3, 
       3}, {1, 3, 3}, {1, 3, 3}, {1, 3, 3}, {1, 3, 3}, {1, 3, 3}, {0, 1, 0}, {
       1, 3, 3}, {1, 3, 3}, {1, 3, 3}, {1, 3, 3}, {1, 3, 3}, {1, 3, 3}, {1, 3, 
-      3}, {1, 3, 3}, {1, 3, 3}, {1, 3, 3}, {1, 3, 3}, {1, 3, 3}}, {{1, 4, 3},
-       {1, 3, 3}, {1, 3, 3}, {1, 3, 3}, {1, 3, 3}, {1, 3, 3}, {1, 3, 3}, {1, 
-      3, 3}, {1, 3, 3}, {1, 3, 3}, {0, 1, 0}, {0, 1, 0}, {1, 3, 3}, {1, 3, 
+      3}, {1, 3, 3}, {1, 3, 3}, {1, 3, 3}, {1, 3, 3}, {1, 3, 3}}, {{1, 4, 
+      3}, {1, 3, 3}, {1, 3, 3}, {1, 3, 3}, {1, 3, 3}, {1, 3, 3}, {1, 3, 3}, {
+      1, 3, 3}, {1, 3, 3}, {1, 3, 3}, {0, 1, 0}, {0, 1, 0}, {1, 3, 3}, {1, 3, 
       3}, {1, 3, 3}, {1, 3, 3}, {1, 3, 3}, {1, 3, 3}, {0, 1, 0}, {0, 1, 0}, {
       1, 3, 3}, {1, 3, 3}, {1, 3, 3}, {1, 3, 3}, {1, 3, 3}, {1, 3, 3}, {1, 3, 
       3}, {1, 3, 3}, {0, 1, 0}, {0, 1, 0}, {1, 3, 3}, {1, 3, 3}, {1, 3, 3}, {
@@ -19308,9 +19309,21 @@ ignore the diode for now).\
 }, Open  ]],
 
 Cell["\<\
-As a general scheme, these four points are structurally related relative to \
-each the order illustrated below.  Forward driving is shown in green, \
-proportional braking in blue, and reverse driving in red. \
+A question arises as to the behavior of the driving regimes between these \
+four points, where the PWM duty cycle is neither 0% nor 100%. As we presently \
+lack any information to the contrary, we will in the below depict the regimes \
+as linear in the duty cycle. This is certainly at least a roughly-good \
+approximation at the time scale that is seen by the motor shaft, though it is \
+only an approximation. Influences such as the ripple current LR time constant \
+being several PWM cycles and thus never fully decaying might, for example, \
+cause an offset bias in the linearity. Detailed investigation of the shape of \
+these curves awaits future analysis.\
+\>", "Text",ExpressionUUID->"8b64b265-0fcc-4399-b843-62d4df5f15cb"],
+
+Cell["\<\
+As a general scheme, the four points S, T, Z, and G are structurally related \
+relative to each in the order illustrated below.  Forward driving is shown in \
+green, proportional braking in blue, and reverse driving in red.\
 \>", "Text",ExpressionUUID->"1de3dfb0-f0e8-473f-a553-9995bb6be6f9"],
 
 Cell[BoxData[{
@@ -19318,8 +19331,17 @@ Cell[BoxData[{
   RowBox[{
    RowBox[{"Clear", "[", 
     RowBox[{
-    "line", ",", " ", "points", ",", " ", "pointNames", ",", " ", 
-     "plotPoints"}], "]"}], ";"}], " "}], "\[IndentingNewLine]", 
+    "abscissa", ",", " ", "ordinate", ",", " ", "line", ",", " ", "points", 
+     ",", " ", "pointNames", ",", " ", "plotPoints"}], "]"}], ";"}], 
+  " "}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"abscissa", "[", "pt_", "]"}], " ", ":=", " ", 
+  RowBox[{"pt", "[", 
+   RowBox[{"[", "1", "]"}], "]"}]}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"ordinate", "[", "pt_", "]"}], " ", ":=", " ", 
+  RowBox[{"pt", "[", 
+   RowBox[{"[", "2", "]"}], "]"}]}], "\[IndentingNewLine]", 
  RowBox[{
   RowBox[{"line", "[", 
    RowBox[{
@@ -19366,25 +19388,75 @@ Cell[BoxData[{
     RowBox[{"S", ",", " ", "T", ",", " ", "Z", ",", " ", "G"}], " ", "}"}]}], 
   ";"}], "\[IndentingNewLine]", 
  RowBox[{
+  RowBox[{
+   RowBox[{"Options", "[", "plotPoints", "]"}], " ", "=", " ", 
+   RowBox[{
+    RowBox[{"{", " ", 
+     RowBox[{
+      RowBox[{"xOver", " ", "\[Rule]", " ", "1.1"}], ",", " ", 
+      RowBox[{"yOver", " ", "\[Rule]", " ", "1.2"}]}], " ", "}"}], " ", "~", 
+    "Join", "~", " ", 
+    RowBox[{"Options", "[", "Plot", "]"}], " ", "~", "Join", "~", " ", 
+    RowBox[{"Options", "[", "ListPlot", "]"}]}]}], 
+  ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{
+   RowBox[{"plotPoints", "[", 
+    RowBox[{"pointsN_", ",", " ", "title_", ",", " ", "yLabel_", ",", " ", 
+     RowBox[{"opts", ":", " ", 
+      RowBox[{"OptionsPattern", "[", "]"}]}]}], "]"}], " ", ":=", " ", 
+   RowBox[{"plotPoints", "[", 
+    RowBox[{
+    "pointsN", ",", " ", "title", ",", " ", "yLabel", ",", " ", "32767", ",", 
+     " ", "opts"}], "]"}]}], ";"}], "\[IndentingNewLine]", 
+ RowBox[{
   RowBox[{"plotPoints", "[", 
-   RowBox[{"pointsN_", ",", " ", "title_", ",", " ", "yAxis_", ",", " ", 
+   RowBox[{
+   "pointsN_", ",", " ", "title_", ",", " ", "yLabel_", ",", " ", 
+    "controlMax_", ",", " ", 
     RowBox[{"opts", ":", " ", 
      RowBox[{"OptionsPattern", "[", "]"}]}]}], "]"}], " ", ":=", " ", 
   RowBox[{"Module", "[", "\[IndentingNewLine]", 
    RowBox[{
     RowBox[{"{", 
      RowBox[{
-     "listPlot", ",", " ", "range", ",", " ", "reverse", ",", " ", "braking", 
-      ",", " ", "forward", ",", " ", "yMax"}], "}"}], ",", 
-    "\[IndentingNewLine]", 
+     "zg", ",", " ", "tz", ",", " ", "st", ",", " ", "yMax", ",", " ", 
+      "clampMag", ",", " ", "range", ",", "frame", ",", " ", "listPlot", ",", 
+      "  ", "reverse", ",", " ", "braking", ",", " ", "forward", ",", " ", 
+      "plot"}], "}"}], ",", "\[IndentingNewLine]", 
     RowBox[{
-     RowBox[{"yMax", " ", "=", " ", 
+     RowBox[{"zg", " ", "=", " ", 
       RowBox[{
+       RowBox[{"line", "[", 
+        RowBox[{"Z", ",", " ", "G"}], "]"}], "/.", " ", "pointsN"}]}], ";", 
+     "\[IndentingNewLine]", 
+     RowBox[{"tz", " ", "=", " ", 
+      RowBox[{
+       RowBox[{"line", "[", 
+        RowBox[{"T", ",", " ", "Z"}], "]"}], "/.", " ", "pointsN"}]}], ";", 
+     "\[IndentingNewLine]", 
+     RowBox[{"st", " ", "=", " ", 
+      RowBox[{
+       RowBox[{"line", "[", 
+        RowBox[{"S", ",", " ", "T"}], "]"}], "/.", " ", "pointsN"}]}], ";", 
+     "\[IndentingNewLine]", 
+     RowBox[{"yMax", " ", "=", " ", 
+      RowBox[{"Max", "[", 
        RowBox[{
-        RowBox[{"pointsN", "[", 
-         RowBox[{"[", 
-          RowBox[{"All", ",", "2", ",", "2"}], "]"}], "]"}], " ", "//", " ", 
-        "Abs"}], " ", "//", " ", "Max"}]}], ";", "\[IndentingNewLine]", 
+        RowBox[{
+         RowBox[{"st", "[", 
+          RowBox[{"-", "controlMax"}], "]"}], " ", "//", " ", "Abs"}], ",", 
+        " ", 
+        RowBox[{
+         RowBox[{"zg", "[", "controlMax", "]"}], " ", "//", " ", "Abs"}]}], 
+       "]"}]}], ";", "\[IndentingNewLine]", 
+     RowBox[{
+      RowBox[{"clampMag", "[", "control_", "]"}], " ", ":=", " ", 
+      RowBox[{"Max", "[", 
+       RowBox[{
+        RowBox[{"Min", "[", 
+         RowBox[{"control", ",", " ", "controlMax"}], "]"}], ",", " ", 
+        RowBox[{"-", "controlMax"}]}], "]"}]}], ";", "\[IndentingNewLine]", 
      RowBox[{
       RowBox[{"range", "[", 
        RowBox[{"x_", ",", " ", "p1_", ",", " ", "p2_"}], "]"}], " ", ":=", 
@@ -19400,6 +19472,46 @@ Cell[BoxData[{
           RowBox[{"p2", " ", "/.", " ", "pointsN"}], ")"}], "[", 
          RowBox[{"[", "1", "]"}], "]"}]}], "}"}]}], ";", 
      "\[IndentingNewLine]", 
+     RowBox[{"frame", " ", "=", " ", 
+      RowBox[{"ListPlot", "[", 
+       RowBox[{
+        RowBox[{"{", 
+         RowBox[{
+          RowBox[{"{", 
+           RowBox[{
+            RowBox[{
+             RowBox[{"-", "controlMax"}], "*", 
+             RowBox[{"OptionValue", "[", "xOver", "]"}]}], ",", " ", 
+            RowBox[{"-", "yMax"}]}], "}"}], ",", " ", 
+          RowBox[{"{", 
+           RowBox[{
+            RowBox[{"controlMax", " ", "*", " ", 
+             RowBox[{"OptionValue", "[", "xOver", "]"}]}], ",", " ", "yMax"}],
+            "}"}]}], "}"}], ",", " ", 
+        RowBox[{"PlotStyle", "\[Rule]", " ", 
+         RowBox[{"PointSize", "[", "0", "]"}]}], ",", "\[IndentingNewLine]", 
+        RowBox[{"PlotRange", "\[Rule]", " ", 
+         RowBox[{"{", 
+          RowBox[{
+           RowBox[{
+            RowBox[{"-", "yMax"}], " ", "*", " ", 
+            RowBox[{"OptionValue", "[", "yOver", "]"}]}], ",", " ", 
+           RowBox[{"yMax", " ", "*", " ", 
+            RowBox[{"OptionValue", "[", "yOver", "]"}]}]}], "}"}]}], ",", 
+        "\[IndentingNewLine]", " ", 
+        RowBox[{"AxesLabel", "\[Rule]", 
+         RowBox[{"{", 
+          RowBox[{"\"\<control\>\"", ",", " ", "yLabel"}], "}"}]}], ",", " ", 
+        "\[IndentingNewLine]", 
+        RowBox[{"PlotLabel", "\[Rule]", "title"}], ",", " ", 
+        "\[IndentingNewLine]", 
+        RowBox[{
+         RowBox[{"FilterRules", "[", 
+          RowBox[{
+           RowBox[{"{", "opts", "}"}], ",", " ", 
+           RowBox[{"Options", "[", "ListPlot", "]"}]}], "]"}], "//", " ", 
+         "Evaluate"}]}], "\[IndentingNewLine]", "]"}]}], ";", 
+     "\[IndentingNewLine]", 
      RowBox[{"listPlot", " ", "=", " ", 
       RowBox[{"ListPlot", "[", 
        RowBox[{
@@ -19410,66 +19522,55 @@ Cell[BoxData[{
            RowBox[{"T", " ", "\[Rule]", " ", "\"\<T\>\""}], ",", " ", 
            RowBox[{"Z", " ", "\[Rule]", " ", "\"\<Z\>\""}], ",", " ", 
            RowBox[{"G", "\[Rule]", " ", "\"\<G\>\""}]}], "}"}], " ", "/.", 
-         " ", "pointsN"}], ",", " ", 
-        RowBox[{"PlotRange", "\[Rule]", " ", 
-         RowBox[{"{", 
-          RowBox[{
-           RowBox[{
-            RowBox[{"-", "yMax"}], " ", "*", " ", "1.1"}], ",", " ", 
-           RowBox[{"yMax", " ", "*", " ", "1.1"}]}], "}"}]}], ",", " ", 
+         " ", "pointsN"}], ",", " ", "\[IndentingNewLine]", 
         RowBox[{"PlotStyle", "\[Rule]", "Black"}], ",", " ", 
-        RowBox[{"AxesLabel", "\[Rule]", 
-         RowBox[{"{", 
-          RowBox[{"\"\<control\>\"", ",", " ", "yAxis"}], "}"}]}], ",", " ", 
-        RowBox[{"PlotLabel", "\[Rule]", "title"}], ",", " ", "opts"}], 
-       "]"}]}], ";", "\[IndentingNewLine]", 
+        "\[IndentingNewLine]", 
+        RowBox[{
+         RowBox[{"FilterRules", "[", 
+          RowBox[{
+           RowBox[{"{", "opts", "}"}], ",", " ", 
+           RowBox[{"Options", "[", "ListPlot", "]"}]}], "]"}], "//", " ", 
+         "Evaluate"}]}], "]"}]}], ";", "\[IndentingNewLine]", 
+     RowBox[{
+      RowBox[{"plot", "[", 
+       RowBox[{"p1_", ",", "p2_", ",", " ", "style_"}], "]"}], " ", ":=", " ", 
+      RowBox[{"Plot", "[", 
+       RowBox[{
+        RowBox[{
+         RowBox[{"Evaluate", "[", 
+          RowBox[{
+           RowBox[{"line", "[", 
+            RowBox[{"p1", ",", " ", "p2"}], "]"}], " ", "/.", " ", 
+           "pointsN"}], "]"}], "[", "x", "]"}], ",", " ", 
+        RowBox[{"Evaluate", "[", 
+         RowBox[{"range", "[", 
+          RowBox[{"x", ",", " ", "p1", ",", " ", "p2"}], "]"}], "]"}], ",", 
+        " ", "\[IndentingNewLine]", 
+        RowBox[{"PlotStyle", "\[Rule]", "style"}], ",", " ", 
+        "\[IndentingNewLine]", 
+        RowBox[{
+         RowBox[{"FilterRules", "[", 
+          RowBox[{
+           RowBox[{"{", "opts", "}"}], ",", " ", 
+           RowBox[{"Options", "[", "Plot", "]"}]}], "]"}], " ", "//", " ", 
+         "Evaluate"}]}], "]"}]}], ";", "\[IndentingNewLine]", 
      RowBox[{"reverse", " ", "=", " ", 
-      RowBox[{"Plot", "[", 
-       RowBox[{
-        RowBox[{
-         RowBox[{"Evaluate", "[", 
-          RowBox[{
-           RowBox[{"line", "[", 
-            RowBox[{"S", ",", " ", "T"}], "]"}], " ", "/.", " ", "pointsN"}], 
-          "]"}], "[", "x", "]"}], ",", " ", 
-        RowBox[{"Evaluate", "[", 
-         RowBox[{"range", "[", 
-          RowBox[{"x", ",", " ", "S", ",", " ", "T"}], "]"}], "]"}], ",", " ", 
-        RowBox[{"PlotStyle", "\[Rule]", "Red"}], ",", " ", "opts"}], "]"}]}], 
-     ";", "\[IndentingNewLine]", 
+      RowBox[{"plot", "[", 
+       RowBox[{"S", ",", " ", "T", ",", " ", "Red"}], "]"}]}], ";", 
+     "\[IndentingNewLine]", 
      RowBox[{"braking", " ", "=", " ", 
-      RowBox[{"Plot", "[", 
-       RowBox[{
-        RowBox[{
-         RowBox[{"Evaluate", "[", 
-          RowBox[{
-           RowBox[{"line", "[", 
-            RowBox[{"T", ",", " ", "Z"}], "]"}], " ", "/.", " ", "pointsN"}], 
-          "]"}], "[", "x", "]"}], ",", " ", 
-        RowBox[{"Evaluate", "[", 
-         RowBox[{"range", "[", 
-          RowBox[{"x", ",", " ", "T", ",", " ", "Z"}], "]"}], "]"}], ",", " ", 
-        RowBox[{"PlotStyle", "\[Rule]", "Blue"}], ",", " ", "opts"}], "]"}]}],
-      ";", "\[IndentingNewLine]", 
+      RowBox[{"plot", "[", 
+       RowBox[{"T", ",", " ", "Z", ",", " ", "Blue"}], "]"}]}], ";", 
+     "\[IndentingNewLine]", 
      RowBox[{"forward", " ", "=", " ", 
-      RowBox[{"Plot", "[", 
-       RowBox[{
-        RowBox[{
-         RowBox[{"Evaluate", "[", 
-          RowBox[{
-           RowBox[{"line", "[", 
-            RowBox[{"Z", ",", " ", "G"}], "]"}], " ", "/.", " ", "pointsN"}], 
-          "]"}], "[", "x", "]"}], ",", " ", 
-        RowBox[{"Evaluate", "[", 
-         RowBox[{"range", "[", 
-          RowBox[{"x", ",", " ", "Z", ",", " ", "G"}], "]"}], "]"}], ",", " ", 
-        RowBox[{"PlotStyle", "\[Rule]", 
-         RowBox[{"Darker", "[", "Green", "]"}]}], ",", " ", "opts"}], "]"}]}],
-      ";", "\[IndentingNewLine]", 
+      RowBox[{"plot", "[", 
+       RowBox[{"Z", ",", " ", "G", ",", " ", 
+        RowBox[{"Darker", "[", "Green", "]"}]}], "]"}]}], ";", 
+     "\[IndentingNewLine]", 
      RowBox[{"Show", "[", 
       RowBox[{
-      "listPlot", ",", " ", "reverse", ",", " ", "braking", ",", " ", 
-       "forward"}], "]"}]}]}], "\[IndentingNewLine]", 
+      "frame", ",", " ", "listPlot", ",", " ", "reverse", ",", " ", "braking",
+        ",", " ", "forward"}], "]"}]}]}], "\[IndentingNewLine]", 
    "]"}]}]}], "Input",ExpressionUUID->"15c56543-8730-4aaf-a21f-d6844b7ea111"],
 
 Cell[BoxData[{
@@ -19499,21 +19600,68 @@ Cell[BoxData[{
    " ", "\"\<y\>\""}], 
   "]"}]}], "Input",ExpressionUUID->"f9cf0048-dfb7-479a-9a26-29ce4d443edd"],
 
-Cell["\<\
-Each time we run the PID control loop (currently every 50ms), we calculate \
-the coordinates for the four points. From those, together with the control \
-output from the PID loop, the location of control value on the curve is \
-determined: its driving regime (forward, braking, reverse), and the relative \
-fractional location within that regime. This latter fractional location is \
-then used to proportionally scale the PWM value from a 0% to 100% duty cycle. \
-The H bridge operating mode corresponding to the driving regime and the \
-calculated duty cycle are then passed to the H bridge.\
-\>", "Text",ExpressionUUID->"9f080dd6-28bc-4db9-9dcc-b85a76de4c7d"],
+Cell[CellGroupData[{
+
+Cell[TextData[{
+ 
+ CounterBox["Section"],
+ ".",
+ 
+ CounterBox["Subsection"],
+ ".",
+ 
+ CounterBox["Subsubsection"],
+ ". Interpreting S, T, Z, and G"
+}], "Subsubsection",ExpressionUUID->"8d1b9cb0-20b7-422f-9168-21b33541241d"],
 
 Cell["\<\
 Our job here in this present document is to figure out how to locate the \
-coordinates of the four points.\
-\>", "Text",ExpressionUUID->"0393b7fc-9310-4299-a4bd-0fbf06227f87"]
+coordinates of the four points S, T, Z, and G for real driving situations \
+based on sound, cogent principles.\
+\>", "Text",ExpressionUUID->"0393b7fc-9310-4299-a4bd-0fbf06227f87"],
+
+Cell["\<\
+Each time we run the PID control loop (currently every 50ms), we will \
+calculate the coordinates of each of the four points according to the set of \
+principles we have chosen. From those coordinates, the driving regime \
+(forward, braking, reverse) is determined according to the position of the \
+PID output control signal relative to the abscissas of the four points. The \
+PWM duty cycle is then determined by the fractional location of the PID \
+output control signal within the regime so located. The H bridge operating \
+mode corresponding to the driving regime and the calculated duty cycle are \
+then passed to the H bridge.\
+\>", "Text",ExpressionUUID->"4dcf433e-f0c9-4ef3-9b65-7dcc18d53706"],
+
+Cell["\<\
+For example, suppose that during a PID loop run, the four points happen to be \
+as in the above figure, and that the control output from the PID loop is \
+currently -10000. Then, because abscissa[T] < -10000 < abscissa[Z], we will \
+use proportional braking, and the duty cycle used will be 74%:\
+\>", "Text",ExpressionUUID->"d7dc2fdb-e4d2-4042-9923-32ca5b637b1e"],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{
+   RowBox[{
+    RowBox[{"(", 
+     RowBox[{"pidOutput", "-", 
+      RowBox[{"(", 
+       RowBox[{
+        RowBox[{"Z", "/.", "examplePoints"}], "//", "abscissa"}], ")"}]}], 
+     ")"}], "  ", "/", "  ", 
+    RowBox[{"(", 
+     RowBox[{
+      RowBox[{"(", 
+       RowBox[{
+        RowBox[{"T", "/.", "examplePoints"}], "//", "abscissa"}], ")"}], "-", 
+      RowBox[{"(", 
+       RowBox[{
+        RowBox[{"Z", "/.", "examplePoints"}], "//", "abscissa"}], ")"}]}], 
+     ")"}]}], " ", "/.", " ", "\[IndentingNewLine]", 
+   RowBox[{"pidOutput", "\[Rule]", 
+    RowBox[{"-", "10000"}]}]}], " ", "//", " ", 
+  "N"}]], "Input",ExpressionUUID->"cd6cd798-88e8-4e76-9fb8-a5c85a021dab"]
+}, Open  ]]
 }, Open  ]],
 
 Cell[CellGroupData[{
@@ -19531,8 +19679,8 @@ Cell["\<\
 In what follows, the location of the abscissas of S & G and either Z or T in \
 the PID control range will be determined a priori based on external \
 considerations, and the location of the remaining point then determined from \
-the other three using arguments of linearity. We will examine two different \
-schemes, Scheme A and Scheme B.\
+the other three using arguments of linearity. We will examine three different \
+schemes, Scheme A, Scheme B, and Scheme C.\
 \>", "Text",ExpressionUUID->"111d95c6-f47f-4671-a693-51ade73d64c7"]
 }, Open  ]]
 }, Open  ]],
@@ -19553,7 +19701,7 @@ Cell[TextData[{
  ".",
  
  CounterBox["Subsection"],
- ". Introduction: Points F, R, and T"
+ ". Introduction: Points S, T, and G"
 }], "Subsection",ExpressionUUID->"5b857c69-f760-45f1-8b9c-b1f47d72e890"],
 
 Cell["\<\
@@ -19597,7 +19745,7 @@ overall scheme is to map the control signal to equivalent voltage ",
 }, Open  ]],
 
 Cell["\<\
-With these in hand, and recognizing that Z must lie between T and F, we can \
+With these in hand, and recognizing that Z must lie between T and G, we can \
 visualize Scheme A as having the following overall shape. The particular \
 value of Z shown is for illustrative purposes only.\
 \>", "Text",ExpressionUUID->"9fdeb244-fc2b-4829-82f4-ac9686bc602c"],
@@ -20021,8 +20169,34 @@ Cell[BoxData[
 "Input",ExpressionUUID->"df2a09fd-5f32-4340-843e-0dca8967b18e"],
 
 Cell["\<\
-We put that all together, illustrating the result for an steady state \
-velocity of \[CapitalOmega]==1 radians / second. We plot for 50ms, as that is \
+Let\[CloseCurlyQuote]s put that all together, illustrating the result for \
+some reasonable initial velocity. The maximum velocity of the motor and load \
+example we\[CloseCurlyQuote]ve been working with is about 610.4 radians / \
+second (before the 60:1 gearbox) when on a 12 volt battery:\
+\>", "Text",ExpressionUUID->"db72368e-ea0c-4c4d-8736-838073f3080c"],
+
+Cell[BoxData[{
+ RowBox[{
+  RowBox[{"ssSimple", " ", "=", " ", 
+   RowBox[{"ss", " ", "/.", " ", 
+    RowBox[{"{", 
+     RowBox[{
+      RowBox[{"vapp0", "\[Rule]", "0"}], ",", " ", 
+      RowBox[{"\[Tau]app0", " ", "\[Rule]", " ", "0"}], ",", " ", 
+      RowBox[{"\[CapitalDelta]\[Tau]appConst", " ", "\[Rule]", " ", "0"}]}], 
+     "}"}]}]}], ";"}], "\[IndentingNewLine]", 
+ RowBox[{"maxVelExample", " ", "=", " ", 
+  RowBox[{
+   RowBox[{
+    RowBox[{
+     RowBox[{"ssVel", " ", "/.", " ", "ssSimple"}], " ", "/.", " ", 
+     "unitlessMotorWithFlywheel"}], " ", "/.", " ", 
+    RowBox[{"\[CapitalDelta]vappConst", " ", "\[Rule]", " ", "12"}]}], " ", "//",
+    " ", "N"}]}]}], \
+"Input",ExpressionUUID->"b725d97f-a797-48b5-8923-d490dee28ebd"],
+
+Cell["\<\
+ We arbitrarily plot at 10% of the maximum velocity, and for 50ms, as that is \
 the PID update interval in the FTC expansion hub firmware.\
 \>", "Text",ExpressionUUID->"fd113646-6a7c-4097-8810-15b8af2e8edb"],
 
@@ -20042,7 +20216,8 @@ Cell[BoxData[{
    "FullSimplify"}]}], "\[IndentingNewLine]", 
  RowBox[{"Plot", "[", 
   RowBox[{
-   RowBox[{"fn", "[", "1", "]"}], ",", " ", 
+   RowBox[{"fn", "[", 
+    RowBox[{"maxVelExample", "/", "10"}], "]"}], ",", " ", 
    RowBox[{"{", 
     RowBox[{"t", ",", " ", "0", ",", " ", ".050"}], "}"}], ",", " ", 
    RowBox[{"AxesLabel", "\[Rule]", 
@@ -20055,7 +20230,8 @@ Cell[BoxData[{
      RowBox[{"0", ",", "0"}], "}"}]}]}], "]"}], "\[IndentingNewLine]", 
  RowBox[{"Plot", "[", 
   RowBox[{
-   RowBox[{"fn", "[", "1", "]"}], ",", " ", 
+   RowBox[{"fn", "[", 
+    RowBox[{"maxVelExample", "/", "10"}], "]"}], ",", " ", 
    RowBox[{"{", 
     RowBox[{"t", ",", " ", "0", ",", " ", ".050"}], "}"}], ",", " ", 
    RowBox[{"AxesLabel", "\[Rule]", 
@@ -20237,7 +20413,8 @@ Cell[BoxData[{
    "FullSimplify"}]}], "\[IndentingNewLine]", 
  RowBox[{"Plot", "[", 
   RowBox[{
-   RowBox[{"fn", "[", "1", "]"}], ",", " ", 
+   RowBox[{"fn", "[", 
+    RowBox[{"maxVelExample", "/", "10"}], "]"}], ",", " ", 
    RowBox[{"{", 
     RowBox[{"t", ",", " ", "0", ",", " ", ".050"}], "}"}], ",", " ", 
    RowBox[{"AxesLabel", "\[Rule]", 
@@ -20338,8 +20515,8 @@ Cell[BoxData[
   "]"}]], "Input",ExpressionUUID->"3e1efd2d-d03e-4a39-8d30-bdce6a3003bd"],
 
 Cell["\<\
-We have points R, T, and F in hand; we wish to compute point Z. The principle \
-we will use is to locate Z on the line between T and F. Per the above, we \
+We have points S, T, and G in hand; we wish to compute point Z. The principle \
+we will use is to locate Z on the line between T and G. Per the above, we \
 take the ordinate of Z to be the current instantaneous back EMF; our job is \
 to compute the abscissa of Z, which we will denote as controlProp0 (0% \
 proportional braking occurs at the same location as 0% forward driving). The \
@@ -20367,24 +20544,30 @@ Cell[BoxData[
 "Input",ExpressionUUID->"d0a9fdbe-da81-4f58-9371-79c08d8e9e75"],
 
 Cell[BoxData[
- RowBox[{"eqn", " ", "=", 
-  RowBox[{
+ RowBox[{"schemeAEqn", " ", "=", 
+  RowBox[{"(", 
    RowBox[{
+    RowBox[{
+     RowBox[{"(", 
+      RowBox[{
+       RowBox[{"line", "[", 
+        RowBox[{"T", ",", " ", "G"}], "]"}], " ", "/.", " ", 
+       "schemeAPoints"}], ")"}], "[", "controlProp0", "]"}], " ", "\[Equal]", 
+    " ", 
     RowBox[{"(", 
-     RowBox[{
-      RowBox[{"line", "[", 
-       RowBox[{"T", ",", " ", "G"}], "]"}], " ", "/.", " ", "schemeAPoints"}],
-      ")"}], "[", "controlProp0", "]"}], " ", "\[Equal]", " ", 
-   RowBox[{"(", 
-    RowBox[{"yProp0", " ", "/.", " ", "schemeA"}], 
-    ")"}]}]}]], \
-"Input",ExpressionUUID->"4bdd2fd0-c751-4b34-afd5-ab1cf54b344c"],
+     RowBox[{"yProp0", " ", "/.", " ", "schemeA"}], ")"}]}], 
+   ")"}]}]], "Input",ExpressionUUID->"4bdd2fd0-c751-4b34-afd5-ab1cf54b344c"],
 
-Cell[BoxData[
+Cell[BoxData[{
  RowBox[{"schemeASoln", " ", "=", " ", 
   RowBox[{"uniqueSolve", "[", 
-   RowBox[{"eqn", ",", " ", "controlProp0"}], 
-   "]"}]}]], "Input",ExpressionUUID->"1bb30c4c-6785-4ff9-afe5-1fb75288f4d1"],
+   RowBox[{"schemeAEqn", ",", " ", "controlProp0"}], 
+   "]"}]}], "\[IndentingNewLine]", 
+ RowBox[{"schemeAResult", " ", "=", "  ", 
+  RowBox[{
+  "schemeAPoints", "/.", " ", 
+   "schemeASoln"}]}]}], \
+"Input",ExpressionUUID->"1bb30c4c-6785-4ff9-afe5-1fb75288f4d1"],
 
 Cell[TextData[{
  "Recall from the modelling paper that Ke is the ",
@@ -20398,80 +20581,67 @@ voltage."
 
 Cell["\<\
 Let\[CloseCurlyQuote]s explore a little how the location of Z varies with \
-velocity \[CapitalOmega]. The maximum velocity of the motor and load example \
-we\[CloseCurlyQuote]ve been working with is about 610.4 radians / second \
-(before the 60:1 gearbox) when on a 12 volt battery:\
-\>", "Text",ExpressionUUID->"5721a574-3bb2-4cf9-b14d-a3c6e27093b5"],
-
-Cell[BoxData[{
- RowBox[{
-  RowBox[{"ssSimple", " ", "=", " ", 
-   RowBox[{"ss", " ", "/.", " ", 
-    RowBox[{"{", 
-     RowBox[{
-      RowBox[{"vapp0", "\[Rule]", "0"}], ",", " ", 
-      RowBox[{"\[Tau]app0", " ", "\[Rule]", " ", "0"}], ",", " ", 
-      RowBox[{"\[CapitalDelta]\[Tau]appConst", " ", "\[Rule]", " ", "0"}]}], 
-     "}"}]}]}], ";"}], "\[IndentingNewLine]", 
- RowBox[{"maxVelExample", " ", "=", " ", 
-  RowBox[{
-   RowBox[{
-    RowBox[{
-     RowBox[{"ssVel", " ", "/.", " ", "ssSimple"}], " ", "/.", " ", 
-     "unitlessMotorWithFlywheel"}], " ", "/.", " ", 
-    RowBox[{"\[CapitalDelta]vappConst", " ", "\[Rule]", " ", "12"}]}], " ", "//",
-    " ", "N"}]}]}], \
-"Input",ExpressionUUID->"6e5e67a7-233d-4cf2-a4e5-07576afb4946"],
-
-Cell["\<\
-We explore how Z moves at various fractions of that maximum velocity (10%, \
-50%, and 90%):\
+velocity \[CapitalOmega]. We plot Z at various fractions of the maximum \
+velocity (10%, 50%, and 90%):\
 \>", "Text",ExpressionUUID->"ccb59b46-5bd0-4610-af99-008bbec9c0c7"],
 
 Cell[BoxData[{
  RowBox[{
-  RowBox[{
-  "schemeAPointsFromVelocityExample", "[", "\[CapitalOmega]\[CapitalOmega]_", 
+  RowBox[{"plotSchemePointsExample", "[", 
+   RowBox[{"schemeResult_", ",", " ", "titlefn_", ",", " ", "yLabel_"}], 
    "]"}], " ", ":=", " ", 
-  RowBox[{
-   RowBox[{
-    RowBox[{
-     RowBox[{"schemeAPoints", "/.", " ", "schemeASoln"}], "  ", "/.", " ", 
-     "\[IndentingNewLine]", 
-     RowBox[{"{", 
-      RowBox[{
-       RowBox[{"controlMax", " ", "\[Rule]", " ", "32767"}], ",", " ", 
-       RowBox[{"batteryVoltage", "\[Rule]", "12"}]}], "}"}]}], " ", "/.", " ",
-     "unitlessMotorWithFlywheel"}], " ", "/.", " ", 
-   RowBox[{
-   "\[CapitalOmega]", "\[Rule]", 
-    "\[CapitalOmega]\[CapitalOmega]"}]}]}], "\[IndentingNewLine]", 
- RowBox[{
-  RowBox[{"plotZFromVel", "[", "\[CapitalOmega]_", "]"}], " ", ":=", " ", 
   RowBox[{"Module", "[", 
    RowBox[{
     RowBox[{"{", 
-     RowBox[{"title", " ", "=", " ", 
-      RowBox[{"\"\<Scheme A Example, \[CapitalOmega]=\>\"", " ", "<>", " ", 
-       RowBox[{"ToString", "[", "\[CapitalOmega]", "]"}], " ", "<>", " ", 
-       "\"\< rad/s\>\""}]}], "}"}], ",", "\[IndentingNewLine]", 
-    RowBox[{"plotPoints", "[", 
+     RowBox[{"ptsFromVel", ",", " ", "plotVel"}], "}"}], ",", 
+    "\[IndentingNewLine]", 
+    RowBox[{
+     RowBox[{
+      RowBox[{"ptsFromVel", "[", "\[CapitalOmega]\[CapitalOmega]_", "]"}], 
+      " ", ":=", " ", 
+      RowBox[{
+       RowBox[{
+        RowBox[{"schemeResult", " ", "/.", " ", "\[IndentingNewLine]", 
+         RowBox[{"{", 
+          RowBox[{
+           RowBox[{"controlMax", " ", "\[Rule]", " ", "32767"}], ",", " ", 
+           RowBox[{"batteryVoltage", "\[Rule]", "12"}]}], "}"}]}], " ", "/.", 
+        " ", "unitlessMotorWithFlywheel"}], " ", "/.", " ", 
+       RowBox[{
+       "\[CapitalOmega]", "\[Rule]", "\[CapitalOmega]\[CapitalOmega]"}]}]}], 
+     ";", "\[IndentingNewLine]", 
+     RowBox[{
+      RowBox[{"plotVel", "[", "\[CapitalOmega]_", "]"}], " ", ":=", " ", 
+      RowBox[{"Module", "[", 
+       RowBox[{
+        RowBox[{"{", 
+         RowBox[{"title", " ", "=", " ", 
+          RowBox[{"titlefn", "[", "\[CapitalOmega]", "]"}]}], "}"}], ",", 
+        "\[IndentingNewLine]", 
+        RowBox[{"plotPoints", "[", 
+         RowBox[{
+          RowBox[{"ptsFromVel", "[", "\[CapitalOmega]", "]"}], ",", " ", 
+          "title", ",", " ", "yLabel", ",", " ", 
+          RowBox[{"ImageSize", "\[Rule]", "300"}], ",", " ", 
+          RowBox[{"yOver", "\[Rule]", " ", "1.2"}]}], "]"}]}], "]"}]}], ";", 
+     "\[IndentingNewLine]", 
      RowBox[{
       RowBox[{
-      "schemeAPointsFromVelocityExample", "[", "\[CapitalOmega]", "]"}], ",", 
-      " ", "title", ",", " ", "\"\<Volts\>\"", ",", " ", 
-      RowBox[{"ImageSize", " ", "\[Rule]", " ", "300"}]}], "]"}]}], 
+       RowBox[{
+        RowBox[{"plotVel", "[", 
+         RowBox[{"maxVelExample", " ", "*", " ", "#"}], "]"}], "&"}], " ", "/@",
+        " ", 
+       RowBox[{"{", 
+        RowBox[{"0.1", ",", " ", "0.5", ",", " ", "0.9"}], "}"}]}], " ", "//",
+       " ", "Row"}]}]}], "\[IndentingNewLine]", 
    "]"}]}], "\[IndentingNewLine]", 
- RowBox[{
-  RowBox[{
+ RowBox[{"plotSchemePointsExample", "[", 
+  RowBox[{"schemeAResult", ",", " ", 
    RowBox[{
-    RowBox[{"plotZFromVel", "[", 
-     RowBox[{"maxVelExample", " ", "*", " ", "#"}], "]"}], "&"}], " ", "/@", 
-   " ", 
-   RowBox[{"{", 
-    RowBox[{"0.1", ",", " ", "0.5", ",", " ", "0.9"}], "}"}]}], " ", "//", 
-  " ", "Row"}]}], \
-"Input",ExpressionUUID->"e340166c-4f2c-4a90-9cc3-256eb54064da"],
+    RowBox[{"\"\<Scheme A Example, \[CapitalOmega]=\>\"", " ", "<>", " ", 
+     RowBox[{"ToString", "[", "#", "]"}], " ", "<>", " ", "\"\< rad/s\>\""}], 
+    "&"}], ",", " ", "\"\<Volts\>\""}], 
+  "]"}]}], "Input",ExpressionUUID->"6083a89c-6fe9-43db-a326-9d786e62a3f7"],
 
 Cell["\<\
 It is significant to note that as velocity increases, the amount of the \
@@ -20503,7 +20673,7 @@ Cell[TextData[{
 }], "Subsection",ExpressionUUID->"82db3dc0-64eb-447f-86ee-7d9b0871cf12"],
 
 Cell["\<\
-We now discuss a second scheme, scheme B. This scheme is motivated by a few \
+We now discuss a second scheme, Scheme B. This scheme is motivated by a few \
 observations.\
 \>", "Text",ExpressionUUID->"9bb55806-d22c-4d2d-aa07-1252721da3a1"],
 
@@ -20579,9 +20749,8 @@ and motor resistance; its abscissa will be an interpolation between Z and S.\
 \>", "Item",ExpressionUUID->"039eae58-19a2-4064-aa3d-9a2b62c6843b"]
 }, Open  ]],
 
-Cell["\<\
-The general structure of the scheme B looks something like this:\
-\>", "Text",ExpressionUUID->"1d699233-95c9-4f5a-8b28-4bebd65f1e95"],
+Cell["The general structure of Scheme B looks something like this:", \
+"Text",ExpressionUUID->"1d699233-95c9-4f5a-8b28-4bebd65f1e95"],
 
 Cell[BoxData[{
  RowBox[{
@@ -20628,9 +20797,10 @@ Cell[TextData[{
 }], "Subsection",ExpressionUUID->"fe8fc496-a3ae-4e50-8852-996f306e3c3e"],
 
 Cell["\<\
-We calculate the current in steady state (i.e. after the LR transient) as a \
-function of the applied voltage and instantaneous current velocity. Note that \
-as was the case in Schema A, this is only an approximation.\
+We calculate the current in instantaneous steady state (i.e. after the LR \
+transient) as a function of the applied voltage and instantaneous current \
+velocity. Note that as was the case in Schema A, this is only an \
+approximation.\
 \>", "Text",ExpressionUUID->"d26ea78c-78e8-4bbd-9288-1d0c3cb9c320"],
 
 Cell[BoxData[{
@@ -20724,8 +20894,8 @@ Cell[BoxData[
 "Input",ExpressionUUID->"71bf85d3-1187-4bc3-bf23-1453a02a58ea"],
 
 Cell[BoxData[{
- RowBox[{"eqn", " ", "=", 
-  RowBox[{
+ RowBox[{"schemeBEqn", " ", "=", 
+  RowBox[{"(", 
    RowBox[{
     RowBox[{
      RowBox[{"(", 
@@ -20733,12 +20903,19 @@ Cell[BoxData[{
        RowBox[{"line", "[", 
         RowBox[{"S", ",", " ", "Z"}], "]"}], " ", "/.", " ", 
        "schemeBPoints"}], ")"}], "[", "controlProp100", "]"}], " ", 
-    "\[Equal]", " ", "yProp100"}], " ", "/.", " ", 
-   "schemeB"}]}], "\[IndentingNewLine]", 
+    "\[Equal]", " ", 
+    RowBox[{"(", 
+     RowBox[{"yProp100", " ", "/.", " ", "schemeB"}], ")"}]}], 
+   ")"}]}], "\[IndentingNewLine]", 
  RowBox[{"schemeBSoln", " ", "=", " ", 
   RowBox[{"uniqueSolve", "[", 
-   RowBox[{"eqn", ",", " ", "controlProp100"}], 
-   "]"}]}]}], "Input",ExpressionUUID->"bd159983-1ddf-4dff-afdf-3ec62fb54004"],
+   RowBox[{"schemeBEqn", ",", " ", "controlProp100"}], 
+   "]"}]}], "\[IndentingNewLine]", 
+ RowBox[{"schemeBResult", " ", "=", " ", 
+  RowBox[{
+  "schemeBPoints", "/.", " ", 
+   "schemeBSoln"}]}]}], \
+"Input",ExpressionUUID->"bd159983-1ddf-4dff-afdf-3ec62fb54004"],
 
 Cell["\<\
 Note that this result is only dependent on the instantaneous velocity and \
@@ -20764,50 +20941,14 @@ As we did with Scheme A, we illustrate Scheme B with our working motor \
 example at a few different velocities.\
 \>", "Text",ExpressionUUID->"4a9c7f0a-fca9-4792-9e22-a0a2e55f117c"],
 
-Cell[BoxData[{
- RowBox[{
-  RowBox[{
-  "schemeBPointsFromVelocityExample", "[", "\[CapitalOmega]\[CapitalOmega]_", 
-   "]"}], " ", ":=", " ", 
-  RowBox[{
+Cell[BoxData[
+ RowBox[{"plotSchemePointsExample", "[", 
+  RowBox[{"schemeBResult", ",", " ", 
    RowBox[{
-    RowBox[{
-     RowBox[{"schemeBPoints", "/.", " ", "schemeBSoln"}], "  ", "/.", " ", 
-     "\[IndentingNewLine]", 
-     RowBox[{"{", 
-      RowBox[{
-       RowBox[{"controlMax", " ", "\[Rule]", " ", "32767"}], ",", " ", 
-       RowBox[{"batteryVoltage", "\[Rule]", "12"}]}], "}"}]}], " ", "/.", " ",
-     "unitlessMotorWithFlywheel"}], " ", "/.", " ", 
-   RowBox[{
-   "\[CapitalOmega]", "\[Rule]", 
-    "\[CapitalOmega]\[CapitalOmega]"}]}]}], "\[IndentingNewLine]", 
- RowBox[{
-  RowBox[{"plotZFromVelB", "[", "\[CapitalOmega]_", "]"}], " ", ":=", " ", 
-  RowBox[{"Module", "[", 
-   RowBox[{
-    RowBox[{"{", 
-     RowBox[{"title", " ", "=", " ", 
-      RowBox[{"\"\<Scheme B Example, \[CapitalOmega]=\>\"", " ", "<>", " ", 
-       RowBox[{"ToString", "[", "\[CapitalOmega]", "]"}], " ", "<>", " ", 
-       "\"\< rad/s\>\""}]}], "}"}], ",", "\[IndentingNewLine]", 
-    RowBox[{"plotPoints", "[", 
-     RowBox[{
-      RowBox[{
-      "schemeBPointsFromVelocityExample", "[", "\[CapitalOmega]", "]"}], ",", 
-      " ", "title", ",", " ", "\"\<Current (Amps)\>\"", ",", " ", 
-      RowBox[{"ImageSize", " ", "\[Rule]", " ", "300"}]}], "]"}]}], 
-   "]"}]}], "\[IndentingNewLine]", 
- RowBox[{
-  RowBox[{
-   RowBox[{
-    RowBox[{"plotZFromVelB", "[", 
-     RowBox[{"maxVelExample", " ", "*", " ", "#"}], "]"}], "&"}], " ", "/@", 
-   " ", 
-   RowBox[{"{", 
-    RowBox[{"0.1", ",", " ", "0.5", ",", " ", "0.9"}], "}"}]}], " ", "//", 
-  " ", "Row"}]}], \
-"Input",ExpressionUUID->"e4fe6904-20f4-4a68-b2c6-871d900064c7"],
+    RowBox[{"\"\<Scheme B Example, \[CapitalOmega]=\>\"", " ", "<>", " ", 
+     RowBox[{"ToString", "[", "#", "]"}], " ", "<>", " ", "\"\< rad/s\>\""}], 
+    "&"}], ",", " ", "\"\<Current (Amps)\>\""}], 
+  "]"}]], "Input",ExpressionUUID->"771af6be-1cd0-44a9-bfd4-25c44860de99"],
 
 Cell[TextData[{
  "These examples clearly illustrate the most significant tradeoff involved in \
@@ -20842,22 +20983,155 @@ Cell[CellGroupData[{
 Cell[TextData[{
  
  CounterBox["Section"],
+ ". Scheme C"
+}], "Section",ExpressionUUID->"6474ec87-445c-46d3-a8e8-ff7a7319fed3"],
+
+Cell["In the introduction we stated the following:", \
+"Text",ExpressionUUID->"23968272-8c86-4d82-a0af-022257f274da"],
+
+Cell[CellGroupData[{
+
+Cell["\<\
+\[OpenCurlyDoubleQuote]S, the point of 100% reverse driving. It is is clear \
+that this occurs at the negative extreme of the PID control signal range.\
+\>", "Item",ExpressionUUID->"6dd73f0b-d7ed-4f69-8a44-5b3948691888"],
+
+Cell["\<\
+G, the point of 100% forward driving. This occurs at the positive extreme of \
+the PID control signal range.\[CloseCurlyDoubleQuote]\
+\>", "Item",ExpressionUUID->"cfaf9353-76ab-4238-9187-676837e7689c"]
+}, Open  ]],
+
+Cell[TextData[{
+ "However, upon further reflection, we can see that these unconditional \
+statements about the position of S and G in the control range can in fact be \
+relaxed. In particular, we ought to ask ourselves the question \
+\[OpenCurlyDoubleQuote]is it necessary or worthwhile to ",
+ StyleBox["always",
+  FontSlant->"Italic"],
+ " provide the PID loop with access to the ",
+ StyleBox["full ",
+  FontSlant->"Italic"],
+ "range of the reverse driving regime?\[CloseCurlyDoubleQuote] For example, \
+if we are in Scheme B with some significant velocity, proportional braking is \
+strong, and so maybe we don\[CloseCurlyQuote]t need to map the upper end of \
+reverse driving into the range [-controlMax, controlMax] as we have been \
+doing so far. Scheme C explores that possibility."
+}], "Text",ExpressionUUID->"9c6f9a23-ff8d-4908-b597-e0e56e23da19"],
+
+Cell["Recall our result from Scheme B.", \
+"Text",ExpressionUUID->"efd1c814-3deb-4467-b9d2-52c4da59975a"],
+
+Cell[BoxData["schemeBResult"], \
+"Input",ExpressionUUID->"1091a523-1884-4ae1-a8a2-2d398302949d"],
+
+Cell["\<\
+In Scheme C, we stretch out the points S & T left of the Y axis so that they \
+have the same slope as that of the line from Z to G.\
+\>", "Text",ExpressionUUID->"d20f740c-972e-4100-bf69-b3494aee935f"],
+
+Cell[BoxData[{
+ RowBox[{
+  RowBox[{
+   RowBox[{"computeSchemeC", "[", "points_", "]"}], " ", ":=", " ", 
+   RowBox[{"Module", "[", 
+    RowBox[{
+     RowBox[{"{", 
+      RowBox[{"scale", ",", " ", "scalePt"}], "}"}], ",", 
+     "\[IndentingNewLine]", 
+     RowBox[{
+      RowBox[{"scale", " ", "=", " ", 
+       RowBox[{
+        RowBox[{"-", 
+         RowBox[{
+          RowBox[{"(", 
+           RowBox[{"S", " ", "/.", " ", "points"}], ")"}], "[", 
+          RowBox[{"[", "2", "]"}], "]"}]}], " ", "/", " ", 
+        RowBox[{
+         RowBox[{"(", 
+          RowBox[{"G", " ", "/.", " ", "points"}], ")"}], "[", 
+         RowBox[{"[", "2", "]"}], "]"}]}]}], ";", "\[IndentingNewLine]", 
+      RowBox[{
+       RowBox[{"scalePt", "[", "pt_", "]"}], " ", ":=", " ", 
+       RowBox[{"{", 
+        RowBox[{
+         RowBox[{
+          RowBox[{"pt", "[", 
+           RowBox[{"[", "1", "]"}], "]"}], " ", "*", " ", "scale"}], ",", " ", 
+         RowBox[{"pt", "[", 
+          RowBox[{"[", "2", "]"}], "]"}]}], "}"}]}], ";", 
+      "\[IndentingNewLine]", 
+      RowBox[{
+       RowBox[{"{", "\[IndentingNewLine]", 
+        RowBox[{
+         RowBox[{"S", " ", "\[Rule]", " ", 
+          RowBox[{"(", 
+           RowBox[{
+            RowBox[{"S", " ", "/.", " ", "points"}], " ", "//", " ", 
+            "scalePt"}], ")"}]}], " ", ",", " ", "\[IndentingNewLine]", 
+         RowBox[{"T", " ", "\[Rule]", " ", 
+          RowBox[{"(", 
+           RowBox[{
+            RowBox[{"T", " ", "/.", " ", "points"}], "  ", "//", " ", 
+            "scalePt"}], ")"}]}], ",", " ", "\[IndentingNewLine]", 
+         RowBox[{"Z", "\[Rule]", " ", 
+          RowBox[{"(", 
+           RowBox[{"Z", " ", "/.", " ", "points"}], ")"}]}], ",", 
+         "\[IndentingNewLine]", 
+         RowBox[{"G", " ", "\[Rule]", " ", 
+          RowBox[{"(", 
+           RowBox[{"G", " ", "/.", " ", "points"}], ")"}]}]}], "}"}], " ", "//",
+        " ", "FullSimplify"}]}]}], "\[IndentingNewLine]", "]"}]}], 
+  ";"}], "\[IndentingNewLine]", 
+ RowBox[{"schemeCResult", " ", "=", " ", 
+  RowBox[{
+  "computeSchemeC", "[", "schemeBResult", 
+   "]"}]}]}], "Input",ExpressionUUID->"3b1a78cd-4789-4c6a-b410-a3287cc65d29"],
+
+Cell["\<\
+This produces a linear interpretation of the control signal across the entire \
+control signal range. However, unlike Scheme B, for higher velocities, we \
+rely much more on proportional braking that we do on reverse driving. Which \
+seems to make sense, since at higher velocities proportional braking has more \
+effect than it does at lower velocities.\
+\>", "Text",ExpressionUUID->"1092f3c0-55d7-4ab4-9c7b-8f3eb5ce2da2"],
+
+Cell[BoxData[
+ RowBox[{"plotSchemePointsExample", "[", 
+  RowBox[{"schemeCResult", ",", " ", 
+   RowBox[{
+    RowBox[{"\"\<Scheme C Example, \[CapitalOmega]=\>\"", " ", "<>", " ", 
+     RowBox[{"ToString", "[", "#", "]"}], " ", "<>", " ", "\"\< rad/s\>\""}], 
+    "&"}], ",", " ", "\"\<Current (Amps)\>\""}], 
+  "]"}]], "Input",ExpressionUUID->"d3c48ef6-ea81-4736-bb42-574d9286568c"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[TextData[{
+ 
+ CounterBox["Section"],
  ". To Do"
 }], "Section",ExpressionUUID->"25395ca7-b759-49cd-b4e9-10f269b0eb6a"],
 
 Cell[CellGroupData[{
 
 Cell["\<\
-Calculate controlReverse0, dealing with the voltage drop across the catch \
-diode. This doesn\[CloseCurlyQuote]t effect the above results, but will \
-slightly alter the rescaling of control signal to duty cycle when in the \
+In Scheme B, calculate controlReverse0, dealing with the voltage drop across \
+the catch diode. This doesn\[CloseCurlyQuote]t effect the above results, but \
+will slightly alter the rescaling of control signal to duty cycle when in the \
 reverse driving regime.\
 \>", "Item",ExpressionUUID->"a76bc4ae-3098-4410-be0e-fdc6593230ab"],
 
 Cell["\<\
 Can we improve on the approximation currently found in \
 ssCurrentFromVoltageVelocity[]?\
-\>", "Item",ExpressionUUID->"f216faf3-e14e-43a9-9117-e4147394c01d"]
+\>", "Item",ExpressionUUID->"f216faf3-e14e-43a9-9117-e4147394c01d"],
+
+Cell["\<\
+Consider presenting a \[OpenCurlyQuote]current plot\[CloseCurlyQuote] of \
+Scheme A to facilitate comparison between the schemes.\
+\>", "Item",ExpressionUUID->"3d2a2b93-7bd7-45f0-9b06-3c64f4807115"]
 }, Open  ]]
 }, Open  ]],
 
@@ -20875,13 +21149,18 @@ Cell["2018.08.07 Initial version.", \
 "Item",ExpressionUUID->"c7e98618-4fda-46a1-9c3b-e7a69012bc31"],
 
 Cell["2018.08.13. Significant rewrite.", \
-"Item",ExpressionUUID->"2a420655-916d-4715-8289-ee8a6fd6b330"]
+"Item",ExpressionUUID->"2a420655-916d-4715-8289-ee8a6fd6b330"],
+
+Cell["\<\
+2018.08.14. Fix errors caused by switch from post-gearbox to pre-gearbox \
+\[CapitalOmega]. Minor prose corrections. Added Scheme C.\
+\>", "Item",ExpressionUUID->"b539fab0-0c9c-4507-8135-d637b51426d5"]
 }, Open  ]]
 }, Open  ]]
 }, Open  ]]
 },
-WindowSize->{1116, 1519},
-WindowMargins->{{Automatic, 1197}, {Automatic, 11}},
+WindowSize->{1116, 1520},
+WindowMargins->{{Automatic, 1197}, {Automatic, 10}},
 PrintingCopies->1,
 PrintingPageRange->{32000, 32000},
 PrintingOptions->{"Magnification"->1.,
