@@ -20918,10 +20918,11 @@ Cell[BoxData[{
 "Input",ExpressionUUID->"bd159983-1ddf-4dff-afdf-3ec62fb54004"],
 
 Cell["\<\
-Note that this result is only dependent on the instantaneous velocity and \
-battery voltage, the control range, and the motor\[CloseCurlyQuote]s \
-pre-gearbox electrical coupling constant: conveniently, the uses of the motor\
-\[CloseCurlyQuote]s resistive constant R values have all cancelled out.\
+Note that abscissas in this result are only dependent on the instantaneous \
+velocity and battery voltage, the control range, and the motor\
+\[CloseCurlyQuote]s pre-gearbox electrical coupling constant: conveniently, \
+the uses of the motor\[CloseCurlyQuote]s resistive constant R values have all \
+cancelled out.\
 \>", "Text",ExpressionUUID->"31e2151c-fbe2-4266-b655-e1e6400b7559"]
 }, Open  ]],
 
