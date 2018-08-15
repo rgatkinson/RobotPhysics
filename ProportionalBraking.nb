@@ -20705,10 +20705,7 @@ Cell[TextData[{
  "The point Z is by its definition a point of zero ",
  StyleBox["current",
   FontSlant->"Italic"],
- ". It thus makes sense to at least ",
- StyleBox["explore",
-  FontVariations->{"Underline"->True}],
- " an instantaneous-",
+ ". It thus makes sense to at least explore an instantaneous-",
  StyleBox["current",
   FontSlant->"Italic"],
  "-linearization (in contrast to the \
@@ -20718,14 +20715,14 @@ instantaneous-equivalent-applied-voltage-linearization previously examined)."
 
 Cell["\<\
 Scheme B is the exploration of such an instantaneous-current-linearization. \
-From these observations, we can deduce a few facts.\
+From the above observations, we can deduce a few facts.\
 \>", "Text",ExpressionUUID->"f5af712e-e085-47ee-a777-97b3ed684f98"],
 
 Cell[CellGroupData[{
 
 Cell[TextData[{
- "The point Z is at the origin: it\[CloseCurlyQuote]s ordinate is zero, \
-because the y axis is torque; it\[CloseCurlyQuote]s abscissa is zero because \
+ "The point Z is at the origin: it\[CloseCurlyQuote]s ordinate is zero \
+because the y axis is current; it\[CloseCurlyQuote]s abscissa is zero because \
 no other ",
  StyleBox["fixed",
   FontSlant->"Italic"],
@@ -21112,6 +21109,106 @@ Cell[CellGroupData[{
 Cell[TextData[{
  
  CounterBox["Section"],
+ ". Implementation"
+}], "Section",ExpressionUUID->"e867f2c1-4e76-4f0e-8456-134e9cd7ba4e"],
+
+Cell["\<\
+In the above discussion, velocity has been measured in radians / second and \
+battery voltage in volts. However, in the firmware in which the PID loop is \
+implemented, velocity is available in encoder counts per second and battery \
+voltage in mV. Here, we convert our three schemes to those units to aid in \
+implementation.\
+\>", "Text",ExpressionUUID->"2f7e8d61-7f5f-4c3c-b075-f9a64218ccf8"],
+
+Cell[BoxData[{
+ RowBox[{
+  RowBox[{"cpsToRadPerSec", "[", "cps_", "]"}], " ", ":=", " ", 
+  RowBox[{"Module", "[", 
+   RowBox[{
+    RowBox[{"{", 
+     RowBox[{"counts", " ", "=", " ", 
+      RowBox[{"IndependentUnit", "[", "\"\<Counts\>\"", "]"}]}], "}"}], ",", 
+    " ", "\[IndentingNewLine]", 
+    RowBox[{
+     RowBox[{
+      RowBox[{"Quantity", "[", 
+       RowBox[{"cps", ",", " ", 
+        RowBox[{"counts", " ", "/", " ", "\"\<Seconds\>\""}]}], "]"}], " ", 
+      "/", " ", 
+      RowBox[{"Quantity", "[", 
+       RowBox[{"countsPerRev", ",", " ", 
+        RowBox[{"counts", " ", "/", " ", "\"\<Revolutions\>\""}]}], "]"}]}], 
+     " ", "*", " ", 
+     RowBox[{"Quantity", "[", 
+      RowBox[{
+       RowBox[{"2", " ", "Pi"}], ",", " ", 
+       RowBox[{"\"\<Radians\>\"", " ", "/", " ", "\"\<Revolutions\>\""}]}], 
+      "]"}]}]}], "]"}]}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"mvToV", "[", "mv_", "]"}], " ", ":=", " ", 
+  RowBox[{
+   RowBox[{"Quantity", "[", 
+    RowBox[{"mv", ",", " ", "\"\<mV\>\""}], "]"}], " ", "/", " ", 
+   "1000"}]}], "\[IndentingNewLine]", 
+ RowBox[{"cpsToRadPerSec", "[", "cps", "]"}], "\[IndentingNewLine]", 
+ RowBox[{"implMap", " ", "=", " ", 
+  RowBox[{
+   RowBox[{"{", 
+    RowBox[{
+     RowBox[{"\[CapitalOmega]", " ", "\[Rule]", " ", 
+      RowBox[{"cpsToRadPerSec", "[", "cps", "]"}]}], ",", " ", 
+     RowBox[{"batteryVoltage", " ", "\[Rule]", " ", 
+      RowBox[{"mvToV", "[", "mvBatteryVoltage", "]"}]}]}], "}"}], " ", "//", 
+   " ", "clearUnits"}]}]}], \
+"Input",ExpressionUUID->"7a7974c5-8a21-4c36-8c75-2542d33ab849"],
+
+Cell[BoxData[{
+ RowBox[{
+  RowBox[{"schemeAResult", " ", "/.", " ", "implMap"}], " ", "//", " ", 
+  "FullSimplify"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{
+   RowBox[{"Z", " ", "/.", " ", 
+    RowBox[{"(", 
+     RowBox[{
+      RowBox[{"schemeAResult", " ", "/.", " ", "implMap"}], " ", "//", " ", 
+      "FullSimplify"}], ")"}]}], " ", "//", " ", "First"}], " ", "//", " ", 
+  "Apart"}]}], "Input",ExpressionUUID->"677d1941-d055-4a00-b246-2a5cae64e149"],
+
+Cell[BoxData[{
+ RowBox[{
+  RowBox[{
+   RowBox[{"schemeBResult", " ", "/.", " ", "implMap"}], " ", "//", " ", 
+   "FullSimplify"}], " ", "//", " ", "prettyPrint"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{
+   RowBox[{"T", " ", "/.", " ", 
+    RowBox[{"(", 
+     RowBox[{
+      RowBox[{"schemeBResult", " ", "/.", " ", "implMap"}], " ", "//", " ", 
+      "FullSimplify"}], ")"}]}], " ", "//", " ", "First"}], " ", "//", " ", 
+  "Apart"}]}], "Input",ExpressionUUID->"9b73db9d-1faa-44d1-b218-1e0e39b8b5a8"],
+
+Cell[BoxData[{
+ RowBox[{
+  RowBox[{
+   RowBox[{"schemeCResult", " ", "/.", " ", "implMap"}], " ", "//", " ", 
+   "FullSimplify"}], " ", "//", " ", "prettyPrint"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{
+   RowBox[{"T", " ", "/.", " ", 
+    RowBox[{"(", 
+     RowBox[{
+      RowBox[{"schemeCResult", " ", "/.", " ", "implMap"}], " ", "//", " ", 
+      "FullSimplify"}], ")"}]}], " ", "//", " ", "First"}], " ", "//", " ", 
+  "Apart"}]}], "Input",ExpressionUUID->"6533b4d2-f5e9-46cb-83eb-c8c990098ccf"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[TextData[{
+ 
+ CounterBox["Section"],
  ". To Do"
 }], "Section",ExpressionUUID->"25395ca7-b759-49cd-b4e9-10f269b0eb6a"],
 
@@ -21154,14 +21251,15 @@ Cell["2018.08.13. Significant rewrite.", \
 
 Cell["\<\
 2018.08.14. Fix errors caused by switch from post-gearbox to pre-gearbox \
-\[CapitalOmega]. Minor prose corrections. Added Scheme C.\
+\[CapitalOmega]. Minor prose corrections. Added Scheme C. Added \
+Implementation section.\
 \>", "Item",ExpressionUUID->"b539fab0-0c9c-4507-8135-d637b51426d5"]
 }, Open  ]]
 }, Open  ]]
 }, Open  ]]
 },
-WindowSize->{1116, 1520},
-WindowMargins->{{Automatic, 1197}, {Automatic, 10}},
+WindowSize->{1203, 1520},
+WindowMargins->{{125, Automatic}, {Automatic, 10}},
 PrintingCopies->1,
 PrintingPageRange->{32000, 32000},
 PrintingOptions->{"Magnification"->1.,
