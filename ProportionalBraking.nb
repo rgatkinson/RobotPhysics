@@ -6,7 +6,7 @@ Cell["On Proportional Braking in H Bridges", \
 
 Cell["\<\
 Robert Atkinson
-14 August 2018\
+15 August 2018\
 \>", "Author",ExpressionUUID->"05aea015-05f3-4e99-899d-20a8cd5792a1"],
 
 Cell["\<\
@@ -19704,19 +19704,26 @@ Cell[TextData[{
  ". Introduction: Points S, T, and G"
 }], "Subsection",ExpressionUUID->"5b857c69-f760-45f1-8b9c-b1f47d72e890"],
 
-Cell["\<\
-The signature characteristic of the first scheme we examine is that it \
+Cell[TextData[{
+ "The signature characteristic of the first scheme we examine is that it \
 attempts to map in a linear manner the control signal coming from the PID \
 loop to an \[OpenCurlyDoubleQuote]instantaneous equivalent applied DC voltage\
 \[CloseCurlyDoubleQuote]. That is, for any H bridge switching mode and duty \
 cycle, this scheme attempts to determine the applied voltage that would \
-produce the same motor response in a dual system that lacked the H bridge but \
-instead had a DC voltage source directly connected to the motor.\
-\>", "Text",ExpressionUUID->"091f91a6-b97b-4d43-9673-ffaba29474b1"],
+instantaneously produce the same motor response in a dual system that lacked \
+the H bridge but instead had a DC voltage source directly connected to the \
+motor.  (This not to be confused with what one might call the \
+\[OpenCurlyDoubleQuote]",
+ StyleBox["steady state",
+  FontSlant->"Italic"],
+ " equivalent applied DC voltage\[CloseCurlyDoubleQuote], which varies \
+(nearly) linearly with battery voltage and duty cycle: if battery voltage is \
+12V, then 50% duty cycle is equivalent to 6V, etc.)"
+}], "Text",ExpressionUUID->"091f91a6-b97b-4d43-9673-ffaba29474b1"],
 
 Cell["\<\
-For some switching modes and duty cycle combinations, this equivalence is \
-clear.\
+For some switching modes and duty cycle combinations, the instantaneous \
+equivalent applied DC voltage is clear.\
 \>", "Text",ExpressionUUID->"64e71dbc-725e-4f78-b116-02b2abde5d8f"],
 
 Cell[CellGroupData[{
@@ -20649,7 +20656,83 @@ control range allocated to the forward driving regime diminishes, ultimately \
 to zero. In many (if not most) FTC motor control situations, the control loop \
 spends the majority of its time in the forward driving regime. There seems to \
 be a tension between these situations.\
-\>", "Text",ExpressionUUID->"74ab77fe-b0f0-4c7c-bb5b-8b040b8d92b9"]
+\>", "Text",ExpressionUUID->"74ab77fe-b0f0-4c7c-bb5b-8b040b8d92b9"],
+
+Cell["\<\
+In addition to the 10%, 50%, and 90% of maximum velocity, we look at the \
+transition point across the whole velocity range. As we require in the \
+development above the transition Z to have a non-negative abscissa, clearly \
+the result should computed using the absolute value of the velocity, then, if \
+need be, adjusted afterward to correct for the sign of forward vs reverse \
+driving.\
+\>", "Text",ExpressionUUID->"caf48c25-aa78-40a0-91b6-3f5fcf782153"],
+
+Cell[BoxData[{
+ RowBox[{"Clear", "[", "plotTransitionExample", "]"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"plotTransitionExample", "[", 
+   RowBox[{
+   "schemeName_", ",", " ", "result_", ",", " ", "pointName_", ",", " ", 
+    "\[CapitalOmega]min_", ",", " ", "\[CapitalOmega]max_"}], "]"}], " ", ":=",
+   " ", 
+  RowBox[{"Module", "[", 
+   RowBox[{
+    RowBox[{"{", 
+     RowBox[{"expr", ",", " ", 
+      RowBox[{"cMax", "=", " ", "32767"}], ",", " ", "range"}], "}"}], ",", 
+    "\[IndentingNewLine]", 
+    RowBox[{
+     RowBox[{"expr", " ", "=", " ", 
+      RowBox[{
+       RowBox[{
+        RowBox[{
+         RowBox[{"abscissa", "[", 
+          RowBox[{"pointName", " ", "/.", " ", "result"}], "]"}], " ", "/.", 
+         " ", "unitlessMotorWithFlywheel"}], " ", "/.", " ", 
+        RowBox[{"{", 
+         RowBox[{
+          RowBox[{"controlMax", " ", "\[Rule]", " ", "cMax"}], ",", " ", 
+          RowBox[{"batteryVoltage", "\[Rule]", "12"}]}], "}"}]}], " ", "//", 
+       " ", "N"}]}], ";", "\[IndentingNewLine]", 
+     RowBox[{"range", " ", "=", " ", 
+      RowBox[{"{", 
+       RowBox[{
+        RowBox[{"Max", "[", 
+         RowBox[{
+          RowBox[{"-", "cMax"}], ",", " ", 
+          RowBox[{"expr", " ", "/.", " ", 
+           RowBox[{"\[CapitalOmega]", "\[Rule]", "\[CapitalOmega]max"}]}]}], 
+         "]"}], ",", " ", 
+        RowBox[{"Min", "[", 
+         RowBox[{"cMax", ",", " ", 
+          RowBox[{"expr", " ", "/.", 
+           RowBox[{
+           "\[CapitalOmega]", "\[Rule]", " ", "\[CapitalOmega]min"}]}]}], 
+         "]"}]}], "}"}]}], ";", "\[IndentingNewLine]", 
+     RowBox[{"Plot", "[", 
+      RowBox[{"expr", ",", " ", 
+       RowBox[{"{", 
+        RowBox[{
+        "\[CapitalOmega]", ",", " ", "\[CapitalOmega]min", ",", " ", 
+         "\[CapitalOmega]max"}], "}"}], ",", " ", 
+       RowBox[{"AxesOrigin", "\[Rule]", 
+        RowBox[{"{", 
+         RowBox[{"0", ",", "0"}], "}"}]}], ",", " ", "\[IndentingNewLine]", 
+       RowBox[{"PlotLabel", "\[Rule]", " ", 
+        RowBox[{"schemeName", "<>", " ", "\"\< Point \>\"", "<>", " ", 
+         RowBox[{"ToString", "[", "pointName", "]"}], " ", "<>", " ", 
+         "\"\< Abscissa vs Velocity\>\""}]}], ",", "\[IndentingNewLine]", 
+       RowBox[{"AxesLabel", "\[Rule]", " ", 
+        RowBox[{"{", 
+         RowBox[{"\"\<rad/s\>\"", ",", " ", "\"\<control\>\""}], "}"}]}], ",",
+        " ", 
+       RowBox[{"PlotRange", "\[Rule]", "range"}]}], "]"}]}]}], 
+   "\[IndentingNewLine]", "]"}]}], "\[IndentingNewLine]", 
+ RowBox[{"plotTransitionExample", "[", 
+  RowBox[{
+  "\"\<SchemeA\>\"", ",", "  ", "schemeAResult", ",", " ", "Z", ",", " ", 
+   RowBox[{"-", "maxVelExample"}], ",", " ", "maxVelExample"}], 
+  "]"}]}], "Input",ExpressionUUID->"e2fd68c9-c0a9-4743-bbaa-693ebc609f67"]
 }, Open  ]]
 }, Open  ]],
 
@@ -20972,7 +21055,23 @@ insensitive to velocity."
 }], "Text",ExpressionUUID->"f36f5bf7-9d76-4efc-afe3-4009d58d25f9"],
 
 Cell["These tradeoffs seem worthwhile.", \
-"Text",ExpressionUUID->"e1dc3952-1599-4b55-8003-0095ccd2d1f2"]
+"Text",ExpressionUUID->"e1dc3952-1599-4b55-8003-0095ccd2d1f2"],
+
+Cell["\<\
+In addition to the 10%, 50%, and 90% of maximum velocity, we look at the \
+transition point across the whole velocity range, as we did with Scheme A. As \
+we require in the development above the transition T to have a non-positive \
+abscissa, clearly the result should computed using the absolute value of the \
+velocity, then, if need be, adjusted afterward to correct for the sign of \
+forward vs reverse driving.\
+\>", "Text",ExpressionUUID->"af0067ca-52ef-4a18-95f6-9994163b7581"],
+
+Cell[BoxData[
+ RowBox[{"plotTransitionExample", "[", 
+  RowBox[{
+  "\"\<SchemeB\>\"", ",", "  ", "schemeBResult", ",", " ", "T", ",", " ", 
+   RowBox[{"-", "maxVelExample"}], ",", " ", "maxVelExample"}], 
+  "]"}]], "Input",ExpressionUUID->"9239a78b-9be4-49ff-a7e9-30aa56472b8b"]
 }, Open  ]]
 }, Open  ]],
 
@@ -21101,7 +21200,23 @@ Cell[BoxData[
     RowBox[{"\"\<Scheme C Example, \[CapitalOmega]=\>\"", " ", "<>", " ", 
      RowBox[{"ToString", "[", "#", "]"}], " ", "<>", " ", "\"\< rad/s\>\""}], 
     "&"}], ",", " ", "\"\<Current (Amps)\>\""}], 
-  "]"}]], "Input",ExpressionUUID->"d3c48ef6-ea81-4736-bb42-574d9286568c"]
+  "]"}]], "Input",ExpressionUUID->"d3c48ef6-ea81-4736-bb42-574d9286568c"],
+
+Cell["\<\
+In addition to the 10%, 50%, and 90% of maximum velocity, we look at the \
+transition point across the whole velocity range as we we did with the \
+previous schemes. As we require in the development above the transition T to \
+have a non-positive abscissa, clearly the result should computed using the \
+absolute value of the velocity, then, if need be, adjusted afterward to \
+correct for the sign of forward vs reverse driving.\
+\>", "Text",ExpressionUUID->"12c57d1f-c6d1-48ef-92ab-261c2d5d59db"],
+
+Cell[BoxData[
+ RowBox[{"plotTransitionExample", "[", 
+  RowBox[{
+  "\"\<SchemeC\>\"", ",", "  ", "schemeCResult", ",", " ", "T", ",", " ", 
+   RowBox[{"-", "maxVelExample"}], ",", " ", "maxVelExample"}], 
+  "]"}]], "Input",ExpressionUUID->"feab75eb-b17c-401a-94bd-e0d28a31f099"]
 }, Open  ]],
 
 Cell[CellGroupData[{
@@ -21243,7 +21358,7 @@ Cell[TextData[{
 
 Cell[CellGroupData[{
 
-Cell["2018.08.07 Initial version.", \
+Cell["2018.08.07. Initial version.", \
 "Item",ExpressionUUID->"c7e98618-4fda-46a1-9c3b-e7a69012bc31"],
 
 Cell["2018.08.13. Significant rewrite.", \
@@ -21253,13 +21368,17 @@ Cell["\<\
 2018.08.14. Fix errors caused by switch from post-gearbox to pre-gearbox \
 \[CapitalOmega]. Minor prose corrections. Added Scheme C. Added \
 Implementation section.\
-\>", "Item",ExpressionUUID->"b539fab0-0c9c-4507-8135-d637b51426d5"]
+\>", "Item",ExpressionUUID->"b539fab0-0c9c-4507-8135-d637b51426d5"],
+
+Cell["\<\
+2018.08.15. Explore behavior of transition point with velocity in more detail.\
+\>", "Item",ExpressionUUID->"74570f61-9d86-4b3c-ae63-6e4d4d9d3923"]
 }, Open  ]]
 }, Open  ]]
 }, Open  ]]
 },
 WindowSize->{1203, 1520},
-WindowMargins->{{125, Automatic}, {Automatic, 10}},
+WindowMargins->{{Automatic, 1213}, {2, Automatic}},
 PrintingCopies->1,
 PrintingPageRange->{32000, 32000},
 PrintingOptions->{"Magnification"->1.,
