@@ -6,7 +6,7 @@ Cell["On Proportional Braking in H Bridges", \
 
 Cell["\<\
 Robert Atkinson
-15 August 2018\
+16 August 2018\
 \>", "Author",ExpressionUUID->"05aea015-05f3-4e99-899d-20a8cd5792a1"],
 
 Cell["\<\
@@ -21235,88 +21235,240 @@ voltage in mV. Here, we convert our three schemes to those units to aid in \
 implementation.\
 \>", "Text",ExpressionUUID->"2f7e8d61-7f5f-4c3c-b075-f9a64218ccf8"],
 
+Cell[CellGroupData[{
+
+Cell[TextData[{
+ 
+ CounterBox["Section"],
+ ".",
+ 
+ CounterBox["Subsection"],
+ ". Development"
+}], "Subsection",ExpressionUUID->"53062e7a-dfe3-45dd-a041-4f51f178f18d"],
+
+Cell["\<\
+Our existing Ke value is in SI quantities (seconds, volts, radians):\
+\>", "Text",ExpressionUUID->"a2774297-ed82-464d-9255-1c6fa9fe4451"],
+
+Cell[BoxData[
+ RowBox[{"Ke", " ", "/.", " ", 
+  "parameterQuantities"}]], \
+"Input",ExpressionUUID->"8c8189a1-3f40-44e8-8a95-04fd8b457f6b"],
+
+Cell["\<\
+Inside the firmware, velocity is measured in encoder counts per second. Thus, \
+it is convenient to have the Ke constant in units where the angular measure \
+is counts instead of radians, specifically in units of s V / count. \
+\>", "Text",ExpressionUUID->"173995a4-1f20-4b04-b423-497fadc0b841"],
+
 Cell[BoxData[{
+ RowBox[{"Clear", "[", "keFwToSi", "]"}], "\[IndentingNewLine]", 
  RowBox[{
-  RowBox[{"cpsToRadPerSec", "[", "cps_", "]"}], " ", ":=", " ", 
-  RowBox[{"Module", "[", 
-   RowBox[{
-    RowBox[{"{", 
-     RowBox[{"counts", " ", "=", " ", 
-      RowBox[{"IndependentUnit", "[", "\"\<Counts\>\"", "]"}]}], "}"}], ",", 
-    " ", "\[IndentingNewLine]", 
-    RowBox[{
-     RowBox[{
-      RowBox[{"Quantity", "[", 
-       RowBox[{"cps", ",", " ", 
-        RowBox[{"counts", " ", "/", " ", "\"\<Seconds\>\""}]}], "]"}], " ", 
-      "/", " ", 
-      RowBox[{"Quantity", "[", 
-       RowBox[{"countsPerRev", ",", " ", 
-        RowBox[{"counts", " ", "/", " ", "\"\<Revolutions\>\""}]}], "]"}]}], 
-     " ", "*", " ", 
-     RowBox[{"Quantity", "[", 
-      RowBox[{
-       RowBox[{"2", " ", "Pi"}], ",", " ", 
-       RowBox[{"\"\<Radians\>\"", " ", "/", " ", "\"\<Revolutions\>\""}]}], 
-      "]"}]}]}], "]"}]}], "\[IndentingNewLine]", 
- RowBox[{
-  RowBox[{"mvToV", "[", "mv_", "]"}], " ", ":=", " ", 
-  RowBox[{
+  RowBox[{"keFwToSi", "[", 
+   RowBox[{"keFw_", ",", " ", "factor_"}], "]"}], " ", ":=", " ", 
+  RowBox[{"factor", " ", "*", " ", 
    RowBox[{"Quantity", "[", 
-    RowBox[{"mv", ",", " ", "\"\<mV\>\""}], "]"}], " ", "/", " ", 
-   "1000"}]}], "\[IndentingNewLine]", 
- RowBox[{"cpsToRadPerSec", "[", "cps", "]"}], "\[IndentingNewLine]", 
- RowBox[{"implMap", " ", "=", " ", 
-  RowBox[{
-   RowBox[{"{", 
-    RowBox[{
-     RowBox[{"\[CapitalOmega]", " ", "\[Rule]", " ", 
-      RowBox[{"cpsToRadPerSec", "[", "cps", "]"}]}], ",", " ", 
-     RowBox[{"batteryVoltage", " ", "\[Rule]", " ", 
-      RowBox[{"mvToV", "[", "mvBatteryVoltage", "]"}]}]}], "}"}], " ", "//", 
-   " ", "clearUnits"}]}]}], \
-"Input",ExpressionUUID->"7a7974c5-8a21-4c36-8c75-2542d33ab849"],
+    RowBox[{"keFw", ",", " ", 
+     RowBox[{"\"\<Seconds\>\"", " ", 
+      RowBox[{"\"\<Volts\>\"", " ", "/", " ", 
+       RowBox[{"IndependentUnit", "[", "\"\<Counts\>\"", "]"}]}]}]}], "]"}], 
+   "*", 
+   RowBox[{
+    RowBox[{"Quantity", "[", 
+     RowBox[{"countsPerRev", ",", " ", 
+      RowBox[{
+       RowBox[{"IndependentUnit", "[", "\"\<Counts\>\"", "]"}], " ", "/", 
+       " ", "\"\<Revolutions\>\""}]}], "]"}], " ", "/", " ", 
+    RowBox[{"Quantity", "[", 
+     RowBox[{
+      RowBox[{"2", " ", "Pi"}], ",", " ", 
+      RowBox[{"\"\<Radians\>\"", " ", "/", " ", "\"\<Revolutions\>\""}]}], 
+     "]"}]}]}]}], "\[IndentingNewLine]", 
+ RowBox[{"keFwToSi", "[", 
+  RowBox[{"keFw", ",", " ", 
+   RowBox[{"1", "/", "1000"}]}], 
+  "]"}]}], "Input",ExpressionUUID->"167f665e-049f-4a4b-a860-8b7a18f1eddd"],
+
+Cell["\<\
+We similarly convert velocity from counts per second to radians per second.\
+\>", "Text",ExpressionUUID->"ebae4f62-bcfe-40a1-82ca-856594d8ad54"],
 
 Cell[BoxData[{
  RowBox[{
-  RowBox[{"schemeAResult", " ", "/.", " ", "implMap"}], " ", "//", " ", 
-  "FullSimplify"}], "\[IndentingNewLine]", 
+  RowBox[{"\[CapitalOmega]FwToSi", "[", "\[CapitalOmega]Fw_", "]"}], " ", ":=",
+   " ", 
+  RowBox[{
+   RowBox[{
+    RowBox[{"Quantity", "[", 
+     RowBox[{"\[CapitalOmega]Fw", ",", " ", 
+      RowBox[{
+       RowBox[{"IndependentUnit", "[", "\"\<Counts\>\"", "]"}], " ", "/", 
+       " ", "\"\<Seconds\>\""}]}], "]"}], " ", "/", " ", 
+    RowBox[{"Quantity", "[", 
+     RowBox[{"countsPerRev", ",", " ", 
+      RowBox[{
+       RowBox[{"IndependentUnit", "[", "\"\<Counts\>\"", "]"}], " ", "/", 
+       " ", "\"\<Revolutions\>\""}]}], "]"}]}], " ", "*", " ", 
+   RowBox[{"Quantity", "[", 
+    RowBox[{
+     RowBox[{"2", " ", "Pi"}], ",", " ", 
+     RowBox[{"\"\<Radians\>\"", " ", "/", " ", "\"\<Revolutions\>\""}]}], 
+    "]"}]}]}], "\[IndentingNewLine]", 
+ RowBox[{"\[CapitalOmega]FwToSi", "[", "cps", 
+  "]"}]}], "Input",ExpressionUUID->"4ca0018c-4c0e-40ac-841a-833d24f42456"],
+
+Cell["\<\
+Finally, battery voltage in the firmware is available in mV instead of volts.\
+\>", "Text",ExpressionUUID->"0ee167e1-15b5-4263-9360-f5cd5ba28ad3"],
+
+Cell[BoxData[{
+ RowBox[{
+  RowBox[{"batteryVoltageFwToSi", "[", "batFw_", "]"}], " ", ":=", " ", 
+  RowBox[{"Quantity", "[", 
+   RowBox[{"batFw", ",", " ", "\"\<mV\>\""}], "]"}]}], "\[IndentingNewLine]", 
+ RowBox[{"batteryVoltageFwToSi", "[", "12000", 
+  "]"}]}], "Input",ExpressionUUID->"faa6bb4f-bfb6-470a-a319-8127762cf9f8"],
+
+Cell["We put that all together.", \
+"Text",ExpressionUUID->"5e5711f8-91df-43da-87ea-2d3901a24c5e"],
+
+Cell[BoxData[
+ RowBox[{"fwImplMap", " ", "=", " ", 
+  RowBox[{
+   RowBox[{"{", "\[IndentingNewLine]", 
+    RowBox[{
+     RowBox[{"\[CapitalOmega]", " ", "\[Rule]", " ", 
+      RowBox[{"\[CapitalOmega]FwToSi", "[", "cps", "]"}]}], ",", " ", 
+     "\[IndentingNewLine]", 
+     RowBox[{"batteryVoltage", " ", "\[Rule]", " ", 
+      RowBox[{"batteryVoltageFwToSi", "[", "mvBatteryVoltage", "]"}]}], ",", 
+     " ", "\[IndentingNewLine]", 
+     RowBox[{"Ke", " ", "\[Rule]", " ", 
+      RowBox[{"keFwToSi", "[", 
+       RowBox[{"keFw", ",", " ", 
+        RowBox[{"1", "/", "1000"}]}], "]"}]}], ",", " ", 
+     "\[IndentingNewLine]", 
+     RowBox[{"R", " ", "\[Rule]", " ", 
+      RowBox[{"(", 
+       RowBox[{"R", "/.", " ", "parameterQuantities"}], ")"}]}]}], "}"}], " ",
+    "//", " ", 
+   "siUnits"}]}]], \
+"Input",ExpressionUUID->"6914b141-d34f-4ae7-9ef8-9b363b4cb1ff"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[TextData[{
+ 
+ CounterBox["Section"],
+ ".",
+ 
+ CounterBox["Subsection"],
+ ". Apply to Scheme Results"
+}], "Subsection",ExpressionUUID->"c62e6a0c-f1b2-4d1b-b16f-2c2ca85c0f0d"],
+
+Cell["\<\
+We apply that implementation mapping to our results from our various schemes.\
+\>", "Text",ExpressionUUID->"4ec4bb84-376a-4bd2-996e-e5c2fb5addd4"],
+
+Cell[BoxData[{
+ RowBox[{
+  RowBox[{
+   RowBox[{"schemeAResult", " ", "/.", " ", "fwImplMap"}], " ", "//", " ", 
+   "FullSimplify"}], "//", " ", "simplifyUnits"}], "\[IndentingNewLine]", 
  RowBox[{
   RowBox[{
    RowBox[{"Z", " ", "/.", " ", 
     RowBox[{"(", 
      RowBox[{
-      RowBox[{"schemeAResult", " ", "/.", " ", "implMap"}], " ", "//", " ", 
-      "FullSimplify"}], ")"}]}], " ", "//", " ", "First"}], " ", "//", " ", 
-  "Apart"}]}], "Input",ExpressionUUID->"677d1941-d055-4a00-b246-2a5cae64e149"],
+      RowBox[{"schemeAResult", " ", "/.", " ", "fwImplMap"}], " ", "//", " ", 
+      "FullSimplify"}], ")"}]}], " ", "//", " ", "abscissa"}], " ", "//", " ",
+   "Apart"}]}], \
+"Input",ExpressionUUID->"4eb0de6f-2170-42da-bdd1-6e9751881390"],
 
 Cell[BoxData[{
  RowBox[{
   RowBox[{
-   RowBox[{"schemeBResult", " ", "/.", " ", "implMap"}], " ", "//", " ", 
-   "FullSimplify"}], " ", "//", " ", "prettyPrint"}], "\[IndentingNewLine]", 
+   RowBox[{"schemeBResult", " ", "/.", " ", "fwImplMap"}], " ", "//", " ", 
+   "FullSimplify"}], "  ", "//", " ", 
+  "simplifyUnits"}], "\[IndentingNewLine]", 
  RowBox[{
   RowBox[{
    RowBox[{"T", " ", "/.", " ", 
     RowBox[{"(", 
-     RowBox[{
-      RowBox[{"schemeBResult", " ", "/.", " ", "implMap"}], " ", "//", " ", 
-      "FullSimplify"}], ")"}]}], " ", "//", " ", "First"}], " ", "//", " ", 
-  "Apart"}]}], "Input",ExpressionUUID->"9b73db9d-1faa-44d1-b218-1e0e39b8b5a8"],
+     RowBox[{"schemeBResult", " ", "/.", " ", "fwImplMap"}], " ", ")"}]}], 
+   " ", "//", " ", "abscissa"}], " ", "//", " ", 
+  "Together"}]}], \
+"Input",ExpressionUUID->"eb59b64e-28b3-4215-b4c0-8aabd3bc52cb"],
 
 Cell[BoxData[{
  RowBox[{
   RowBox[{
-   RowBox[{"schemeCResult", " ", "/.", " ", "implMap"}], " ", "//", " ", 
-   "FullSimplify"}], " ", "//", " ", "prettyPrint"}], "\[IndentingNewLine]", 
+   RowBox[{"schemeCResult", " ", "/.", " ", "fwImplMap"}], " ", "//", " ", 
+   "FullSimplify"}], " ", "//", " ", "simplifyUnits"}], "\[IndentingNewLine]", 
  RowBox[{
   RowBox[{
    RowBox[{"T", " ", "/.", " ", 
     RowBox[{"(", 
+     RowBox[{"schemeCResult", " ", "/.", " ", "fwImplMap"}], ")"}]}], " ", "//",
+    " ", "abscissa"}], " ", "//", " ", 
+  "Together"}]}], \
+"Input",ExpressionUUID->"539bb23b-3636-4971-8352-2046d5a706eb"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[TextData[{
+ 
+ CounterBox["Section"],
+ ".",
+ 
+ CounterBox["Subsection"],
+ ". Conversion of Constants"
+}], "Subsection",ExpressionUUID->"720dcd42-4afd-489c-a1c6-f6bd5e701642"],
+
+Cell["\<\
+In order to apply the above, we need to convert our SI Ke constant to the \
+encoder-count based variation.\
+\>", "Text",ExpressionUUID->"43126f0b-8ed5-4665-83c4-11fd00235ad5"],
+
+Cell[BoxData[{
+ RowBox[{
+  RowBox[{"(", 
+   RowBox[{"Ke", " ", "/.", " ", "fwImplMap"}], ")"}], " ", "\[Equal]", " ", 
+  RowBox[{"(", 
+   RowBox[{"Ke", " ", "/.", " ", "parameterQuantities"}], 
+   ")"}]}], "\[IndentingNewLine]", 
+ RowBox[{" ", 
+  RowBox[{"uniqueSolve", "[", 
+   RowBox[{"%", ",", " ", "keFw"}], "]"}]}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"keFwExpr", " ", "=", " ", 
+   RowBox[{"keFw", " ", "/.", " ", "%"}]}], 
+  ";"}]}], "Input",ExpressionUUID->"40710d87-e66d-4c57-9fe8-164e7dba99d2"],
+
+Cell["What sort of scale does that work out to?", \
+"Text",ExpressionUUID->"53a45648-3589-402b-81f6-ffd33b69d5da"],
+
+Cell[BoxData[{
+ RowBox[{
+  RowBox[{"keData", " ", "=", " ", 
+   RowBox[{"{", 
+    RowBox[{"{", 
      RowBox[{
-      RowBox[{"schemeCResult", " ", "/.", " ", "implMap"}], " ", "//", " ", 
-      "FullSimplify"}], ")"}]}], " ", "//", " ", "First"}], " ", "//", " ", 
-  "Apart"}]}], "Input",ExpressionUUID->"6533b4d2-f5e9-46cb-83eb-c8c990098ccf"]
+      RowBox[{"Ke", " ", "\[Rule]", " ", 
+       RowBox[{"1.066", " ", "/", " ", "60"}]}], ",", " ", 
+      RowBox[{"countsPerRev", " ", "\[Rule]", " ", "28"}]}], "}"}], "}"}]}], 
+  ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{
+   RowBox[{"keFwExpr", " ", "/.", " ", "#"}], "  ", "&"}], " ", "/@", " ", 
+  "keData", 
+  "  "}]}], "Input",ExpressionUUID->"e7433983-6b4d-45d5-a840-1e0dc14362b8"],
+
+Cell["A 6q20 fixed point should be oodles.", \
+"Text",ExpressionUUID->"a54b80e9-5665-48d2-923e-b6e63b681654"]
+}, Open  ]]
 }, Open  ]],
 
 Cell[CellGroupData[{
@@ -21372,13 +21524,16 @@ Implementation section.\
 
 Cell["\<\
 2018.08.15. Explore behavior of transition point with velocity in more detail.\
-\>", "Item",ExpressionUUID->"74570f61-9d86-4b3c-ae63-6e4d4d9d3923"]
+\>", "Item",ExpressionUUID->"74570f61-9d86-4b3c-ae63-6e4d4d9d3923"],
+
+Cell["2018.08.16. Use better Implementation math.", \
+"Item",ExpressionUUID->"c3873872-3939-4b51-a439-4e52f6afdc7b"]
 }, Open  ]]
 }, Open  ]]
 }, Open  ]]
 },
-WindowSize->{1203, 1520},
-WindowMargins->{{Automatic, 1213}, {2, Automatic}},
+WindowSize->{1203, 1457},
+WindowMargins->{{1182, Automatic}, {40, Automatic}},
 PrintingCopies->1,
 PrintingPageRange->{32000, 32000},
 PrintingOptions->{"Magnification"->1.,
