@@ -5006,7 +5006,7 @@ Cell["\<\
 }, Open  ]]
 },
 WindowSize->{1261, 1480},
-WindowMargins->{{Automatic, 1140}, {26, Automatic}},
+WindowMargins->{{517, Automatic}, {22, Automatic}},
 PrintingCopies->1,
 PrintingPageRange->{32000, 32000},
 PrintingOptions->{"Magnification"->1.,
