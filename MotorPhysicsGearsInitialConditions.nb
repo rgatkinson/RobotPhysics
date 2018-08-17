@@ -6,7 +6,7 @@ Cell["Motor Physics, with Gears & Initial Conditions", \
 
 Cell["\<\
 Robert Atkinson, Maddy Nguyen, Samantha Hordyk, Cole Welch, and John Fraser
-13 August 2018\
+16 August 2018\
 \>", "Author",ExpressionUUID->"05aea015-05f3-4e99-899d-20a8cd5792a1"],
 
 Cell["\<\
@@ -2509,26 +2509,26 @@ Cell[BoxData[{
           RowBox[{"{", "\[IndentingNewLine]", 
            RowBox[{
             RowBox[{"{", 
-             RowBox[{"R", ",", " ", "2"}], "}"}], ",", " ", 
+             RowBox[{"R", ",", " ", "3"}], "}"}], ",", " ", 
             RowBox[{"{", 
-             RowBox[{"L", ",", " ", "4"}], "}"}], ",", " ", 
+             RowBox[{"L", ",", " ", "5"}], "}"}], ",", " ", 
             RowBox[{"{", 
-             RowBox[{"Ke", ",", " ", "5"}], "}"}], ",", " ", 
+             RowBox[{"Ke", ",", " ", "6"}], "}"}], ",", " ", 
             RowBox[{"{", 
-             RowBox[{"Kt", ",", " ", "6"}], "}"}], ",", " ", 
+             RowBox[{"Kt", ",", " ", "7"}], "}"}], ",", " ", 
             RowBox[{"{", 
-             RowBox[{"J", ",", " ", "7"}], "}"}], ",", " ", 
+             RowBox[{"J", ",", " ", "8"}], "}"}], ",", " ", 
             RowBox[{"{", 
-             RowBox[{"B", ",", " ", "8"}], "}"}], ",", "\[IndentingNewLine]", 
+             RowBox[{"B", ",", " ", "9"}], "}"}], ",", "\[IndentingNewLine]", 
             RowBox[{"{", 
-             RowBox[{"\[CapitalNu]", ",", " ", "9"}], "}"}], ",", " ", 
+             RowBox[{"\[CapitalNu]", ",", " ", "11"}], "}"}], ",", " ", 
             RowBox[{"{", 
              RowBox[{"\[Eta]", ",", " ", 
               RowBox[{"If", "[", 
                RowBox[{
                 RowBox[{
                  RowBox[{"OptionValue", "[", "Efficiency", "]"}], "\[Equal]", 
-                 " ", "\"\<Forward\>\""}], ",", " ", "10", ",", " ", "11"}], 
+                 " ", "\"\<Forward\>\""}], ",", " ", "12", ",", " ", "13"}], 
                "]"}]}], "}"}]}], " ", "}"}]}]}], ";", "\[IndentingNewLine]", 
         RowBox[{"quantify", " ", "=", " ", 
          RowBox[{"Function", "[", 
@@ -4996,13 +4996,17 @@ Cell["2018.08.12 Bug fixes, miscellaneous polish", \
 "Item",ExpressionUUID->"3cf0b96c-0b7e-44f3-ac0e-8f34b90bf6e7"],
 
 Cell["2018.08.13 Introduced \[OpenCurlyQuote]step\[CloseCurlyQuote] \
-terminology", "Item",ExpressionUUID->"db2cc83b-b3a6-4444-9bc6-ee81cea05ec1"]
+terminology", "Item",ExpressionUUID->"db2cc83b-b3a6-4444-9bc6-ee81cea05ec1"],
+
+Cell["\<\
+2018.08.16 Adjusted to new schema in motor parameters spreadsheet\
+\>", "Item",ExpressionUUID->"dff2ee56-6745-4b63-af69-bcce96e2200b"]
 }, Open  ]]
 }, Open  ]]
 }, Open  ]]
 },
 WindowSize->{1261, 1480},
-WindowMargins->{{Automatic, 1137}, {Automatic, 24}},
+WindowMargins->{{Automatic, 1140}, {26, Automatic}},
 PrintingCopies->1,
 PrintingPageRange->{32000, 32000},
 PrintingOptions->{"Magnification"->1.,
@@ -5021,8 +5025,7 @@ StyleDefinitions->Notebook[{
      FrontEnd`FileName[{"Report"}, "StandardReport.nb", CharacterEncoding -> 
        "UTF-8"]]], 
    Cell[
-    StyleData[All, "Printout"], Magnification -> 0.5]}, 
-  WindowMargins -> {{1490, Automatic}, {Automatic, 334}}, Visible -> False, 
+    StyleData[All, "Printout"], Magnification -> 0.5]}, Visible -> False, 
   FrontEndVersion -> "11.3 for Microsoft Windows (64-bit) (March 6, 2018)", 
   StyleDefinitions -> "PrivateStylesheetFormatting.nb"]
 ]
