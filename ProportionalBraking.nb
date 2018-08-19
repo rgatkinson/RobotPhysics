@@ -6,7 +6,7 @@ Cell["On Proportional Braking in H Bridges", \
 
 Cell["\<\
 Robert Atkinson
-16 August 2018\
+19 August 2018\
 \>", "Author",ExpressionUUID->"05aea015-05f3-4e99-899d-20a8cd5792a1"],
 
 Cell["\<\
@@ -19679,8 +19679,8 @@ Cell["\<\
 In what follows, the location of the abscissas of S & G and either Z or T in \
 the PID control range will be determined a priori based on external \
 considerations, and the location of the remaining point then determined from \
-the other three using arguments of linearity. We will examine three different \
-schemes, Scheme A, Scheme B, and Scheme C.\
+the other three using arguments of linearity. We will examine four different \
+schemes, Scheme A, Scheme B, Scheme C, and Scheme D.\
 \>", "Text",ExpressionUUID->"111d95c6-f47f-4671-a693-51ade73d64c7"]
 }, Open  ]]
 }, Open  ]],
@@ -21224,6 +21224,179 @@ Cell[CellGroupData[{
 Cell[TextData[{
  
  CounterBox["Section"],
+ ". Scheme D"
+}], "Section",ExpressionUUID->"33803c9a-c3d5-47e6-8d49-0708365a3e59"],
+
+Cell["\<\
+Consider Scheme B and Scheme C. We can interpret Scheme C as Scheme B scaled \
+in its negative control range such that the slope therein matches the slope \
+in the positive control range. However, there exist intermediate blends \
+between the two extremes, where the slope adjusts from not at all (0%, Scheme \
+B) to fully matching (100%, Scheme C). Scheme D is an exploration of those \
+blends. As such, it is a strict generalization of both Scheme B and Scheme C.\
+\>", "Text",ExpressionUUID->"89ae1aa8-3d54-4f00-8623-094670b40611"],
+
+Cell[BoxData[{
+ RowBox[{"Clear", "[", 
+  RowBox[{"computeSchemeD", ",", " ", "schemeDResultFn"}], 
+  "]"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"computeSchemeD", "[", "points_", "]"}], " ", ":=", " ", 
+  RowBox[{"Function", "[", 
+   RowBox[{
+    RowBox[{"{", "blend", "}"}], ",", " ", 
+    RowBox[{"computeSchemeD", "[", 
+     RowBox[{"points", ",", " ", "blend"}], "]"}]}], 
+   "]"}]}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{
+   RowBox[{"computeSchemeD", "[", 
+    RowBox[{"points_", ",", " ", "blend_"}], "]"}], " ", ":=", " ", 
+   RowBox[{"Module", "[", 
+    RowBox[{
+     RowBox[{"{", 
+      RowBox[{"yS", ",", " ", "yG", ",", " ", "scale", ",", " ", "scalePt"}], 
+      "}"}], ",", "\[IndentingNewLine]", 
+     RowBox[{
+      RowBox[{"yS", " ", "=", " ", 
+       RowBox[{"-", 
+        RowBox[{
+         RowBox[{"(", 
+          RowBox[{"S", " ", "/.", " ", "points"}], ")"}], "[", 
+         RowBox[{"[", "2", "]"}], "]"}]}]}], ";", "\[IndentingNewLine]", 
+      RowBox[{"yG", " ", "=", " ", 
+       RowBox[{
+        RowBox[{"(", 
+         RowBox[{"G", " ", "/.", " ", "points"}], ")"}], "[", 
+        RowBox[{"[", "2", "]"}], "]"}]}], ";", "\[IndentingNewLine]", 
+      RowBox[{"scale", " ", "=", " ", 
+       RowBox[{
+        RowBox[{"line", "[", 
+         RowBox[{
+          RowBox[{"{", 
+           RowBox[{"0", ",", " ", "1"}], "}"}], ",", " ", 
+          RowBox[{"{", 
+           RowBox[{"1", ",", " ", 
+            RowBox[{"yS", " ", "/", " ", "yG"}]}], "}"}]}], "]"}], "[", 
+        "blend", "]"}]}], ";", "\[IndentingNewLine]", 
+      RowBox[{
+       RowBox[{"scalePt", "[", "pt_", "]"}], " ", ":=", " ", 
+       RowBox[{"{", 
+        RowBox[{
+         RowBox[{
+          RowBox[{"pt", "[", 
+           RowBox[{"[", "1", "]"}], "]"}], " ", "*", " ", "scale"}], ",", " ", 
+         RowBox[{"pt", "[", 
+          RowBox[{"[", "2", "]"}], "]"}]}], "}"}]}], ";", 
+      "\[IndentingNewLine]", 
+      RowBox[{
+       RowBox[{"{", "\[IndentingNewLine]", 
+        RowBox[{
+         RowBox[{"S", " ", "\[Rule]", " ", 
+          RowBox[{"(", 
+           RowBox[{
+            RowBox[{"S", " ", "/.", " ", "points"}], " ", "//", " ", 
+            "scalePt"}], ")"}]}], " ", ",", " ", "\[IndentingNewLine]", 
+         RowBox[{"T", " ", "\[Rule]", " ", 
+          RowBox[{"(", 
+           RowBox[{
+            RowBox[{"T", " ", "/.", " ", "points"}], "  ", "//", " ", 
+            "scalePt"}], ")"}]}], ",", " ", "\[IndentingNewLine]", 
+         RowBox[{"Z", "\[Rule]", " ", 
+          RowBox[{"(", 
+           RowBox[{"Z", " ", "/.", " ", "points"}], ")"}]}], ",", 
+         "\[IndentingNewLine]", 
+         RowBox[{"G", " ", "\[Rule]", " ", 
+          RowBox[{"(", 
+           RowBox[{"G", " ", "/.", " ", "points"}], ")"}]}]}], "}"}], " ", "//",
+        " ", "FullSimplify"}]}]}], "\[IndentingNewLine]", "]"}]}], 
+  ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"schemeDResultFn", " ", "=", " ", 
+   RowBox[{"computeSchemeD", "[", "schemeBResult", "]"}]}], 
+  ";"}], "\[IndentingNewLine]", 
+ RowBox[{"schemeDResultFn", "[", "0", "]"}], "\[IndentingNewLine]", 
+ RowBox[{"schemeDResultFn", "[", "1", "]"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{
+   RowBox[{"#", " ", "\[Rule]", " ", 
+    RowBox[{"abscissa", "[", 
+     RowBox[{"T", "/.", " ", 
+      RowBox[{"schemeDResultFn", "[", "#", "]"}]}], "]"}]}], "  ", "&"}], " ",
+   "/@", " ", 
+  RowBox[{"{", 
+   RowBox[{"0", ",", " ", 
+    RowBox[{"1", "/", "2"}], ",", " ", "1", ",", " ", "blend"}], 
+   "}"}]}]}], "Input",ExpressionUUID->"b36822cf-4010-40f5-acea-1dd9826d8213"],
+
+Cell["\<\
+We plot examples of Scheme D for various blending parameters. Take particular \
+note of the scaling of the Y axis across these examples. If Scheme D were  to \
+be used, at the present time it is unclear to the author how to best select \
+the blending parameter.\
+\>", "Text",ExpressionUUID->"9046e028-819b-4caf-a2a5-af0a38082d31"],
+
+Cell[BoxData[{
+ RowBox[{"plotSchemePointsExample", "[", 
+  RowBox[{
+   RowBox[{"schemeDResultFn", "[", "0", "]"}], ",", " ", 
+   RowBox[{
+    RowBox[{
+    "\"\<Scheme D Example blend=0 \[CapitalOmega]=\>\"", " ", "<>", " ", 
+     RowBox[{"ToString", "[", "#", "]"}], " ", "<>", " ", "\"\< rad/s\>\""}], 
+    "&"}], ",", " ", "\"\<Current (Amps)\>\""}], "]"}], "\[IndentingNewLine]", 
+ RowBox[{"plotSchemePointsExample", "[", 
+  RowBox[{
+   RowBox[{"schemeDResultFn", "[", 
+    RowBox[{"1", "/", "8"}], "]"}], ",", " ", 
+   RowBox[{
+    RowBox[{
+    "\"\<Scheme D Example blend=1/8 \[CapitalOmega]=\>\"", " ", "<>", " ", 
+     RowBox[{"ToString", "[", "#", "]"}], " ", "<>", " ", "\"\< rad/s\>\""}], 
+    "&"}], ",", " ", "\"\<Current (Amps)\>\""}], "]"}], "\[IndentingNewLine]", 
+ RowBox[{"plotSchemePointsExample", "[", 
+  RowBox[{
+   RowBox[{"schemeDResultFn", "[", 
+    RowBox[{"1", "/", "4"}], "]"}], ",", " ", 
+   RowBox[{
+    RowBox[{
+    "\"\<Scheme D Example blend=1/4 \[CapitalOmega]=\>\"", " ", "<>", " ", 
+     RowBox[{"ToString", "[", "#", "]"}], " ", "<>", " ", "\"\< rad/s\>\""}], 
+    "&"}], ",", " ", "\"\<Current (Amps)\>\""}], "]"}], "\[IndentingNewLine]", 
+ RowBox[{"plotSchemePointsExample", "[", 
+  RowBox[{
+   RowBox[{"schemeDResultFn", "[", 
+    RowBox[{"1", "/", "2"}], "]"}], ",", " ", 
+   RowBox[{
+    RowBox[{
+    "\"\<Scheme D Example blend=1/2 \[CapitalOmega]=\>\"", " ", "<>", " ", 
+     RowBox[{"ToString", "[", "#", "]"}], " ", "<>", " ", "\"\< rad/s\>\""}], 
+    "&"}], ",", " ", "\"\<Current (Amps)\>\""}], "]"}], "\[IndentingNewLine]", 
+ RowBox[{"plotSchemePointsExample", "[", 
+  RowBox[{
+   RowBox[{"schemeDResultFn", "[", 
+    RowBox[{"3", "/", "4"}], "]"}], ",", " ", 
+   RowBox[{
+    RowBox[{
+    "\"\<Scheme D Example blend=3/4 \[CapitalOmega]=\>\"", " ", "<>", " ", 
+     RowBox[{"ToString", "[", "#", "]"}], " ", "<>", " ", "\"\< rad/s\>\""}], 
+    "&"}], ",", " ", "\"\<Current (Amps)\>\""}], "]"}], "\[IndentingNewLine]", 
+ RowBox[{"plotSchemePointsExample", "[", 
+  RowBox[{
+   RowBox[{"schemeDResultFn", "[", "1", "]"}], ",", " ", 
+   RowBox[{
+    RowBox[{
+    "\"\<Scheme D Example blend=1 \[CapitalOmega]=\>\"", " ", "<>", " ", 
+     RowBox[{"ToString", "[", "#", "]"}], " ", "<>", " ", "\"\< rad/s\>\""}], 
+    "&"}], ",", " ", "\"\<Current (Amps)\>\""}], 
+  "]"}]}], "Input",ExpressionUUID->"3b001f1e-dea3-4210-bb2a-1725b83f3724"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[TextData[{
+ 
+ CounterBox["Section"],
  ". Implementation"
 }], "Section",ExpressionUUID->"e867f2c1-4e76-4f0e-8456-134e9cd7ba4e"],
 
@@ -21413,7 +21586,48 @@ Cell[BoxData[{
      RowBox[{"schemeCResult", " ", "/.", " ", "fwImplMap"}], ")"}]}], " ", "//",
     " ", "abscissa"}], " ", "//", " ", 
   "Together"}]}], \
-"Input",ExpressionUUID->"539bb23b-3636-4971-8352-2046d5a706eb"]
+"Input",ExpressionUUID->"539bb23b-3636-4971-8352-2046d5a706eb"],
+
+Cell[BoxData[{
+ RowBox[{
+  RowBox[{
+   RowBox[{
+    RowBox[{"schemeDResultFn", "[", "blend", "]"}], " ", "/.", " ", 
+    "fwImplMap"}], " ", "//", " ", "FullSimplify"}], " ", "//", " ", 
+  "simplifyUnits"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{
+   RowBox[{
+    RowBox[{"T", " ", "/.", " ", 
+     RowBox[{"(", 
+      RowBox[{
+       RowBox[{"schemeDResultFn", "[", "blend", "]"}], " ", "/.", " ", 
+       "fwImplMap"}], ")"}]}], " ", "//", " ", "abscissa"}], " ", "//", " ", 
+   "FullSimplify"}], " ", "//", " ", "Factor"}], "\[IndentingNewLine]", 
+ RowBox[{"%", " ", "//.", " ", 
+  RowBox[{"{", 
+   RowBox[{
+    RowBox[{
+     RowBox[{"Times", "[", 
+      RowBox[{"cps", ",", " ", "keFw"}], "]"}], " ", "\[RuleDelayed]", " ", 
+     "cpsKeFw"}], " ", ",", " ", 
+    RowBox[{
+     RowBox[{"Times", "[", 
+      RowBox[{
+       RowBox[{"n_", "?", "NumberQ"}], ",", " ", "cps", ",", " ", "keFw"}], 
+      "]"}], " ", "\[RuleDelayed]", " ", 
+     RowBox[{"n", " ", "cpsKeFw"}]}]}], "}"}]}], "\[IndentingNewLine]", 
+ RowBox[{"%", " ", "/.", " ", 
+  RowBox[{"{", 
+   RowBox[{
+    RowBox[{
+     RowBox[{"-", "cpsKeFw"}], " ", "+", " ", 
+     RowBox[{"2", " ", "blend", " ", "cpsKeFw"}]}], " ", "\[Rule]", " ", 
+    RowBox[{"Simplify", "[", 
+     RowBox[{
+      RowBox[{"-", "cpsKeFw"}], " ", "+", " ", 
+      RowBox[{"2", " ", "blend", " ", "cpsKeFw"}]}], "]"}]}], 
+   "}"}]}]}], "Input",ExpressionUUID->"7b14b940-85a3-4a56-a0a5-8da50baaff9c"]
 }, Open  ]],
 
 Cell[CellGroupData[{
@@ -21527,13 +21741,16 @@ Cell["\<\
 \>", "Item",ExpressionUUID->"74570f61-9d86-4b3c-ae63-6e4d4d9d3923"],
 
 Cell["2018.08.16. Use better Implementation math.", \
-"Item",ExpressionUUID->"c3873872-3939-4b51-a439-4e52f6afdc7b"]
+"Item",ExpressionUUID->"c3873872-3939-4b51-a439-4e52f6afdc7b"],
+
+Cell["2018.08.19. Added Scheme D.", \
+"Item",ExpressionUUID->"616b6d88-b07b-4b85-b471-6b4a688f5de0"]
 }, Open  ]]
 }, Open  ]]
 }, Open  ]]
 },
 WindowSize->{1203, 1457},
-WindowMargins->{{1182, Automatic}, {40, Automatic}},
+WindowMargins->{{1194, Automatic}, {Automatic, 27}},
 PrintingCopies->1,
 PrintingPageRange->{32000, 32000},
 PrintingOptions->{"Magnification"->1.,
