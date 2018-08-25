@@ -14,7 +14,7 @@ Here we investigate the ripple current of asynchronous sign magnitude H \
 bridges. The development here is based on an earlier work by Eric Chin, and \
 on the work of Andras Tantos at the H Bridge Secrets site \
 (http://modularcircuits.tantosonline.com/blog/articles/h-bridge-secrets/\
-asynchronous-sign-magnitude-drive/). Our most notable result is the \
+asynchronous-sign-magnitude-drive/). Our most notable result is a \
 relationship between PWM duty cycle and steady state motor velocity for \
 asynchronous sign magnitude H bridges.\
 \>", "Text",ExpressionUUID->"56cc4ba9-b77c-4512-b3b4-73f00a3c0eee"],
@@ -1355,7 +1355,7 @@ So far we have treated velocity (\[CapitalOmega]) and duty cycle as \
 independent variables. However, they are in fact related: for a given duty \
 cycle (and other parameters), there is a limit to the maximum velocity which \
 may be achieved. We seek now to compute that value. We recall the steady \
-state current and velocity results from previous work.\
+state current and velocity results from the motor modeling work.\
 \>", "Text",ExpressionUUID->"12887d42-fc1b-4fe5-a41e-aae314631f59"],
 
 Cell[BoxData[{
