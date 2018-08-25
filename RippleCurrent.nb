@@ -1,0 +1,1567 @@
+Notebook[{
+
+Cell[CellGroupData[{
+Cell["Ripple Current in Asynchronous Sign Magnitude HBridges", \
+"Title",ExpressionUUID->"39796d72-87ca-4320-97ff-a98d4bd016ce"],
+
+Cell["\<\
+Robert Atkinson
+25 August 2018\
+\>", "Author",ExpressionUUID->"05aea015-05f3-4e99-899d-20a8cd5792a1"],
+
+Cell["\<\
+Here we investigate the ripple current of asynchronous sign magnitude H \
+bridges. The development here is based on an earlier work by Eric Chin, and \
+on the work of Andras Tantos at the H Bridge Secrets site \
+(http://modularcircuits.tantosonline.com/blog/articles/h-bridge-secrets/\
+asynchronous-sign-magnitude-drive/). Our most notable result is the \
+relationship between PWM duty cycle and steady state motor velocity for \
+asynchronous sign magnitude H bridges.\
+\>", "Text",ExpressionUUID->"56cc4ba9-b77c-4512-b3b4-73f00a3c0eee"],
+
+Cell[CellGroupData[{
+
+Cell[TextData[{
+ 
+ CounterBox["Section"],
+ ". Introduction"
+}], "Section",ExpressionUUID->"8b5eb0dc-1aa8-4e93-bd3b-d162d4a5bebc"],
+
+Cell[CellGroupData[{
+
+Cell[TextData[{
+ 
+ CounterBox["Section"],
+ ".",
+ 
+ CounterBox["Subsection"],
+ ". Administrivia"
+}], "Subsection",ExpressionUUID->"634dcc1a-ed99-4cd1-8ce4-cc86bfd29e80"],
+
+Cell["\<\
+Before we begin, we load in some previously computed logic (Ref: \
+https://github.com/rgatkinson/RobotPhysics/blob/master/MotorPhysics-\
+GearsInitialConditions.pdf)\
+\>", "Text",ExpressionUUID->"7ad28d45-c772-4943-a312-e5b632c383c6"],
+
+Cell[BoxData[{
+ RowBox[{"Get", "[", 
+  RowBox[{
+   RowBox[{"NotebookDirectory", "[", "]"}], " ", "<>", " ", 
+   "\"\<Utilities.m\>\""}], "]"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"inputDirectory", " ", "=", " ", 
+   RowBox[{
+    RowBox[{"FileNameJoin", "[", 
+     RowBox[{"{", 
+      RowBox[{
+       RowBox[{"NotebookDirectory", "[", "]"}], ",", 
+       "\"\<MotorPhysicsGearsInitialConditions.Output\>\""}], "}"}], "]"}], 
+    " ", "<>", " ", "$PathnameSeparator"}]}], ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"Get", "[", 
+   RowBox[{
+   "inputDirectory", " ", "<>", " ", 
+    "\"\<ParametersUnitsAndAssumptions.m\>\""}], "]"}], 
+  ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"Get", "[", 
+   RowBox[{"inputDirectory", " ", "<>", " ", "\"\<MotorModels.m\>\""}], "]"}],
+   ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"Get", "[", 
+   RowBox[{
+   "inputDirectory", " ", "<>", " ", "\"\<MotorTimeDomainFunctions.m\>\""}], 
+   "]"}], ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"Get", "[", 
+   RowBox[{"inputDirectory", " ", "<>", " ", "\"\<Misc.m\>\""}], "]"}], 
+  ";"}]}], "Input",ExpressionUUID->"00da5f52-c4e4-4d20-9d91-5577a43f3731"]
+}, Open  ]]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[TextData[{
+ 
+ CounterBox["Section"],
+ ". Examples"
+}], "Section",ExpressionUUID->"7e03731b-de2d-46af-9d11-1ee08787931e"],
+
+Cell[TextData[{
+ "Before we get going, we take a moment to load in parameters of an example \
+motor, here an AndyMark NeveRest 60. To that we attach a flywheel, as is our \
+usual practice (that said, it turns out in the below that the ",
+ StyleBox["inertial",
+  FontSlant->"Italic"],
+ " load is irrelevant to our results, only the ",
+ StyleBox["drag",
+  FontSlant->"Italic"],
+ " load is)."
+}], "Text",ExpressionUUID->"9342a437-2118-4e98-9905-1e4bc0567840"],
+
+Cell[BoxData[{
+ RowBox[{
+  RowBox[{"aMotor", " ", "=", " ", 
+   RowBox[{"motorParameters", "[", "\"\<AM 60 A\>\"", "]"}]}], 
+  ";"}], "\[IndentingNewLine]", 
+ RowBox[{"unitlessMotor", " ", "=", " ", 
+  RowBox[{
+   RowBox[{
+    RowBox[{"aMotor", " ", "//", " ", "siUnits"}], " ", "//", " ", 
+    "clearUnits"}], " ", "//", " ", "N"}]}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"aMotorWithLoad", " ", "=", " ", 
+   RowBox[{"addMotorLoad", "[", 
+    RowBox[{"aMotor", ",", " ", 
+     RowBox[{"flywheel", "[", 
+      RowBox[{
+       RowBox[{"Quantity", "[", 
+        RowBox[{"5", ",", " ", "\"\<kg\>\""}], "]"}], ",", " ", 
+       RowBox[{"Quantity", "[", 
+        RowBox[{"10", ",", " ", "\"\<cm\>\""}], "]"}]}], "]"}]}], "]"}]}], 
+  ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"unitlessMotorWithLoad", " ", "=", " ", 
+   RowBox[{
+    RowBox[{
+     RowBox[{"aMotorWithLoad", " ", "//", " ", "siUnits"}], " ", "//", " ", 
+     "clearUnits"}], " ", "//", " ", "N"}]}], ";"}], "\[IndentingNewLine]", 
+ RowBox[{"unitlessMotorWithLoad", " ", "=", " ", 
+  RowBox[{
+  "unitlessMotorWithLoad", " ", "//", " ", 
+   "gearboxlessEquivalent"}]}]}], \
+"Input",ExpressionUUID->"b84886fc-2030-4242-9b7f-84d41ae00fbf"],
+
+Cell["\<\
+We also define some parameters that mirror our environment; the battery \
+voltage, the voltage drop across a silicon diode, and the PWM frame period \
+used in the First Tech Challenge REV Expansion Hub firmware.\
+\>", "Text",ExpressionUUID->"835033b8-9397-442d-bf1c-b066094d0eed"],
+
+Cell[BoxData[{
+ RowBox[{"env", " ", "=", " ", 
+  RowBox[{
+   RowBox[{"{", 
+    RowBox[{
+     RowBox[{"vbat", " ", "\[Rule]", " ", "12"}], ",", " ", 
+     RowBox[{"\[CapitalDelta]vappConst", " ", "\[Rule]", " ", "12"}], ",", 
+     " ", 
+     RowBox[{"vdiode", " ", "\[Rule]", " ", "0.7"}], ",", " ", 
+     RowBox[{"p", " ", "\[Rule]", " ", "0.0001"}]}], " ", 
+    RowBox[{"(*", 
+     RowBox[{"10", " ", "kHz"}], "*)"}], "}"}], " ", "//", " ", 
+   "Association"}]}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"example", " ", "=", " ", 
+   RowBox[{"Join", "[", 
+    RowBox[{"unitlessMotorWithLoad", ",", " ", "env"}], "]"}]}], 
+  ";"}]}], "Input",ExpressionUUID->"fb120334-7255-4a21-8a7a-6f7d8ab7a3dc"],
+
+Cell["\<\
+A handy figure to keep in mind: what is the maximum velocity of this example \
+motor (in rad/s)?\
+\>", "Text",ExpressionUUID->"9f7ca8cd-321e-4b8c-9943-48276fbebbf6"],
+
+Cell[BoxData[
+ RowBox[{"velMaxExample", " ", "=", " ", 
+  RowBox[{
+   RowBox[{"ssVel", " ", "/.", " ", "simpleSs"}], " ", "/.", " ", 
+   "example"}]}]], \
+"Input",ExpressionUUID->"4c7f152d-8a64-45c8-84ea-afd1034fe95a"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[TextData[{
+ 
+ CounterBox["Section"],
+ ". Ripple Current Analysis"
+}], "Section",ExpressionUUID->"ebf0f3b5-b18f-431f-b588-e03e856abd74"],
+
+Cell[CellGroupData[{
+
+Cell[TextData[{
+ 
+ CounterBox["Section"],
+ ".",
+ 
+ CounterBox["Subsection"],
+ ". Current at the Start and End of the PWM Cycle"
+}], "Subsection",ExpressionUUID->"9481ec55-dcdc-4274-80cc-2913f4533311"],
+
+Cell[TextData[{
+ "Our examination of ripple current is rooted in the voltage differential \
+equation of our motor model. Here, we will assume that due to the short time \
+intervals involved that velocity is constant. Thus, ",
+ StyleBox["vg[t]",
+  FontSlant->"Italic"],
+ " will be a constant ",
+ StyleBox["Ke ",
+  FontSlant->"Italic"],
+ "\[CapitalOmega], where \[CapitalOmega] is the current instantaneous \
+velocity."
+}], "Text",ExpressionUUID->"d9bda4f9-78d7-4efd-b1a4-a13f381c7f3a"],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"diffEqns", "[", 
+   RowBox[{"[", "3", "]"}], "]"}], " ", "/.", " ", 
+  RowBox[{"{", " ", 
+   RowBox[{
+    RowBox[{"vg", "[", "t", "]"}], " ", "\[Rule]", " ", 
+    RowBox[{"Ke", " ", "\[CapitalOmega]"}]}], " ", 
+   "}"}]}]], "Input",ExpressionUUID->"5fc134c2-084b-4d31-b86b-c8b87b3f79ec"],
+
+Cell[CellGroupData[{
+
+Cell[TextData[{
+ 
+ CounterBox["Section"],
+ ".",
+ 
+ CounterBox["Subsection"],
+ ".",
+ 
+ CounterBox["Subsubsection"],
+ ". PWM On Interval"
+}], "Subsubsection",ExpressionUUID->"e899fba4-cea9-476e-a88f-82cb3c57c512"],
+
+Cell[TextData[{
+ "In the on part of the PWM cycle, the applied voltage ",
+ StyleBox["vapp[t]",
+  FontSlant->"Italic"],
+ " is the battery voltage. Given a value for the current at the start of the \
+interval, we solve for current throughout  the interval."
+}], "Text",ExpressionUUID->"85457318-0463-4f6b-ab11-b8fcc067909c"],
+
+Cell[BoxData[{
+ RowBox[{"Clear", "[", "currentPwmOn", "]"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"currentPwmOn", "[", "initialCurrent_", "]"}], " ", ":=", " ", 
+  RowBox[{"Module", "[", 
+   RowBox[{
+    RowBox[{"{", 
+     RowBox[{
+     "t", ",", " ", "eqns", ",", " ", "initialConditions", ",", " ", 
+      "result"}], "}"}], ",", "\[IndentingNewLine]", 
+    RowBox[{
+     RowBox[{"eqns", " ", "=", " ", 
+      RowBox[{"{", 
+       RowBox[{
+        RowBox[{
+         RowBox[{"R", " ", 
+          RowBox[{"i", "[", "t", "]"}]}], " ", "+", " ", 
+         RowBox[{"Ke", " ", "\[CapitalOmega]"}], " ", "+", " ", 
+         RowBox[{"L", " ", 
+          RowBox[{
+           RowBox[{"i", "'"}], "[", "t", "]"}]}]}], " ", "\[Equal]", " ", 
+        "vbat"}], "}"}]}], ";", "\[IndentingNewLine]", 
+     RowBox[{"initialConditions", " ", "=", " ", 
+      RowBox[{"{", 
+       RowBox[{
+        RowBox[{"i", "[", "0", "]"}], " ", "\[Equal]", " ", 
+        "initialCurrent"}], "}"}]}], ";", "\[IndentingNewLine]", 
+     RowBox[{"result", " ", "=", " ", 
+      RowBox[{
+       RowBox[{
+        RowBox[{"DSolve", "[", 
+         RowBox[{
+          RowBox[{"eqns", " ", "~", "Join", "~", " ", "initialConditions"}], 
+          ",", " ", 
+          RowBox[{"i", "[", "t", "]"}], ",", " ", "t"}], "]"}], " ", "//", 
+        " ", "Flatten"}], " ", "//", " ", "FullSimplify"}]}], ";", 
+     "\[IndentingNewLine]", 
+     RowBox[{"Function", "[", 
+      RowBox[{"tt", ",", " ", 
+       RowBox[{
+        RowBox[{
+         RowBox[{"i", "[", "t", "]"}], " ", "/.", " ", "result"}], " ", "/.", 
+        " ", 
+        RowBox[{"t", " ", "\[Rule]", " ", "tt"}]}]}], "]"}]}]}], 
+   "\[IndentingNewLine]", "]"}]}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"currentPwmOn", "[", "initialCurrentOn", "]"}], "[", "t", 
+  "]"}]}], "Input",ExpressionUUID->"dcc39def-eee9-4e8a-a191-d882b43ff0b3"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[TextData[{
+ 
+ CounterBox["Section"],
+ ".",
+ 
+ CounterBox["Subsection"],
+ ".",
+ 
+ CounterBox["Subsubsection"],
+ ". PWM Off Interval"
+}], "Subsubsection",ExpressionUUID->"7b22e7d0-2809-4cde-84ee-ae4d8c914cdd"],
+
+Cell["\<\
+In the off part of the cycle, the applied voltage is zero. Also, in our H \
+bridges, in the off part of the cycle a voltage drop across a diode is \
+involved (Ref: \
+http://modularcircuits.tantosonline.com/blog/articles/h-bridge-secrets/\
+asynchronous-sign-magnitude-drive/) \
+\>", "Text",ExpressionUUID->"6034c410-91a1-44e8-9d60-90df4f6c715a"],
+
+Cell[TextData[Cell[BoxData[
+ GraphicsBox[
+  TagBox[RasterBox[CompressedData["
+1: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
+    "], {{0, 264}, {270, 0}}, {0, 255},
+    ColorFunction->RGBColor],
+   BoxForm`ImageTag["Byte", ColorSpace -> "RGB", Interleaving -> True],
+   Selectable->False],
+  DefaultBaseStyle->"ImageGraphics",
+  ImageSize->Automatic,
+  ImageSizeRaw->{270, 264},
+  PlotRange->{{0, 270}, {0, 
+   264}}]], "Input",ExpressionUUID->"d6632531-43ea-4e59-9f47-b014324edf96"]], \
+"Text",
+ TextAlignment->Center,ExpressionUUID->"37ab5c39-9961-4d50-8f3d-f4f583eb52d8"],
+
+Cell["\<\
+Given a value for the current at the start of the interval, we solve for the \
+current throughout the interval.\
+\>", "Text",ExpressionUUID->"0c2c9be9-3ed4-4b21-8b66-950872e79927"],
+
+Cell[BoxData[{
+ RowBox[{"Clear", "[", "currentPwmOff", "]"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"currentPwmOff", "[", "initialCurrent_", "]"}], " ", ":=", " ", 
+  RowBox[{"Module", "[", 
+   RowBox[{
+    RowBox[{"{", 
+     RowBox[{
+     "t", ",", " ", "eqns", ",", " ", "initialConditions", ",", " ", 
+      "result"}], "}"}], ",", "\[IndentingNewLine]", 
+    RowBox[{
+     RowBox[{"eqns", " ", "=", " ", 
+      RowBox[{"{", 
+       RowBox[{
+        RowBox[{
+         RowBox[{"R", " ", 
+          RowBox[{"i", "[", "t", "]"}]}], " ", "+", " ", 
+         RowBox[{"Ke", " ", "\[CapitalOmega]"}], " ", "+", " ", 
+         RowBox[{"L", " ", 
+          RowBox[{
+           RowBox[{"i", "'"}], "[", "t", "]"}]}], " ", "+", " ", "vdiode"}], 
+        "\[Equal]", " ", "0"}], "}"}]}], ";", "\[IndentingNewLine]", 
+     RowBox[{"initialConditions", " ", "=", " ", 
+      RowBox[{"{", 
+       RowBox[{
+        RowBox[{"i", "[", "0", "]"}], " ", "\[Equal]", " ", 
+        "initialCurrent"}], "}"}]}], ";", "\[IndentingNewLine]", 
+     RowBox[{"result", " ", "=", " ", 
+      RowBox[{
+       RowBox[{
+        RowBox[{"DSolve", "[", 
+         RowBox[{
+          RowBox[{"eqns", " ", "~", "Join", "~", " ", "initialConditions"}], 
+          ",", " ", 
+          RowBox[{"i", "[", "t", "]"}], ",", " ", "t"}], "]"}], " ", "//", 
+        " ", "Flatten"}], " ", "//", " ", "FullSimplify"}]}], ";", 
+     "\[IndentingNewLine]", 
+     RowBox[{"Function", "[", 
+      RowBox[{"tt", ",", " ", 
+       RowBox[{
+        RowBox[{
+         RowBox[{"i", "[", "t", "]"}], " ", "/.", " ", "result"}], " ", "/.", 
+        " ", 
+        RowBox[{"t", " ", "\[Rule]", " ", "tt"}]}]}], "]"}]}]}], 
+   "\[IndentingNewLine]", "]"}]}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"currentPwmOff", "[", "initialCurrentOff", "]"}], "[", " ", "t", 
+  "]"}]}], "Input",ExpressionUUID->"36e22427-0fb0-4cfe-a2a4-00d17eff0ad9"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[TextData[{
+ 
+ CounterBox["Section"],
+ ".",
+ 
+ CounterBox["Subsection"],
+ ".",
+ 
+ CounterBox["Subsubsection"],
+ ". Constraints"
+}], "Subsubsection",ExpressionUUID->"2a8883a7-045c-47fa-8bfd-af08ed03de24"],
+
+Cell[TextData[{
+ "As the PWM cycle is, well, cyclical, we require that the current values at \
+the end of the on and off intervals match at both ends. We capture those \
+constraints as a pair of equations. Here, ",
+ StyleBox["d",
+  FontSlant->"Italic"],
+ " is the duration of the on part of the cycle, and ",
+ StyleBox["p",
+  FontSlant->"Italic"],
+ " is the duration of the overall PWM frame period."
+}], "Text",ExpressionUUID->"fdb3d047-3bc5-458b-baef-53de7d185591"],
+
+Cell[BoxData[{
+ RowBox[{
+  RowBox[{
+   RowBox[{"currentPwmOn", "[", "initialCurrentOn", "]"}], "[", "d", "]"}], 
+  " ", "\[Equal]", " ", 
+  RowBox[{
+   RowBox[{"currentPwmOff", "[", "initialCurrentOff", "]"}], "[", "0", 
+   "]"}]}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{
+   RowBox[{"currentPwmOn", "[", "initialCurrentOn", "]"}], "[", "0", "]"}], 
+  " ", "\[Equal]", " ", 
+  RowBox[{
+   RowBox[{"currentPwmOff", "[", "initialCurrentOff", "]"}], "[", 
+   RowBox[{"p", "-", "d"}], "]"}]}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"constraints", "=", 
+   RowBox[{"{", 
+    RowBox[{"%", ",", " ", "%%"}], "}"}]}], 
+  ";"}]}], "Input",ExpressionUUID->"421418e8-ef0a-44c6-9c7d-32362a572168"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[TextData[{
+ 
+ CounterBox["Section"],
+ ".",
+ 
+ CounterBox["Subsection"],
+ ".",
+ 
+ CounterBox["Subsubsection"],
+ ". Solving for initial/final current as a function of duty cycle, velocity,  \
+motor, and environment"
+}], "Subsubsection",ExpressionUUID->"5020b881-a3bd-4de9-9857-5737a7179195"],
+
+Cell["\<\
+We\[CloseCurlyQuote]re not actually interested in the current at the start of \
+off period, so we eliminate it from the equation.\
+\>", "Text",ExpressionUUID->"6e27fb2c-3b16-4358-9bc4-8f6dafd609e0"],
+
+Cell[BoxData[{
+ RowBox[{
+  RowBox[{"Eliminate", "[", 
+   RowBox[{"constraints", ",", " ", "initialCurrentOff"}], "]"}], " ", "/.", 
+  " ", 
+  RowBox[{"And", " ", "\[Rule]", " ", "List"}]}], "\[IndentingNewLine]", 
+ RowBox[{"initialCurrentOnEqn", " ", "=", " ", 
+  RowBox[{"FullSimplify", "[", 
+   RowBox[{
+    RowBox[{"Eliminate", "[", 
+     RowBox[{"constraints", ",", " ", "initialCurrentOff"}], "]"}], ",", " ", 
+    "parameterAssumptions"}], "]"}], 
+  " "}]}], "Input",ExpressionUUID->"08340caa-ab12-49b8-9fde-1df9870e11f5"],
+
+Cell[TextData[{
+ "We solve for the initial current, ",
+ StyleBox["initialCurrentOn",
+  FontSlant->"Italic"],
+ ", as a function of the remaining parameters."
+}], "Text",ExpressionUUID->"6cb25434-2438-48d0-b5be-d1cb819488be"],
+
+Cell[BoxData[{
+ RowBox[{
+  RowBox[{"initialCurrentOnExpr", " ", "=", " ", 
+   RowBox[{"initialCurrentOn", "/.", "  ", 
+    RowBox[{"uniqueSolve", "[", 
+     RowBox[{"initialCurrentOnEqn", ",", " ", "initialCurrentOn"}], "]"}]}]}],
+   ";"}], "\[IndentingNewLine]", 
+ RowBox[{"initialCurrentOnExpr", " ", "=", " ", 
+  RowBox[{
+  "initialCurrentOnExpr", " ", "//", " ", "FullSimplify", 
+   " "}]}]}], "Input",ExpressionUUID->"81d625a3-491a-4402-95ed-e0b866cea645"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[TextData[{
+ 
+ CounterBox["Section"],
+ ".",
+ 
+ CounterBox["Subsection"],
+ ".",
+ 
+ CounterBox["Subsubsection"],
+ ". When is the initial/final current zero?"
+}], "Subsubsection",ExpressionUUID->"d3c1333d-930f-42ad-b7a2-cafb5943104b"],
+
+Cell["\<\
+In the below, we will have particular interest in when the current at the \
+start (and end) of the PWM cycle is zero. For a given velocity and PWM-on \
+duration, we compute the minimum PWM frame duration for which the initial \
+(and final) current is zero.\
+\>", "Text",ExpressionUUID->"bf724d2e-ce24-46c6-b9fa-8809d00ab6c5"],
+
+Cell[BoxData[{
+ RowBox[{
+  RowBox[{"zeroCurrentFrameDuration", "[", 
+   RowBox[{"\[CapitalOmega]\[CapitalOmega]_", ",", " ", "dd_"}], "]"}], " ", ":=",
+   " ", 
+  RowBox[{"Module", "[", 
+   RowBox[{
+    RowBox[{"{", "soln", " ", "}"}], ",", "\[IndentingNewLine]", 
+    RowBox[{
+     RowBox[{"soln", " ", "=", " ", 
+      RowBox[{
+       RowBox[{"uniqueSolve", "[", 
+        RowBox[{
+         RowBox[{"initialCurrentOnExpr", "\[Equal]", "0"}], ",", "p"}], "]"}],
+        " ", "/.", " ", 
+       RowBox[{
+        RowBox[{"C", "[", "1", "]"}], " ", "\[Rule]", " ", "0"}]}]}], ";", 
+     " ", 
+     RowBox[{"(*", 
+      RowBox[{
+       RowBox[{
+       "constant", " ", "is", " ", "zero", " ", "to", " ", "force", " ", 
+        "real", " ", "result"}], ",", " ", 
+       RowBox[{"not", " ", "complex"}]}], "*)"}], "\[IndentingNewLine]", 
+     RowBox[{
+      RowBox[{
+       RowBox[{"(", 
+        RowBox[{"p", " ", "/.", " ", "soln"}], ")"}], " ", "/.", " ", 
+       RowBox[{"{", 
+        RowBox[{
+         RowBox[{
+         "\[CapitalOmega]", " ", "\[Rule]", " ", 
+          "\[CapitalOmega]\[CapitalOmega]"}], ",", " ", 
+         RowBox[{"d", " ", "\[Rule]", " ", "dd"}]}], "}"}]}], " ", "//", " ", 
+      "FullSimplify"}]}]}], "\[IndentingNewLine]", 
+   "]"}]}], "\[IndentingNewLine]", 
+ RowBox[{"zeroCurrentFrameDuration", "[", 
+  RowBox[{"\[CapitalOmega]", ",", " ", "d"}], 
+  "]"}]}], "Input",ExpressionUUID->"b1973ade-decf-465f-964c-d77f9ee0f542"]
+}, Open  ]]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[TextData[{
+ 
+ CounterBox["Section"],
+ ".",
+ 
+ CounterBox["Subsection"],
+ ". Full PWM cycle"
+}], "Subsection",ExpressionUUID->"d9c37ddf-7b75-4988-89a8-9fa1da287fd4"],
+
+Cell[TextData[{
+ "As is observed in the H Bridge Secrets site, because of their design and \
+the presence of a the diode, asynchronous sign magnitude bridges can, \
+depending on the parameters involved, exhibit either ",
+ StyleBox["continuous",
+  FontSlant->"Italic"],
+ " or ",
+ StyleBox["discontinuous",
+  FontSlant->"Italic"],
+ " current through each of their PWM cycles. We would like to understand the \
+parameters in which we get one regime or the other (Ref: \
+http://modularcircuits.tantosonline.com/blog/articles/h-bridge-secrets/\
+asynchronous-sign-magnitude-drive/)."
+}], "Text",ExpressionUUID->"a49a3536-a3dc-42a2-b395-f33812ed6fba"],
+
+Cell[TextData[Cell[BoxData[
+ GraphicsBox[
+  TagBox[RasterBox[CompressedData["
+1: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
+XMZ37HJHayELPT53qymjYCODDfVfFBrDC/rHff/q2Ca5T8TXvvmXXY5qLSil
+Z1e+SBLdVFPlD/wbissjmke5DSUg+ueRe9vwrJGftdb/Zfj2vSTRTRnVnT6G
+t0K8G4ryHtQ/7vshBh6++3ZfPbVk+7j97M18RbBXa6Vfep0keqn3PrxoP9u8
+ybSu1/SPEj/0vOgr6Pm2LftN6/qCXXZpLZLoB9LHTRkFf8uiDjyV3tQ53vF/
+0t8PPS/6DXo+zFoLghO5qNRKQtN9G0mia97QM963h8+OyH2I7g2b1oJEh16K
+ztxc6r2PJLrmMT3jC7/76/NOoAqtBcIs/eG2UoxCV4ByIJ5y3eJfv5L1edtR
+vtbCs5No3UkS3VSl/6Uzj+ztHd3ia7+S9Xl7UY7W+tm2LpLopoyCH2efX3H7
+N8je0S3+td1cn1eitUiil1pJQAZb/timz67f9II+CZ7/+fW7XVufdwKmWosk
++sEX+ku998UWpj96/wqV94g+CaRf/u2Y0+vztsOgtWijSylGfe+eDQN/+5A2
+unhQnwTPf2t9/lsbXVuftxektWijy/dn/bTUex/mekrIXtAhobJdWJ93SGt9
+5/7ZLYs6SKIXMwr+Y3uP49nxmg4Jj9+d9flKMaSj1NnPb9zcmTi89UdvmKp0
+2uiyMa5eb7DfsD5vu51e0rMv1Xvtyg2tbCSTyZqamqlTpzY3N3d2dhpo1tXe
+98z0Hesf2gd24Xjsrq1krJ7bfseUb84YA2ZMtpXbrfN+JY+RvTY4ACbcNeWB
+mgkANGtpaSGOgajyHyCvm7Wnu+OE+F50hqdg+H4bJ46KvjOHspZAQ0MDctfI
+yAidRQJsn/8a2kQ+FN/owvAsjmbPlvoGlYkf259+s6KsIibERCJhIboYjEqR
+y+W6u7tVR8GwB6lUSnUIjGCivr5edQiMACIajULb4DMWi6mOhRE0WGStTCYz
+ODgII51OuxgRIyAoRS0o6ng8XigU8AmOuRwVIwCQqYUcBVVPRMIsCVLBgwIG
+qQ++pXTA0PScRmkNP1ILsLPZLAzw0817YXgKYA4xZHh4GHSCQWlKJKtIJJLP
+5w214EFhVEGxvA6oNXLiE7yCX9P5iTKu3xPDE8DogzxEDEo4ZADEKOKbAZSU
+NJ14cR1yC6KuMBhhBuYySjWgDSY4a2oJJwxKetoYJzV9ikQjmp4A6UWAEXLE
+x6Dp9CBWFK9LwE9KDPyBjQI0e8IW75Lk5PVYxrjISxBpygs4ceKE6hB8iXF/
+RTswMOBEsxcuXDB4yqFWrwPfXGoB3HtjY2MymXTzokHC9OnTOzs7i/3UsVu2
+bKmiTTzpDQ0NpkzAtaZOnVrdrgOMcqlm7cXIyEgikaCNN/zr7KoxZ84c2mci
+CCZ3bNXjWFtbi+otLS1iNxSRCs66urrq2szlchSV3KztAO0pToaNQAY7cuSI
+LR07adIkMkCkQ4cOoeWJtykDzVY3WZcD8Lajo2PatGm4UHV5m6HpE+LkyZOb
+m5u7urrII3es6Vw5LvDgoy5aQDsivaB9XAXXwqnqcg6CKW7WUSBpV9cDDMhp
+wahioGMtzloAWstiJkWb1SUcVHRZyTMYDAajauR0qI6CEUDQL15VRzEOCoUC
+777zFzKZTL2OaDTq5V+b5vP5SCSiOgpGZfB+1gLnwSviP2/v9BG8Ty1tvKwl
+8q2XE28IYaAWRkfsVRvW4YXxsqAWNBhtWUdOm+AzYroRS8AL/eAvYDhoP5Km
+Sy/aaESdTIMVi8WUT0MGaoHwgv+0nRgeGMWjL5eUnxratS72EpNNd01OsZlB
+tGC6b5lhgVwuBxlD4yJvlRSfYqukQsjUor122WwWHhCA/giC7sLwFgknPRco
+XPzUoDBaAHPo4UJJugQVoD2lcgt0IU9tzfIRPEstTU8agLyRmAxDzDLkjeim
+t2bagnzKtAVGFcCzSftsxZ+faJ6hlgBTi+EQSBRh0GUmaGZDL7as04xW/NQQ
+c3A2pkM0iDL0R15yCzRvsphnMBg2QvwVs/y3zAwGoyL8D9B4vXs=
+    "], {{0, 114}, {201, 0}}, {0, 255},
+    ColorFunction->RGBColor],
+   BoxForm`ImageTag["Byte", ColorSpace -> "RGB", Interleaving -> True],
+   Selectable->False],
+  DefaultBaseStyle->"ImageGraphics",
+  ImageSize->Automatic,
+  ImageSizeRaw->{201, 114},
+  PlotRange->{{0, 201}, {0, 114}}]], "Input",
+ TextAlignment->
+  Center,ExpressionUUID->"9d477c85-089a-4bc1-b1a3-14e2bc5ed96c"]], "Text",
+ TextAlignment->Center,ExpressionUUID->"8bb412cf-d8cd-4791-8cd0-e5e0dc7606b8"],
+
+Cell[TextData[{
+ "While we have modeled the voltage drop across the diode in our development \
+above, we did not model the diode\[CloseCurlyQuote]s rectifying behavior. \
+That is, the differential equations above are in fact invalid and incorrect \
+if the current ever becomes negative. Thus, we cannot correctly use them by \
+themselves to model the system when in discontinuous operation; instead, we \
+must take care by ",
+ StyleBox["other",
+  FontSlant->"Italic"],
+ " means to determine when the current would go negative."
+}], "Text",ExpressionUUID->"bd2f12bd-cad8-4866-99b4-0f9f71b4099c"],
+
+Cell["\<\
+With that caution in mind, we our on-cycle and off-cycle results together to \
+produce a function that shows the full PWM current waveform over an entire \
+PWM cycle.\
+\>", "Text",ExpressionUUID->"b46a54c1-a226-4b7e-bdca-63dcf4cac7f2"],
+
+Cell[BoxData[{
+ RowBox[{"Clear", "[", "pwmCurrent", "]"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"pwmCurrent", "[", 
+   RowBox[{
+   "\[CapitalOmega]\[CapitalOmega]_", ",", " ", "dd_", ",", " ", "pp_"}], 
+   "]"}], " ", ":=", " ", 
+  RowBox[{"Module", "[", "\[IndentingNewLine]", 
+   RowBox[{
+    RowBox[{"{", 
+     RowBox[{
+      RowBox[{"rules", " ", "=", " ", 
+       RowBox[{"Association", "[", 
+        RowBox[{"{", 
+         RowBox[{
+          RowBox[{
+          "\[CapitalOmega]", " ", "\[Rule]", " ", 
+           "\[CapitalOmega]\[CapitalOmega]"}], ",", " ", 
+          RowBox[{"d", " ", "\[Rule]", " ", "dd"}], ",", " ", 
+          RowBox[{"p", " ", "\[Rule]", " ", "pp"}]}], "}"}], "]"}]}], ",", 
+      " ", "initialCurrentOn", ",", " ", "initialCurrentOff", ",", " ", 
+      "pZeroCurrent", ",", " ", "on", ",", " ", "off", ",", " ", "cycle"}], 
+     "}"}], ",", "\[IndentingNewLine]", 
+    RowBox[{"(*", " ", 
+     RowBox[{
+      RowBox[{
+      "Clamp", " ", "the", " ", "initial", " ", "current", " ", "to", " ", 
+       "be", " ", "non"}], "-", 
+      RowBox[{
+       RowBox[{"negative", ".", " ", "Needed"}], " ", "if", " ", 
+       RowBox[{"we", "'"}], "re", " ", "in", " ", "discontinuous", " ", 
+       "current", " ", 
+       RowBox[{"operation", "."}]}]}], " ", "*)"}], "\[IndentingNewLine]", 
+    RowBox[{
+     RowBox[{"initialCurrentOn", " ", "=", " ", 
+      RowBox[{"Max", "[", 
+       RowBox[{"0", ",", "initialCurrentOnExpr"}], "]"}]}], ";", 
+     "\[IndentingNewLine]", 
+     RowBox[{"initialCurrentOff", " ", "=", " ", 
+      RowBox[{
+       RowBox[{"currentPwmOn", "[", "initialCurrentOn", "]"}], "[", "d", 
+       "]"}]}], ";", "\[IndentingNewLine]", 
+     RowBox[{"pZeroCurrent", " ", "=", " ", 
+      RowBox[{"zeroCurrentFrameDuration", "[", 
+       RowBox[{"\[CapitalOmega]\[CapitalOmega]", ",", " ", "dd"}], "]"}]}], 
+     ";", "\[IndentingNewLine]", 
+     RowBox[{"on", " ", "=", " ", 
+      RowBox[{"Piecewise", "[", 
+       RowBox[{
+        RowBox[{"{", 
+         RowBox[{"{", 
+          RowBox[{
+           RowBox[{
+            RowBox[{"currentPwmOn", "[", "initialCurrentOn", "]"}], "[", "t", 
+            "]"}], ",", " ", 
+           RowBox[{
+           "0", " ", "\[LessEqual]", " ", "t", " ", "\[LessEqual]", " ", 
+            "d"}]}], "}"}], "}"}], ",", " ", "0"}], "]"}]}], ";", 
+     "\[IndentingNewLine]", 
+     RowBox[{"off", " ", "=", " ", 
+      RowBox[{"Piecewise", "[", 
+       RowBox[{
+        RowBox[{"{", 
+         RowBox[{"{", 
+          RowBox[{
+           RowBox[{
+            RowBox[{"currentPwmOff", "[", "initialCurrentOff", "]"}], "[", 
+            RowBox[{"t", "-", "d"}], "]"}], ",", " ", 
+           RowBox[{"d", " ", "<", " ", "t", " ", "\[LessEqual]", " ", "p"}]}],
+           "}"}], "}"}], ",", " ", "0"}], "]"}]}], ";", "\[IndentingNewLine]", 
+     RowBox[{"cycle", " ", "=", " ", 
+      RowBox[{"Piecewise", "[", 
+       RowBox[{
+        RowBox[{"{", "\[IndentingNewLine]", 
+         RowBox[{
+          RowBox[{"{", 
+           RowBox[{
+            RowBox[{
+             RowBox[{"currentPwmOn", "[", "initialCurrentOn", "]"}], "[", "t",
+              "]"}], ",", " ", 
+            RowBox[{
+             RowBox[{
+             "0", " ", "\[LessEqual]", " ", "t", " ", "\[LessEqual]", " ", 
+              "d"}], " ", "&&", " ", 
+             RowBox[{"t", " ", "\[LessEqual]", " ", "pZeroCurrent"}]}]}], 
+           "}"}], ",", " ", 
+          RowBox[{"(*", 
+           RowBox[{
+            RowBox[{"clip", " ", "overly"}], "-", 
+            RowBox[{"long", " ", "d"}]}], "*)"}], "\[IndentingNewLine]", 
+          RowBox[{"{", 
+           RowBox[{
+            RowBox[{
+             RowBox[{"currentPwmOff", "[", "initialCurrentOff", "]"}], "[", 
+             RowBox[{"t", "-", "d"}], "]"}], ",", " ", 
+            RowBox[{
+             RowBox[{
+             "d", " ", "\[LessEqual]", " ", "t", " ", "\[LessEqual]", " ", 
+              "p"}], " ", "&&", " ", 
+             RowBox[{"t", " ", "\[LessEqual]", " ", "pZeroCurrent"}]}]}], 
+           "}"}]}], " ", 
+         RowBox[{"(*", 
+          RowBox[{
+           RowBox[{"don", "'"}], "t", " ", "use", " ", "once", " ", "zero", 
+           " ", "current", " ", "achieved"}], "*)"}], "\[IndentingNewLine]", 
+         "}"}], ",", "\[IndentingNewLine]", "0"}], "]"}]}], ";", 
+     "\[IndentingNewLine]", 
+     RowBox[{"cycle", " ", "=", " ", 
+      RowBox[{"cycle", " ", "/.", " ", "rules"}]}], ";", 
+     "\[IndentingNewLine]", "cycle"}]}], "\[IndentingNewLine]", 
+   "]"}]}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"pwmCurrent", "[", 
+   RowBox[{"\[CapitalOmega]", ",", " ", "d", ",", " ", "p"}], "]"}], 
+  " "}]}], "Input",ExpressionUUID->"3744b88d-a135-47a1-b462-19db8e0ea1ad"],
+
+Cell[CellGroupData[{
+
+Cell[TextData[{
+ 
+ CounterBox["Section"],
+ ".",
+ 
+ CounterBox["Subsection"],
+ ".",
+ 
+ CounterBox["Subsubsection"],
+ ". Mean Current"
+}], "Subsubsection",ExpressionUUID->"f352d975-9b45-4097-aecc-d7163324d031"],
+
+Cell["\<\
+With pwmCurrent[] in hand, the mean current across a PWM duty cycle can be \
+computed. We provide two forms, one fully general, and one numeric.\
+\>", "Text",ExpressionUUID->"9df8b857-2733-4558-8b75-c7e1ffe9289b"],
+
+Cell[BoxData[{
+ RowBox[{
+  RowBox[{"parameterAssumptions", " ", "=", " ", 
+   RowBox[{"Union", "[", 
+    RowBox[{"parameterAssumptions", ",", " ", 
+     RowBox[{"{", 
+      RowBox[{
+       RowBox[{"\[CapitalOmega]", "\[GreaterEqual]", " ", "0"}], ",", " ", 
+       RowBox[{
+       "0", " ", "\[LessEqual]", " ", "d", " ", "\[LessEqual]", " ", "p"}], 
+       ",", " ", 
+       RowBox[{"p", " ", ">", " ", "0"}]}], " ", "}"}]}], "]"}]}], 
+  ";"}], "\[IndentingNewLine]", 
+ RowBox[{"Clear", "[", 
+  RowBox[{"meanCurrent", ",", " ", "numericalMeanCurrent"}], 
+  "]"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{
+   RowBox[{"meanCurrent", "[", 
+    RowBox[{"\[CapitalOmega]_", ",", " ", "d_", ",", " ", "p_"}], "]"}], " ", 
+   ":=", " ", 
+   RowBox[{"meanCurrent", "[", 
+    RowBox[{"\[CapitalOmega]", ",", " ", "d", ",", " ", "p", ",", " ", 
+     RowBox[{"{", "}"}]}], "]"}]}], ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"meanCurrent", "[", 
+   RowBox[{
+   "\[CapitalOmega]_", ",", " ", "d_", ",", " ", "p_", ",", " ", "rules_"}], 
+   "]"}], ":=", " ", 
+  RowBox[{
+   RowBox[{"meanCurrent", "[", 
+    RowBox[{
+    "\[CapitalOmega]", ",", " ", "d", ",", " ", "p", ",", " ", "rules"}], 
+    "]"}], " ", "=", " ", 
+   RowBox[{"Module", "[", 
+    RowBox[{
+     RowBox[{"{", 
+      RowBox[{
+      "expr", ",", " ", "pVal", ",", " ", "range", ",", " ", "assumptions", 
+       ",", " ", "result"}], "}"}], ",", "\[IndentingNewLine]", 
+     RowBox[{
+      RowBox[{"expr", " ", "=", " ", 
+       RowBox[{
+        RowBox[{"pwmCurrent", "[", 
+         RowBox[{"\[CapitalOmega]", ",", " ", "d", ",", " ", "p"}], "]"}], 
+        " ", "/.", " ", "rules"}]}], ";", " ", 
+      RowBox[{"(*", 
+       RowBox[{
+        RowBox[{"Print", "[", "expr", "]"}], ";"}], "*)"}], 
+      "\[IndentingNewLine]", 
+      RowBox[{"pVal", " ", "=", " ", 
+       RowBox[{"p", " ", "/.", " ", "rules"}]}], ";", "\[IndentingNewLine]", 
+      RowBox[{"range", " ", "=", " ", 
+       RowBox[{"{", 
+        RowBox[{"t", ",", " ", "0", ",", " ", "pVal"}], "}"}]}], ";", 
+      "\[IndentingNewLine]", 
+      RowBox[{"assumptions", " ", "=", " ", "parameterAssumptions"}], ";", 
+      "\[IndentingNewLine]", 
+      RowBox[{"result", " ", "=", " ", 
+       RowBox[{"(", 
+        RowBox[{
+         RowBox[{"Assuming", "[", 
+          RowBox[{"assumptions", ",", 
+           RowBox[{"Integrate", "[", 
+            RowBox[{"expr", ",", " ", "range"}], "]"}]}], "]"}], " ", "/", 
+         " ", "pVal"}], ")"}]}], ";", "\[IndentingNewLine]", "result"}]}], 
+    "]"}]}]}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{
+   RowBox[{"numericalMeanCurrent", "[", 
+    RowBox[{"\[CapitalOmega]_", ",", " ", "d_", ",", " ", "p_"}], "]"}], " ", 
+   ":=", " ", 
+   RowBox[{"numericalMeanCurrent", "[", 
+    RowBox[{"\[CapitalOmega]", ",", " ", "d", ",", " ", "p", ",", " ", 
+     RowBox[{"{", "}"}]}], "]"}]}], ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"numericalMeanCurrent", "[", 
+   RowBox[{
+   "\[CapitalOmega]_", ",", " ", "d_", ",", " ", "p_", ",", " ", "rules_"}], 
+   "]"}], ":=", " ", 
+  RowBox[{
+   RowBox[{"numericalMeanCurrent", "[", 
+    RowBox[{
+    "\[CapitalOmega]", ",", " ", "d", ",", " ", "p", ",", " ", "rules"}], 
+    "]"}], " ", "=", " ", 
+   RowBox[{"Module", "[", 
+    RowBox[{
+     RowBox[{"{", 
+      RowBox[{
+      "expr", ",", " ", "pVal", ",", " ", "range", ",", " ", "assumptions", 
+       ",", " ", "result"}], "}"}], ",", "\[IndentingNewLine]", 
+     RowBox[{
+      RowBox[{"expr", " ", "=", " ", 
+       RowBox[{
+        RowBox[{"pwmCurrent", "[", 
+         RowBox[{"\[CapitalOmega]", ",", " ", "d", ",", " ", "p"}], "]"}], 
+        " ", "/.", " ", "rules"}]}], ";", " ", 
+      RowBox[{"(*", 
+       RowBox[{
+        RowBox[{"Print", "[", "expr", "]"}], ";"}], "*)"}], 
+      "\[IndentingNewLine]", 
+      RowBox[{"pVal", " ", "=", " ", 
+       RowBox[{"p", " ", "/.", " ", "rules"}]}], ";", "\[IndentingNewLine]", 
+      RowBox[{"range", " ", "=", " ", 
+       RowBox[{"{", 
+        RowBox[{"t", ",", " ", "0", ",", " ", "pVal"}], "}"}]}], ";", 
+      "\[IndentingNewLine]", 
+      RowBox[{"assumptions", " ", "=", " ", "parameterAssumptions"}], ";", 
+      "\[IndentingNewLine]", 
+      RowBox[{"result", " ", "=", " ", 
+       RowBox[{"(", 
+        RowBox[{
+         RowBox[{"Assuming", "[", 
+          RowBox[{"assumptions", ",", 
+           RowBox[{"NIntegrate", "[", 
+            RowBox[{"expr", ",", " ", "range"}], "]"}]}], "]"}], " ", "/", 
+         " ", "pVal"}], ")"}]}], ";", "\[IndentingNewLine]", "result"}]}], 
+    "]"}]}]}], "\[IndentingNewLine]", 
+ RowBox[{"meanCurrent", "[", 
+  RowBox[{"\[CapitalOmega]", ",", " ", "d", ",", " ", "p"}], 
+  "]"}]}], "Input",ExpressionUUID->"9da44d2c-52a8-4387-afc2-d6dd4b880c9f"]
+}, Open  ]]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[TextData[{
+ 
+ CounterBox["Section"],
+ ".",
+ 
+ CounterBox["Subsection"],
+ ". Example"
+}], "Subsection",ExpressionUUID->"c0da0df2-0368-4a48-83ac-526235cb5de6"],
+
+Cell["\<\
+We plot the PWM cycle for our example motor at a sequence of increasing \
+velocities. We also plot the mean current over the cycle. Note that the \
+vertical scales are different in each of the plots.\
+\>", "Text",ExpressionUUID->"5fe96fdd-641a-4494-a200-9c31ada20a78"],
+
+Cell[BoxData[{
+ RowBox[{"Clear", "[", 
+  RowBox[{"plotCycle", ",", "plotMean", ",", " ", "plotBoth"}], 
+  "]"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"plotCycle", "[", 
+   RowBox[{
+   "\[CapitalOmega]\[CapitalOmega]_", ",", " ", "dd_", ",", " ", "pp_", ",", 
+    " ", "motor_"}], "]"}], " ", ":=", " ", 
+  RowBox[{"Module", "[", "\[IndentingNewLine]", 
+   RowBox[{
+    RowBox[{"{", 
+     RowBox[{
+      RowBox[{"pRules", " ", "=", " ", 
+       RowBox[{
+        RowBox[{"{", 
+         RowBox[{
+          RowBox[{
+          "\[CapitalOmega]", " ", "\[Rule]", " ", 
+           "\[CapitalOmega]\[CapitalOmega]"}], ",", " ", 
+          RowBox[{"d", " ", "\[Rule]", " ", "dd"}], ",", " ", 
+          RowBox[{"p", " ", "\[Rule]", " ", "pp"}]}], "}"}], " ", "//", " ", 
+        "Association"}]}], ",", " ", "rules", ",", " ", "cycle", ",", " ", 
+      "duty"}], "}"}], ",", "\[IndentingNewLine]", 
+    RowBox[{
+     RowBox[{"rules", " ", "=", " ", 
+      RowBox[{"Join", "[", 
+       RowBox[{"pRules", ",", " ", "motor", ",", " ", "env"}], "]"}]}], ";", 
+     "\[IndentingNewLine]", 
+     RowBox[{"cycle", " ", "=", " ", 
+      RowBox[{
+       RowBox[{"pwmCurrent", "[", 
+        RowBox[{
+        "\[CapitalOmega]\[CapitalOmega]", ",", " ", "dd", ",", " ", "pp"}], 
+        "]"}], " ", "//.", " ", "rules"}]}], ";", "\[IndentingNewLine]", 
+     RowBox[{"duty", " ", "=", " ", 
+      RowBox[{
+       RowBox[{"(", 
+        RowBox[{"dd", " ", "/", " ", "pp"}], ")"}], " ", "//.", " ", 
+       "rules"}]}], ";", "\[IndentingNewLine]", 
+     RowBox[{"Plot", "[", 
+      RowBox[{"cycle", ",", " ", 
+       RowBox[{"Evaluate", "[", 
+        RowBox[{"{", 
+         RowBox[{"t", ",", " ", "0", ",", " ", 
+          RowBox[{"(", 
+           RowBox[{"pp", "//.", "rules"}], ")"}]}], "}"}], "]"}], ",", 
+       "\[IndentingNewLine]", 
+       RowBox[{"AxesOrigin", "\[Rule]", 
+        RowBox[{"{", 
+         RowBox[{"0", ",", "0"}], "}"}]}], ",", " ", 
+       RowBox[{"AxesLabel", "\[Rule]", 
+        RowBox[{"{", 
+         RowBox[{"\"\<Seconds\>\"", ",", " ", "\"\<Amps\>\""}], "}"}]}], ",", 
+       "\[IndentingNewLine]", 
+       RowBox[{"ImageSize", "\[Rule]", "300"}], ",", "\[IndentingNewLine]", 
+       RowBox[{"PlotLabel", "\[Rule]", 
+        RowBox[{"Evaluate", "[", 
+         RowBox[{
+         "\"\<Example PWM Cycle Current \[CapitalOmega]=\>\"", " ", "<>", " ", 
+          RowBox[{"ToString", "[", "\[CapitalOmega]\[CapitalOmega]", "]"}], 
+          " ", "<>", " ", "\"\<rad/s duty=\>\"", "<>", 
+          RowBox[{"ToString", "[", 
+           RowBox[{
+            RowBox[{"duty", " ", "*", " ", "100"}], "//", " ", 
+            "Rationalize"}], "]"}], " ", "<>", "\"\<%\>\""}], " ", "]"}]}]}], 
+      "]"}]}]}], "\[IndentingNewLine]", "]"}]}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{
+   RowBox[{"plotMean", "[", 
+    RowBox[{
+    "\[CapitalOmega]\[CapitalOmega]_", ",", " ", "dd_", ",", " ", "pp_", ",", 
+     " ", "motor_"}], "]"}], " ", ":=", " ", 
+   RowBox[{"Module", "[", "\[IndentingNewLine]", 
+    RowBox[{
+     RowBox[{"{", "mean", "}"}], ",", "\[IndentingNewLine]", 
+     RowBox[{
+      RowBox[{"mean", " ", "=", " ", 
+       RowBox[{"numericalMeanCurrent", "[", 
+        RowBox[{
+        "\[CapitalOmega]\[CapitalOmega]", ",", " ", "dd", ",", " ", "pp", ",",
+          " ", 
+         RowBox[{"(", 
+          RowBox[{"motor", " ", "~", "Join", "~", " ", "env"}], ")"}]}], 
+        "]"}]}], ";", "\[IndentingNewLine]", 
+      RowBox[{"Plot", "[", 
+       RowBox[{"mean", ",", " ", 
+        RowBox[{"Evaluate", "[", 
+         RowBox[{
+          RowBox[{"{", 
+           RowBox[{"t", ",", " ", "0", ",", " ", 
+            RowBox[{"pp", " ", "//.", " ", "env"}]}], "}"}], ",", " ", 
+          RowBox[{"PlotStyle", "\[Rule]", " ", "Red"}]}], "]"}]}], "]"}]}]}], 
+    "]"}]}], ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{
+   RowBox[{"plotBoth", "[", 
+    RowBox[{
+    "\[CapitalOmega]_", ",", " ", "d_", ",", " ", "p_", ",", " ", "motor_"}], 
+    "]"}], " ", ":=", " ", 
+   RowBox[{"Module", "[", 
+    RowBox[{
+     RowBox[{"{", 
+      RowBox[{"mean", ",", " ", "cycle"}], "}"}], ",", "\[IndentingNewLine]", 
+     RowBox[{
+      RowBox[{"mean", " ", "=", " ", 
+       RowBox[{"plotMean", "[", 
+        RowBox[{
+        "\[CapitalOmega]", ",", " ", "d", ",", " ", "p", ",", " ", "motor"}], 
+        "]"}]}], ";", "\[IndentingNewLine]", 
+      RowBox[{"cycle", " ", "=", " ", 
+       RowBox[{"plotCycle", "[", 
+        RowBox[{
+        "\[CapitalOmega]", ",", " ", "d", ",", " ", "p", ",", " ", "motor"}], 
+        "]"}]}], ";", "\[IndentingNewLine]", 
+      RowBox[{"Show", "[", 
+       RowBox[{"cycle", ",", " ", "mean"}], "]"}]}]}], "]"}]}], 
+  ";"}]}], "Input",ExpressionUUID->"aef223cc-759f-4935-a413-d3af28b5c5ff"],
+
+Cell[BoxData[{
+ RowBox[{
+  RowBox[{"plots", " ", "=", " ", 
+   RowBox[{
+    RowBox[{
+     RowBox[{"plotBoth", "[", 
+      RowBox[{"#", ",", " ", 
+       RowBox[{"0.75", " ", "p"}], ",", " ", "p", ",", " ", 
+       "unitlessMotorWithLoad"}], "]"}], " ", "&"}], " ", "/@", " ", 
+    RowBox[{"{", 
+     RowBox[{
+     "100", ",", " ", "300", ",", " ", "400", ",", " ", "450", ",", " ", 
+      "500", ",", " ", "600"}], "}"}]}]}], ";"}], "\[IndentingNewLine]", 
+ RowBox[{"Grid", "[", 
+  RowBox[{"{", 
+   RowBox[{
+    RowBox[{"{", 
+     RowBox[{
+      RowBox[{"plots", "[", 
+       RowBox[{"[", "1", "]"}], "]"}], ",", " ", 
+      RowBox[{"plots", "[", 
+       RowBox[{"[", "2", "]"}], "]"}], ",", " ", 
+      RowBox[{"plots", "[", 
+       RowBox[{"[", "3", "]"}], "]"}]}], "}"}], ",", " ", 
+    RowBox[{"{", 
+     RowBox[{
+      RowBox[{"plots", "[", 
+       RowBox[{"[", "4", "]"}], "]"}], ",", " ", 
+      RowBox[{"plots", "[", 
+       RowBox[{"[", "5", "]"}], "]"}], ",", " ", 
+      RowBox[{"plots", "[", 
+       RowBox[{"[", "6", "]"}], "]"}]}], "}"}]}], "}"}], 
+  "]"}]}], "Input",ExpressionUUID->"fe569f80-5975-43e9-a7fe-4b7df86d903c"],
+
+Cell["\<\
+Of particular interest is that at higher velocities, the current returns to \
+zero before the PWM framing period is complete. In those situations, we have \
+discontinuous current.
+Let\[CloseCurlyQuote]s also examine a fixed velocity while we vary duty cycle.\
+\>", "Text",ExpressionUUID->"7d0e042c-ed2d-43b9-a29b-81cee4514cb0"],
+
+Cell[BoxData[{
+ RowBox[{
+  RowBox[{"plots", " ", "=", " ", 
+   RowBox[{
+    RowBox[{
+     RowBox[{"plotBoth", "[", 
+      RowBox[{"300", ",", " ", 
+       RowBox[{"#", " ", "p"}], ",", " ", "p", ",", " ", 
+       "unitlessMotorWithLoad"}], "]"}], " ", "&"}], " ", "/@", " ", 
+    RowBox[{"{", 
+     RowBox[{
+     ".1", ",", " ", ".3", ",", " ", ".5", ",", " ", ".65", ",", " ", ".85", 
+      ",", " ", "1"}], "}"}]}]}], ";"}], "\[IndentingNewLine]", 
+ RowBox[{"Grid", "[", 
+  RowBox[{"{", 
+   RowBox[{
+    RowBox[{"{", 
+     RowBox[{
+      RowBox[{"plots", "[", 
+       RowBox[{"[", "1", "]"}], "]"}], ",", " ", 
+      RowBox[{"plots", "[", 
+       RowBox[{"[", "2", "]"}], "]"}], ",", " ", 
+      RowBox[{"plots", "[", 
+       RowBox[{"[", "3", "]"}], "]"}]}], "}"}], ",", " ", 
+    RowBox[{"{", 
+     RowBox[{
+      RowBox[{"plots", "[", 
+       RowBox[{"[", "4", "]"}], "]"}], ",", " ", 
+      RowBox[{"plots", "[", 
+       RowBox[{"[", "5", "]"}], "]"}], ",", " ", 
+      RowBox[{"plots", "[", 
+       RowBox[{"[", "6", "]"}], "]"}]}], "}"}]}], "}"}], 
+  "]"}]}], "Input",ExpressionUUID->"31dde86e-3765-46b9-b9c6-391a3ff61e2f"],
+
+Cell["\<\
+That makes sense: for fixed velocity, as duty cycle increases, we eventually \
+transition from discontinuous to continuous current once the duty cycle is \
+sufficiently large to develop enough energy during the on part of the cycle \
+so that it is not exhausted by cycle\[CloseCurlyQuote]s end.\
+\>", "Text",ExpressionUUID->"507cdffa-95f8-40b4-9907-b546f05882a5"],
+
+Cell["\<\
+However, except in transients, we don\[CloseCurlyQuote]t actually get to vary \
+duty cycle and velocity independently as these plots would imply. It is that \
+relationship to which we now turn our attention.\
+\>", "Text",ExpressionUUID->"11d062a4-16ec-4e17-8a04-fc38bc034444"]
+}, Open  ]]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[TextData[{
+ 
+ CounterBox["Section"],
+ ". Continuity, Discontinuity, Duty Cycle, and Velocity"
+}], "Section",ExpressionUUID->"1d143920-09d0-4cb4-b7b8-7f0d78f19fe1"],
+
+Cell["\<\
+Our ultimate interest here is to understand the relationship between duty \
+cycle and velocity in asynchronous sign magnitude H bridges. In particular, \
+we\[CloseCurlyQuote]re interested in any non-linearities involved.\
+\>", "Text",ExpressionUUID->"941f029e-545a-4151-a54e-9eb6b25bd9a4"],
+
+Cell[CellGroupData[{
+
+Cell[TextData[{
+ 
+ CounterBox["Section"],
+ ".",
+ 
+ CounterBox["Subsection"],
+ ". Average Current, Duty Cycle, and Steady State Velocity"
+}], "Subsection",ExpressionUUID->"8f6cf4b9-24b6-4876-b444-5efabd9097bb"],
+
+Cell["\<\
+So far we have treated velocity (\[CapitalOmega]) and duty cycle as \
+independent variables. However, they are in fact related: for a given duty \
+cycle (and other parameters), there is a limit to the maximum velocity which \
+may be achieved. We seek now to compute that value. We recall the steady \
+state current and velocity results from previous work.\
+\>", "Text",ExpressionUUID->"12887d42-fc1b-4fe5-a41e-aae314631f59"],
+
+Cell[BoxData[{
+ RowBox[{"ssCur", " ", "\[Equal]", 
+  RowBox[{"(", 
+   RowBox[{"ssCur", " ", "/.", " ", "simpleSs"}], 
+   ")"}]}], "\[IndentingNewLine]", 
+ RowBox[{"ssVel", " ", "\[Equal]", " ", 
+  RowBox[{"(", 
+   RowBox[{"ssVel", " ", "/.", " ", "simpleSs"}], 
+   ")"}]}]}], "Input",ExpressionUUID->"44cca282-3223-40fd-822f-be233759177d"],
+
+Cell["\<\
+We next define a function that computes the steady state velocity for a given \
+current. Notice that the result is not dependent on the inertia of the load & \
+motor, only the drag.\
+\>", "Text",ExpressionUUID->"294b554f-7d23-4bf5-9dad-f62556acd1ec"],
+
+Cell[BoxData[{
+ RowBox[{
+  RowBox[{"ssVelFromCurrent", "[", "i_", "]"}], " ", ":=", " ", 
+  RowBox[{"Module", "[", 
+   RowBox[{
+    RowBox[{"{", "}"}], ",", "\[IndentingNewLine]", 
+    RowBox[{
+     RowBox[{
+      RowBox[{"ssVel", " ", "/.", " ", "simpleSs"}], " ", "/.", " ", 
+      RowBox[{"uniqueSolve", "[", 
+       RowBox[{
+        RowBox[{"ssCur", " ", "\[Equal]", " ", 
+         RowBox[{"(", 
+          RowBox[{"ssCur", " ", "/.", " ", "simpleSs"}], ")"}]}], ",", " ", 
+        "\[CapitalDelta]vappConst"}], "]"}]}], " ", "/.", " ", 
+     RowBox[{"ssCur", " ", "\[Rule]", " ", "i"}]}]}], "\[IndentingNewLine]", 
+   "]"}]}], "\[IndentingNewLine]", 
+ RowBox[{"ssVelFromCurrent", "[", "iAverage", 
+  "]"}]}], "Input",ExpressionUUID->"35fe9325-ebb1-4abd-b65e-699d842efc06"],
+
+Cell["\<\
+We then apply ssVelFromCurrent[] to the mean current over the PWM interval to \
+give the steady state velocity in terms of the duration of the on part of the \
+cycle and the overall framing period.\
+\>", "Text",ExpressionUUID->"d1c9f3da-3ec5-47c0-901e-c0e7125e3832"],
+
+Cell[BoxData[{
+ RowBox[{"Clear", "[", "ssVelFromPwmCycle", "]"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"ssVelFromPwmCycle", "[", 
+   RowBox[{"d_", ",", " ", "p_", ",", " ", "motor_"}], "]"}], " ", ":=", " ", 
+  RowBox[{"ssVelFromPwmCycle", "[", 
+   RowBox[{"d", ",", " ", "p", ",", " ", "motor", ",", " ", "env"}], 
+   "]"}]}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"ssVelFromPwmCycle", "[", 
+   RowBox[{"d_", ",", " ", "p_", ",", " ", "motor_", ",", " ", "env_"}], 
+   "]"}], " ", ":=", " ", 
+  RowBox[{"Module", "[", 
+   RowBox[{
+    RowBox[{"{", 
+     RowBox[{
+      RowBox[{"rules", " ", "=", " ", 
+       RowBox[{"(", 
+        RowBox[{"motor", " ", "~", "Join", "~", " ", "env"}], ")"}]}], ",", 
+      " ", "dVal", ",", " ", "pVal", ",", " ", "\[CapitalOmega]", ",", " ", 
+      "mean", ",", " ", "eqn", ",", " ", "soln"}], "}"}], ",", 
+    "\[IndentingNewLine]", 
+    RowBox[{
+     RowBox[{"dVal", " ", "=", " ", 
+      RowBox[{"d", " ", "//.", " ", "rules"}]}], ";", "\[IndentingNewLine]", 
+     RowBox[{"pVal", " ", "=", " ", 
+      RowBox[{"p", " ", "//.", " ", "rules"}]}], ";", "\[IndentingNewLine]", 
+     RowBox[{"mean", "=", 
+      RowBox[{
+       RowBox[{"meanCurrent", "[", 
+        RowBox[{
+        "\[CapitalOmega]", ",", " ", "dVal", ",", " ", "pVal", ",", " ", 
+         "rules"}], "]"}], "//", " ", "FullSimplify"}]}], ";", 
+     "\[IndentingNewLine]", 
+     RowBox[{"eqn", "=", 
+      RowBox[{
+       RowBox[{"(", 
+        RowBox[{
+         RowBox[{"ssVelFromCurrent", "[", "mean", "]"}], " ", "-", " ", 
+         "\[CapitalOmega]"}], ")"}], " ", "/.", " ", "rules"}]}], ";", " ", 
+     "\[IndentingNewLine]", 
+     RowBox[{"eqn", " ", "=", " ", 
+      RowBox[{"PiecewiseExpand", "[", 
+       RowBox[{"eqn", ",", " ", 
+        RowBox[{"\[CapitalOmega]", " ", ">", " ", "0"}]}], "]"}]}], ";", 
+     "\[IndentingNewLine]", 
+     RowBox[{"soln", " ", "=", " ", 
+      RowBox[{"FindRoot", "[", 
+       RowBox[{"eqn", ",", " ", 
+        RowBox[{"{", 
+         RowBox[{"\[CapitalOmega]", ",", " ", "100"}], "}"}]}], "]"}]}], ";", 
+     "\[IndentingNewLine]", 
+     RowBox[{"\[CapitalOmega]", " ", "/.", " ", "soln"}]}]}], 
+   "]"}]}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{
+   RowBox[{"ssVelFromPwmCycle", "[", 
+    RowBox[{
+     RowBox[{"#", " ", "p"}], ",", " ", "p", ",", " ", 
+     "unitlessMotorWithLoad"}], "]"}], " ", "&"}], " ", "/@", " ", 
+  RowBox[{"{", 
+   RowBox[{
+    RowBox[{"1", "/", "4"}], ",", " ", 
+    RowBox[{"1", "/", "2"}], ",", " ", 
+    RowBox[{"3", "/", "4"}], ",", " ", "1"}], 
+   "}"}]}]}], "Input",ExpressionUUID->"350b8688-7ba0-41b7-a7eb-1e14cea48842"],
+
+Cell[BoxData[{
+ RowBox[{"Clear", "[", "plotSsVelFromPwmCycle", "]"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"plotSsVelFromPwmCycle", "[", "motor_", "]"}], " ", ":=", " ", 
+  RowBox[{"plotSsVelFromPwmCycle", "[", 
+   RowBox[{"p", ",", " ", "motor"}], "]"}]}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"plotSsVelFromPwmCycle", "[", 
+   RowBox[{"p_", ",", " ", "motor_"}], "]"}], " ", ":=", " ", 
+  RowBox[{"plotSsVelFromPwmCycle", "[", 
+   RowBox[{"p", ",", " ", "motor", ",", " ", "env"}], 
+   "]"}]}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"plotSsVelFromPwmCycle", "[", 
+   RowBox[{"p_", ",", " ", "motor_", ",", " ", "env_"}], "]"}], " ", ":=", 
+  " ", 
+  RowBox[{"Module", "[", 
+   RowBox[{
+    RowBox[{"{", "plotIt", "}"}], ",", "\[IndentingNewLine]", 
+    RowBox[{
+     RowBox[{
+      RowBox[{"plotIt", "[", "tMax_", "]"}], " ", ":=", " ", 
+      RowBox[{"Plot", "[", 
+       RowBox[{
+        RowBox[{"ssVelFromPwmCycle", "[", 
+         RowBox[{
+          RowBox[{"duty", " ", "p"}], ",", " ", "p", ",", " ", 
+          "unitlessMotorWithLoad"}], "]"}], ",", " ", 
+        RowBox[{"{", 
+         RowBox[{"duty", ",", " ", "0", ",", " ", "tMax"}], "}"}], ",", 
+        "\[IndentingNewLine]", 
+        RowBox[{"AxesOrigin", "\[Rule]", 
+         RowBox[{"{", 
+          RowBox[{"0", ",", "0"}], "}"}]}], ",", "\[IndentingNewLine]", 
+        RowBox[{"AxesLabel", "\[Rule]", " ", 
+         RowBox[{"{", 
+          RowBox[{"\"\<Seconds\>\"", ",", " ", 
+           RowBox[{"HoldForm", "[", 
+            RowBox[{"Radians", " ", "/", " ", "Second"}], "]"}]}], "}"}]}], 
+        ",", "\[IndentingNewLine]", 
+        RowBox[{
+        "PlotLabel", "\[Rule]", 
+         "\"\<Steady State Velocity vs Duty Cycle\>\""}], ",", 
+        "\[IndentingNewLine]", 
+        RowBox[{"ImageSize", "\[Rule]", "Large"}]}], "\[IndentingNewLine]", 
+       "]"}]}], ";", "\[IndentingNewLine]", 
+     RowBox[{"Row", "[", 
+      RowBox[{"{", 
+       RowBox[{
+        RowBox[{"plotIt", "[", "1", "]"}], ",", " ", 
+        RowBox[{"plotIt", "[", "0.05", "]"}]}], "}"}], "]"}]}]}], 
+   "\[IndentingNewLine]", 
+   "]"}]}]}], "Input",ExpressionUUID->"8842fbd3-5183-40c0-bdfa-354b2fc402d8"],
+
+Cell[BoxData[
+ RowBox[{"plotSsVelFromPwmCycle", "[", "unitlessMotorWithLoad", 
+  "]"}]], "Input",ExpressionUUID->"0cb05bbb-25d3-4313-a684-654a4cb0cf1a"]
+}, Open  ]]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[TextData[{
+ 
+ CounterBox["Section"],
+ ". Revision History"
+}], "Section",ExpressionUUID->"276978c4-a71c-4a3f-acf0-32b83569abc0"],
+
+Cell["2018.08.25. Initial version.", \
+"Item",ExpressionUUID->"c7e98618-4fda-46a1-9c3b-e7a69012bc31"]
+}, Open  ]]
+}, Open  ]]
+},
+WindowSize->{1022, 1477},
+WindowMargins->{{1178, Automatic}, {Automatic, 14}},
+PrintingCopies->1,
+PrintingPageRange->{32000, 32000},
+PrintingOptions->{"Magnification"->1.,
+"PaperOrientation"->"Portrait",
+"PaperSize"->{612, 792}},
+PrivateNotebookOptions->{"FileOutlineCache"->False},
+CellContext->Notebook,
+CellLabelAutoDelete->True,
+TrackCellChangeTimes->False,
+Magnification:>0.95 Inherited,
+FrontEndVersion->"11.3 for Microsoft Windows (64-bit) (March 6, 2018)",
+StyleDefinitions->Notebook[{
+   Cell[
+    StyleData[
+    StyleDefinitions -> 
+     FrontEnd`FileName[{"Report"}, "StandardReport.nb", CharacterEncoding -> 
+       "UTF-8"]]], 
+   Cell[
+    StyleData[All, "Printout"], Magnification -> 0.5]}, Visible -> False, 
+  FrontEndVersion -> "11.3 for Microsoft Windows (64-bit) (March 6, 2018)", 
+  StyleDefinitions -> "PrivateStylesheetFormatting.nb"]
+]
+
