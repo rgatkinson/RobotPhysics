@@ -42,10 +42,16 @@ plotLaplaceTransform[fn_, {rmin_, rmax_}, {imin_, imax_}, opts : OptionsPattern[
 	}
 ]
 
-prettyPrint[list_List] := Text[TraditionalForm[ColumnForm[list]], BaseStyle -> {FontSize -> 15}]
-prettyPrint[list_And] := Text[TraditionalForm[ColumnForm[list]], BaseStyle -> {FontSize -> 15}]
-prettyPrint[other_] := Text[TraditionalForm[other], BaseStyle -> {FontSize -> 15}]
+prettyPrintFontSize = 15
+prettyPrint[list_List] := Text[TraditionalForm[ColumnForm[list]], BaseStyle -> {FontSize -> prettyPrintFontSize}]
+prettyPrint[list_And] := Text[TraditionalForm[ColumnForm[list]], BaseStyle -> {FontSize -> prettyPrintFontSize}]
+prettyPrint[other_] := Text[TraditionalForm[other], BaseStyle -> {FontSize -> prettyPrintFontSize}]
 
+(*-----------------------------------------------------------------------------------------------*)
+
+line[{x1_, y1_}, {x2_, y2_}] := 
+ Function[{x}, y1 + (y2 - y1) / (x2 - x1) * (x - x1)]
+ 
 (*-----------------------------------------------------------------------------------------------*) 
 
 unboundQ[x_Symbol] := True

@@ -6,16 +6,16 @@ Cell["Ripple Current in Asynchronous Sign Magnitude HBridges", \
 
 Cell["\<\
 Robert Atkinson
-25 August 2018\
+26 August 2018\
 \>", "Author",ExpressionUUID->"05aea015-05f3-4e99-899d-20a8cd5792a1"],
 
 Cell["\<\
 Here we investigate the ripple current of asynchronous sign magnitude H \
-bridges. The development here is based on an earlier work by Eric Chin, and \
-on the work of Andras Tantos at the H Bridge Secrets site \
+bridges. The development here is based on earlier work by Eric Chin (private \
+communication), and on the work of Andras Tantos at the H Bridge Secrets site \
 (http://modularcircuits.tantosonline.com/blog/articles/h-bridge-secrets/\
-asynchronous-sign-magnitude-drive/). Our most notable result is a \
-relationship between PWM duty cycle and steady state motor velocity for \
+asynchronous-sign-magnitude-drive/). Our most notable result is exhibiting \
+the relationship between PWM duty cycle and steady state motor velocity for \
 asynchronous sign magnitude H bridges.\
 \>", "Text",ExpressionUUID->"56cc4ba9-b77c-4512-b3b4-73f00a3c0eee"],
 
@@ -76,7 +76,16 @@ Cell[BoxData[{
  RowBox[{
   RowBox[{"Get", "[", 
    RowBox[{"inputDirectory", " ", "<>", " ", "\"\<Misc.m\>\""}], "]"}], 
-  ";"}]}], "Input",ExpressionUUID->"00da5f52-c4e4-4d20-9d91-5577a43f3731"]
+  ";"}]}], "Input",ExpressionUUID->"00da5f52-c4e4-4d20-9d91-5577a43f3731"],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"SetOptions", "[", 
+   RowBox[{"Plot", ",", 
+    RowBox[{"LabelStyle", "\[Rule]", 
+     RowBox[{"Directive", "[", 
+      RowBox[{"Background", "\[Rule]", "None"}], "]"}]}]}], "]"}], 
+  ";"}]], "Input",ExpressionUUID->"80a2f107-bdfe-4017-912d-cc050219d0b1"]
 }, Open  ]]
 }, Open  ]],
 
@@ -136,10 +145,11 @@ Cell[BoxData[{
 Cell["\<\
 We also define some parameters that mirror our environment; the battery \
 voltage, the voltage drop across a silicon diode, and the PWM frame period \
-used in the First Tech Challenge REV Expansion Hub firmware.\
+used in the First Tech Challenge REV Expansion Hub firmware (Ref: \
+http://www.revrobotics.com/rev-31-1153/).\
 \>", "Text",ExpressionUUID->"835033b8-9397-442d-bf1c-b066094d0eed"],
 
-Cell[BoxData[{
+Cell[BoxData[
  RowBox[{"env", " ", "=", " ", 
   RowBox[{
    RowBox[{"{", 
@@ -151,12 +161,8 @@ Cell[BoxData[{
      RowBox[{"p", " ", "\[Rule]", " ", "0.0001"}]}], " ", 
     RowBox[{"(*", 
      RowBox[{"10", " ", "kHz"}], "*)"}], "}"}], " ", "//", " ", 
-   "Association"}]}], "\[IndentingNewLine]", 
- RowBox[{
-  RowBox[{"example", " ", "=", " ", 
-   RowBox[{"Join", "[", 
-    RowBox[{"unitlessMotorWithLoad", ",", " ", "env"}], "]"}]}], 
-  ";"}]}], "Input",ExpressionUUID->"fb120334-7255-4a21-8a7a-6f7d8ab7a3dc"],
+   "Association"}]}]], \
+"Input",ExpressionUUID->"fb120334-7255-4a21-8a7a-6f7d8ab7a3dc"],
 
 Cell["\<\
 A handy figure to keep in mind: what is the maximum velocity of this example \
@@ -167,8 +173,9 @@ Cell[BoxData[
  RowBox[{"velMaxExample", " ", "=", " ", 
   RowBox[{
    RowBox[{"ssVel", " ", "/.", " ", "simpleSs"}], " ", "/.", " ", 
-   "example"}]}]], \
-"Input",ExpressionUUID->"4c7f152d-8a64-45c8-84ea-afd1034fe95a"]
+   RowBox[{"Join", "[", 
+    RowBox[{"unitlessMotorWithLoad", ",", " ", "env"}], 
+    "]"}]}]}]], "Input",ExpressionUUID->"4c7f152d-8a64-45c8-84ea-afd1034fe95a"]
 }, Open  ]],
 
 Cell[CellGroupData[{
@@ -193,7 +200,7 @@ Cell[TextData[{
 Cell[TextData[{
  "Our examination of ripple current is rooted in the voltage differential \
 equation of our motor model. Here, we will assume that due to the short time \
-intervals involved that velocity is constant. Thus, ",
+intervals involved in a PWEM cycle that velocity is constant. Thus, ",
  StyleBox["vg[t]",
   FontSlant->"Italic"],
  " will be a constant ",
@@ -279,7 +286,7 @@ Cell[BoxData[{
          RowBox[{"i", "[", "t", "]"}], " ", "/.", " ", "result"}], " ", "/.", 
         " ", 
         RowBox[{"t", " ", "\[Rule]", " ", "tt"}]}]}], "]"}]}]}], 
-   "\[IndentingNewLine]", "]"}]}], "\[IndentingNewLine]", 
+   "]"}]}], "\[IndentingNewLine]", 
  RowBox[{
   RowBox[{"currentPwmOn", "[", "initialCurrentOn", "]"}], "[", "t", 
   "]"}]}], "Input",ExpressionUUID->"dcc39def-eee9-4e8a-a191-d882b43ff0b3"]
@@ -536,7 +543,7 @@ Cell[BoxData[{
          RowBox[{"i", "[", "t", "]"}], " ", "/.", " ", "result"}], " ", "/.", 
         " ", 
         RowBox[{"t", " ", "\[Rule]", " ", "tt"}]}]}], "]"}]}]}], 
-   "\[IndentingNewLine]", "]"}]}], "\[IndentingNewLine]", 
+   "]"}]}], "\[IndentingNewLine]", 
  RowBox[{
   RowBox[{"currentPwmOff", "[", "initialCurrentOff", "]"}], "[", " ", "t", 
   "]"}]}], "Input",ExpressionUUID->"36e22427-0fb0-4cfe-a2a4-00d17eff0ad9"]
@@ -562,10 +569,12 @@ the end of the on and off intervals match at both ends. We capture those \
 constraints as a pair of equations. Here, ",
  StyleBox["d",
   FontSlant->"Italic"],
- " is the duration of the on part of the cycle, and ",
+ " is the duration of the on part of the cycle (known hereinafter as \
+\[OpenCurlyDoubleQuote]on-duration\[CloseCurlyDoubleQuote]), and ",
  StyleBox["p",
   FontSlant->"Italic"],
- " is the duration of the overall PWM frame period."
+ " is the duration of the overall PWM frame period \
+(\[OpenCurlyDoubleQuote]frame duration\[CloseCurlyDoubleQuote])."
 }], "Text",ExpressionUUID->"fdb3d047-3bc5-458b-baef-53de7d185591"],
 
 Cell[BoxData[{
@@ -607,7 +616,7 @@ motor, and environment"
 
 Cell["\<\
 We\[CloseCurlyQuote]re not actually interested in the current at the start of \
-off period, so we eliminate it from the equation.\
+the off period, so we eliminate it from the equation.\
 \>", "Text",ExpressionUUID->"6e27fb2c-3b16-4358-9bc4-8f6dafd609e0"],
 
 Cell[BoxData[{
@@ -628,7 +637,11 @@ Cell[TextData[{
  "We solve for the initial current, ",
  StyleBox["initialCurrentOn",
   FontSlant->"Italic"],
- ", as a function of the remaining parameters."
+ ", as a function of the remaining parameters. This is an important result \
+that we will use frequently in the below. It embodies the periodic nature of \
+the PWM cycle, telling us what the current must be at the start (and end) of \
+that cycle, given the other parameters (\[CapitalOmega], R, L, Ke, p, vbat, \
+vdiode)."
 }], "Text",ExpressionUUID->"6cb25434-2438-48d0-b5be-d1cb819488be"],
 
 Cell[BoxData[{
@@ -660,14 +673,15 @@ Cell[TextData[{
 
 Cell["\<\
 In the below, we will have particular interest in when the current at the \
-start (and end) of the PWM cycle is zero. For a given velocity and PWM-on \
-duration, we compute the minimum PWM frame duration for which the initial \
-(and final) current is zero.\
+start (and end) of the PWM cycle is zero. For a given velocity and \
+on-duration, we compute the minimum PWM frame duration for which the initial \
+(and final) current is zero. If the actual frame duration is longer than this \
+value, the current will be discontinuous.\
 \>", "Text",ExpressionUUID->"bf724d2e-ce24-46c6-b9fa-8809d00ab6c5"],
 
 Cell[BoxData[{
  RowBox[{
-  RowBox[{"zeroCurrentFrameDuration", "[", 
+  RowBox[{"zeroCurrentFrameDurationFromVelocity", "[", 
    RowBox[{"\[CapitalOmega]\[CapitalOmega]_", ",", " ", "dd_"}], "]"}], " ", ":=",
    " ", 
   RowBox[{"Module", "[", 
@@ -690,18 +704,18 @@ Cell[BoxData[{
         "real", " ", "result"}], ",", " ", 
        RowBox[{"not", " ", "complex"}]}], "*)"}], "\[IndentingNewLine]", 
      RowBox[{
-      RowBox[{
-       RowBox[{"(", 
-        RowBox[{"p", " ", "/.", " ", "soln"}], ")"}], " ", "/.", " ", 
-       RowBox[{"{", 
+      RowBox[{"(", 
+       RowBox[{"p", " ", "/.", " ", "soln"}], ")"}], " ", "/.", " ", 
+      RowBox[{"{", 
+       RowBox[{
         RowBox[{
-         RowBox[{
-         "\[CapitalOmega]", " ", "\[Rule]", " ", 
-          "\[CapitalOmega]\[CapitalOmega]"}], ",", " ", 
-         RowBox[{"d", " ", "\[Rule]", " ", "dd"}]}], "}"}]}], " ", "//", " ", 
-      "FullSimplify"}]}]}], "\[IndentingNewLine]", 
+        "\[CapitalOmega]", " ", "\[Rule]", " ", 
+         "\[CapitalOmega]\[CapitalOmega]"}], ",", " ", 
+        RowBox[{"d", " ", "\[Rule]", " ", "dd"}]}], "}"}]}]}]}], " ", 
+   RowBox[{"(*", 
+    RowBox[{"//", " ", "FullSimplify"}], "*)"}], "\[IndentingNewLine]", 
    "]"}]}], "\[IndentingNewLine]", 
- RowBox[{"zeroCurrentFrameDuration", "[", 
+ RowBox[{"zeroCurrentFrameDurationFromVelocity", "[", 
   RowBox[{"\[CapitalOmega]", ",", " ", "d"}], 
   "]"}]}], "Input",ExpressionUUID->"b1973ade-decf-465f-964c-d77f9ee0f542"]
 }, Open  ]]
@@ -715,20 +729,22 @@ Cell[TextData[{
  ".",
  
  CounterBox["Subsection"],
- ". Full PWM cycle"
+ ". Waveform of Full PWM Frame"
 }], "Subsection",ExpressionUUID->"d9c37ddf-7b75-4988-89a8-9fa1da287fd4"],
 
 Cell[TextData[{
- "As is observed in the H Bridge Secrets site, because of their design and \
-the presence of a the diode, asynchronous sign magnitude bridges can, \
-depending on the parameters involved, exhibit either ",
+ "As is observed in the H Bridge Secrets site, asynchronous sign magnitude \
+bridges can, depending on the parameters involved, exhibit either ",
  StyleBox["continuous",
   FontSlant->"Italic"],
  " or ",
  StyleBox["discontinuous",
   FontSlant->"Italic"],
- " current through each of their PWM cycles. We would like to understand the \
-parameters in which we get one regime or the other (Ref: \
+ " current through each of their PWM cycles, according to whether current \
+continues to flow throughout the whole PWM frame or whether it becomes zero \
+before the frame is complete. Understanding the parameters that determine \
+whether we are in a continuous or a discontinuous regime is a primary focus \
+of ours here. (Ref: \
 http://modularcircuits.tantosonline.com/blog/articles/h-bridge-secrets/\
 asynchronous-sign-magnitude-drive/)."
 }], "Text",ExpressionUUID->"a49a3536-a3dc-42a2-b395-f33812ed6fba"],
@@ -825,19 +841,27 @@ c3A2pkM0iDL0R15yCzRvsphnMBg2QvwVs/y3zAwGoyL8D9B4vXs=
 Cell[TextData[{
  "While we have modeled the voltage drop across the diode in our development \
 above, we did not model the diode\[CloseCurlyQuote]s rectifying behavior. \
-That is, the differential equations above are in fact invalid and incorrect \
-if the current ever becomes negative. Thus, we cannot correctly use them by \
-themselves to model the system when in discontinuous operation; instead, we \
-must take care by ",
+That is, the differential equations above are in fact ",
+ StyleBox["invalid",
+  FontWeight->"Bold"],
+ " and ",
+ StyleBox["incorrect",
+  FontWeight->"Bold"],
+ " if the current ever becomes negative. Thus, we cannot correctly use them \
+on their own by themselves to model the system when in discontinuous \
+operation. Rather, we must take care by ",
  StyleBox["other",
   FontSlant->"Italic"],
- " means to determine when the current would go negative."
+ " means to determine when the current would go negative and modify our \
+waveforms appropriately."
 }], "Text",ExpressionUUID->"bd2f12bd-cad8-4866-99b4-0f9f71b4099c"],
 
 Cell["\<\
 With that caution in mind, we our on-cycle and off-cycle results together to \
 produce a function that shows the full PWM current waveform over an entire \
-PWM cycle.\
+PWM cycle. Ensuring that the computed initial current is non-negative and \
+that our PWM-on and PWM-off waveforms never exceed the zero-current frame \
+duration is sufficient to produce correct results.\
 \>", "Text",ExpressionUUID->"b46a54c1-a226-4b7e-bdca-63dcf4cac7f2"],
 
 Cell[BoxData[{
@@ -883,7 +907,7 @@ Cell[BoxData[{
        RowBox[{"currentPwmOn", "[", "initialCurrentOn", "]"}], "[", "d", 
        "]"}]}], ";", "\[IndentingNewLine]", 
      RowBox[{"pZeroCurrent", " ", "=", " ", 
-      RowBox[{"zeroCurrentFrameDuration", "[", 
+      RowBox[{"zeroCurrentFrameDurationFromVelocity", "[", 
        RowBox[{"\[CapitalOmega]\[CapitalOmega]", ",", " ", "dd"}], "]"}]}], 
      ";", "\[IndentingNewLine]", 
      RowBox[{"on", " ", "=", " ", 
@@ -929,7 +953,8 @@ Cell[BoxData[{
           RowBox[{"(*", 
            RowBox[{
             RowBox[{"clip", " ", "overly"}], "-", 
-            RowBox[{"long", " ", "d"}]}], "*)"}], "\[IndentingNewLine]", 
+            RowBox[{"long", " ", "on"}], "-", "duration"}], "*)"}], 
+          "\[IndentingNewLine]", 
           RowBox[{"{", 
            RowBox[{
             RowBox[{
@@ -943,10 +968,10 @@ Cell[BoxData[{
            "}"}]}], " ", 
          RowBox[{"(*", 
           RowBox[{
-           RowBox[{"don", "'"}], "t", " ", "use", " ", "once", " ", "zero", 
-           " ", "current", " ", "achieved"}], "*)"}], "\[IndentingNewLine]", 
-         "}"}], ",", "\[IndentingNewLine]", "0"}], "]"}]}], ";", 
-     "\[IndentingNewLine]", 
+           RowBox[{"clip", " ", "overly"}], "-", 
+           RowBox[{"long", " ", "frame"}], "-", "duration"}], "*)"}], 
+         "\[IndentingNewLine]", "}"}], ",", "\[IndentingNewLine]", "0"}], 
+       "]"}]}], ";", "\[IndentingNewLine]", 
      RowBox[{"cycle", " ", "=", " ", 
       RowBox[{"cycle", " ", "/.", " ", "rules"}]}], ";", 
      "\[IndentingNewLine]", "cycle"}]}], "\[IndentingNewLine]", 
@@ -954,7 +979,8 @@ Cell[BoxData[{
  RowBox[{
   RowBox[{"pwmCurrent", "[", 
    RowBox[{"\[CapitalOmega]", ",", " ", "d", ",", " ", "p"}], "]"}], 
-  " "}]}], "Input",ExpressionUUID->"3744b88d-a135-47a1-b462-19db8e0ea1ad"],
+  " "}]}], "Input",ExpressionUUID->"3744b88d-a135-47a1-b462-19db8e0ea1ad"]
+}, Open  ]],
 
 Cell[CellGroupData[{
 
@@ -964,15 +990,14 @@ Cell[TextData[{
  ".",
  
  CounterBox["Subsection"],
- ".",
- 
- CounterBox["Subsubsection"],
- ". Mean Current"
-}], "Subsubsection",ExpressionUUID->"f352d975-9b45-4097-aecc-d7163324d031"],
+ ". Mean Current over PWM Frame"
+}], "Subsection",ExpressionUUID->"f352d975-9b45-4097-aecc-d7163324d031"],
 
 Cell["\<\
 With pwmCurrent[] in hand, the mean current across a PWM duty cycle can be \
-computed. We provide two forms, one fully general, and one numeric.\
+computed as the integral of current over the PWM frame divided by the \
+duration of the frame. We provide two forms, one fully general, and one \
+numeric.\
 \>", "Text",ExpressionUUID->"9df8b857-2733-4558-8b75-c7e1ffe9289b"],
 
 Cell[BoxData[{
@@ -1096,7 +1121,6 @@ Cell[BoxData[{
  RowBox[{"meanCurrent", "[", 
   RowBox[{"\[CapitalOmega]", ",", " ", "d", ",", " ", "p"}], 
   "]"}]}], "Input",ExpressionUUID->"9da44d2c-52a8-4387-afc2-d6dd4b880c9f"]
-}, Open  ]]
 }, Open  ]],
 
 Cell[CellGroupData[{
@@ -1111,9 +1135,9 @@ Cell[TextData[{
 }], "Subsection",ExpressionUUID->"c0da0df2-0368-4a48-83ac-526235cb5de6"],
 
 Cell["\<\
-We plot the PWM cycle for our example motor at a sequence of increasing \
-velocities. We also plot the mean current over the cycle. Note that the \
-vertical scales are different in each of the plots.\
+To get a sense of it all, we plot the PWM cycle for our example motor at a \
+sequence of increasing velocities. We also plot the mean current over the \
+cycle. Note that the vertical scales are different in each of the plots.\
 \>", "Text",ExpressionUUID->"5fe96fdd-641a-4494-a200-9c31ada20a78"],
 
 Cell[BoxData[{
@@ -1189,7 +1213,7 @@ Cell[BoxData[{
     RowBox[{
     "\[CapitalOmega]\[CapitalOmega]_", ",", " ", "dd_", ",", " ", "pp_", ",", 
      " ", "motor_"}], "]"}], " ", ":=", " ", 
-   RowBox[{"Module", "[", "\[IndentingNewLine]", 
+   RowBox[{"Module", "[", 
     RowBox[{
      RowBox[{"{", "mean", "}"}], ",", "\[IndentingNewLine]", 
      RowBox[{
@@ -1336,7 +1360,8 @@ Cell[TextData[{
 Cell["\<\
 Our ultimate interest here is to understand the relationship between duty \
 cycle and velocity in asynchronous sign magnitude H bridges. In particular, \
-we\[CloseCurlyQuote]re interested in any non-linearities involved.\
+we\[CloseCurlyQuote]re interested in the nature of any non-linearities \
+involved.\
 \>", "Text",ExpressionUUID->"941f029e-545a-4151-a54e-9eb6b25bd9a4"],
 
 Cell[CellGroupData[{
@@ -1347,15 +1372,15 @@ Cell[TextData[{
  ".",
  
  CounterBox["Subsection"],
- ". Average Current, Duty Cycle, and Steady State Velocity"
+ ". Mean Current, Duty Cycle, and Steady State Velocity"
 }], "Subsection",ExpressionUUID->"8f6cf4b9-24b6-4876-b444-5efabd9097bb"],
 
 Cell["\<\
 So far we have treated velocity (\[CapitalOmega]) and duty cycle as \
 independent variables. However, they are in fact related: for a given duty \
 cycle (and other parameters), there is a limit to the maximum velocity which \
-may be achieved. We seek now to compute that value. We recall the steady \
-state current and velocity results from the motor modeling work.\
+may be achieved. We seek now to compute that value. To do that, we recall the \
+steady state current and velocity results from the motor modeling work.\
 \>", "Text",ExpressionUUID->"12887d42-fc1b-4fe5-a41e-aae314631f59"],
 
 Cell[BoxData[{
@@ -1369,14 +1394,14 @@ Cell[BoxData[{
    ")"}]}]}], "Input",ExpressionUUID->"44cca282-3223-40fd-822f-be233759177d"],
 
 Cell["\<\
-We next define a function that computes the steady state velocity for a given \
-current. Notice that the result is not dependent on the inertia of the load & \
-motor, only the drag.\
+From those, we define a function that computes the steady state velocity for \
+a given steady state current. Notice that the result is not dependent on the \
+inertia of the load & motor, only the drag.\
 \>", "Text",ExpressionUUID->"294b554f-7d23-4bf5-9dad-f62556acd1ec"],
 
 Cell[BoxData[{
  RowBox[{
-  RowBox[{"ssVelFromCurrent", "[", "i_", "]"}], " ", ":=", " ", 
+  RowBox[{"ssVelFromCurrent", "[", "current_", "]"}], " ", ":=", " ", 
   RowBox[{"Module", "[", 
    RowBox[{
     RowBox[{"{", "}"}], ",", "\[IndentingNewLine]", 
@@ -1389,15 +1414,19 @@ Cell[BoxData[{
          RowBox[{"(", 
           RowBox[{"ssCur", " ", "/.", " ", "simpleSs"}], ")"}]}], ",", " ", 
         "\[CapitalDelta]vappConst"}], "]"}]}], " ", "/.", " ", 
-     RowBox[{"ssCur", " ", "\[Rule]", " ", "i"}]}]}], "\[IndentingNewLine]", 
-   "]"}]}], "\[IndentingNewLine]", 
- RowBox[{"ssVelFromCurrent", "[", "iAverage", 
+     RowBox[{"ssCur", " ", "\[Rule]", " ", "current"}]}]}], 
+   "\[IndentingNewLine]", "]"}]}], "\[IndentingNewLine]", 
+ RowBox[{"ssVelFromCurrent", "[", "steadyStateCurrent", 
   "]"}]}], "Input",ExpressionUUID->"35fe9325-ebb1-4abd-b65e-699d842efc06"],
 
 Cell["\<\
-We then apply ssVelFromCurrent[] to the mean current over the PWM interval to \
-give the steady state velocity in terms of the duration of the on part of the \
-cycle and the overall framing period.\
+We can now compute the steady state velocity for a given duty cycle. First, \
+we compute the mean current in terms of duty cycle, velocity and other \
+parameters, and from that compute the implied steady state velocity. At the \
+actual steady state velocity for the duty cycle, that implied velocity must \
+in fact be the same as the velocity we used to compute the mean current in \
+the first place. To find that value, we subtract the velocity from the \
+implied velocity, then numerically find the root.\
 \>", "Text",ExpressionUUID->"d1c9f3da-3ec5-47c0-901e-c0e7125e3832"],
 
 Cell[BoxData[{
@@ -1420,13 +1449,29 @@ Cell[BoxData[{
        RowBox[{"(", 
         RowBox[{"motor", " ", "~", "Join", "~", " ", "env"}], ")"}]}], ",", 
       " ", "dVal", ",", " ", "pVal", ",", " ", "\[CapitalOmega]", ",", " ", 
-      "mean", ",", " ", "eqn", ",", " ", "soln"}], "}"}], ",", 
-    "\[IndentingNewLine]", 
+      "mean", ",", " ", "eqn", ",", " ", "soln", ",", " ", "result"}], "}"}], 
+    ",", "\[IndentingNewLine]", 
     RowBox[{
      RowBox[{"dVal", " ", "=", " ", 
-      RowBox[{"d", " ", "//.", " ", "rules"}]}], ";", "\[IndentingNewLine]", 
+      RowBox[{"d", " ", "//.", " ", "rules"}]}], ";", " ", 
+     RowBox[{"If", "[", 
+      RowBox[{
+       RowBox[{"!", 
+        RowBox[{"NumberQ", "[", "dVal", "]"}]}], ",", " ", 
+       RowBox[{"Throw", "[", 
+        RowBox[{"\"\<d must be numeric: \>\"", " ", "<>", " ", 
+         RowBox[{"ToString", "[", "dVal", "]"}]}], "]"}]}], "]"}], ";", 
+     "\[IndentingNewLine]", 
      RowBox[{"pVal", " ", "=", " ", 
-      RowBox[{"p", " ", "//.", " ", "rules"}]}], ";", "\[IndentingNewLine]", 
+      RowBox[{"p", " ", "//.", " ", "rules"}]}], ";", " ", 
+     RowBox[{"If", "[", 
+      RowBox[{
+       RowBox[{"!", 
+        RowBox[{"NumberQ", "[", "pVal", "]"}]}], ",", " ", 
+       RowBox[{"Throw", "[", 
+        RowBox[{"\"\<p must be numeric: \>\"", "<>", " ", 
+         RowBox[{"ToString", "[", "pVal", "]"}]}], "]"}]}], "]"}], ";", 
+     "\[IndentingNewLine]", 
      RowBox[{"mean", "=", 
       RowBox[{
        RowBox[{"meanCurrent", "[", 
@@ -1450,10 +1495,18 @@ Cell[BoxData[{
       RowBox[{"FindRoot", "[", 
        RowBox[{"eqn", ",", " ", 
         RowBox[{"{", 
-         RowBox[{"\[CapitalOmega]", ",", " ", "100"}], "}"}]}], "]"}]}], ";", 
+         RowBox[{"\[CapitalOmega]", ",", " ", "300"}], "}"}]}], "]"}]}], ";", 
      "\[IndentingNewLine]", 
-     RowBox[{"\[CapitalOmega]", " ", "/.", " ", "soln"}]}]}], 
-   "]"}]}], "\[IndentingNewLine]", 
+     RowBox[{"result", " ", "=", " ", 
+      RowBox[{"\[CapitalOmega]", " ", "/.", " ", "soln"}]}], ";", 
+     "\[IndentingNewLine]", 
+     RowBox[{"(*", 
+      RowBox[{
+       RowBox[{"Print", "[", 
+        RowBox[{
+         RowBox[{"dVal", "/", "pVal"}], ",", " ", "\"\< \>\"", ",", " ", 
+         "result"}], "]"}], ";"}], "*)"}], "\[IndentingNewLine]", 
+     "result"}]}], "]"}]}], "\[IndentingNewLine]", 
  RowBox[{
   RowBox[{
    RowBox[{"ssVelFromPwmCycle", "[", 
@@ -1465,36 +1518,110 @@ Cell[BoxData[{
     RowBox[{"1", "/", "4"}], ",", " ", 
     RowBox[{"1", "/", "2"}], ",", " ", 
     RowBox[{"3", "/", "4"}], ",", " ", "1"}], 
-   "}"}]}]}], "Input",ExpressionUUID->"350b8688-7ba0-41b7-a7eb-1e14cea48842"],
+   "}"}]}]}], "Input",ExpressionUUID->"350b8688-7ba0-41b7-a7eb-1e14cea48842"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[TextData[{
+ 
+ CounterBox["Section"],
+ ".",
+ 
+ CounterBox["Subsection"],
+ ". Steady State Velocity vs Duty Cycle"
+}], "Subsection",ExpressionUUID->"131f2360-b00d-4c71-8139-f3f8dec6f418"],
+
+Cell[CellGroupData[{
+
+Cell[TextData[{
+ 
+ CounterBox["Section"],
+ ".",
+ 
+ CounterBox["Subsection"],
+ ".",
+ 
+ CounterBox["Subsubsection"],
+ ". Examples"
+}], "Subsubsection",ExpressionUUID->"d3ea8888-efd6-431d-bc17-15e3c6e92389"],
+
+Cell["\<\
+We\[CloseCurlyQuote]re now ready to look at how steady state velocity varies \
+with duty cycle, which is one of our primary concerns here. We plot that \
+curve for several different FTC motors; for each, we look at both the full \
+curve and at the initial interval. We compare with a perfectly linear \
+response as a reference.\
+\>", "Text",ExpressionUUID->"4e485ea2-b36f-439f-94fc-3b9529e6e556"],
 
 Cell[BoxData[{
  RowBox[{"Clear", "[", "plotSsVelFromPwmCycle", "]"}], "\[IndentingNewLine]", 
  RowBox[{
-  RowBox[{"plotSsVelFromPwmCycle", "[", "motor_", "]"}], " ", ":=", " ", 
-  RowBox[{"plotSsVelFromPwmCycle", "[", 
-   RowBox[{"p", ",", " ", "motor"}], "]"}]}], "\[IndentingNewLine]", 
+  RowBox[{
+   RowBox[{"Options", "[", "plotSsVelFromPwmCycle", "]"}], " ", "=", " ", 
+   RowBox[{"{", " ", 
+    RowBox[{"Title", " ", "\[Rule]", " ", "\"\<\>\""}], "  ", "}"}]}], 
+  ";"}], "\[IndentingNewLine]", 
  RowBox[{
   RowBox[{"plotSsVelFromPwmCycle", "[", 
-   RowBox[{"p_", ",", " ", "motor_"}], "]"}], " ", ":=", " ", 
+   RowBox[{"motor_", ",", " ", 
+    RowBox[{"opts", ":", 
+     RowBox[{"OptionsPattern", "[", "]"}]}]}], "]"}], " ", ":=", " ", 
   RowBox[{"plotSsVelFromPwmCycle", "[", 
-   RowBox[{"p", ",", " ", "motor", ",", " ", "env"}], 
+   RowBox[{"p", ",", " ", "motor", ",", " ", "opts"}], 
    "]"}]}], "\[IndentingNewLine]", 
  RowBox[{
   RowBox[{"plotSsVelFromPwmCycle", "[", 
-   RowBox[{"p_", ",", " ", "motor_", ",", " ", "env_"}], "]"}], " ", ":=", 
-  " ", 
+   RowBox[{"p_", ",", " ", "motor_", ",", " ", 
+    RowBox[{"opts", ":", 
+     RowBox[{"OptionsPattern", "[", "]"}]}]}], "]"}], " ", ":=", " ", 
+  RowBox[{"plotSsVelFromPwmCycle", "[", 
+   RowBox[{"p", ",", " ", "motor", ",", " ", "env", ",", " ", "opts"}], 
+   "]"}]}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"plotSsVelFromPwmCycle", "[", 
+   RowBox[{"p_", ",", " ", "motor_", ",", " ", "env_", ",", " ", 
+    RowBox[{"opts", ":", 
+     RowBox[{"OptionsPattern", "[", "]"}]}]}], "]"}], " ", ":=", " ", 
   RowBox[{"Module", "[", 
    RowBox[{
-    RowBox[{"{", "plotIt", "}"}], ",", "\[IndentingNewLine]", 
+    RowBox[{"{", 
+     RowBox[{"title", ",", " ", "plotIt"}], "}"}], ",", "\[IndentingNewLine]", 
     RowBox[{
+     RowBox[{"title", " ", "=", " ", 
+      RowBox[{"\"\<Steady State Velocity vs Duty Cycle\>\"", " ", "<>", " ", 
+       RowBox[{"If", "[", 
+        RowBox[{
+         RowBox[{
+          RowBox[{"StringLength", "[", 
+           RowBox[{"OptionValue", "[", "Title", "]"}], "]"}], " ", ">", " ", 
+          "0"}], ",", " ", 
+         RowBox[{"\"\<: \>\"", " ", "<>", " ", 
+          RowBox[{"OptionValue", "[", "Title", "]"}]}], ",", " ", 
+         "\"\<\>\""}], "]"}]}]}], ";", "\[IndentingNewLine]", 
      RowBox[{
       RowBox[{"plotIt", "[", "tMax_", "]"}], " ", ":=", " ", 
-      RowBox[{"Plot", "[", 
+      RowBox[{"Plot", "[", "\[IndentingNewLine]", 
        RowBox[{
-        RowBox[{"ssVelFromPwmCycle", "[", 
+        RowBox[{"{", "\[IndentingNewLine]", 
          RowBox[{
-          RowBox[{"duty", " ", "p"}], ",", " ", "p", ",", " ", 
-          "unitlessMotorWithLoad"}], "]"}], ",", " ", 
+          RowBox[{"ssVelFromPwmCycle", "[", 
+           RowBox[{
+            RowBox[{"duty", " ", "p"}], ",", " ", "p", ",", " ", "motor", ",",
+             " ", "env"}], "]"}], ",", "\[IndentingNewLine]", 
+          RowBox[{
+           RowBox[{"line", "[", 
+            RowBox[{
+             RowBox[{"{", 
+              RowBox[{"0", ",", "0"}], "}"}], ",", " ", 
+             RowBox[{"{", 
+              RowBox[{"1", ",", 
+               RowBox[{
+                RowBox[{"ssVel", " ", "/.", " ", "simpleSs"}], " ", "/.", " ", 
+                RowBox[{"Join", "[", 
+                 RowBox[{"motor", ",", " ", "env"}], "]"}]}]}], "}"}]}], 
+            "]"}], "[", "duty", "]"}]}], "\[IndentingNewLine]", "}"}], ",", 
+        " ", 
         RowBox[{"{", 
          RowBox[{"duty", ",", " ", "0", ",", " ", "tMax"}], "}"}], ",", 
         "\[IndentingNewLine]", 
@@ -1503,27 +1630,194 @@ Cell[BoxData[{
           RowBox[{"0", ",", "0"}], "}"}]}], ",", "\[IndentingNewLine]", 
         RowBox[{"AxesLabel", "\[Rule]", " ", 
          RowBox[{"{", 
-          RowBox[{"\"\<Seconds\>\"", ",", " ", 
+          RowBox[{"\"\<Duty Cycle\>\"", ",", " ", 
            RowBox[{"HoldForm", "[", 
             RowBox[{"Radians", " ", "/", " ", "Second"}], "]"}]}], "}"}]}], 
         ",", "\[IndentingNewLine]", 
-        RowBox[{
-        "PlotLabel", "\[Rule]", 
-         "\"\<Steady State Velocity vs Duty Cycle\>\""}], ",", 
+        RowBox[{"PlotLabel", "\[Rule]", "title"}], ",", "\[IndentingNewLine]", 
+        RowBox[{"ImageSize", "\[Rule]", "Large"}], ",", "\[IndentingNewLine]", 
+        RowBox[{"GridLines", "\[Rule]", "Automatic"}], ",", 
         "\[IndentingNewLine]", 
-        RowBox[{"ImageSize", "\[Rule]", "Large"}]}], "\[IndentingNewLine]", 
+        RowBox[{"GridLinesStyle", "\[Rule]", 
+         RowBox[{"Directive", "[", 
+          RowBox[{"Gray", ",", "Dashed"}], "]"}]}]}], "\[IndentingNewLine]", 
        "]"}]}], ";", "\[IndentingNewLine]", 
      RowBox[{"Row", "[", 
       RowBox[{"{", 
        RowBox[{
         RowBox[{"plotIt", "[", "1", "]"}], ",", " ", 
         RowBox[{"plotIt", "[", "0.05", "]"}]}], "}"}], "]"}]}]}], 
-   "\[IndentingNewLine]", 
    "]"}]}]}], "Input",ExpressionUUID->"8842fbd3-5183-40c0-bdfa-354b2fc402d8"],
 
 Cell[BoxData[
- RowBox[{"plotSsVelFromPwmCycle", "[", "unitlessMotorWithLoad", 
-  "]"}]], "Input",ExpressionUUID->"0cb05bbb-25d3-4313-a684-654a4cb0cf1a"]
+ RowBox[{" ", 
+  RowBox[{"plotSsVelFromPwmCycle", "[", 
+   RowBox[{
+    RowBox[{
+     RowBox[{
+      RowBox[{"motorParameters", "[", "\"\<AM 60 A\>\"", "]"}], " ", "//", 
+      " ", "clearUnits"}], " ", "//", " ", "N"}], ",", " ", 
+    RowBox[{"Title", " ", "\[Rule]", " ", "\"\<AM 60 A\>\""}]}], 
+   "]"}]}]], "Input",ExpressionUUID->"e95ffd41-7e7d-488e-9b3f-8795046d7c25"],
+
+Cell[BoxData[
+ RowBox[{"plotSsVelFromPwmCycle", "[", 
+  RowBox[{
+   RowBox[{
+    RowBox[{
+     RowBox[{"motorParameters", "[", "\"\<AM 60 B\>\"", "]"}], " ", "//", " ",
+      "clearUnits"}], " ", "//", " ", "N"}], ",", " ", 
+   RowBox[{"Title", " ", "\[Rule]", " ", "\"\<AM 60 B\>\""}]}], 
+  "]"}]], "Input",ExpressionUUID->"ede98b7a-8f33-4d41-b9d9-72173b3bc286"],
+
+Cell[BoxData[
+ RowBox[{"plotSsVelFromPwmCycle", "[", 
+  RowBox[{
+   RowBox[{
+    RowBox[{
+     RowBox[{"motorParameters", "[", "\"\<CoreHex A\>\"", "]"}], " ", "//", 
+     " ", "clearUnits"}], " ", "//", " ", "N"}], ",", " ", 
+   RowBox[{"Title", " ", "\[Rule]", " ", "\"\<CoreHex A\>\""}]}], 
+  "]"}]], "Input",ExpressionUUID->"f77ad267-138f-486f-8a31-279495ac45bf"],
+
+Cell["These are interesting results.", \
+"Text",ExpressionUUID->"062973d5-df90-485c-866c-34748f3b6cf2"],
+
+Cell[TextData[{
+ "Each motor operates in a discontinuous regime for a substantially-sized \
+initial part of the duty cycle range. While discontinuous, the steady state \
+velocity response is convexly supra-linear (except for a very short initial \
+part of the cycle), but not ",
+ StyleBox["overly",
+  FontSlant->"Italic"],
+ " strongly so (maybe 10-20%). In the upper part of the duty cycle range, \
+there is a transition to continuity; thereafter, the incremental response is \
+linear."
+}], "Text",ExpressionUUID->"67fe7a03-e408-4ea0-b0a3-f8356f6bcaf3"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[TextData[{
+ 
+ CounterBox["Section"],
+ ".",
+ 
+ CounterBox["Subsection"],
+ ".",
+ 
+ CounterBox["Subsubsection"],
+ ". Transition from Discontinuity to Continuity"
+}], "Subsubsection",ExpressionUUID->"06750f31-3a0d-43cf-bca1-94a422064b0d"],
+
+Cell["\<\
+We complete our examination by locating the duty cycle at which the \
+transition from discontinuous to continuous operation occurs. First we define \
+a function that gives the zero current frame duration for the steady state \
+velocity of a given on duration.\
+\>", "Text",ExpressionUUID->"70ccd499-22ca-4a94-9677-3632aed56972"],
+
+Cell[BoxData[{
+ RowBox[{"Clear", "[", "zeroCurrentFrameDurationFromOnDuration", 
+  "]"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"zeroCurrentFrameDurationFromOnDuration", "[", 
+   RowBox[{"d_", ",", " ", "p_", ",", " ", "motor_"}], "]"}], " ", ":=", " ", 
+  RowBox[{"zeroCurrentFrameDurationFromOnDuration", "[", 
+   RowBox[{"d", ",", " ", "p", ",", " ", "motor", ",", " ", "env"}], 
+   "]"}]}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"zeroCurrentFrameDurationFromOnDuration", "[", 
+   RowBox[{"d_", ",", " ", "p_", ",", " ", "motor_", ",", " ", "env_"}], 
+   "]"}], " ", ":=", " ", 
+  RowBox[{"Module", "[", 
+   RowBox[{
+    RowBox[{"{", 
+     RowBox[{"\[CapitalOmega]", ",", " ", "pZero"}], "}"}], ",", 
+    "\[IndentingNewLine]", 
+    RowBox[{
+     RowBox[{"\[CapitalOmega]", " ", "=", " ", 
+      RowBox[{"ssVelFromPwmCycle", "[", 
+       RowBox[{"d", ",", "p", ",", " ", "motor", ",", " ", "env"}], "]"}]}], 
+     ";", "\[IndentingNewLine]", 
+     RowBox[{"pZero", " ", "=", " ", 
+      RowBox[{
+       RowBox[{"zeroCurrentFrameDurationFromVelocity", "[", 
+        RowBox[{"\[CapitalOmega]", ",", " ", "d"}], "]"}], " ", "/.", " ", 
+       RowBox[{"Join", "[", 
+        RowBox[{"motor", ",", " ", "env"}], "]"}]}]}], ";", 
+     "\[IndentingNewLine]", "pZero"}]}], 
+   "]"}]}]}], "Input",ExpressionUUID->"cdbb9759-b5b8-481a-9580-38a36a567951"],
+
+Cell["\<\
+We then numerically search for where that zero current frame duration is the \
+actual frame duration.\
+\>", "Text",ExpressionUUID->"a3263df0-4cce-4976-af97-69e52693d3db"],
+
+Cell[BoxData[{
+ RowBox[{"Clear", "[", "findContinuityTransition", 
+  "]"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"findContinuityTransition", "[", "title_", "]"}], " ", ":=", " ", 
+  RowBox[{"findContinuityTransition", "[", 
+   RowBox[{
+    RowBox[{"motorParameters", "[", "title", "]"}], ",", " ", "title"}], 
+   "]"}]}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"findContinuityTransition", "[", 
+   RowBox[{"motorParam_", ",", " ", "title_"}], "]"}], " ", ":=", " ", 
+  RowBox[{"Module", "[", 
+   RowBox[{
+    RowBox[{"{", 
+     RowBox[{
+     "motor", ",", " ", "pVal", ",", " ", "fn", ",", " ", 
+      "transitionFrameDuration"}], "}"}], ",", "\[IndentingNewLine]", 
+    RowBox[{
+     RowBox[{"motor", " ", "=", " ", 
+      RowBox[{
+       RowBox[{"motorParam", " ", "//", " ", "clearUnits"}], " ", "//", " ", 
+       "N"}]}], ";", "\[IndentingNewLine]", 
+     RowBox[{"pVal", " ", "=", " ", 
+      RowBox[{"p", " ", "/.", " ", "env"}]}], ";", "\[IndentingNewLine]", 
+     RowBox[{
+      RowBox[{"fn", "[", 
+       RowBox[{"duty_", "?", "NumberQ"}], "]"}], " ", ":=", 
+      RowBox[{
+       RowBox[{"zeroCurrentOfOnDuration", "[", 
+        RowBox[{
+         RowBox[{"duty", " ", "pVal"}], ",", " ", "pVal", ",", " ", "motor", 
+         ",", " ", "env"}], "]"}], " ", "-", "pVal"}]}], ";", 
+     "\[IndentingNewLine]", 
+     RowBox[{"transitionFrameDuration", " ", "=", " ", 
+      RowBox[{"FindRoot", "[", 
+       RowBox[{
+        RowBox[{"fn", "[", "duty", "]"}], ",", " ", 
+        RowBox[{"{", 
+         RowBox[{"duty", ",", " ", "0.5"}], "}"}]}], 
+       RowBox[{"(*", 
+        RowBox[{",", " ", 
+         RowBox[{"EvaluationMonitor", " ", "\[RuleDelayed]", " ", 
+          RowBox[{"Print", "[", "duty", "]"}]}]}], "*)"}], "]"}]}], ";", 
+     "\[IndentingNewLine]", 
+     RowBox[{"title", " ", "\[Rule]", " ", 
+      RowBox[{"(", 
+       RowBox[{"duty", " ", "/.", " ", "transitionFrameDuration"}], 
+       ")"}]}]}]}], "\[IndentingNewLine]", 
+   "]"}]}]}], "Input",ExpressionUUID->"7ab105e5-f1e5-4c8b-ba1a-132041aba8b4"],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{
+   RowBox[{
+    RowBox[{"findContinuityTransition", "[", "#", "]"}], " ", "&"}], " ", "/@",
+    " ", 
+   RowBox[{"{", 
+    RowBox[{
+    "\"\<AM 60 A\>\"", ",", " ", "\"\<AM 60 B\>\"", ",", 
+     "\"\<CoreHex A\>\""}], "}"}]}], " ", "//", " ", 
+  "ColumnForm"}]], \
+"Input",ExpressionUUID->"3aed97bd-d338-4373-b514-abb445f78e7b"]
+}, Open  ]]
 }, Open  ]]
 }, Open  ]],
 
@@ -1535,13 +1829,13 @@ Cell[TextData[{
  ". Revision History"
 }], "Section",ExpressionUUID->"276978c4-a71c-4a3f-acf0-32b83569abc0"],
 
-Cell["2018.08.25. Initial version.", \
+Cell["2018.08.26. Initial version.", \
 "Item",ExpressionUUID->"c7e98618-4fda-46a1-9c3b-e7a69012bc31"]
 }, Open  ]]
 }, Open  ]]
 },
-WindowSize->{1022, 1477},
-WindowMargins->{{1178, Automatic}, {Automatic, 14}},
+WindowSize->{1022, 1445},
+WindowMargins->{{Automatic, 1183}, {Automatic, 5}},
 PrintingCopies->1,
 PrintingPageRange->{32000, 32000},
 PrintingOptions->{"Magnification"->1.,
@@ -1551,7 +1845,7 @@ PrivateNotebookOptions->{"FileOutlineCache"->False},
 CellContext->Notebook,
 CellLabelAutoDelete->True,
 TrackCellChangeTimes->False,
-Magnification:>0.95 Inherited,
+Magnification:>0.9 Inherited,
 FrontEndVersion->"11.3 for Microsoft Windows (64-bit) (March 6, 2018)",
 StyleDefinitions->Notebook[{
    Cell[
@@ -1560,7 +1854,11 @@ StyleDefinitions->Notebook[{
      FrontEnd`FileName[{"Report"}, "StandardReport.nb", CharacterEncoding -> 
        "UTF-8"]]], 
    Cell[
-    StyleData[All, "Printout"], Magnification -> 0.5]}, Visible -> False, 
+    StyleData[All, "Printout"], Magnification -> 0.5], 
+   Cell[
+    StyleData["Output"], FontColor -> RGBColor[0., 0., 0.], Background -> 
+    RGBColor[0.9215686274509803, 0.9215686274509803, 0.9215686274509803]]}, 
+  WindowMargins -> {{1188, Automatic}, {Automatic, 318}}, Visible -> False, 
   FrontEndVersion -> "11.3 for Microsoft Windows (64-bit) (March 6, 2018)", 
   StyleDefinitions -> "PrivateStylesheetFormatting.nb"]
 ]
