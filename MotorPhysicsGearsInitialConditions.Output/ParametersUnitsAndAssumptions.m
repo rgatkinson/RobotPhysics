@@ -59,8 +59,7 @@ parameterQuantities = <|R -> Quantity[R, "Ohms"],
      \[Eta] -> Quantity[\[Eta], "DimensionlessUnit"]|>
  
 parameterAssumptions = {Element[Bafter, Reals], Element[Jafter, Reals], 
-     Element[Null, Reals], Element[vapp0, Reals], 
-     Element[\[CapitalDelta]vappConst, Reals], 
+     Element[vapp0, Reals], Element[\[CapitalDelta]vappConst, Reals], 
      Element[\[CapitalDelta]\[Tau]appConst, Reals], 
      Element[\[Tau]app0, Reals], Element[i[_], Reals], Element[vg[_], Reals], 
      Element[\[Alpha][_], Reals], Element[\[CapitalDelta]vapp[_], Reals], 

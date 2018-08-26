@@ -6,7 +6,7 @@ Cell["Motor Physics, with Gears & Initial Conditions", \
 
 Cell["\<\
 Robert Atkinson, Maddy Nguyen, Samantha Hordyk, Cole Welch, and John Fraser
-16 August 2018\
+24 August 2018\
 \>", "Author",ExpressionUUID->"05aea015-05f3-4e99-899d-20a8cd5792a1"],
 
 Cell["\<\
@@ -1286,8 +1286,8 @@ Cell[BoxData[{
          "Reals"]}], " ", "&"}], "/@", 
       RowBox[{"{", 
        RowBox[{
-       "Jafter", ",", " ", "Bafter", ",", " ", ",", " ", "vapp0", ",", " ", 
-        "\[Tau]app0", ",", " ", "\[CapitalDelta]vappConst", ",", " ", 
+       "Jafter", ",", " ", "Bafter", ",", " ", "vapp0", ",", "\[Tau]app0", 
+        ",", " ", "\[CapitalDelta]vappConst", ",", " ", 
         "\[CapitalDelta]\[Tau]appConst"}], "}"}]}]}], "]"}]}], 
   ";"}], "\[IndentingNewLine]", 
  RowBox[{"parameterAssumptions", " ", "=", " ", 
@@ -2834,7 +2834,88 @@ Cell[BoxData[{
       RowBox[{"2", ",", " ", "\"\<kg\>\""}], "]"}], ",", " ", 
      RowBox[{"Quantity", "[", 
       RowBox[{"5", ",", " ", "\"\<cm\>\""}], "]"}]}], "]"}]}], 
-  "]"}]}], "Input",ExpressionUUID->"81f4ff66-1413-488f-a7c5-9606c07eb3be"]
+  "]"}]}], "Input",ExpressionUUID->"81f4ff66-1413-488f-a7c5-9606c07eb3be"],
+
+Cell["\<\
+gearboxlessEquivalent[] takes a motor with load and gearbox and produces the \
+equivalent motor and load in which there is no gearbox.\
+\>", "Text",ExpressionUUID->"bb094c10-8d7b-46b7-bcea-2c9152601918"],
+
+Cell[BoxData[{
+ RowBox[{
+  RowBox[{"gearboxlessEquivalent", "[", "motor_", "]"}], " ", ":=", " ", 
+  RowBox[{"Module", "[", 
+   RowBox[{
+    RowBox[{"{", 
+     RowBox[{"rules", ",", " ", "assoc"}], "}"}], ",", "\[IndentingNewLine]", 
+    RowBox[{
+     RowBox[{"rules", "=", " ", 
+      RowBox[{"{", 
+       RowBox[{
+        RowBox[{"\[CapitalNu]", " ", "\[Rule]", " ", 
+         RowBox[{"(", 
+          RowBox[{"\[CapitalNu]", " ", "/.", " ", "motor"}], ")"}]}], ",", 
+        " ", 
+        RowBox[{"\[Eta]", " ", "\[Rule]", " ", 
+         RowBox[{"(", 
+          RowBox[{"\[Eta]", " ", "/.", " ", "motor"}], ")"}]}]}], "}"}]}], 
+     ";", "\[IndentingNewLine]", 
+     RowBox[{"assoc", " ", "=", " ", 
+      RowBox[{"Association", "[", "motor", "]"}]}], ";", " ", 
+     RowBox[{"(*", 
+      RowBox[{"explicitly", " ", "create", " ", "copy"}], "*)"}], 
+     "\[IndentingNewLine]", 
+     RowBox[{
+      RowBox[{"assoc", "[", "J", "]"}], " ", "=", " ", 
+      RowBox[{
+       RowBox[{"assoc", "[", "J", "]"}], " ", "+", " ", 
+       RowBox[{"(", 
+        RowBox[{
+         RowBox[{"reflectInertia", "[", 
+          RowBox[{"assoc", "[", "Jafter", "]"}], "]"}], " ", "/.", " ", 
+         "rules"}], ")"}]}]}], ";", "\[IndentingNewLine]", 
+     RowBox[{
+      RowBox[{"assoc", "[", "B", "]"}], " ", "=", " ", 
+      RowBox[{
+       RowBox[{"assoc", "[", "B", "]"}], " ", "+", " ", 
+       RowBox[{"(", 
+        RowBox[{
+         RowBox[{"reflectDrag", "[", 
+          RowBox[{"assoc", "[", "Bafter", "]"}], "]"}], " ", "/.", " ", 
+         "rules"}], ")"}]}]}], ";", "\[IndentingNewLine]", 
+     RowBox[{
+      RowBox[{"assoc", "[", "\[CapitalDelta]\[Tau]appConst", "]"}], " ", "=", 
+      " ", 
+      RowBox[{"(", 
+       RowBox[{
+        RowBox[{"reflectTorque", "[", 
+         RowBox[{"assoc", "[", "\[CapitalDelta]\[Tau]appConst", "]"}], "]"}], 
+        " ", "/.", " ", "rules"}], ")"}]}], ";", "\[IndentingNewLine]", 
+     RowBox[{
+      RowBox[{"assoc", "[", "Jafter", "]"}], " ", "=", " ", "0"}], ";", 
+     "\[IndentingNewLine]", 
+     RowBox[{
+      RowBox[{"assoc", "[", "Bafter", "]"}], " ", "=", " ", "0"}], ";", 
+     "\[IndentingNewLine]", 
+     RowBox[{
+      RowBox[{"assoc", "[", "\[CapitalNu]", "]"}], " ", "=", " ", "1"}], ";", 
+     "\[IndentingNewLine]", 
+     RowBox[{
+      RowBox[{"assoc", "[", "\[Eta]", "]"}], " ", "=", " ", "1"}], ";", 
+     "\[IndentingNewLine]", "assoc"}]}], "\[IndentingNewLine]", 
+   "]"}]}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"addMotorLoad", "[", 
+   RowBox[{
+    RowBox[{"motorParameters", "[", "\"\<AM 60 A\>\"", "]"}], ",", " ", 
+    RowBox[{"flywheel", "[", 
+     RowBox[{
+      RowBox[{"Quantity", "[", 
+       RowBox[{"2", ",", " ", "\"\<kg\>\""}], "]"}], ",", " ", 
+      RowBox[{"Quantity", "[", 
+       RowBox[{"5", ",", " ", "\"\<cm\>\""}], "]"}]}], "]"}]}], "]"}], " ", "//",
+   " ", "gearboxlessEquivalent"}]}], \
+"Input",ExpressionUUID->"35700ba8-9c0e-49a1-a1a2-6352bf8c4c81"]
 }, Open  ]],
 
 Cell[CellGroupData[{
@@ -4950,9 +5031,10 @@ Cell[BoxData[
    RowBox[{"{", 
     RowBox[{
     "importMotorData", ",", " ", "motorParameters", ",", " ", "motorLoad", 
-     ",", " ", "flywheel", ",", " ", "addMotorLoad", ",", " ", "massOnPulley",
-      ",", " ", "\[IndentingNewLine]", "stepMotorTimeFunctionGeneric", ",", 
-     " ", "stepMotorTimeFunction", ",", " ", "ss", ",", " ", "simpleSs", ",", 
+     ",", " ", "flywheel", ",", " ", "addMotorLoad", ",", " ", 
+     "gearboxlessEquivalent", ",", " ", "massOnPulley", ",", " ", 
+     "\[IndentingNewLine]", "stepMotorTimeFunctionGeneric", ",", " ", 
+     "stepMotorTimeFunction", ",", " ", "ss", ",", " ", "simpleSs", ",", 
      "\[IndentingNewLine]", "velAfterStepGeneric", ",", " ", "velStepGeneric",
       ",", " ", "torAfterStepGeneric", ",", " ", "torStepGeneric", ",", " ", 
      "curStepGeneric", ",", " ", "emfStepGeneric", ",", " ", "posStepGeneric",
@@ -5000,13 +5082,16 @@ terminology", "Item",ExpressionUUID->"db2cc83b-b3a6-4444-9bc6-ee81cea05ec1"],
 
 Cell["\<\
 2018.08.16 Adjusted to new schema in motor parameters spreadsheet\
-\>", "Item",ExpressionUUID->"dff2ee56-6745-4b63-af69-bcce96e2200b"]
+\>", "Item",ExpressionUUID->"dff2ee56-6745-4b63-af69-bcce96e2200b"],
+
+Cell["2018.08.24 Add gearboxlessEquivalent[]", \
+"Item",ExpressionUUID->"9043a342-e3bc-43cd-ba55-36440aff50f4"]
 }, Open  ]]
 }, Open  ]]
 }, Open  ]]
 },
 WindowSize->{1261, 1480},
-WindowMargins->{{517, Automatic}, {22, Automatic}},
+WindowMargins->{{633, Automatic}, {Automatic, 25}},
 PrintingCopies->1,
 PrintingPageRange->{32000, 32000},
 PrintingOptions->{"Magnification"->1.,
@@ -5016,7 +5101,7 @@ PrivateNotebookOptions->{"FileOutlineCache"->False},
 CellContext->Notebook,
 CellLabelAutoDelete->True,
 TrackCellChangeTimes->False,
-Magnification:>0.9 Inherited,
+Magnification:>1.1 Inherited,
 FrontEndVersion->"11.3 for Microsoft Windows (64-bit) (March 6, 2018)",
 StyleDefinitions->Notebook[{
    Cell[

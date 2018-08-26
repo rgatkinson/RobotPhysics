@@ -978,8 +978,9 @@ Cell[BoxData[{
    "]"}]}], "\[IndentingNewLine]", 
  RowBox[{
   RowBox[{"pwmCurrent", "[", 
-   RowBox[{"\[CapitalOmega]", ",", " ", "d", ",", " ", "p"}], "]"}], 
-  " "}]}], "Input",ExpressionUUID->"3744b88d-a135-47a1-b462-19db8e0ea1ad"]
+   RowBox[{"\[CapitalOmega]", ",", " ", "d", ",", " ", "p"}], "]"}], " ", "//",
+   "prettyPrint"}]}], \
+"Input",ExpressionUUID->"3744b88d-a135-47a1-b462-19db8e0ea1ad"]
 }, Open  ]],
 
 Cell[CellGroupData[{
@@ -1118,8 +1119,14 @@ Cell[BoxData[{
             RowBox[{"expr", ",", " ", "range"}], "]"}]}], "]"}], " ", "/", 
          " ", "pVal"}], ")"}]}], ";", "\[IndentingNewLine]", "result"}]}], 
     "]"}]}]}], "\[IndentingNewLine]", 
- RowBox[{"meanCurrent", "[", 
-  RowBox[{"\[CapitalOmega]", ",", " ", "d", ",", " ", "p"}], 
+ RowBox[{"Block", "[", 
+  RowBox[{
+   RowBox[{"{", 
+    RowBox[{"prettyPrintFontSize", " ", "=", "16"}], "}"}], ",", " ", 
+   RowBox[{
+    RowBox[{"meanCurrent", "[", 
+     RowBox[{"\[CapitalOmega]", ",", " ", "d", ",", " ", "p"}], "]"}], " ", "//",
+     " ", "prettyPrint"}]}], 
   "]"}]}], "Input",ExpressionUUID->"9da44d2c-52a8-4387-afc2-d6dd4b880c9f"]
 }, Open  ]],
 
@@ -1452,26 +1459,38 @@ Cell[BoxData[{
       "mean", ",", " ", "eqn", ",", " ", "soln", ",", " ", "result"}], "}"}], 
     ",", "\[IndentingNewLine]", 
     RowBox[{
-     RowBox[{"dVal", " ", "=", " ", 
-      RowBox[{"d", " ", "//.", " ", "rules"}]}], ";", " ", 
-     RowBox[{"If", "[", 
-      RowBox[{
-       RowBox[{"!", 
-        RowBox[{"NumberQ", "[", "dVal", "]"}]}], ",", " ", 
-       RowBox[{"Throw", "[", 
-        RowBox[{"\"\<d must be numeric: \>\"", " ", "<>", " ", 
-         RowBox[{"ToString", "[", "dVal", "]"}]}], "]"}]}], "]"}], ";", 
-     "\[IndentingNewLine]", 
      RowBox[{"pVal", " ", "=", " ", 
       RowBox[{"p", " ", "//.", " ", "rules"}]}], ";", " ", 
-     RowBox[{"If", "[", 
+     RowBox[{"(*", 
       RowBox[{
-       RowBox[{"!", 
-        RowBox[{"NumberQ", "[", "pVal", "]"}]}], ",", " ", 
-       RowBox[{"Throw", "[", 
-        RowBox[{"\"\<p must be numeric: \>\"", "<>", " ", 
-         RowBox[{"ToString", "[", "pVal", "]"}]}], "]"}]}], "]"}], ";", 
-     "\[IndentingNewLine]", 
+       RowBox[{"If", "[", 
+        RowBox[{
+         RowBox[{"!", 
+          RowBox[{"NumberQ", "[", "pVal", "]"}]}], ",", " ", 
+         RowBox[{"Print", "[", 
+          RowBox[{"\"\<warning: p should be numeric: \>\"", "<>", " ", 
+           RowBox[{"ToString", "[", "pVal", "]"}]}], "]"}]}], "]"}], ";"}], 
+      "*)"}], "\[IndentingNewLine]", 
+     RowBox[{"dVal", " ", "=", " ", 
+      RowBox[{"d", " ", "//.", " ", "rules"}]}], ";", " ", 
+     RowBox[{"(*", 
+      RowBox[{
+       RowBox[{"If", "[", 
+        RowBox[{
+         RowBox[{"!", 
+          RowBox[{"NumberQ", "[", "dVal", "]"}]}], ",", " ", 
+         RowBox[{"Print", "[", 
+          RowBox[{"\"\<warning: d should be numeric: \>\"", " ", "<>", " ", 
+           RowBox[{"ToString", "[", "dVal", "]"}]}], "]"}]}], "]"}], ";"}], 
+      "*)"}], "\[IndentingNewLine]", 
+     RowBox[{"(*", 
+      RowBox[{
+       RowBox[{"Print", "[", 
+        RowBox[{"Riffle", "[", 
+         RowBox[{
+          RowBox[{"{", 
+           RowBox[{"dVal", ",", " ", "pVal"}], "}"}], ",", " ", "\"\< \>\""}],
+          "]"}], "]"}], ";"}], "*)"}], "\[IndentingNewLine]", 
      RowBox[{"mean", "=", 
       RowBox[{
        RowBox[{"meanCurrent", "[", 
@@ -1532,20 +1551,6 @@ Cell[TextData[{
  ". Steady State Velocity vs Duty Cycle"
 }], "Subsection",ExpressionUUID->"131f2360-b00d-4c71-8139-f3f8dec6f418"],
 
-Cell[CellGroupData[{
-
-Cell[TextData[{
- 
- CounterBox["Section"],
- ".",
- 
- CounterBox["Subsection"],
- ".",
- 
- CounterBox["Subsubsection"],
- ". Examples"
-}], "Subsubsection",ExpressionUUID->"d3ea8888-efd6-431d-bc17-15e3c6e92389"],
-
 Cell["\<\
 We\[CloseCurlyQuote]re now ready to look at how steady state velocity varies \
 with duty cycle, which is one of our primary concerns here. We plot that \
@@ -1568,19 +1573,11 @@ Cell[BoxData[{
     RowBox[{"opts", ":", 
      RowBox[{"OptionsPattern", "[", "]"}]}]}], "]"}], " ", ":=", " ", 
   RowBox[{"plotSsVelFromPwmCycle", "[", 
-   RowBox[{"p", ",", " ", "motor", ",", " ", "opts"}], 
+   RowBox[{"motor", ",", " ", "env", ",", " ", "opts"}], 
    "]"}]}], "\[IndentingNewLine]", 
  RowBox[{
   RowBox[{"plotSsVelFromPwmCycle", "[", 
-   RowBox[{"p_", ",", " ", "motor_", ",", " ", 
-    RowBox[{"opts", ":", 
-     RowBox[{"OptionsPattern", "[", "]"}]}]}], "]"}], " ", ":=", " ", 
-  RowBox[{"plotSsVelFromPwmCycle", "[", 
-   RowBox[{"p", ",", " ", "motor", ",", " ", "env", ",", " ", "opts"}], 
-   "]"}]}], "\[IndentingNewLine]", 
- RowBox[{
-  RowBox[{"plotSsVelFromPwmCycle", "[", 
-   RowBox[{"p_", ",", " ", "motor_", ",", " ", "env_", ",", " ", 
+   RowBox[{"motor_", ",", " ", "env_", ",", " ", 
     RowBox[{"opts", ":", 
      RowBox[{"OptionsPattern", "[", "]"}]}]}], "]"}], " ", ":=", " ", 
   RowBox[{"Module", "[", 
@@ -1680,42 +1677,11 @@ Cell[BoxData[
    RowBox[{"Title", " ", "\[Rule]", " ", "\"\<CoreHex A\>\""}]}], 
   "]"}]], "Input",ExpressionUUID->"f77ad267-138f-486f-8a31-279495ac45bf"],
 
-Cell["These are interesting results.", \
-"Text",ExpressionUUID->"062973d5-df90-485c-866c-34748f3b6cf2"],
-
-Cell[TextData[{
- "Each motor operates in a discontinuous regime for a substantially-sized \
-initial part of the duty cycle range. While discontinuous, the steady state \
-velocity response is convexly supra-linear (except for a very short initial \
-part of the cycle), but not ",
- StyleBox["overly",
-  FontSlant->"Italic"],
- " strongly so (maybe 10-20%). In the upper part of the duty cycle range, \
-there is a transition to continuity; thereafter, the incremental response is \
-linear."
-}], "Text",ExpressionUUID->"67fe7a03-e408-4ea0-b0a3-f8356f6bcaf3"]
-}, Open  ]],
-
-Cell[CellGroupData[{
-
-Cell[TextData[{
- 
- CounterBox["Section"],
- ".",
- 
- CounterBox["Subsection"],
- ".",
- 
- CounterBox["Subsubsection"],
- ". Transition from Discontinuity to Continuity"
-}], "Subsubsection",ExpressionUUID->"06750f31-3a0d-43cf-bca1-94a422064b0d"],
-
 Cell["\<\
-We complete our examination by locating the duty cycle at which the \
-transition from discontinuous to continuous operation occurs. First we define \
-a function that gives the zero current frame duration for the steady state \
+These are interesting results. To investigate them further, we first need a \
+function that gives the zero current frame duration for the steady state \
 velocity of a given on duration.\
-\>", "Text",ExpressionUUID->"70ccd499-22ca-4a94-9677-3632aed56972"],
+\>", "Text",ExpressionUUID->"062973d5-df90-485c-866c-34748f3b6cf2"],
 
 Cell[BoxData[{
  RowBox[{"Clear", "[", "zeroCurrentFrameDurationFromOnDuration", 
@@ -1750,9 +1716,57 @@ Cell[BoxData[{
    "]"}]}]}], "Input",ExpressionUUID->"cdbb9759-b5b8-481a-9580-38a36a567951"],
 
 Cell["\<\
-We then numerically search for where that zero current frame duration is the \
-actual frame duration.\
-\>", "Text",ExpressionUUID->"a3263df0-4cce-4976-af97-69e52693d3db"],
+We evaluate the zero current duration for the 40% duty cycle of each of the \
+above examples.\
+\>", "Text",ExpressionUUID->"cb192231-4141-42c5-897f-53b0bcc81a32"],
+
+Cell[BoxData[{
+ RowBox[{"zeroCurrentFrameDurationFromOnDuration", "[", 
+  RowBox[{
+   RowBox[{".4", "p"}], ",", " ", "p", ",", " ", 
+   RowBox[{
+    RowBox[{
+     RowBox[{"motorParameters", "[", "\"\<AM 60 A\>\"", "]"}], "//", " ", 
+     "clearUnits"}], " ", "//", " ", "N"}]}], "]"}], "\[IndentingNewLine]", 
+ RowBox[{"zeroCurrentFrameDurationFromOnDuration", "[", 
+  RowBox[{
+   RowBox[{".4", "p"}], ",", " ", "p", ",", " ", 
+   RowBox[{
+    RowBox[{
+     RowBox[{"motorParameters", "[", "\"\<AM 60 B\>\"", "]"}], "//", " ", 
+     "clearUnits"}], " ", "//", " ", "N"}]}], "]"}], "\[IndentingNewLine]", 
+ RowBox[{"zeroCurrentFrameDurationFromOnDuration", "[", 
+  RowBox[{
+   RowBox[{".4", "p"}], ",", " ", "p", ",", " ", 
+   RowBox[{
+    RowBox[{
+     RowBox[{"motorParameters", "[", "\"\<CoreHex A\>\"", "]"}], "//", " ", 
+     "clearUnits"}], " ", "//", " ", "N"}]}], 
+  "]"}]}], "Input",ExpressionUUID->"e1d0efe4-5721-450f-b510-7b5691a9dc5e"],
+
+Cell[TextData[{
+ "Each of these frame durations is less than the actual frame duration of \
+.0001 seconds; this is indicative of discontinuity. That is, each motor \
+operates in a discontinuous regime for a substantially-sized initial part of \
+the duty cycle range. While discontinuous, the steady state velocity response \
+is convexly supra-linear (except for a very short initial part of the cycle), \
+but not ",
+ StyleBox["overly",
+  FontSlant->"Italic"],
+ " strongly so (maybe a few tens of percent). In the upper part of the duty \
+cycle range, there is a transition to continuity; thereafter, the incremental \
+response is linear. While the overall non-linearity is tame enough that it \
+will be adapted to by closed-loop control system, users of these motors in \
+open-loop systems may wish to take note."
+}], "Text",ExpressionUUID->"67fe7a03-e408-4ea0-b0a3-f8356f6bcaf3"],
+
+Cell["\<\
+We complete our study by locating the duty cycle at which the transition from \
+discontinuous to continuous operation occurs. Having defined the function \
+that gives the zero current frame duration for the steady state velocity of a \
+given on duration, we numerically search for where that zero current frame \
+duration is the actual frame duration.\
+\>", "Text",ExpressionUUID->"70ccd499-22ca-4a94-9677-3632aed56972"],
 
 Cell[BoxData[{
  RowBox[{"Clear", "[", "findContinuityTransition", 
@@ -1783,7 +1797,7 @@ Cell[BoxData[{
       RowBox[{"fn", "[", 
        RowBox[{"duty_", "?", "NumberQ"}], "]"}], " ", ":=", 
       RowBox[{
-       RowBox[{"zeroCurrentOfOnDuration", "[", 
+       RowBox[{"zeroCurrentFrameDurationFromOnDuration", "[", 
         RowBox[{
          RowBox[{"duty", " ", "pVal"}], ",", " ", "pVal", ",", " ", "motor", 
          ",", " ", "env"}], "]"}], " ", "-", "pVal"}]}], ";", 
@@ -1818,7 +1832,6 @@ Cell[BoxData[
   "ColumnForm"}]], \
 "Input",ExpressionUUID->"3aed97bd-d338-4373-b514-abb445f78e7b"]
 }, Open  ]]
-}, Open  ]]
 }, Open  ]],
 
 Cell[CellGroupData[{
@@ -1835,7 +1848,7 @@ Cell["2018.08.26. Initial version.", \
 }, Open  ]]
 },
 WindowSize->{1022, 1445},
-WindowMargins->{{Automatic, 1183}, {Automatic, 5}},
+WindowMargins->{{Automatic, 1343}, {42, Automatic}},
 PrintingCopies->1,
 PrintingPageRange->{32000, 32000},
 PrintingOptions->{"Magnification"->1.,
@@ -1858,8 +1871,8 @@ StyleDefinitions->Notebook[{
    Cell[
     StyleData["Output"], FontColor -> RGBColor[0., 0., 0.], Background -> 
     RGBColor[0.9215686274509803, 0.9215686274509803, 0.9215686274509803]]}, 
-  WindowMargins -> {{1188, Automatic}, {Automatic, 318}}, Visible -> False, 
-  FrontEndVersion -> "11.3 for Microsoft Windows (64-bit) (March 6, 2018)", 
-  StyleDefinitions -> "PrivateStylesheetFormatting.nb"]
+  Visible -> False, FrontEndVersion -> 
+  "11.3 for Microsoft Windows (64-bit) (March 6, 2018)", StyleDefinitions -> 
+  "PrivateStylesheetFormatting.nb"]
 ]
 
