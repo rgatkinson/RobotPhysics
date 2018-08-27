@@ -6,7 +6,7 @@ Cell["Motor Physics, with Gears & Initial Conditions", \
 
 Cell["\<\
 Robert Atkinson, Maddy Nguyen, Samantha Hordyk, Cole Welch, and John Fraser
-24 August 2018\
+27 August 2018\
 \>", "Author",ExpressionUUID->"05aea015-05f3-4e99-899d-20a8cd5792a1"],
 
 Cell["\<\
@@ -56,7 +56,16 @@ Cell[BoxData[{
   RowBox[{
    RowBox[{"CreateDirectory", "[", "outputDirectory", "]"}], " ", "//", " ", 
    "Quiet"}], 
-  ";"}]}], "Input",ExpressionUUID->"eb1653a8-85e2-4f56-b13c-a92151303453"]
+  ";"}]}], "Input",ExpressionUUID->"eb1653a8-85e2-4f56-b13c-a92151303453"],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"SetOptions", "[", 
+   RowBox[{"Plot", ",", 
+    RowBox[{"LabelStyle", "\[Rule]", 
+     RowBox[{"Directive", "[", 
+      RowBox[{"Background", "\[Rule]", "None"}], "]"}]}]}], "]"}], 
+  ";"}]], "Input",ExpressionUUID->"3347573f-2e60-4828-8c2b-daefbb6f4996"]
 }, Open  ]],
 
 Cell[CellGroupData[{
@@ -4534,7 +4543,6 @@ Cell[BoxData[{
     RowBox[{"{", 
      RowBox[{"0", ",", "0"}], "}"}]}]}], 
   "]"}]}], "Input",ExpressionUUID->"df65693c-078d-44c8-b109-f500c29192d3"]
-}, Open  ]]
 }, Open  ]],
 
 Cell[CellGroupData[{
@@ -4548,6 +4556,119 @@ Cell[TextData[{
  ".",
  
  CounterBox["Subsubsection"],
+ ". Acceleration, before gearbox"
+}], "Subsubsection",ExpressionUUID->"17e13198-0c63-4133-a9b9-4f8798620893"],
+
+Cell[BoxData[{
+ RowBox[{
+  RowBox[{
+   RowBox[{"{", 
+    RowBox[{"accStepGeneric", ",", " ", "accUnits", ",", " ", "acc"}], "}"}], 
+   " ", "=", " ", 
+   RowBox[{"stepMotorTimeFunction", "[", 
+    RowBox[{
+    "motorAcceleration", ",", " ", "aMotorWithFlywheel", ",", " ", 
+     "applyTwelveVolts", ",", " ", "t"}], "]"}]}], 
+  ";"}], "\[IndentingNewLine]", 
+ RowBox[{"accUnits", " ", "//", " ", "N"}], "\[IndentingNewLine]", 
+ RowBox[{"Plot", "[", 
+  RowBox[{"acc", ",", " ", 
+   RowBox[{"{", 
+    RowBox[{"t", ",", " ", "0", ",", " ", "1"}], "}"}], ",", " ", 
+   RowBox[{"AxesLabel", "\[Rule]", 
+    RowBox[{"{", 
+     RowBox[{"\"\<Seconds\>\"", ",", " ", 
+      RowBox[{"HoldForm", "[", 
+       RowBox[{"Radians", "/", 
+        RowBox[{"Seconds", "^", "2"}]}], "]"}]}], "}"}]}], ",", " ", 
+   RowBox[{"PlotRange", "\[Rule]", "All"}], ",", " ", 
+   RowBox[{"AxesOrigin", "\[Rule]", 
+    RowBox[{"{", 
+     RowBox[{"0", ",", "0"}], "}"}]}]}], "]"}], "\[IndentingNewLine]", 
+ RowBox[{"Plot", "[", 
+  RowBox[{"acc", ",", " ", 
+   RowBox[{"{", 
+    RowBox[{"t", ",", " ", "0", ",", " ", ".01"}], "}"}], ",", " ", 
+   RowBox[{"AxesLabel", "\[Rule]", 
+    RowBox[{"{", 
+     RowBox[{"\"\<Seconds\>\"", ",", " ", 
+      RowBox[{"HoldForm", "[", 
+       RowBox[{"Radians", "/", 
+        RowBox[{"Seconds", "^", "2"}]}], "]"}]}], "}"}]}], ",", " ", 
+   RowBox[{"PlotRange", "\[Rule]", "All"}], ",", " ", 
+   RowBox[{"AxesOrigin", "\[Rule]", 
+    RowBox[{"{", 
+     RowBox[{"0", ",", "0"}], "}"}]}]}], 
+  "]"}]}], "Input",ExpressionUUID->"e296f276-94b9-4e17-a0f3-a75799b0e7d8"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[TextData[{
+ 
+ CounterBox["Section"],
+ ".",
+ 
+ CounterBox["Subsection"],
+ ".",
+ 
+ CounterBox["Subsubsection"],
+ ". Acceleration, after gearbox"
+}], "Subsubsection",ExpressionUUID->"a7df65b6-18f9-426a-8593-b77d38a4d42a"],
+
+Cell[BoxData[{
+ RowBox[{
+  RowBox[{
+   RowBox[{"{", 
+    RowBox[{
+    "accAfterStepGeneric", ",", " ", "accAfterUnits", ",", " ", "accAfter"}], 
+    "}"}], " ", "=", " ", 
+   RowBox[{"stepMotorTimeFunction", "[", 
+    RowBox[{
+    "motorAccelerationAfter", ",", " ", "aMotorWithFlywheel", ",", " ", 
+     "applyTwelveVolts", ",", " ", "t"}], "]"}]}], 
+  ";"}], "\[IndentingNewLine]", 
+ RowBox[{"accAfterUnits", " ", "//", " ", "N"}], "\[IndentingNewLine]", 
+ RowBox[{"Plot", "[", 
+  RowBox[{"accAfter", ",", " ", 
+   RowBox[{"{", 
+    RowBox[{"t", ",", " ", "0", ",", " ", "1"}], "}"}], ",", " ", 
+   RowBox[{"AxesLabel", "\[Rule]", 
+    RowBox[{"{", 
+     RowBox[{"\"\<Seconds\>\"", ",", " ", 
+      RowBox[{"HoldForm", "[", 
+       RowBox[{"Radians", "/", 
+        RowBox[{"Seconds", "^", "2"}]}], "]"}]}], "}"}]}], ",", " ", 
+   RowBox[{"PlotRange", "\[Rule]", "All"}], ",", " ", 
+   RowBox[{"AxesOrigin", "\[Rule]", 
+    RowBox[{"{", 
+     RowBox[{"0", ",", "0"}], "}"}]}]}], "]"}], "\[IndentingNewLine]", 
+ RowBox[{"Plot", "[", 
+  RowBox[{"accAfter", ",", " ", 
+   RowBox[{"{", 
+    RowBox[{"t", ",", " ", "0", ",", " ", ".01"}], "}"}], ",", " ", 
+   RowBox[{"AxesLabel", "\[Rule]", 
+    RowBox[{"{", 
+     RowBox[{"\"\<Seconds\>\"", ",", " ", 
+      RowBox[{"HoldForm", "[", 
+       RowBox[{"Radians", "/", 
+        RowBox[{"Seconds", "^", "2"}]}], "]"}]}], "}"}]}], ",", " ", 
+   RowBox[{"PlotRange", "\[Rule]", "All"}], ",", " ", 
+   RowBox[{"AxesOrigin", "\[Rule]", 
+    RowBox[{"{", 
+     RowBox[{"0", ",", "0"}], "}"}]}]}], 
+  "]"}]}], "Input",ExpressionUUID->"7d35bbfb-1c55-4982-bcd4-4e8ebc4fb6b9"]
+}, Open  ]]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[TextData[{
+ 
+ CounterBox["Section"],
+ ".",
+ 
+ CounterBox["Subsection"],
  ". Examples with ",
  StyleBox["unitless",
   IgnoreSpellCheck->True],
@@ -5038,7 +5159,9 @@ Cell[BoxData[
      "\[IndentingNewLine]", "velAfterStepGeneric", ",", " ", "velStepGeneric",
       ",", " ", "torAfterStepGeneric", ",", " ", "torStepGeneric", ",", " ", 
      "curStepGeneric", ",", " ", "emfStepGeneric", ",", " ", "posStepGeneric",
-      ",", " ", "posAfterStepGeneric"}], "\[IndentingNewLine]", "}"}]}], 
+      ",", " ", "posAfterStepGeneric", ",", "\[IndentingNewLine]", 
+     "accStepGeneric", ",", " ", "accAfterStepGeneric"}], 
+    "\[IndentingNewLine]", "}"}]}], 
   "]"}]], "Input",ExpressionUUID->"c45ebd44-b3b2-4cff-b948-c9753ddbb17e"]
 }, Open  ]],
 
@@ -5085,13 +5208,16 @@ Cell["\<\
 \>", "Item",ExpressionUUID->"dff2ee56-6745-4b63-af69-bcce96e2200b"],
 
 Cell["2018.08.24 Add gearboxlessEquivalent[]", \
-"Item",ExpressionUUID->"9043a342-e3bc-43cd-ba55-36440aff50f4"]
+"Item",ExpressionUUID->"9043a342-e3bc-43cd-ba55-36440aff50f4"],
+
+Cell["2018.08.27 Add accStepGeneric. Lighten background in output.", \
+"Item",ExpressionUUID->"a28eb848-fbde-4651-824d-1a515984ff62"]
 }, Open  ]]
 }, Open  ]]
 }, Open  ]]
 },
 WindowSize->{1261, 1480},
-WindowMargins->{{633, Automatic}, {Automatic, 25}},
+WindowMargins->{{536, Automatic}, {10, Automatic}},
 PrintingCopies->1,
 PrintingPageRange->{32000, 32000},
 PrintingOptions->{"Magnification"->1.,
@@ -5101,7 +5227,6 @@ PrivateNotebookOptions->{"FileOutlineCache"->False},
 CellContext->Notebook,
 CellLabelAutoDelete->True,
 TrackCellChangeTimes->False,
-Magnification:>1.1 Inherited,
 FrontEndVersion->"11.3 for Microsoft Windows (64-bit) (March 6, 2018)",
 StyleDefinitions->Notebook[{
    Cell[
@@ -5110,8 +5235,12 @@ StyleDefinitions->Notebook[{
      FrontEnd`FileName[{"Report"}, "StandardReport.nb", CharacterEncoding -> 
        "UTF-8"]]], 
    Cell[
-    StyleData[All, "Printout"], Magnification -> 0.5]}, Visible -> False, 
-  FrontEndVersion -> "11.3 for Microsoft Windows (64-bit) (March 6, 2018)", 
-  StyleDefinitions -> "PrivateStylesheetFormatting.nb"]
+    StyleData[All, "Printout"], Magnification -> 0.5], 
+   Cell[
+    StyleData["Output"], Background -> 
+    RGBColor[0.9215686274509803, 0.9215686274509803, 0.9215686274509803]]}, 
+  Visible -> False, FrontEndVersion -> 
+  "11.3 for Microsoft Windows (64-bit) (March 6, 2018)", StyleDefinitions -> 
+  "PrivateStylesheetFormatting.nb"]
 ]
 
