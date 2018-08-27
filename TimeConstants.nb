@@ -1,0 +1,441 @@
+Notebook[{
+
+Cell[CellGroupData[{
+Cell["Time Constants", \
+"Title",ExpressionUUID->"39796d72-87ca-4320-97ff-a98d4bd016ce"],
+
+Cell["\<\
+Robert Atkinson
+26 August 2018\
+\>", "Author",ExpressionUUID->"05aea015-05f3-4e99-899d-20a8cd5792a1"],
+
+Cell["\<\
+We explore extracting time constants from motor model expressions.\
+\>", "Text",ExpressionUUID->"56cc4ba9-b77c-4512-b3b4-73f00a3c0eee"],
+
+Cell[CellGroupData[{
+
+Cell[TextData[{
+ 
+ CounterBox["Section"],
+ ". Introduction"
+}], "Section",ExpressionUUID->"8b5eb0dc-1aa8-4e93-bd3b-d162d4a5bebc"],
+
+Cell[CellGroupData[{
+
+Cell[TextData[{
+ 
+ CounterBox["Section"],
+ ".",
+ 
+ CounterBox["Subsection"],
+ ". Administrivia"
+}], "Subsection",ExpressionUUID->"634dcc1a-ed99-4cd1-8ce4-cc86bfd29e80"],
+
+Cell["\<\
+Before we begin, we load in some previously computed logic (Ref: \
+https://github.com/rgatkinson/RobotPhysics/blob/master/MotorPhysics-\
+GearsInitialConditions.pdf)\
+\>", "Text",ExpressionUUID->"7ad28d45-c772-4943-a312-e5b632c383c6"],
+
+Cell[BoxData[{
+ RowBox[{"Get", "[", 
+  RowBox[{
+   RowBox[{"NotebookDirectory", "[", "]"}], " ", "<>", " ", 
+   "\"\<Utilities.m\>\""}], "]"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"inputDirectory", " ", "=", " ", 
+   RowBox[{
+    RowBox[{"FileNameJoin", "[", 
+     RowBox[{"{", 
+      RowBox[{
+       RowBox[{"NotebookDirectory", "[", "]"}], ",", 
+       "\"\<MotorPhysicsGearsInitialConditions.Output\>\""}], "}"}], "]"}], 
+    " ", "<>", " ", "$PathnameSeparator"}]}], ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"Get", "[", 
+   RowBox[{
+   "inputDirectory", " ", "<>", " ", 
+    "\"\<ParametersUnitsAndAssumptions.m\>\""}], "]"}], 
+  ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"Get", "[", 
+   RowBox[{"inputDirectory", " ", "<>", " ", "\"\<MotorModels.m\>\""}], "]"}],
+   ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"Get", "[", 
+   RowBox[{
+   "inputDirectory", " ", "<>", " ", "\"\<MotorTimeDomainFunctions.m\>\""}], 
+   "]"}], ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"Get", "[", 
+   RowBox[{"inputDirectory", " ", "<>", " ", "\"\<Misc.m\>\""}], "]"}], 
+  ";"}]}], "Input",ExpressionUUID->"00da5f52-c4e4-4d20-9d91-5577a43f3731"],
+
+Cell[BoxData[{
+ RowBox[{
+  RowBox[{"SetOptions", "[", 
+   RowBox[{"Plot", ",", 
+    RowBox[{"LabelStyle", "\[Rule]", 
+     RowBox[{"Directive", "[", 
+      RowBox[{"Background", "\[Rule]", "None"}], "]"}]}]}], "]"}], 
+  ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"prettyPrintFontSize", " ", "=", " ", "20"}], 
+  ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"framed", "[", "expr_", "]"}], " ", ":=", " ", 
+  RowBox[{"Framed", "[", 
+   RowBox[{"expr", ",", " ", 
+    RowBox[{"FrameStyle", "\[Rule]", 
+     RowBox[{"Darker", "[", "Green", "]"}]}]}], 
+   "]"}]}]}], "Input",ExpressionUUID->"80a2f107-bdfe-4017-912d-cc050219d0b1"]
+}, Open  ]]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[TextData[{
+ 
+ CounterBox["Section"],
+ ". Finding Time Constants"
+}], "Section",ExpressionUUID->"7e03731b-de2d-46af-9d11-1ee08787931e"],
+
+Cell["\<\
+We define a function that finds time constants from the exponents of \
+exponentials in an expression.\
+\>", "Text",ExpressionUUID->"41633980-42d8-4304-9907-4c7cdb48e460"],
+
+Cell[BoxData[{
+ RowBox[{"Clear", "[", "findTimeConstants", "]"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"findTimeConstants", "[", "expr_", "]"}], " ", ":=", " ", 
+  RowBox[{"Module", "[", 
+   RowBox[{
+    RowBox[{"{", 
+     RowBox[{
+     "exprAnalyze", ",", " ", "process", ",", " ", "exps", ",", " ", "matchQ",
+       ",", " ", "tc"}], "}"}], ",", "\[IndentingNewLine]", 
+    RowBox[{
+     RowBox[{"exprAnalyze", " ", "=", " ", 
+      RowBox[{"TrigToExp", "[", "expr", "]"}]}], ";", "\[IndentingNewLine]", 
+     RowBox[{
+      RowBox[{"process", "[", 
+       RowBox[{"x", ":", " ", 
+        RowBox[{"Exp", "[", 
+         RowBox[{"Times", "[", 
+          RowBox[{
+           RowBox[{"factor_", "?", "NumericQ"}], ",", " ", "t", ",", " ", 
+           RowBox[{"rest", ":", "_"}]}], "]"}], "]"}]}], "]"}], " ", ":=", 
+      " ", 
+      RowBox[{"Module", "[", 
+       RowBox[{
+        RowBox[{"{", "}"}], ",", 
+        RowBox[{"Sow", "[", 
+         RowBox[{
+          RowBox[{"-", "1"}], " ", "/", " ", 
+          RowBox[{"(", 
+           RowBox[{"factor", " ", "*", " ", "rest"}], ")"}]}], "]"}]}], 
+       "]"}]}], ";", "\[IndentingNewLine]", 
+     RowBox[{
+      RowBox[{"process", "[", "_", "]"}], " ", ":=", " ", "0"}], ";", 
+     "\[IndentingNewLine]", 
+     RowBox[{"exps", " ", "=", " ", 
+      RowBox[{
+       RowBox[{
+        RowBox[{
+         RowBox[{
+          RowBox[{"Reap", "[", 
+           RowBox[{"Scan", "[", 
+            RowBox[{
+             RowBox[{
+              RowBox[{"process", "[", "#", "]"}], "&"}], ",", " ", 
+             "exprAnalyze", ",", " ", "Infinity"}], "]"}], "]"}], "[", 
+          RowBox[{"[", "2", "]"}], "]"}], " ", "//", " ", "Flatten"}], " ", "//",
+         " ", "Union"}], " ", "//", " ", "FullSimplify"}]}], ";", 
+     "\[IndentingNewLine]", "exps"}]}], 
+   "]"}]}]}], "Input",ExpressionUUID->"a0077a92-08b3-40f3-96f7-9392197627e8"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[TextData[{
+ 
+ CounterBox["Section"],
+ ". Motor Model"
+}], "Section",ExpressionUUID->"504b66f6-1663-4a12-8d47-02e42921462a"],
+
+Cell["\<\
+We explore the time constants in the step responses from our motor model. It \
+turns out that they are all the same.\
+\>", "Text",ExpressionUUID->"8180a42a-8007-4689-a2bc-6eea525cf84c"],
+
+Cell[CellGroupData[{
+
+Cell[TextData[{
+ 
+ CounterBox["Section"],
+ ".",
+ 
+ CounterBox["Subsection"],
+ ". Current"
+}], "Subsection",ExpressionUUID->"53456bd4-b83c-4e46-a91f-931690735a3a"],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"findTimeConstants", "[", "curStepGeneric", "]"}], " ", "//", " ", 
+  "prettyPrint"}]], \
+"Input",ExpressionUUID->"ff1d2981-0412-4299-afc1-da0f03fe74e1"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[TextData[{
+ 
+ CounterBox["Section"],
+ ".",
+ 
+ CounterBox["Subsection"],
+ ". Velocity"
+}], "Subsection",ExpressionUUID->"d82b2121-c1f0-4261-81e4-c1ea461d882b"],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"findTimeConstants", "[", "velStepGeneric", "]"}], " ", "//", " ", 
+  "prettyPrint"}]], \
+"Input",ExpressionUUID->"9d25fa9e-d87f-45a1-b217-fe12e5e61458"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[TextData[{
+ 
+ CounterBox["Section"],
+ ".",
+ 
+ CounterBox["Subsection"],
+ ". Emf"
+}], "Subsection",ExpressionUUID->"8df02730-7c69-4cd8-b54c-ab1df10d5835"],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"findTimeConstants", "[", "emfStepGeneric", "]"}], " ", "//", " ", 
+  "prettyPrint"}]], \
+"Input",ExpressionUUID->"f74f501c-a9f8-48b4-8fa8-75f08d0cbd0e"]
+}, Open  ]]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[TextData[{
+ 
+ CounterBox["Section"],
+ ". Digging Deeper"
+}], "Section",ExpressionUUID->"657fd491-435d-4a3e-9088-44871b63440a"],
+
+Cell["\<\
+Let\[CloseCurlyQuote]s explore those time constants. First, we note that they \
+both do in fact have correct units (seconds).\
+\>", "Text",ExpressionUUID->"5c632cd0-9700-4890-92b1-28174a0f8b56"],
+
+Cell[BoxData[{
+ RowBox[{"tc", " ", "=", " ", 
+  RowBox[{
+  "findTimeConstants", "[", "curStepGeneric", "]"}]}], "\[IndentingNewLine]", 
+ RowBox[{"tc", " ", "/.", " ", 
+  "parameterQuantities"}]}], \
+"Input",ExpressionUUID->"d65bb99a-624a-4ea7-8883-836c6ffaa543"],
+
+Cell["\<\
+We rationalize the denominators for easier analysis. This gives us our main \
+result.\
+\>", "Text",ExpressionUUID->"f39da8aa-aed1-4761-8e35-e20fb99c4710"],
+
+Cell[BoxData[{
+ RowBox[{
+  RowBox[{"ClearAll", "[", "rationalizeDenominator", "]"}], ";"}], "\n", 
+ RowBox[{
+  RowBox[{"SetAttributes", "[", 
+   RowBox[{"rationalizeDenominator", ",", "Listable"}], "]"}], 
+  ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"rationalizeDenominator", "[", "expr_", "]"}], " ", ":=", " ", 
+  RowBox[{"Module", "[", 
+   RowBox[{
+    RowBox[{"{", 
+     RowBox[{
+     "num", ",", " ", "den", ",", " ", "f", ",", " ", "scale", ",", " ", "x", 
+      ",", " ", "y"}], "}"}], ",", "\[IndentingNewLine]", 
+    RowBox[{
+     RowBox[{"num", " ", "=", " ", 
+      RowBox[{"Numerator", "[", "expr", "]"}]}], ";", "\[IndentingNewLine]", 
+     RowBox[{"den", " ", "=", " ", 
+      RowBox[{"Denominator", "[", "expr", "]"}]}], ";", "\[IndentingNewLine]", 
+     RowBox[{
+      RowBox[{"f", "[", 
+       RowBox[{"a_", " ", "+", " ", 
+        RowBox[{"b", ":", " ", 
+         RowBox[{"Power", "[", 
+          RowBox[{"c_", ",", " ", 
+           RowBox[{"1", " ", "/", " ", "2"}]}], "]"}]}]}], "]"}], " ", ":=", 
+      " ", 
+      RowBox[{"(", 
+       RowBox[{"a", " ", "-", " ", "b"}], ")"}]}], ";", "\[IndentingNewLine]", 
+     RowBox[{
+      RowBox[{"f", "[", 
+       RowBox[{"a_", " ", "-", " ", 
+        RowBox[{"b", ":", " ", 
+         RowBox[{"Power", "[", 
+          RowBox[{"c_", ",", " ", 
+           RowBox[{"1", " ", "/", " ", "2"}]}], "]"}]}]}], "]"}], " ", ":=", 
+      " ", 
+      RowBox[{"(", 
+       RowBox[{"a", " ", "+", " ", "b"}], ")"}]}], ";", "\[IndentingNewLine]", 
+     RowBox[{
+      RowBox[{"f", "[", "other_", "]"}], " ", ":=", " ", "1"}], ";", 
+     "\[IndentingNewLine]", 
+     RowBox[{"scale", " ", "=", " ", 
+      RowBox[{"f", "[", "den", "]"}]}], ";", "\[IndentingNewLine]", 
+     RowBox[{"x", " ", "=", " ", 
+      RowBox[{"num", " ", "*", " ", "scale"}]}], ";", "\[IndentingNewLine]", 
+     RowBox[{"y", " ", "=", " ", 
+      RowBox[{"FullSimplify", "[", 
+       RowBox[{"den", " ", "*", " ", "scale"}], "]"}]}], ";", 
+     "\[IndentingNewLine]", 
+     RowBox[{"x", " ", "/", " ", "y"}]}]}], "\[IndentingNewLine]", 
+   "]"}]}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{
+   RowBox[{"rationalizeDenominator", " ", "/@", " ", "tc"}], "  ", "//", " ", 
+   "prettyPrint"}], "//", " ", 
+  "framed"}]}], \
+"Input",ExpressionUUID->"c8f06fe5-af54-45e8-8ab8-492741b81507"],
+
+Cell["\<\
+To simplify the model to help get some insight, we\[CloseCurlyQuote]ll ignore \
+the inductance:\
+\>", "Text",ExpressionUUID->"ff2d64f9-39db-4564-989a-e885ea32d8ef"],
+
+Cell[BoxData[
+ RowBox[{"noL", " ", "=", " ", 
+  RowBox[{"Limit", "[", 
+   RowBox[{
+    RowBox[{"(", 
+     RowBox[{"rationalizeDenominator", " ", "/@", " ", "tc"}], ")"}], ",", 
+    " ", 
+    RowBox[{"L", " ", "\[Rule]", " ", "0"}]}], " ", 
+   "]"}]}]], "Input",ExpressionUUID->"389c4bf2-7e2b-45c7-90f2-59c45e045c0b"],
+
+Cell["\<\
+If we examine the numerator of the second of these results, we can see that \
+it is zero. However, the first result simplifies nicely to a \
+electro-mechanical result involving (among other things) the product of \
+resistance and inertia and of resistance and drag (note that this is only an \
+approximation, as we ignored the inductance).\
+\>", "Text",ExpressionUUID->"0887f8bb-f6a5-4c0d-9de7-ab9fcc2edcbe"],
+
+Cell[BoxData[{
+ RowBox[{"(", 
+  RowBox[{"noL", " ", "//", " ", "First"}], ")"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"(", 
+   RowBox[{"tcApprox", " ", "=", " ", 
+    RowBox[{
+     RowBox[{
+      RowBox[{"(", 
+       RowBox[{"noL", " ", "//", " ", "First"}], ")"}], " ", "/.", " ", 
+      RowBox[{"{", 
+       RowBox[{
+        RowBox[{"Power", "[", 
+         RowBox[{
+          RowBox[{"x_", "^", "2"}], ",", " ", 
+          RowBox[{"1", "/", "2"}]}], "]"}], " ", "\[RuleDelayed]", " ", "x"}],
+        "}"}]}], " ", "//", " ", "Simplify"}]}], ")"}], " ", "//", " ", 
+  "framed"}]}], \
+"Input",ExpressionUUID->"0b53ce67-1d4a-45b8-abbc-aab2ff042ba7"],
+
+Cell["Let\[CloseCurlyQuote]s put some real numbers to this.", \
+"Text",ExpressionUUID->"a1b7391d-7ba7-4737-9f56-7c463359d0ad"],
+
+Cell[BoxData[
+ RowBox[{"example", " ", "=", 
+  RowBox[{
+   RowBox[{
+    RowBox[{"addMotorLoad", "[", 
+     RowBox[{
+      RowBox[{"motorParameters", "[", "\"\<AM 60 A\>\"", "]"}], ",", " ", 
+      RowBox[{"flywheel", "[", 
+       RowBox[{
+        RowBox[{"Quantity", "[", 
+         RowBox[{"5", ",", " ", "\"\<kg\>\""}], "]"}], ",", " ", 
+        RowBox[{"Quantity", "[", 
+         RowBox[{"10", ",", " ", "\"\<cm\>\""}], "]"}]}], "]"}]}], "]"}], "//",
+     " ", "siUnits"}], " ", "//", " ", 
+   "clearUnits"}]}]], \
+"Input",ExpressionUUID->"f26e7b54-3a4a-43d9-8f47-6a64950b75d3"],
+
+Cell["Our full result has two distinct time constants.", \
+"Text",ExpressionUUID->"8785fdd2-8146-47fe-8733-63288ec0b3de"],
+
+Cell[BoxData[{
+ RowBox[{
+  RowBox[{"tc", " ", "/.", " ", "example"}], " ", "//", " ", 
+  "N"}], "\[IndentingNewLine]", 
+ RowBox[{"1", "/", " ", 
+  "%"}]}], "Input",ExpressionUUID->"f9e53b80-445a-4e20-8990-d6e3c56011dd"],
+
+Cell["\<\
+The first of those is the electro-mechanical constant we found in our \
+induction-less approximation, and the second we conclude is an L-R electrical \
+time constant.\
+\>", "Text",ExpressionUUID->"73ae7636-c673-4cd6-90b8-2334fe23a66e"],
+
+Cell[BoxData[{
+ RowBox[{
+  RowBox[{"tcApprox", " ", "/.", " ", "example"}], " ", "//", " ", 
+  "N"}], "\[IndentingNewLine]", 
+ RowBox[{"1", "/", " ", 
+  "%"}]}], "Input",ExpressionUUID->"76f48724-03d1-4884-b190-4395206a38d6"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[TextData[{
+ 
+ CounterBox["Section"],
+ ". Revision History"
+}], "Section",ExpressionUUID->"aa18cb75-0fa8-4cd1-857c-fb03cd58cdbe"],
+
+Cell["2018.08.26. Initial version.", \
+"Item",ExpressionUUID->"c7e98618-4fda-46a1-9c3b-e7a69012bc31"]
+}, Open  ]]
+}, Open  ]]
+},
+WindowSize->{1022, 1445},
+WindowMargins->{{Automatic, 1183}, {Automatic, 42}},
+PrintingCopies->1,
+PrintingPageRange->{32000, 32000},
+PrintingOptions->{"Magnification"->1.,
+"PaperOrientation"->"Portrait",
+"PaperSize"->{612, 792}},
+PrivateNotebookOptions->{"FileOutlineCache"->False},
+CellContext->Notebook,
+CellLabelAutoDelete->True,
+TrackCellChangeTimes->False,
+FrontEndVersion->"11.3 for Microsoft Windows (64-bit) (March 6, 2018)",
+StyleDefinitions->Notebook[{
+   Cell[
+    StyleData[
+    StyleDefinitions -> 
+     FrontEnd`FileName[{"Report"}, "StandardReport.nb", CharacterEncoding -> 
+       "UTF-8"]]], 
+   Cell[
+    StyleData[All, "Printout"], Magnification -> 0.5], 
+   Cell[
+    StyleData["Output"], FontColor -> RGBColor[0., 0., 0.], Background -> 
+    RGBColor[0.9215686274509803, 0.9215686274509803, 0.9215686274509803]]}, 
+  Visible -> False, FrontEndVersion -> 
+  "11.3 for Microsoft Windows (64-bit) (March 6, 2018)", StyleDefinitions -> 
+  "PrivateStylesheetFormatting.nb"]
+]
+
